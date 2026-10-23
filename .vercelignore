@@ -1,0 +1,14 @@
+# PNITE — o que NÃO é enviado à Vercel. A proteção principal é scripts/build_vercel.mjs,
+# que copia para dist/ só uma lista fechada de arquivos; isto apenas reduz o envio.
+.env
+.env.*
+config.local.js
+dist/
+old/
+upload/
+dic/
+data222/
+supabase/
+data/
+*.ipynb
+__pycache__/

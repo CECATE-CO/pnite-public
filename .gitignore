@@ -1,0 +1,19 @@
+scratch/
+__pycache__/
+*.pyc
+~$*
+*.tmp
+.env
+scripts/.checkpoint_carga/
+config.local.js
+
+# Planilhas para envio ao banco (podem conter dados pessoais): só o README é versionado
+upload/*
+!upload/README.md
+
+# Build e configuração local da Vercel
+dist/
+.vercel/
+
+# Dados brutos locais (dados pessoais): fora do Git desde a v.3.1.4; a interface lê as APIs
+data/
