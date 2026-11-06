@@ -122,7 +122,7 @@ Tabelas consolidadas por `scripts/extrair_capacitacao.py`, gravadas numa única 
 
 Destino padrão de `scripts/importar_planilha.py` (pasta `upload/`). Hoje está vazio. Cada arquivo vira uma tabela, com tipos inferidos (ver [`upload/README.md`](upload/README.md)).
 
-### 3.6. `acesso` — usuários e permissões (migração `0015`)
+### 3.6. `acesso` — usuários e permissões (migrações `0015` e `0016`)
 
 Login da interface pelo Supabase Auth (`auth.users`). Schema privado, sem `GRANT` a `anon`/`authenticated`; acesso só pelas funções RPC `public.pnite_*`.
 
@@ -132,6 +132,7 @@ Login da interface pelo Supabase Auth (`auth.users`). Schema privado, sem `GRANT
 | `perfis` | Vínculo `auth.users.id` → e-mail autorizado (criado pelo gatilho `pnite_ao_criar_usuario`) |
 
 - Só e-mails com autorização ativa conseguem criar conta (o gatilho em `auth.users` recusa os demais).
+- O administrador cadastra contas na página **Usuários** da PNITE: conta completa (e-mail já confirmado e senha inicial, gravada com bcrypt em `auth.users`/`auth.identities`) ou só a autorização do e-mail. Conta desativada recebe `banned_until` no Auth e não consegue entrar.
 - Administrador inicial: `morato@ufg.br`. O administrador não pode retirar o próprio papel nem se desativar.
 - Os dados da plataforma continuam públicos para consulta; o login libera os **downloads** gerados no navegador (indicadores e tabelas em XLSX, gráficos em PNG, mapa em PNG/SVG).
 
@@ -139,7 +140,7 @@ Login da interface pelo Supabase Auth (`auth.users`). Schema privado, sem `GRANT
 
 | Tabela | Conteúdo |
 |---|---|
-| `migracoes` | Migrações aplicadas (15) |
+| `migracoes` | Migrações aplicadas (16) |
 | `cargas_log` | Histórico de cada carga: tabela, ano, filtro de UF, linhas e valores inválidos convertidos em NULL |
 | `partes_texto` | Área de trânsito para valores maiores que o limite de uma requisição (ex.: GeoJSON extenso); fica vazia após a carga |
 
@@ -197,6 +198,8 @@ Funções RPC de acesso (`POST /rest/v1/rpc/<nome>`, com `Authorization: Bearer 
 | `pnite_admin_listar_usuarios()` | Administrador | Autorizações com situação da conta e último acesso |
 | `pnite_admin_definir_acesso(p_email, p_papel, p_pode_baixar, p_ativo, p_nome)` | Administrador | Cria ou altera uma autorização |
 | `pnite_admin_remover_usuario(p_email)` | Administrador | Remove a autorização e a conta vinculada |
+| `pnite_admin_criar_usuario(p_email, p_senha, p_nome, p_papel, p_pode_baixar)` | Administrador | Cria a conta confirmada com senha inicial (mín. 8 caracteres) |
+| `pnite_admin_definir_senha(p_email, p_senha)` | Administrador | Redefine a senha de uma conta |
 
 Nas views `indicadores_*`, cada linha traz:
 - `raw`: contadores (alunos, rotas, km, frota etc.);
@@ -305,6 +308,7 @@ python scripts/validar_paridade.py
 | `0013_sete_municipio_e_complementos` | Tabela "Dados SETE" e complementos municipais (Censo e frota) |
 | `0014_definicoes_unicas` | Definições únicas de km, capacidade, vínculo e código de município |
 | `0015_acesso_usuarios` | Login: autorizações, perfis, papel de administrador e permissão de download |
+| `0016_cadastro_usuarios` | Cadastro de contas e redefinição de senha pela PNITE; bloqueio no Auth de contas desativadas |
 
 ---
 

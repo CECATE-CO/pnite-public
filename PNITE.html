@@ -6164,16 +6164,6 @@ html.pnite-pode-baixar .pnite-dl-header-btn { display: inline-flex; }
 .pab-kv dd { margin: 0; color: var(--text-1); font-weight: 600; min-width: 0; overflow-wrap: anywhere; }
 .pab-dl-list { display: grid; gap: 8px; }
 .pab-dl-list .pab-btn { justify-content: flex-start; width: 100%; font-weight: 500; }
-.pab-add { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(160px, 100%), 1fr)); gap: 10px; align-items: end; margin-bottom: 14px; }
-.pab-add .pab-field { margin-bottom: 0; }
-.pab-check { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-1); min-height: 44px; }
-.pab-table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 12px; }
-.pab-table { width: 100%; border-collapse: collapse; font-size: 12.5px; min-width: 760px; }
-.pab-table th, .pab-table td { padding: 8px 10px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: middle; color: var(--text-1); }
-.pab-table th { font-size: 11px; text-transform: uppercase; letter-spacing: .03em; color: var(--text-2); background-color: var(--bg-input); position: sticky; top: 0; }
-.pab-table tr:last-child td { border-bottom: none; }
-.pab-table select.pab-input { padding: 6px 8px; font-size: 12.5px; }
-.pab-tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 10px; background: var(--bg-badge); color: var(--text-2); font-weight: 600; }
 .pnite-dl-host { position: relative; }
 .pnite-dl-chart {
   display: none; position: absolute; top: 4px; right: 4px; z-index: 5;
@@ -6191,6 +6181,129 @@ html.pnite-pode-baixar .pnite-dl-chart { display: inline-flex; }
   .pnite-dl-chart { width: 44px; height: 44px; }
   .pab-btn, .pab-close { min-height: 44px; }
   .pab-close { min-width: 44px; }
+}
+/* ================================================================
+   v.3.2.3 — PÁGINA DE USUÁRIOS (administração) E REFINO DOS MODAIS DE ACESSO
+   ================================================================ */
+.hcn-tab.pu-tab-admin { display: none; }
+html.pnite-admin .hcn-tab.pu-tab-admin { display: inline-flex; }
+/* Com a quarta aba (administrador), a cápsula rola na horizontal em vez de estourar a largura */
+html.pnite-admin .header-capsule-nav { max-width: 100%; min-width: 0; overflow-x: auto; scrollbar-width: none; }
+html.pnite-admin .hcn-tab { flex-shrink: 0; }
+/* `hidden` precisa vencer o display das classes (.pab-btn, .pab-field, .pu-lock); !important só aqui, por isso */
+.pu-page [hidden], .pnite-auth-box [hidden] { display: none !important; }
+.pu-page { max-width: 1240px; margin: 0 auto; padding: 28px 24px 64px; min-width: 0; }
+.pu-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px; margin-bottom: 22px; }
+.pu-head-text { min-width: 0; max-width: 720px; }
+.pu-eyebrow { display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--c-blue); margin-bottom: 6px; }
+.pu-title { font-family: var(--font-serif); font-size: clamp(26px, 4vw, 36px); font-weight: 500; color: var(--text-1); margin: 0 0 6px; line-height: 1.15; }
+.pu-sub { font-size: 14px; color: var(--text-2); line-height: 1.55; margin: 0; }
+.pu-head-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.pu-lock { text-align: center; background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 48px 24px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.pu-lock-icon { width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; color: var(--c-blue); background-color: var(--bg-badge); }
+.pu-lock-title { font-family: var(--font-serif); font-size: 22px; font-weight: 500; color: var(--text-1); margin: 0; }
+.pu-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(150px, 100%), 1fr)); gap: 12px; margin-bottom: 18px; }
+.pu-kpi { display: flex; align-items: center; gap: 12px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 14px 16px; min-width: 0; }
+.pu-kpi b { display: block; font-size: 22px; font-weight: 700; color: var(--text-1); line-height: 1.1; }
+.pu-kpi span:not(.pu-kpi-ico) { font-size: 12px; color: var(--text-2); }
+.pu-kpi-ico { width: 40px; height: 40px; border-radius: 12px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 19px; color: #144f8a; background: #d5e8f8; }
+.pu-kpi-ico.ok { color: #0a6640; background: #d4f0e4; }
+.pu-kpi-ico.info { color: #1d5fa8; background: #dcecff; }
+.pu-kpi-ico.warn { color: #7a5008; background: #fef0c5; }
+.pu-kpi-ico.adm { color: #5b3a9e; background: #ece3fb; }
+[data-theme="dark"] .pu-kpi-ico { color: #5fa8e8; background: #0d2540; }
+[data-theme="dark"] .pu-kpi-ico.ok { color: #4ed99a; background: #0e3322; }
+[data-theme="dark"] .pu-kpi-ico.info { color: #7cc0ff; background: #0f2a48; }
+[data-theme="dark"] .pu-kpi-ico.warn { color: #f5c84a; background: #2e2004; }
+[data-theme="dark"] .pu-kpi-ico.adm { color: #c4a8ff; background: #261a40; }
+.pu-grid { display: grid; grid-template-columns: minmax(0, 380px) minmax(0, 1fr); gap: 18px; align-items: start; }
+.pu-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 22px; min-width: 0; }
+.pu-form-card { position: sticky; top: 130px; }
+.pu-card-title { display: flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 700; color: var(--text-1); margin: 0 0 14px; }
+.pu-card-title i { color: var(--c-blue); }
+.pu-seg { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; border-radius: 12px; background-color: var(--bg-input); border: 1px solid var(--border); margin-bottom: 10px; }
+.pu-seg-btn { font-family: inherit; font-size: 12.5px; font-weight: 600; padding: 8px 6px; border: none; border-radius: 9px; cursor: pointer; background: transparent; color: var(--text-2); min-height: 36px; }
+.pu-seg-btn.active { background-color: var(--bg-card); color: var(--text-1); box-shadow: 0 1px 4px rgba(0, 0, 0, .12); }
+.pu-hint { font-size: 12.5px; color: var(--text-2); line-height: 1.5; margin: 0 0 14px; }
+.pu-req { color: #b42318; }
+[data-theme="dark"] .pu-req { color: #ff8a80; }
+.pu-pass { display: flex; gap: 6px; min-width: 0; }
+.pu-pass .pab-input { flex: 1; min-width: 0; }
+.pu-icon-btn { width: 42px; flex-shrink: 0; border-radius: 10px; border: 1px solid var(--border); background-color: var(--bg-input); color: var(--text-2); cursor: pointer; font-size: 17px; display: inline-flex; align-items: center; justify-content: center; }
+.pu-icon-btn:hover, .pu-icon-btn:focus-visible { color: var(--c-blue); border-color: var(--c-blue); }
+.pu-forca { height: 4px; border-radius: 4px; background-color: var(--bg-badge); overflow: hidden; margin-top: 4px; }
+.pu-forca span { display: block; height: 100%; width: 0; background: #b42318; transition: width .2s, background-color .2s; }
+.pu-fieldset { border: none; padding: 0; margin: 0 0 12px; min-width: 0; }
+.pu-fieldset legend { font-size: 12px; font-weight: 600; color: var(--text-2); margin-bottom: 6px; padding: 0; }
+.pu-roles { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.pu-role { position: relative; cursor: pointer; }
+.pu-role input { position: absolute; opacity: 0; }
+.pu-role > span { display: flex; flex-direction: column; gap: 3px; height: 100%; padding: 10px 12px; border-radius: 12px; border: 1.5px solid var(--border); background-color: var(--bg-input); }
+.pu-role b { font-size: 13px; color: var(--text-1); display: flex; align-items: center; gap: 5px; }
+.pu-role small { font-size: 11.5px; color: var(--text-2); line-height: 1.35; }
+.pu-role input:checked + span { border-color: var(--c-blue); box-shadow: 0 0 0 3px rgba(37, 137, 244, .15); }
+.pu-role input:focus-visible + span { outline: 2px solid var(--c-blue); outline-offset: 2px; }
+.pu-switch { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--text-1); cursor: pointer; min-height: 44px; margin-bottom: 4px; }
+.pu-switch input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.pu-switch-track { position: relative; width: 38px; height: 22px; flex-shrink: 0; border-radius: 22px; background-color: var(--border-mid); transition: background-color .15s; }
+.pu-switch-track::after { content: ''; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: #fff; transition: transform .15s; box-shadow: 0 1px 3px rgba(0, 0, 0, .25); }
+.pu-switch input:checked + .pu-switch-track { background-color: var(--c-blue); }
+.pu-switch input:checked + .pu-switch-track::after { transform: translateX(16px); }
+.pu-switch input:focus-visible + .pu-switch-track { outline: 2px solid var(--c-blue); outline-offset: 2px; }
+.pu-switch input:disabled + .pu-switch-track { opacity: .5; }
+.pu-cred { margin-top: 14px; border: 1px dashed var(--c-blue); border-radius: 14px; padding: 14px; background-color: var(--bg-input); }
+.pu-cred-head { font-size: 13px; font-weight: 700; color: var(--text-1); display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+.pu-cred pre { font-size: 12.5px; color: var(--text-1); white-space: pre-wrap; overflow-wrap: anywhere; margin: 0 0 10px; font-family: ui-monospace, Consolas, monospace; }
+.pu-list-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 8px; }
+.pu-list-head .pu-card-title { margin: 0; }
+.pu-tools { display: flex; flex-wrap: wrap; gap: 8px; min-width: 0; }
+.pu-search { position: relative; min-width: 0; flex: 1 1 220px; }
+.pu-search i { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--text-2); }
+.pu-search .pab-input { width: 100%; padding-left: 34px; }
+.pu-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.pu-empty { text-align: center; color: var(--text-2); font-size: 13px; padding: 28px 10px; }
+.pu-user { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) auto; gap: 12px 16px; align-items: center; padding: 14px; border: 1px solid var(--border); border-radius: 14px; background-color: var(--bg-input); }
+.pu-user.inativo { opacity: .72; }
+.pu-user.alterado { border-color: var(--c-blue); }
+.pu-id { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.pu-avatar { width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: #fff; background: var(--c-blue); }
+[data-theme="dark"] .pu-avatar { color: var(--c-navy); }
+.pu-id-txt { min-width: 0; }
+.pu-name { font-size: 14px; font-weight: 700; color: var(--text-1); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pu-mail { font-size: 12.5px; color: var(--text-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pu-badges { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px; }
+.pu-badge { font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 10px; background-color: var(--bg-badge); color: var(--text-2); }
+.pu-badge.adm { background: #ece3fb; color: #5b3a9e; }
+.pu-badge.ok { background: #d4f0e4; color: #0a6640; }
+.pu-badge.warn { background: #fef0c5; color: #7a5008; }
+.pu-badge.off { background: #fde2df; color: #b42318; }
+[data-theme="dark"] .pu-badge.adm { background: #261a40; color: #c4a8ff; }
+[data-theme="dark"] .pu-badge.ok { background: #0e3322; color: #4ed99a; }
+[data-theme="dark"] .pu-badge.warn { background: #2e2004; color: #f5c84a; }
+[data-theme="dark"] .pu-badge.off { background: #3a1410; color: #ff8a80; }
+.pu-ctrl { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; min-width: 0; }
+.pu-ctrl .pu-switch { min-height: 36px; margin: 0; font-size: 12.5px; }
+.pu-ctrl select.pab-input { padding: 6px 8px; font-size: 12.5px; }
+.pu-meta { font-size: 11.5px; color: var(--text-2); width: 100%; }
+.pu-acts { display: flex; gap: 6px; justify-content: flex-end; }
+.pu-acts .pab-btn { padding: 7px 12px; font-size: 12.5px; }
+.pnite-auth-box .pab-brand { display: flex; align-items: center; gap: 10px; }
+.pab-brand img { width: 34px; height: 34px; border-radius: 9px; }
+@media (max-width: 1000px) {
+  .pu-grid { grid-template-columns: minmax(0, 1fr); }
+  .pu-form-card { position: static; }
+}
+@media (max-width: 760px) {
+  .pu-page { padding: 18px 16px 48px; }
+  .pu-user { grid-template-columns: minmax(0, 1fr); }
+  .pu-acts { justify-content: flex-start; flex-wrap: wrap; }
+  .pu-roles { grid-template-columns: minmax(0, 1fr); }
+  .pu-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pu-kpi { padding: 12px; gap: 10px; }
+}
+@media (pointer: coarse) {
+  .pu-icon-btn, .pu-seg-btn { min-height: 44px; }
+  .pu-ctrl .pu-switch { min-height: 44px; }
 }
 </style>
 
@@ -6235,6 +6348,9 @@ window.onerror = function(msg, url, line, col, err) {
         </button>
         <button class="hcn-tab" id="frontTabGestao" onclick="switchFront('gestao', this)">
           <i class="ti ti-chart-arrows"></i> <span data-i18n="front_gestao">Indicadores da Gestão</span>
+        </button>
+        <button class="hcn-tab pu-tab-admin" id="frontTabUsuarios" type="button" onclick="switchFront('usuarios', this)">
+          <i class="ti ti-users" aria-hidden="true"></i> <span>Usuários</span>
         </button>
       </nav>
 
@@ -6811,6 +6927,96 @@ window.onerror = function(msg, url, line, col, err) {
   <!-- ====================================================================
        TELA DE PLACEHOLDER 2: INDICADORES DA GESTÃO
        ==================================================================== -->
+  <!-- ====================================================================
+       v.3.2.3 — PÁGINA DE USUÁRIOS (cadastro e gestão de acessos; somente administrador)
+       ==================================================================== -->
+  <div class="front-view" id="frontUsuarios">
+    <div class="pu-page">
+      <header class="pu-head">
+        <div class="pu-head-text">
+          <span class="pu-eyebrow"><i class="ti ti-shield-lock" aria-hidden="true"></i> Administração</span>
+          <h1 class="pu-title">Usuários da PNITE</h1>
+          <p class="pu-sub">Cadastre contas, defina quem pode baixar gráficos, tabelas, indicadores e o mapa, e controle o acesso de cada pessoa. As alterações ficam gravadas no Supabase.</p>
+        </div>
+        <div class="pu-head-actions">
+          <button type="button" class="pab-btn" onclick="puCarregar()"><i class="ti ti-refresh" aria-hidden="true"></i> Atualizar</button>
+          <button type="button" class="pab-btn" onclick="switchFront('transporte', document.getElementById('frontTabTransporte'))"><i class="ti ti-arrow-left" aria-hidden="true"></i> Voltar à plataforma</button>
+        </div>
+      </header>
+
+      <section class="pu-lock" id="puLock" hidden>
+        <div class="pu-lock-icon"><i class="ti ti-lock" aria-hidden="true"></i></div>
+        <h2 class="pu-lock-title">Área restrita ao administrador</h2>
+        <p class="pu-sub" id="puLockMsg">Entre com uma conta de administrador para cadastrar e gerenciar usuários.</p>
+        <button type="button" class="pab-btn pab-btn-primary" onclick="pniteAuthBotao()"><i class="ti ti-login" aria-hidden="true"></i> Entrar</button>
+      </section>
+
+      <div id="puApp" hidden>
+        <section class="pu-kpis" aria-label="Resumo dos usuários">
+          <div class="pu-kpi"><span class="pu-kpi-ico"><i class="ti ti-users" aria-hidden="true"></i></span><div><b id="puKpiTotal">—</b><span>Cadastrados</span></div></div>
+          <div class="pu-kpi"><span class="pu-kpi-ico ok"><i class="ti ti-circle-check" aria-hidden="true"></i></span><div><b id="puKpiAtivos">—</b><span>Ativos</span></div></div>
+          <div class="pu-kpi"><span class="pu-kpi-ico info"><i class="ti ti-download" aria-hidden="true"></i></span><div><b id="puKpiDl">—</b><span>Podem baixar</span></div></div>
+          <div class="pu-kpi"><span class="pu-kpi-ico warn"><i class="ti ti-hourglass" aria-hidden="true"></i></span><div><b id="puKpiPend">—</b><span>Sem conta criada</span></div></div>
+          <div class="pu-kpi"><span class="pu-kpi-ico adm"><i class="ti ti-crown" aria-hidden="true"></i></span><div><b id="puKpiAdm">—</b><span>Administradores</span></div></div>
+        </section>
+
+        <div class="pu-grid">
+          <section class="pu-card pu-form-card" aria-labelledby="puFormTitle">
+            <h2 class="pu-card-title" id="puFormTitle"><i class="ti ti-user-plus" aria-hidden="true"></i> Novo usuário</h2>
+            <div class="pu-seg" role="radiogroup" aria-label="Forma de cadastro">
+              <button type="button" class="pu-seg-btn active" role="radio" aria-checked="true" data-pu-modo="conta" onclick="puModo('conta')">Criar conta com senha</button>
+              <button type="button" class="pu-seg-btn" role="radio" aria-checked="false" data-pu-modo="autorizar" onclick="puModo('autorizar')">Só autorizar o e-mail</button>
+            </div>
+            <p class="pu-hint" id="puModoHint">A conta já nasce confirmada. Entregue o e-mail e a senha inicial à pessoa; ela pode trocar a senha depois em "Esqueci a senha".</p>
+            <form id="puForm" onsubmit="puCriar(event)" novalidate>
+              <div class="pab-field"><label for="puNome">Nome completo</label><input class="pab-input" type="text" id="puNome" autocomplete="off" placeholder="Ex.: Maria da Silva"></div>
+              <div class="pab-field"><label for="puEmail">E-mail <span class="pu-req" aria-hidden="true">*</span></label><input class="pab-input" type="email" id="puEmail" autocomplete="off" required placeholder="nome@instituicao.br"></div>
+              <div class="pab-field" id="puSenhaField">
+                <label for="puSenha">Senha inicial <span class="pu-req" aria-hidden="true">*</span></label>
+                <div class="pu-pass">
+                  <input class="pab-input" type="password" id="puSenha" autocomplete="new-password" minlength="8" placeholder="Mínimo de 8 caracteres" oninput="puForca('puSenha','puForcaBar')">
+                  <button type="button" class="pu-icon-btn" onclick="puMostrar('puSenha', this)" aria-label="Mostrar senha"><i class="ti ti-eye" aria-hidden="true"></i></button>
+                  <button type="button" class="pu-icon-btn" onclick="puGerar('puSenha','puForcaBar')" aria-label="Gerar senha forte"><i class="ti ti-wand" aria-hidden="true"></i></button>
+                </div>
+                <div class="pu-forca" aria-hidden="true"><span id="puForcaBar"></span></div>
+              </div>
+              <fieldset class="pu-fieldset">
+                <legend>Papel</legend>
+                <div class="pu-roles">
+                  <label class="pu-role"><input type="radio" name="puPapel" value="usuario" checked><span><b><i class="ti ti-user" aria-hidden="true"></i> Usuário</b><small>Consulta e downloads, se liberados.</small></span></label>
+                  <label class="pu-role"><input type="radio" name="puPapel" value="admin"><span><b><i class="ti ti-crown" aria-hidden="true"></i> Administrador</b><small>Também gerencia os usuários.</small></span></label>
+                </div>
+              </fieldset>
+              <label class="pu-switch"><input type="checkbox" id="puBaixar" checked><span class="pu-switch-track" aria-hidden="true"></span><span>Pode baixar gráficos, tabelas, indicadores e mapa</span></label>
+              <div class="pab-actions"><button type="submit" class="pab-btn pab-btn-primary" id="puSubmit"><i class="ti ti-user-plus" aria-hidden="true"></i> Cadastrar usuário</button></div>
+              <p class="pab-msg" id="puMsg" role="status" aria-live="polite"></p>
+            </form>
+            <div class="pu-cred" id="puCred" hidden>
+              <div class="pu-cred-head"><i class="ti ti-key" aria-hidden="true"></i> Dados de acesso para enviar à pessoa</div>
+              <pre id="puCredTxt"></pre>
+              <button type="button" class="pab-btn" onclick="puCopiarCred()"><i class="ti ti-copy" aria-hidden="true"></i> Copiar</button>
+            </div>
+          </section>
+
+          <section class="pu-card pu-list-card" aria-labelledby="puListTitle">
+            <div class="pu-list-head">
+              <h2 class="pu-card-title" id="puListTitle"><i class="ti ti-address-book" aria-hidden="true"></i> Usuários cadastrados</h2>
+              <div class="pu-tools">
+                <div class="pu-search"><i class="ti ti-search" aria-hidden="true"></i><input class="pab-input" type="search" id="puBusca" placeholder="Buscar por nome ou e-mail" aria-label="Buscar usuário" oninput="puRender()"></div>
+                <select class="pab-input" id="puFiltro" aria-label="Filtrar usuários" onchange="puRender()">
+                  <option value="todos">Todos</option><option value="ativos">Ativos</option><option value="inativos">Desativados</option>
+                  <option value="admin">Administradores</option><option value="baixar">Podem baixar</option><option value="pendentes">Sem conta criada</option>
+                </select>
+              </div>
+            </div>
+            <p class="pab-msg" id="puListMsg" role="status" aria-live="polite"></p>
+            <ul class="pu-list" id="puLista"><li class="pu-empty">Carregando…</li></ul>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="front-view" id="frontGestao">
     <div class="front-placeholder-view">
       <div class="placeholder-card">
@@ -7822,7 +8028,7 @@ window.onerror = function(msg, url, line, col, err) {
     <div class="smb-sec">
       <div class="smb-sec-title" data-i18n="settings_info_title">Informações da Versão</div>
       <div style="font-size:12px;color:var(--text-2);display:flex;flex-direction:column;gap:4px;margin-top:6px">
-        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.2.2</b></div>
+        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.2.3</b></div>
         <div><span data-i18n="settings_updated">Última Atualização:</span> <b class="pnite-date-val">06/10/2026</b> às <b class="pnite-time-val">21:05</b></div>
         <div><span data-i18n="settings_author">Responsável Técnico:</span> <b class="pnite-author-val">Equipe PNITE</b></div>
       </div>
@@ -7859,7 +8065,7 @@ window.onerror = function(msg, url, line, col, err) {
 <div class="pnite-auth-overlay" id="pniteLoginOverlay">
   <div class="pnite-auth-box" role="dialog" aria-modal="true" aria-labelledby="pniteLoginTitle">
     <div class="pab-head">
-      <h2 class="pab-title" id="pniteLoginTitle">Entrar na PNITE</h2>
+      <div class="pab-brand"><img src="assets/logos/logo_pnite_color.png" alt=""><h2 class="pab-title" id="pniteLoginTitle">Entrar na PNITE</h2></div>
       <button type="button" class="pab-close" aria-label="Fechar" onclick="pniteAuthFechar('pniteLoginOverlay')"><i class="ti ti-x" aria-hidden="true"></i></button>
     </div>
     <p class="pab-sub" id="pniteLoginSub">Usuários autorizados podem baixar gráficos, tabelas, indicadores e o mapa. A consulta à plataforma continua aberta a todos.</p>
@@ -7894,7 +8100,7 @@ window.onerror = function(msg, url, line, col, err) {
     <dl class="pab-kv" id="pniteContaDados"></dl>
     <div class="pab-actions">
       <button type="button" class="pab-btn" id="pniteContaDownloads" onclick="pniteAbrirDownloads()" hidden><i class="ti ti-download" aria-hidden="true"></i> Downloads</button>
-      <button type="button" class="pab-btn" id="pniteContaAdmin" onclick="pniteAbrirAdmin()" hidden><i class="ti ti-users" aria-hidden="true"></i> Gerenciar acessos</button>
+      <button type="button" class="pab-btn" id="pniteContaAdmin" onclick="pniteAbrirAdmin()" hidden><i class="ti ti-users" aria-hidden="true"></i> Gerenciar usuários</button>
       <button type="button" class="pab-btn pab-btn-danger" onclick="pniteAuthSair()"><i class="ti ti-logout" aria-hidden="true"></i> Sair</button>
     </div>
   </div>
@@ -7918,28 +8124,26 @@ window.onerror = function(msg, url, line, col, err) {
   </div>
 </div>
 
-<div class="pnite-auth-overlay" id="pniteAdminOverlay">
-  <div class="pnite-auth-box pab-wide" role="dialog" aria-modal="true" aria-labelledby="pniteAdminTitle">
+<div class="pnite-auth-overlay" id="puSenhaOverlay">
+  <div class="pnite-auth-box" role="dialog" aria-modal="true" aria-labelledby="puSenhaTitle">
     <div class="pab-head">
-      <h2 class="pab-title" id="pniteAdminTitle">Gerenciar acessos</h2>
-      <button type="button" class="pab-close" aria-label="Fechar" onclick="pniteAuthFechar('pniteAdminOverlay')"><i class="ti ti-x" aria-hidden="true"></i></button>
+      <h2 class="pab-title" id="puSenhaTitle">Redefinir senha</h2>
+      <button type="button" class="pab-close" aria-label="Fechar" onclick="pniteAuthFechar('puSenhaOverlay')"><i class="ti ti-x" aria-hidden="true"></i></button>
     </div>
-    <p class="pab-sub">Autorize um e-mail para que a pessoa crie a conta em "Entrar → Criar conta". Somente e-mails autorizados e ativos conseguem se cadastrar. As alterações ficam gravadas no Supabase (schema privado <code>acesso</code>).</p>
-    <form class="pab-add" onsubmit="pniteAdminAdicionar(event)" novalidate>
-      <div class="pab-field"><label for="pniteAdmEmail">E-mail</label><input class="pab-input" type="email" id="pniteAdmEmail" required></div>
-      <div class="pab-field"><label for="pniteAdmNome">Nome (opcional)</label><input class="pab-input" type="text" id="pniteAdmNome"></div>
-      <div class="pab-field"><label for="pniteAdmPapel">Papel</label>
-        <select class="pab-input" id="pniteAdmPapel"><option value="usuario">Usuário</option><option value="admin">Administrador</option></select></div>
-      <label class="pab-check"><input type="checkbox" id="pniteAdmBaixar" checked> Pode baixar</label>
-      <button type="submit" class="pab-btn pab-btn-primary"><i class="ti ti-user-plus" aria-hidden="true"></i> Autorizar</button>
+    <p class="pab-sub">Nova senha para <b id="puSenhaEmail"></b>. A senha anterior deixa de valer imediatamente.</p>
+    <form onsubmit="puSalvarSenha(event)" novalidate>
+      <div class="pab-field">
+        <label for="puNovaSenha">Nova senha</label>
+        <div class="pu-pass">
+          <input class="pab-input" type="password" id="puNovaSenha" autocomplete="new-password" minlength="8" oninput="puForca('puNovaSenha','puForcaBar2')">
+          <button type="button" class="pu-icon-btn" onclick="puMostrar('puNovaSenha', this)" aria-label="Mostrar senha"><i class="ti ti-eye" aria-hidden="true"></i></button>
+          <button type="button" class="pu-icon-btn" onclick="puGerar('puNovaSenha','puForcaBar2')" aria-label="Gerar senha forte"><i class="ti ti-wand" aria-hidden="true"></i></button>
+        </div>
+        <div class="pu-forca" aria-hidden="true"><span id="puForcaBar2"></span></div>
+      </div>
+      <div class="pab-actions"><button type="submit" class="pab-btn pab-btn-primary"><i class="ti ti-device-floppy" aria-hidden="true"></i> Salvar nova senha</button></div>
+      <p class="pab-msg" id="puSenhaMsg" role="status" aria-live="polite"></p>
     </form>
-    <p class="pab-msg" id="pniteAdminMsg" role="status" aria-live="polite"></p>
-    <div class="pab-table-wrap">
-      <table class="pab-table" aria-describedby="pniteAdminTitle">
-        <thead><tr><th scope="col">E-mail</th><th scope="col">Nome</th><th scope="col">Conta</th><th scope="col">Papel</th><th scope="col">Pode baixar</th><th scope="col">Ativo</th><th scope="col">Último acesso</th><th scope="col">Ações</th></tr></thead>
-        <tbody id="pniteAdminLista"><tr><td colspan="8">Carregando…</td></tr></tbody>
-      </table>
-    </div>
   </div>
 </div>
 
@@ -8048,6 +8252,8 @@ const PNITE_AUTH = (function() {
     const raiz = document.documentElement;
     raiz.classList.toggle('pnite-pode-baixar', podeBaixar());
     raiz.classList.toggle('pnite-logado', !!sessao);
+    raiz.classList.toggle('pnite-admin', ehAdmin());
+    try { if (currentFront === 'usuarios' && typeof puAbrir === 'function') puAbrir(); } catch (e) {} // currentFront pode estar na zona morta no carregamento
     const btn = document.getElementById('pniteAuthBtn');
     if (btn) {
       const rot = btn.querySelector('.pab-label');
@@ -8204,89 +8410,9 @@ const PNITE_AUTH = (function() {
     await carregarAcesso();
   }
 
-  // ---------------- Gestão de acessos (administrador) ----------------
-  function dataBr(v) {
-    if (!v) return '—';
-    const d = new Date(v);
-    return Number.isNaN(d.getTime()) ? '—' : d.toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
-  }
-
-  async function listarUsuarios() {
-    const corpo = document.getElementById('pniteAdminLista');
-    if (!corpo) return;
-    corpo.innerHTML = '<tr><td colspan="8">Carregando…</td></tr>';
-    try {
-      const lista = await rpc('pnite_admin_listar_usuarios');
-      if (!lista || !lista.length) { corpo.innerHTML = '<tr><td colspan="8">Nenhum e-mail autorizado.</td></tr>'; return; }
-      corpo.innerHTML = lista.map(function(u, i) {
-        const e = escHtml(u.email);
-        const proprio = sessao && u.email === sessao.email;
-        return '<tr data-email="' + e + '">'
-          + '<td>' + e + '</td>'
-          + '<td>' + escHtml(u.nome || '—') + '</td>'
-          + '<td><span class="pab-tag">' + (u.conta_criada ? 'Criada' : 'Pendente') + '</span></td>'
-          + '<td><select class="pab-input" data-campo="papel" aria-label="Papel de ' + e + '"' + (proprio ? ' disabled' : '') + '>'
-          + '<option value="usuario"' + (u.papel === 'usuario' ? ' selected' : '') + '>Usuário</option>'
-          + '<option value="admin"' + (u.papel === 'admin' ? ' selected' : '') + '>Administrador</option></select></td>'
-          + '<td><label class="pab-check"><input type="checkbox" data-campo="pode_baixar"' + (u.pode_baixar ? ' checked' : '') + ' aria-label="Pode baixar: ' + e + '"></label></td>'
-          + '<td><label class="pab-check"><input type="checkbox" data-campo="ativo"' + (u.ativo ? ' checked' : '') + (proprio ? ' disabled' : '') + ' aria-label="Ativo: ' + e + '"></label></td>'
-          + '<td>' + dataBr(u.ultimo_acesso) + '</td>'
-          + '<td><div class="pab-actions" style="margin:0">'
-          + '<button type="button" class="pab-btn" onclick="pniteAdminSalvar(this)"><i class="ti ti-device-floppy" aria-hidden="true"></i> Salvar</button>'
-          + (proprio ? '' : '<button type="button" class="pab-btn pab-btn-danger" onclick="pniteAdminRemover(this)" aria-label="Remover ' + e + '"><i class="ti ti-trash" aria-hidden="true"></i></button>')
-          + '</div></td></tr>';
-      }).join('');
-    } catch (e) {
-      corpo.innerHTML = '<tr><td colspan="8">' + escHtml(e.message) + '</td></tr>';
-    }
-  }
-
-  async function adminDefinir(email, papel, podeBaixarV, ativo, nome) {
-    await rpc('pnite_admin_definir_acesso', { p_email: email, p_papel: papel, p_pode_baixar: podeBaixarV, p_ativo: ativo, p_nome: nome || null });
-  }
-
-  async function adminAdicionar(ev) {
-    ev.preventDefault();
-    const email = (document.getElementById('pniteAdmEmail').value || '').trim().toLowerCase();
-    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { msg('pniteAdminMsg', 'Informe um e-mail válido.', 'err'); return; }
-    try {
-      await adminDefinir(email, document.getElementById('pniteAdmPapel').value,
-        document.getElementById('pniteAdmBaixar').checked, true, document.getElementById('pniteAdmNome').value);
-      document.getElementById('pniteAdmEmail').value = '';
-      document.getElementById('pniteAdmNome').value = '';
-      msg('pniteAdminMsg', email + ' autorizado. A pessoa já pode criar a conta em "Entrar → Criar conta".', 'ok');
-      listarUsuarios();
-    } catch (e) { msg('pniteAdminMsg', e.message, 'err'); }
-  }
-
-  async function adminSalvar(botao) {
-    const tr = botao.closest('tr');
-    if (!tr) return;
-    const campo = function(n) { return tr.querySelector('[data-campo="' + n + '"]'); };
-    const email = tr.getAttribute('data-email');
-    try {
-      await adminDefinir(email, campo('papel').value, campo('pode_baixar').checked, campo('ativo').checked, null);
-      msg('pniteAdminMsg', 'Acesso de ' + email + ' atualizado.', 'ok');
-      listarUsuarios();
-      if (sessao && email === sessao.email) carregarAcesso();
-    } catch (e) { msg('pniteAdminMsg', e.message, 'err'); }
-  }
-
-  async function adminRemover(botao) {
-    const tr = botao.closest('tr');
-    const email = tr ? tr.getAttribute('data-email') : '';
-    if (!email || !confirm('Remover a autorização e a conta de ' + email + '? Esta ação não pode ser desfeita.')) return;
-    try {
-      await rpc('pnite_admin_remover_usuario', { p_email: email });
-      msg('pniteAdminMsg', email + ' removido.', 'ok');
-      listarUsuarios();
-    } catch (e) { msg('pniteAdminMsg', e.message, 'err'); }
-  }
-
   return { iniciar: iniciar, abrir: abrir, fechar: fechar, definirModo: definirModo, enviar: enviar, sair: sair,
            podeBaixar: podeBaixar, ehAdmin: ehAdmin, logado: function() { return !!sessao; },
-           email: function() { return sessao ? sessao.email : ''; },
-           listarUsuarios: listarUsuarios, adminAdicionar: adminAdicionar, adminSalvar: adminSalvar, adminRemover: adminRemover };
+           email: function() { return sessao ? sessao.email : ''; }, rpc: rpc };
 })();
 
 // Funções globais usadas pelos handlers inline
@@ -8298,11 +8424,259 @@ function pniteAuthModo(m) { PNITE_AUTH.definirModo(m); }
 function pniteAuthEnviar(ev) { PNITE_AUTH.enviar(ev); }
 function pniteAuthFechar(id) { PNITE_AUTH.fechar(id); }
 function pniteAuthSair() { PNITE_AUTH.sair(); }
-function pniteAbrirAdmin() { if (!PNITE_AUTH.ehAdmin()) return; PNITE_AUTH.abrir('pniteAdminOverlay'); PNITE_AUTH.listarUsuarios(); }
 function pniteAbrirDownloads() { if (!PNITE_AUTH.podeBaixar()) return; PNITE_AUTH.abrir('pniteDownloadsOverlay'); }
-function pniteAdminAdicionar(ev) { PNITE_AUTH.adminAdicionar(ev); }
-function pniteAdminSalvar(b) { PNITE_AUTH.adminSalvar(b); }
-function pniteAdminRemover(b) { PNITE_AUTH.adminRemover(b); }
+
+// ---------------- v.3.2.3 — Página "Usuários" (somente administrador) ----------------
+const PU_STATE = { lista: [], modo: 'conta', carregando: null, senhaEmail: '' };
+
+function puEl(id) { return document.getElementById(id); }
+function puMsg(id, t, tipo) { const el = puEl(id); if (el) { el.textContent = t || ''; el.className = 'pab-msg' + (tipo ? ' ' + tipo : ''); } }
+
+function pniteAbrirAdmin() {
+  PNITE_AUTH.fechar('pniteContaOverlay');
+  switchFront('usuarios', puEl('frontTabUsuarios'));
+}
+
+// Chamado por switchFront('usuarios') e quando a sessão muda
+function puAbrir() {
+  const admin = PNITE_AUTH.ehAdmin();
+  const lock = puEl('puLock'), app = puEl('puApp');
+  if (!lock || !app) return;
+  lock.hidden = admin;
+  app.hidden = !admin;
+  const lm = puEl('puLockMsg');
+  if (lm) lm.textContent = PNITE_AUTH.logado()
+    ? 'A sua conta não tem papel de administrador. Peça ao administrador da PNITE para alterar o seu acesso.'
+    : 'Entre com uma conta de administrador para cadastrar e gerenciar usuários.';
+  const bt = lock.querySelector('button');
+  if (bt) bt.hidden = PNITE_AUTH.logado();
+  if (admin) puCarregar();
+}
+
+async function puCarregar() {
+  if (!PNITE_AUTH.ehAdmin()) return;
+  if (PU_STATE.carregando) return PU_STATE.carregando;
+  PU_STATE.carregando = (async function() {
+    try {
+      PU_STATE.lista = (await PNITE_AUTH.rpc('pnite_admin_listar_usuarios')) || [];
+      puMsg('puListMsg', '');
+    } catch (e) {
+      puMsg('puListMsg', e.message, 'err');
+    } finally { PU_STATE.carregando = null; }
+    if (typeof currentFront !== 'undefined' && currentFront !== 'usuarios') return;
+    puRender();
+  })();
+  return PU_STATE.carregando;
+}
+
+function puIniciais(u) {
+  const base = (u.nome || u.email || '?').replace(/@.*/, '').split(/[\s._-]+/).filter(Boolean);
+  return ((base[0] || '?')[0] + (base.length > 1 ? base[base.length - 1][0] : '')).toUpperCase();
+}
+
+function puData(v) {
+  if (!v) return null;
+  const d = new Date(v);
+  return Number.isNaN(d.getTime()) ? null : d.toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
+}
+
+function puRender() {
+  const l = PU_STATE.lista;
+  const cont = function(f) { return l.filter(f).length; };
+  const set = function(id, v) { const el = puEl(id); if (el) el.textContent = String(v); };
+  set('puKpiTotal', l.length);
+  set('puKpiAtivos', cont(function(u) { return u.ativo; }));
+  set('puKpiDl', cont(function(u) { return u.ativo && u.pode_baixar; }));
+  set('puKpiPend', cont(function(u) { return !u.conta_criada; }));
+  set('puKpiAdm', cont(function(u) { return u.papel === 'admin'; }));
+
+  const busca = ((puEl('puBusca') || {}).value || '').trim().toLowerCase();
+  const filtro = (puEl('puFiltro') || {}).value || 'todos';
+  const filtros = {
+    todos: function() { return true; }, ativos: function(u) { return u.ativo; }, inativos: function(u) { return !u.ativo; },
+    admin: function(u) { return u.papel === 'admin'; }, baixar: function(u) { return u.pode_baixar && u.ativo; },
+    pendentes: function(u) { return !u.conta_criada; }
+  };
+  const vis = l.filter(function(u) {
+    return (filtros[filtro] || filtros.todos)(u) && (!busca || (u.email + ' ' + (u.nome || '')).toLowerCase().indexOf(busca) >= 0);
+  });
+  const ul = puEl('puLista');
+  if (!ul) return;
+  if (!vis.length) { ul.innerHTML = '<li class="pu-empty">' + (l.length ? 'Nenhum usuário corresponde à busca.' : 'Nenhum usuário cadastrado.') + '</li>'; return; }
+  const eu = PNITE_AUTH.email();
+  ul.innerHTML = vis.map(function(u) {
+    const e = escHtml(u.email);
+    const proprio = u.email === eu;
+    const ultimo = puData(u.ultimo_acesso);
+    const badges = []
+      .concat(u.papel === 'admin' ? ['<span class="pu-badge adm">Administrador</span>'] : [])
+      .concat(u.conta_criada ? ['<span class="pu-badge ok">Conta criada</span>'] : ['<span class="pu-badge warn">Aguardando cadastro</span>'])
+      .concat(u.conta_criada && !u.email_confirmado ? ['<span class="pu-badge warn">E-mail não confirmado</span>'] : [])
+      .concat(!u.ativo ? ['<span class="pu-badge off">Desativado</span>'] : [])
+      .concat(proprio ? ['<span class="pu-badge">Você</span>'] : []);
+    return '<li class="pu-user' + (u.ativo ? '' : ' inativo') + '" data-email="' + e + '">'
+      + '<div class="pu-id"><span class="pu-avatar" aria-hidden="true">' + escHtml(puIniciais(u)) + '</span>'
+      + '<div class="pu-id-txt"><div class="pu-name">' + escHtml(u.nome || u.email.replace(/@.*/, '')) + '</div>'
+      + '<div class="pu-mail" title="' + e + '">' + e + '</div><div class="pu-badges">' + badges.join('') + '</div></div></div>'
+      + '<div class="pu-ctrl">'
+      + '<select class="pab-input" data-campo="papel" aria-label="Papel de ' + e + '"' + (proprio ? ' disabled' : '') + ' onchange="puAlterado(this)">'
+      + '<option value="usuario"' + (u.papel === 'usuario' ? ' selected' : '') + '>Usuário</option>'
+      + '<option value="admin"' + (u.papel === 'admin' ? ' selected' : '') + '>Administrador</option></select>'
+      + '<label class="pu-switch"><input type="checkbox" data-campo="pode_baixar"' + (u.pode_baixar ? ' checked' : '') + ' onchange="puAlterado(this)"><span class="pu-switch-track" aria-hidden="true"></span>Downloads</label>'
+      + '<label class="pu-switch"><input type="checkbox" data-campo="ativo"' + (u.ativo ? ' checked' : '') + (proprio ? ' disabled' : '') + ' onchange="puAlterado(this)"><span class="pu-switch-track" aria-hidden="true"></span>Ativo</label>'
+      + '<div class="pu-meta">' + (ultimo ? 'Último acesso: ' + ultimo : 'Nunca acessou') + '</div></div>'
+      + '<div class="pu-acts">'
+      + '<button type="button" class="pab-btn pab-btn-primary" data-pu-salvar hidden onclick="puSalvar(this)"><i class="ti ti-device-floppy" aria-hidden="true"></i> Salvar</button>'
+      + (u.conta_criada ? '<button type="button" class="pab-btn" onclick="puAbrirSenha(this)" aria-label="Redefinir senha de ' + e + '"><i class="ti ti-key" aria-hidden="true"></i> Senha</button>' : '')
+      + (proprio ? '' : '<button type="button" class="pab-btn pab-btn-danger" onclick="puRemover(this)" aria-label="Remover ' + e + '"><i class="ti ti-trash" aria-hidden="true"></i></button>')
+      + '</div></li>';
+  }).join('');
+}
+
+function puAlterado(el) {
+  const li = el.closest('.pu-user');
+  if (!li) return;
+  li.classList.add('alterado');
+  const b = li.querySelector('[data-pu-salvar]');
+  if (b) b.hidden = false;
+}
+
+async function puSalvar(botao) {
+  const li = botao.closest('.pu-user');
+  const email = li.getAttribute('data-email');
+  const campo = function(n) { return li.querySelector('[data-campo="' + n + '"]'); };
+  const u = PU_STATE.lista.find(function(x) { return x.email === email; }) || {};
+  botao.disabled = true;
+  try {
+    await PNITE_AUTH.rpc('pnite_admin_definir_acesso', { p_email: email, p_papel: campo('papel').value,
+      p_pode_baixar: campo('pode_baixar').checked, p_ativo: campo('ativo').checked, p_nome: u.nome || null });
+    puMsg('puListMsg', 'Acesso de ' + email + ' atualizado.', 'ok');
+    await puCarregar();
+  } catch (e) { puMsg('puListMsg', e.message, 'err'); botao.disabled = false; }
+}
+
+async function puRemover(botao) {
+  const email = botao.closest('.pu-user').getAttribute('data-email');
+  if (!confirm('Remover ' + email + '?\n\nA autorização e a conta serão apagadas do Supabase. Esta ação não pode ser desfeita.')) return;
+  try {
+    await PNITE_AUTH.rpc('pnite_admin_remover_usuario', { p_email: email });
+    puMsg('puListMsg', email + ' removido.', 'ok');
+    await puCarregar();
+  } catch (e) { puMsg('puListMsg', e.message, 'err'); }
+}
+
+function puModo(m) {
+  PU_STATE.modo = m;
+  document.querySelectorAll('[data-pu-modo]').forEach(function(b) {
+    const on = b.getAttribute('data-pu-modo') === m;
+    b.classList.toggle('active', on);
+    b.setAttribute('aria-checked', on ? 'true' : 'false');
+  });
+  const sf = puEl('puSenhaField');
+  if (sf) sf.hidden = (m !== 'conta');
+  const h = puEl('puModoHint');
+  if (h) h.textContent = m === 'conta'
+    ? 'A conta já nasce confirmada. Entregue o e-mail e a senha inicial à pessoa; ela pode trocar a senha depois em "Esqueci a senha".'
+    : 'O e-mail fica autorizado e a própria pessoa cria a conta em "Entrar → Criar conta", confirmando pelo e-mail recebido.';
+  const s = puEl('puSubmit');
+  if (s) s.innerHTML = m === 'conta' ? '<i class="ti ti-user-plus" aria-hidden="true"></i> Cadastrar usuário' : '<i class="ti ti-mail-check" aria-hidden="true"></i> Autorizar e-mail';
+  puMsg('puMsg', '');
+}
+
+function puMostrar(id, btn) {
+  const i = puEl(id);
+  if (!i) return;
+  const mostrar = i.type === 'password';
+  i.type = mostrar ? 'text' : 'password';
+  btn.setAttribute('aria-label', mostrar ? 'Ocultar senha' : 'Mostrar senha');
+  btn.innerHTML = '<i class="ti ' + (mostrar ? 'ti-eye-off' : 'ti-eye') + '" aria-hidden="true"></i>';
+}
+
+function puGerar(id, barra) {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789!@#$%*';
+  const n = new Uint32Array(14);
+  crypto.getRandomValues(n);
+  const i = puEl(id);
+  if (!i) return;
+  i.value = Array.from(n, function(x) { return chars[x % chars.length]; }).join('');
+  i.type = 'text';
+  puForca(id, barra);
+}
+
+function puForca(id, barra) {
+  const v = (puEl(id) || {}).value || '';
+  let p = 0;
+  if (v.length >= 8) p++;
+  if (v.length >= 12) p++;
+  if (/[a-z]/.test(v) && /[A-Z]/.test(v)) p++;
+  if (/\d/.test(v)) p++;
+  if (/[^A-Za-z0-9]/.test(v)) p++;
+  const b = puEl(barra);
+  if (!b) return;
+  b.style.width = (v ? Math.max(15, p * 20) : 0) + '%';
+  b.style.backgroundColor = p <= 2 ? '#d64545' : (p <= 3 ? '#e0a100' : '#1d9e75');
+}
+
+async function puCriar(ev) {
+  ev.preventDefault();
+  const email = (puEl('puEmail').value || '').trim().toLowerCase();
+  const nome = (puEl('puNome').value || '').trim();
+  const senha = puEl('puSenha').value || '';
+  const papelEl = document.querySelector('input[name="puPapel"]:checked');
+  const papel = papelEl ? papelEl.value : 'usuario';
+  const baixar = puEl('puBaixar').checked;
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { puMsg('puMsg', 'Informe um e-mail válido.', 'err'); puEl('puEmail').focus(); return; }
+  if (PU_STATE.modo === 'conta' && senha.length < 8) { puMsg('puMsg', 'A senha inicial deve ter pelo menos 8 caracteres.', 'err'); puEl('puSenha').focus(); return; }
+  const btn = puEl('puSubmit');
+  btn.disabled = true;
+  puMsg('puMsg', 'Gravando no Supabase…');
+  try {
+    if (PU_STATE.modo === 'conta') {
+      await PNITE_AUTH.rpc('pnite_admin_criar_usuario', { p_email: email, p_senha: senha, p_nome: nome || null, p_papel: papel, p_pode_baixar: baixar });
+      const endereco = location.origin + location.pathname;
+      puEl('puCredTxt').textContent = 'PNITE — Plataforma Nacional de Inteligência em Transporte Escolar\n'
+        + 'Endereço: ' + endereco + '\nE-mail: ' + email + '\nSenha inicial: ' + senha
+        + '\nAcesso: ' + (papel === 'admin' ? 'Administrador' : 'Usuário') + (baixar ? ', com downloads' : '');
+      puEl('puCred').hidden = false;
+      puMsg('puMsg', 'Conta de ' + email + ' criada e pronta para uso.', 'ok');
+    } else {
+      await PNITE_AUTH.rpc('pnite_admin_definir_acesso', { p_email: email, p_papel: papel, p_pode_baixar: baixar, p_ativo: true, p_nome: nome || null });
+      puEl('puCred').hidden = true;
+      puMsg('puMsg', email + ' autorizado. A pessoa já pode criar a conta em "Entrar → Criar conta".', 'ok');
+    }
+    puEl('puForm').reset();
+    puEl('puSenha').type = 'password';
+    puForca('puSenha', 'puForcaBar');
+    await puCarregar();
+  } catch (e) {
+    puMsg('puMsg', e.message, 'err');
+  } finally { btn.disabled = false; }
+}
+
+function puCopiarCred() {
+  const t = (puEl('puCredTxt') || {}).textContent || '';
+  if (navigator.clipboard) navigator.clipboard.writeText(t).then(function() { puMsg('puMsg', 'Dados copiados.', 'ok'); }, function() { puMsg('puMsg', 'Não foi possível copiar; selecione o texto manualmente.', 'err'); });
+}
+
+function puAbrirSenha(botao) {
+  PU_STATE.senhaEmail = botao.closest('.pu-user').getAttribute('data-email');
+  puEl('puSenhaEmail').textContent = PU_STATE.senhaEmail;
+  puEl('puNovaSenha').value = '';
+  puEl('puNovaSenha').type = 'password';
+  puForca('puNovaSenha', 'puForcaBar2');
+  puMsg('puSenhaMsg', '');
+  PNITE_AUTH.abrir('puSenhaOverlay');
+}
+
+async function puSalvarSenha(ev) {
+  ev.preventDefault();
+  const s = puEl('puNovaSenha').value || '';
+  if (s.length < 8) { puMsg('puSenhaMsg', 'A senha deve ter pelo menos 8 caracteres.', 'err'); return; }
+  try {
+    await PNITE_AUTH.rpc('pnite_admin_definir_senha', { p_email: PU_STATE.senhaEmail, p_senha: s });
+    puMsg('puSenhaMsg', 'Senha alterada. Informe a nova senha à pessoa.', 'ok');
+  } catch (e) { puMsg('puSenhaMsg', e.message, 'err'); }
+}
 
 // ---------------- Downloads (gerados no navegador) ----------------
 function pniteNomeArquivo(base, ext) {
@@ -8507,7 +8881,7 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.2.2";
+const PNITE_VERSION = "v.3.2.3";
 const PNITE_LAST_UPDATE = "06/11/2026";
 const PNITE_LAST_TIME = "12:00";
 
@@ -14404,6 +14778,11 @@ function switchFront(frontId, navBtn) {
   } else if (frontId === 'gestao') {
     const el = document.getElementById('frontGestao');
     if (el) el.classList.add('active');
+  } else if (frontId === 'usuarios') {
+    const el = document.getElementById('frontUsuarios');
+    if (el) el.classList.add('active');
+    window.scrollTo(0, 0);
+    puAbrir();
   }
 }
 
@@ -16416,12 +16795,13 @@ function processarUploadExcel(event) {
       </div>
     </div>
     <div class="pif-body">
-      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.2.2</strong></div>
+      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.2.3</strong></div>
       <div class="pif-row"><span>Data da alteração:</span><span class="pnite-date-val">22/10/2026</span></div>
       <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">14:00</span></div>
       <div class="pif-row"><span>Responsável técnico:</span><span class="pnite-author-val">Equipe PNITE</span></div>
       <div class="pif-note">
         <i class="ti ti-check" style="color:var(--accent);margin-right:3px"></i>
+        <strong>Página de usuários (v.3.2.3):</strong> nova página "Usuários" (aba visível só ao administrador) para cadastrar contas completas com senha inicial ou apenas autorizar e-mails, buscar e filtrar usuários, alterar papel e downloads, desativar (bloqueio no Supabase Auth), redefinir senha e remover; resumo com totais (migração <code>0016_cadastro_usuarios.sql</code>).<br>
         <strong>Login e downloads (v.3.2.2):</strong> login de usuários do Supabase Auth (somente e-mails autorizados criam conta); usuários com permissão baixam indicadores do escopo e tabelas (XLSX), gráficos (PNG) e o mapa (PNG/SVG); o administrador (morato@ufg.br) gerencia autorizações, papéis e permissões em "Gerenciar acessos" (migração <code>0015_acesso_usuarios.sql</code>).<br>
         <strong>Scripts organizados (v.3.2.1):</strong> o <code>extrair_dados_excel.py</code> passa para a pasta <code>scripts/</code>, com caminhos resolvidos pela raiz do repositório.<br>
         <strong>Dicionário de dados (v.3.2.0):</strong> o <code>DATABASE.md</code> ganha uma seção por tabela e view do banco, com colunas, tipos, chaves, índices, descrições e o formato dos campos JSON da API.<br>
@@ -16454,7 +16834,7 @@ function processarUploadExcel(event) {
   </div>
   <button class="pif-btn" id="pifBtn" aria-label="Informações de Versão">
     <i class="ti ti-info-circle"></i>
-    <span class="pif-btn-label pnite-version-val">v.3.2.2</span>
+    <span class="pif-btn-label pnite-version-val">v.3.2.3</span>
   </button>
 </div>
 
