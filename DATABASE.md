@@ -122,11 +122,24 @@ Tabelas consolidadas por `scripts/extrair_capacitacao.py`, gravadas numa única 
 
 Destino padrão de `scripts/importar_planilha.py` (pasta `upload/`). Hoje está vazio. Cada arquivo vira uma tabela, com tipos inferidos (ver [`upload/README.md`](upload/README.md)).
 
-### 3.6. `pnite_meta` — controle
+### 3.6. `acesso` — usuários e permissões (migração `0015`)
+
+Login da interface pelo Supabase Auth (`auth.users`). Schema privado, sem `GRANT` a `anon`/`authenticated`; acesso só pelas funções RPC `public.pnite_*`.
 
 | Tabela | Conteúdo |
 |---|---|
-| `migracoes` | Migrações aplicadas (14) |
+| `autorizacoes` | E-mails autorizados: `nome`, `papel` (`admin`/`usuario`), `pode_baixar`, `ativo`, `atualizado_em`, `atualizado_por` |
+| `perfis` | Vínculo `auth.users.id` → e-mail autorizado (criado pelo gatilho `pnite_ao_criar_usuario`) |
+
+- Só e-mails com autorização ativa conseguem criar conta (o gatilho em `auth.users` recusa os demais).
+- Administrador inicial: `morato@ufg.br`. O administrador não pode retirar o próprio papel nem se desativar.
+- Os dados da plataforma continuam públicos para consulta; o login libera os **downloads** gerados no navegador (indicadores e tabelas em XLSX, gráficos em PNG, mapa em PNG/SVG).
+
+### 3.7. `pnite_meta` — controle
+
+| Tabela | Conteúdo |
+|---|---|
+| `migracoes` | Migrações aplicadas (15) |
 | `cargas_log` | Histórico de cada carga: tabela, ano, filtro de UF, linhas e valores inválidos convertidos em NULL |
 | `partes_texto` | Área de trânsito para valores maiores que o limite de uma requisição (ex.: GeoJSON extenso); fica vazia após a carga |
 
@@ -175,6 +188,15 @@ Todas as views exigem o cabeçalho `apikey: {SUPABASE_PUBLISHABLE_KEY}` e são f
 | `sete_municipios` | 1 | Tabela "Dados SETE", mapa municipal, comparações: `{cols, municipios, ufs}` | `?ano_carga=eq.2026&select=dados` |
 | `rotas_tracado` | 31.626 | Traçado das rotas no mapa do município (GeoJSON EPSG:4326, simplificado ~10 m) | `?ano_carga=eq.2026&codigo_cidade=eq.5212501` |
 | `capacitacao_dados` | 1 | Frente de Capacitação: `{tabela: {colunas, linhas}}` | `?select=dados` |
+
+Funções RPC de acesso (`POST /rest/v1/rpc/<nome>`, com `Authorization: Bearer <token do usuário>`; só `authenticated`):
+
+| Função | Quem pode | Uso |
+|---|---|---|
+| `pnite_meu_acesso()` | Usuário logado | `{email, nome, papel, pode_baixar, ativo}` da própria conta |
+| `pnite_admin_listar_usuarios()` | Administrador | Autorizações com situação da conta e último acesso |
+| `pnite_admin_definir_acesso(p_email, p_papel, p_pode_baixar, p_ativo, p_nome)` | Administrador | Cria ou altera uma autorização |
+| `pnite_admin_remover_usuario(p_email)` | Administrador | Remove a autorização e a conta vinculada |
 
 Nas views `indicadores_*`, cada linha traz:
 - `raw`: contadores (alunos, rotas, km, frota etc.);
@@ -282,6 +304,7 @@ python scripts/validar_paridade.py
 | `0012_capacitacao` | Capacitações no banco |
 | `0013_sete_municipio_e_complementos` | Tabela "Dados SETE" e complementos municipais (Censo e frota) |
 | `0014_definicoes_unicas` | Definições únicas de km, capacidade, vínculo e código de município |
+| `0015_acesso_usuarios` | Login: autorizações, perfis, papel de administrador e permissão de download |
 
 ---
 

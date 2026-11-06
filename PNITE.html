@@ -13,6 +13,13 @@ try {
   if (pniteSavedTheme === 'dim') pniteSavedTheme = 'dark';
   if (pniteSavedTheme === 'dark' || pniteSavedTheme === 'light') document.documentElement.setAttribute('data-theme', pniteSavedTheme);
 } catch (e) {}
+// v.3.2.2: retorno dos links de e-mail do Supabase Auth (#access_token=…): guarda e limpa o hash antes da navegação por seções
+try {
+  if (/(^#|&)(access_token|error_description)=/.test(location.hash)) {
+    window.PNITE_AUTH_HASH = location.hash.slice(1);
+    history.replaceState(null, '', location.pathname + location.search);
+  }
+} catch (e) {}
 </script>
 <link rel="icon" type="image/png" href="assets/logos/logo_pnite_color.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -6094,6 +6101,97 @@ html {
   background:transparent;color:var(--text-2);cursor:pointer;font-size:16px}
 .pnite-api-aviso-fechar:hover{background:var(--bg-input,rgba(0,0,0,.05));color:var(--text-1)}
 .pnite-api-aviso button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+/* ================================================================
+   v.3.2.2 — LOGIN (Supabase Auth), DOWNLOADS E GESTÃO DE ACESSOS
+   ================================================================ */
+.pnite-auth-btn { max-width: 220px; }
+.pnite-auth-btn .pab-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.pnite-dl-header-btn { display: none; }
+html.pnite-pode-baixar .pnite-dl-header-btn { display: inline-flex; }
+.pnite-auth-overlay {
+  display: none; position: fixed; inset: 0; z-index: 2100;
+  background: rgba(13, 26, 48, 0.45); backdrop-filter: blur(6px);
+  align-items: center; justify-content: center; padding: 20px;
+}
+.pnite-auth-overlay.open { display: flex; }
+.pnite-auth-box {
+  background: var(--bg-card); color: var(--text-1); border: 1px solid var(--border);
+  border-radius: 20px; width: 100%; max-width: 440px; padding: 26px;
+  max-height: calc(100vh - 40px); overflow-y: auto; box-shadow: 0 16px 48px rgba(0, 0, 0, 0.18);
+}
+.pnite-auth-box.pab-wide { max-width: 980px; }
+.pab-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+.pab-title { font-family: var(--font-serif); font-size: 21px; font-weight: 500; color: var(--text-1); margin: 0; }
+.pab-close {
+  width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border);
+  background-color: var(--bg-input); color: var(--text-2); cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 16px;
+}
+.pab-close:hover { color: var(--text-1); border-color: var(--border-mid); }
+.pab-sub { font-size: 13px; color: var(--text-2); line-height: 1.5; margin: 0 0 16px; }
+.pab-field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; min-width: 0; }
+.pab-field label { font-size: 12px; font-weight: 600; color: var(--text-2); }
+.pab-input {
+  font-family: inherit; font-size: 14px; padding: 10px 12px; border-radius: 10px;
+  border-width: 1px; border-style: solid; border-color: var(--border);
+  background-color: var(--bg-input); color: var(--text-1); min-width: 0; max-width: 100%;
+}
+.pab-input:focus { outline: 2px solid var(--c-blue); outline-offset: 1px; }
+.pab-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 6px; }
+.pab-btn {
+  font-family: inherit; font-size: 13px; font-weight: 600; padding: 9px 16px; border-radius: 20px;
+  border-width: 1px; border-style: solid; border-color: var(--border); cursor: pointer;
+  background-color: var(--bg-input); color: var(--text-1);
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.pab-btn:hover { border-color: var(--border-mid); }
+.pab-btn:disabled { opacity: .6; cursor: wait; }
+.pab-btn-primary { background-color: var(--c-blue); border-color: var(--c-blue); color: #fff; }
+[data-theme="dark"] .pab-btn-primary { color: var(--c-navy); }
+.pab-btn-danger { color: #b42318; }
+[data-theme="dark"] .pab-btn-danger { color: #ff8a80; }
+.pab-link {
+  background: none; border: none; padding: 4px 0; font-family: inherit; font-size: 12.5px;
+  color: var(--c-blue); cursor: pointer; text-decoration: underline;
+}
+.pab-msg { font-size: 13px; line-height: 1.45; margin: 10px 0 0; min-height: 1em; }
+.pab-msg.err { color: #b42318; }
+.pab-msg.ok { color: #0a6640; }
+[data-theme="dark"] .pab-msg.err { color: #ff8a80; }
+[data-theme="dark"] .pab-msg.ok { color: #4ed99a; }
+.pab-kv { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; font-size: 13px; margin-bottom: 16px; }
+.pab-kv dt { color: var(--text-2); }
+.pab-kv dd { margin: 0; color: var(--text-1); font-weight: 600; min-width: 0; overflow-wrap: anywhere; }
+.pab-dl-list { display: grid; gap: 8px; }
+.pab-dl-list .pab-btn { justify-content: flex-start; width: 100%; font-weight: 500; }
+.pab-add { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(160px, 100%), 1fr)); gap: 10px; align-items: end; margin-bottom: 14px; }
+.pab-add .pab-field { margin-bottom: 0; }
+.pab-check { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-1); min-height: 44px; }
+.pab-table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 12px; }
+.pab-table { width: 100%; border-collapse: collapse; font-size: 12.5px; min-width: 760px; }
+.pab-table th, .pab-table td { padding: 8px 10px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: middle; color: var(--text-1); }
+.pab-table th { font-size: 11px; text-transform: uppercase; letter-spacing: .03em; color: var(--text-2); background-color: var(--bg-input); position: sticky; top: 0; }
+.pab-table tr:last-child td { border-bottom: none; }
+.pab-table select.pab-input { padding: 6px 8px; font-size: 12.5px; }
+.pab-tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 10px; background: var(--bg-badge); color: var(--text-2); font-weight: 600; }
+.pnite-dl-host { position: relative; }
+.pnite-dl-chart {
+  display: none; position: absolute; top: 4px; right: 4px; z-index: 5;
+  width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--border);
+  background-color: var(--bg-card); color: var(--text-2); cursor: pointer;
+  align-items: center; justify-content: center; font-size: 15px; opacity: .85;
+}
+.pnite-dl-chart:hover, .pnite-dl-chart:focus-visible { opacity: 1; color: var(--c-blue); border-color: var(--c-blue); }
+html.pnite-pode-baixar .pnite-dl-chart { display: inline-flex; }
+@media (max-width: 760px) {
+  .pnite-auth-btn .pab-label { display: none; }
+  .pnite-dl-header-btn .pab-label { display: none; }
+}
+@media (pointer: coarse) {
+  .pnite-dl-chart { width: 44px; height: 44px; }
+  .pab-btn, .pab-close { min-height: 44px; }
+  .pab-close { min-width: 44px; }
+}
 </style>
 
 <script>
@@ -6142,6 +6240,12 @@ window.onerror = function(msg, url, line, col, err) {
 
       <!-- AÇÕES DO CABEÇALHO: CONFIGURAÇÕES E MODO ESCURO -->
       <div class="header-actions">
+        <button class="header-btn pnite-dl-header-btn" id="pniteDlHeaderBtn" type="button" onclick="pniteAbrirDownloads()" aria-label="Downloads">
+          <i class="ti ti-download" aria-hidden="true"></i> <span class="pab-label">Downloads</span>
+        </button>
+        <button class="header-btn pnite-auth-btn" id="pniteAuthBtn" type="button" onclick="pniteAuthBotao()" aria-label="Entrar na PNITE">
+          <i class="ti ti-login" aria-hidden="true"></i> <span class="pab-label">Entrar</span>
+        </button>
         <button class="header-btn" onclick="openSettingsModal()" title="Configurações e Idioma">
           <i class="ti ti-settings"></i> <span data-i18n="config">Configurações</span>
         </button>
@@ -7718,7 +7822,7 @@ window.onerror = function(msg, url, line, col, err) {
     <div class="smb-sec">
       <div class="smb-sec-title" data-i18n="settings_info_title">Informações da Versão</div>
       <div style="font-size:12px;color:var(--text-2);display:flex;flex-direction:column;gap:4px;margin-top:6px">
-        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.2.1</b></div>
+        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.2.2</b></div>
         <div><span data-i18n="settings_updated">Última Atualização:</span> <b class="pnite-date-val">06/10/2026</b> às <b class="pnite-time-val">21:05</b></div>
         <div><span data-i18n="settings_author">Responsável Técnico:</span> <b class="pnite-author-val">Equipe PNITE</b></div>
       </div>
@@ -7749,6 +7853,96 @@ window.onerror = function(msg, url, line, col, err) {
       <span id="darkToggle"></span>
     </div>
     
+<!-- ====================================================================
+     v.3.2.2 — LOGIN, CONTA, DOWNLOADS E GESTÃO DE ACESSOS (Supabase Auth)
+     ==================================================================== -->
+<div class="pnite-auth-overlay" id="pniteLoginOverlay">
+  <div class="pnite-auth-box" role="dialog" aria-modal="true" aria-labelledby="pniteLoginTitle">
+    <div class="pab-head">
+      <h2 class="pab-title" id="pniteLoginTitle">Entrar na PNITE</h2>
+      <button type="button" class="pab-close" aria-label="Fechar" onclick="pniteAuthFechar('pniteLoginOverlay')"><i class="ti ti-x" aria-hidden="true"></i></button>
+    </div>
+    <p class="pab-sub" id="pniteLoginSub">Usuários autorizados podem baixar gráficos, tabelas, indicadores e o mapa. A consulta à plataforma continua aberta a todos.</p>
+    <form id="pniteLoginForm" onsubmit="pniteAuthEnviar(event)" novalidate>
+      <div class="pab-field" id="pniteLoginEmailField">
+        <label for="pniteLoginEmail">E-mail</label>
+        <input class="pab-input" type="email" id="pniteLoginEmail" autocomplete="username" required>
+      </div>
+      <div class="pab-field" id="pniteLoginSenhaField">
+        <label for="pniteLoginSenha">Senha</label>
+        <input class="pab-input" type="password" id="pniteLoginSenha" autocomplete="current-password" minlength="6" required>
+      </div>
+      <div class="pab-actions">
+        <button type="submit" class="pab-btn pab-btn-primary" id="pniteLoginSubmit">Entrar</button>
+      </div>
+      <p class="pab-msg" id="pniteLoginMsg" role="status" aria-live="polite"></p>
+    </form>
+    <div class="pab-actions" id="pniteLoginLinks">
+      <button type="button" class="pab-link" onclick="pniteAuthModo('entrar')" id="pniteLinkEntrar" hidden>Já tenho conta</button>
+      <button type="button" class="pab-link" onclick="pniteAuthModo('cadastro')" id="pniteLinkCadastro">Criar conta (e-mail autorizado)</button>
+      <button type="button" class="pab-link" onclick="pniteAuthModo('recuperar')" id="pniteLinkRecuperar">Esqueci a senha</button>
+    </div>
+  </div>
+</div>
+
+<div class="pnite-auth-overlay" id="pniteContaOverlay">
+  <div class="pnite-auth-box" role="dialog" aria-modal="true" aria-labelledby="pniteContaTitle">
+    <div class="pab-head">
+      <h2 class="pab-title" id="pniteContaTitle">Minha conta</h2>
+      <button type="button" class="pab-close" aria-label="Fechar" onclick="pniteAuthFechar('pniteContaOverlay')"><i class="ti ti-x" aria-hidden="true"></i></button>
+    </div>
+    <dl class="pab-kv" id="pniteContaDados"></dl>
+    <div class="pab-actions">
+      <button type="button" class="pab-btn" id="pniteContaDownloads" onclick="pniteAbrirDownloads()" hidden><i class="ti ti-download" aria-hidden="true"></i> Downloads</button>
+      <button type="button" class="pab-btn" id="pniteContaAdmin" onclick="pniteAbrirAdmin()" hidden><i class="ti ti-users" aria-hidden="true"></i> Gerenciar acessos</button>
+      <button type="button" class="pab-btn pab-btn-danger" onclick="pniteAuthSair()"><i class="ti ti-logout" aria-hidden="true"></i> Sair</button>
+    </div>
+  </div>
+</div>
+
+<div class="pnite-auth-overlay" id="pniteDownloadsOverlay">
+  <div class="pnite-auth-box" role="dialog" aria-modal="true" aria-labelledby="pniteDownloadsTitle">
+    <div class="pab-head">
+      <h2 class="pab-title" id="pniteDownloadsTitle">Downloads</h2>
+      <button type="button" class="pab-close" aria-label="Fechar" onclick="pniteAuthFechar('pniteDownloadsOverlay')"><i class="ti ti-x" aria-hidden="true"></i></button>
+    </div>
+    <p class="pab-sub">Os arquivos são gerados no seu navegador a partir do que está carregado na tela, no escopo territorial selecionado. Cada gráfico também tem o botão <i class="ti ti-download" aria-hidden="true"></i> no canto superior direito.</p>
+    <div class="pab-dl-list">
+      <button type="button" class="pab-btn" onclick="pniteBaixar('indicadores')"><i class="ti ti-file-spreadsheet" aria-hidden="true"></i> Indicadores do escopo atual (XLSX)</button>
+      <button type="button" class="pab-btn" onclick="pniteBaixar('tabelas')"><i class="ti ti-table" aria-hidden="true"></i> Tabelas visíveis na tela (XLSX)</button>
+      <button type="button" class="pab-btn" onclick="pniteBaixar('graficos')"><i class="ti ti-chart-bar" aria-hidden="true"></i> Gráficos visíveis na tela (PNG)</button>
+      <button type="button" class="pab-btn" onclick="pniteBaixar('mapa-png')"><i class="ti ti-map" aria-hidden="true"></i> Mapa coroplético (PNG)</button>
+      <button type="button" class="pab-btn" onclick="pniteBaixar('mapa-svg')"><i class="ti ti-vector" aria-hidden="true"></i> Mapa coroplético (SVG)</button>
+    </div>
+    <p class="pab-msg" id="pniteDownloadsMsg" role="status" aria-live="polite"></p>
+  </div>
+</div>
+
+<div class="pnite-auth-overlay" id="pniteAdminOverlay">
+  <div class="pnite-auth-box pab-wide" role="dialog" aria-modal="true" aria-labelledby="pniteAdminTitle">
+    <div class="pab-head">
+      <h2 class="pab-title" id="pniteAdminTitle">Gerenciar acessos</h2>
+      <button type="button" class="pab-close" aria-label="Fechar" onclick="pniteAuthFechar('pniteAdminOverlay')"><i class="ti ti-x" aria-hidden="true"></i></button>
+    </div>
+    <p class="pab-sub">Autorize um e-mail para que a pessoa crie a conta em "Entrar → Criar conta". Somente e-mails autorizados e ativos conseguem se cadastrar. As alterações ficam gravadas no Supabase (schema privado <code>acesso</code>).</p>
+    <form class="pab-add" onsubmit="pniteAdminAdicionar(event)" novalidate>
+      <div class="pab-field"><label for="pniteAdmEmail">E-mail</label><input class="pab-input" type="email" id="pniteAdmEmail" required></div>
+      <div class="pab-field"><label for="pniteAdmNome">Nome (opcional)</label><input class="pab-input" type="text" id="pniteAdmNome"></div>
+      <div class="pab-field"><label for="pniteAdmPapel">Papel</label>
+        <select class="pab-input" id="pniteAdmPapel"><option value="usuario">Usuário</option><option value="admin">Administrador</option></select></div>
+      <label class="pab-check"><input type="checkbox" id="pniteAdmBaixar" checked> Pode baixar</label>
+      <button type="submit" class="pab-btn pab-btn-primary"><i class="ti ti-user-plus" aria-hidden="true"></i> Autorizar</button>
+    </form>
+    <p class="pab-msg" id="pniteAdminMsg" role="status" aria-live="polite"></p>
+    <div class="pab-table-wrap">
+      <table class="pab-table" aria-describedby="pniteAdminTitle">
+        <thead><tr><th scope="col">E-mail</th><th scope="col">Nome</th><th scope="col">Conta</th><th scope="col">Papel</th><th scope="col">Pode baixar</th><th scope="col">Ativo</th><th scope="col">Último acesso</th><th scope="col">Ações</th></tr></thead>
+        <tbody id="pniteAdminLista"><tr><td colspan="8">Carregando…</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
 <!-- Bibliotecas de Leitura de Dados Excel e Consolidados -->
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <!-- Configuração pública da API (URL + chave publishable), gerada do .env por scripts/gerar_config_web.py -->
@@ -7756,11 +7950,566 @@ window.onerror = function(msg, url, line, col, err) {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
 // ================================================================
+// PNITE v.3.2.2 — LOGIN (Supabase Auth), DOWNLOADS E GESTÃO DE ACESSOS
+// ----------------------------------------------------------------
+// Autenticação pela API REST do Supabase Auth (/auth/v1), sem biblioteca extra.
+// Papel e permissão de download vêm de public.pnite_meu_acesso() (migração 0015);
+// a gestão de acessos usa public.pnite_admin_* (somente administrador).
+// A sessão (tokens) fica em localStorage (pnite_sessao); downloads são gerados no navegador.
+// ================================================================
+const PNITE_AUTH = (function() {
+  const CHAVE = 'pnite_sessao';
+  let sessao = null;          // { access_token, refresh_token, expires_at, email }
+  let acesso = null;          // { email, nome, papel, pode_baixar, ativo }
+  let renovando = null;       // promessa de renovação em andamento
+  let modo = 'entrar';        // entrar | cadastro | recuperar | nova-senha
+
+  function cfg() { return window.PNITE_CONFIG || null; }
+  function base() { const c = cfg(); return c && c.supabaseUrl ? c.supabaseUrl.replace(/\/$/, '') : ''; }
+  function configurado() { const c = cfg(); return !!(c && c.supabaseUrl && c.publishableKey); }
+
+  function lerSessao() { try { return JSON.parse(localStorage.getItem(CHAVE) || 'null'); } catch (e) { return null; } }
+  function gravarSessao(s) {
+    sessao = s;
+    try { if (s) localStorage.setItem(CHAVE, JSON.stringify(s)); else localStorage.removeItem(CHAVE); } catch (e) {}
+  }
+  function sessaoDeResposta(r) {
+    const exp = r.expires_at || (Math.floor(Date.now() / 1000) + (Number(r.expires_in) || 3600));
+    return { access_token: r.access_token, refresh_token: r.refresh_token, expires_at: exp,
+             email: (r.user && r.user.email) || (sessao && sessao.email) || '' };
+  }
+
+  function mensagemErro(corpo, status) {
+    const txt = (corpo && (corpo.error_description || corpo.msg || corpo.message || corpo.error)) || ('HTTP ' + status);
+    if (/Invalid login credentials/i.test(txt)) return 'E-mail ou senha incorretos.';
+    if (/Email not confirmed/i.test(txt)) return 'Confirme o seu e-mail pelo link enviado antes de entrar.';
+    if (/Database error saving new user|não autorizado/i.test(txt)) return 'E-mail não autorizado na PNITE. Solicite acesso ao administrador.';
+    if (/already registered|already exists/i.test(txt)) return 'Este e-mail já tem conta. Use "Entrar" ou "Esqueci a senha".';
+    if (/Password should be at least/i.test(txt)) return 'A senha deve ter pelo menos 6 caracteres.';
+    if (/rate limit|too many/i.test(txt)) return 'Muitas tentativas. Aguarde alguns minutos e tente novamente.';
+    if (/administrador|e-mail válido|própri|Papel inválido/i.test(txt)) return txt;
+    return 'Não foi possível concluir a operação (' + txt + ').';
+  }
+
+  async function chamar(caminho, opcoes) {
+    const c = cfg();
+    const headers = Object.assign({ apikey: c.publishableKey, 'Content-Type': 'application/json', Accept: 'application/json' },
+      (opcoes && opcoes.headers) || {});
+    const resp = await fetch(base() + caminho, { method: (opcoes && opcoes.method) || 'POST', headers: headers,
+      body: opcoes && opcoes.body !== undefined ? JSON.stringify(opcoes.body) : undefined });
+    const texto = await resp.text();
+    let corpo = null;
+    try { corpo = texto ? JSON.parse(texto) : null; } catch (e) { corpo = { message: texto }; }
+    if (!resp.ok) { const err = new Error(mensagemErro(corpo, resp.status)); err.status = resp.status; throw err; }
+    return corpo;
+  }
+
+  async function renovar() {
+    if (renovando) return renovando;
+    renovando = (async function() {
+      try {
+        const r = await chamar('/auth/v1/token?grant_type=refresh_token', { body: { refresh_token: sessao.refresh_token } });
+        gravarSessao(sessaoDeResposta(r));
+      } catch (e) {
+        if (e.status === 400 || e.status === 401) { gravarSessao(null); acesso = null; atualizarUI(); }
+        throw e;
+      } finally { renovando = null; }
+    })();
+    return renovando;
+  }
+
+  async function token() {
+    if (!sessao) return null;
+    if (sessao.expires_at * 1000 - Date.now() < 60000) await renovar();
+    return sessao ? sessao.access_token : null;
+  }
+
+  async function rpc(nome, args) {
+    const t = await token();
+    if (!t) throw new Error('Sessão expirada. Entre novamente.');
+    return chamar('/rest/v1/rpc/' + nome, { body: args || {}, headers: { Authorization: 'Bearer ' + t } });
+  }
+
+  async function carregarAcesso() {
+    if (!sessao) { acesso = null; atualizarUI(); return; }
+    try {
+      acesso = await rpc('pnite_meu_acesso');
+    } catch (e) {
+      acesso = null;
+      if (e.status === 401) gravarSessao(null);
+    }
+    atualizarUI();
+  }
+
+  function podeBaixar() { return !!(sessao && acesso && acesso.pode_baixar && acesso.ativo); }
+  function ehAdmin() { return !!(sessao && acesso && acesso.papel === 'admin' && acesso.ativo); }
+
+  function atualizarUI() {
+    const raiz = document.documentElement;
+    raiz.classList.toggle('pnite-pode-baixar', podeBaixar());
+    raiz.classList.toggle('pnite-logado', !!sessao);
+    const btn = document.getElementById('pniteAuthBtn');
+    if (btn) {
+      const rot = btn.querySelector('.pab-label');
+      const ico = btn.querySelector('i');
+      if (sessao) {
+        if (rot) rot.textContent = (acesso && acesso.nome) || sessao.email || 'Minha conta';
+        if (ico) ico.className = 'ti ti-user-circle';
+        btn.setAttribute('aria-label', 'Minha conta: ' + (sessao.email || ''));
+      } else {
+        if (rot) rot.textContent = 'Entrar';
+        if (ico) ico.className = 'ti ti-login';
+        btn.setAttribute('aria-label', 'Entrar na PNITE');
+      }
+    }
+    const dados = document.getElementById('pniteContaDados');
+    if (dados && sessao) {
+      const papel = acesso ? (acesso.papel === 'admin' ? 'Administrador' : 'Usuário') : 'Sem autorização';
+      const sit = !acesso ? 'Sem autorização' : (acesso.ativo ? 'Ativo' : 'Desativado');
+      dados.innerHTML = '<dt>E-mail</dt><dd>' + escHtml(sessao.email || '—') + '</dd>'
+        + '<dt>Papel</dt><dd>' + escHtml(papel) + '</dd>'
+        + '<dt>Situação</dt><dd>' + escHtml(sit) + '</dd>'
+        + '<dt>Downloads</dt><dd>' + (podeBaixar() ? 'Liberados' : 'Não liberados') + '</dd>';
+    }
+    const bDl = document.getElementById('pniteContaDownloads');
+    if (bDl) bDl.hidden = !podeBaixar();
+    const bAdm = document.getElementById('pniteContaAdmin');
+    if (bAdm) bAdm.hidden = !ehAdmin();
+  }
+
+  function msg(id, texto, tipo) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = texto || '';
+    el.className = 'pab-msg' + (tipo ? ' ' + tipo : '');
+  }
+
+  function abrir(id) {
+    document.querySelectorAll('.pnite-auth-overlay.open').forEach(function(o) { if (o.id !== id) o.classList.remove('open'); });
+    const o = document.getElementById(id);
+    if (!o) return;
+    o.classList.add('open');
+    const foco = o.querySelector('input:not([type=checkbox]):not([hidden]), button.pab-btn, .pab-close');
+    if (foco) setTimeout(function() { foco.focus(); }, 30);
+  }
+  function fechar(id) { const o = document.getElementById(id); if (o) o.classList.remove('open'); }
+
+  function definirModo(m) {
+    modo = m;
+    const titulos = { entrar: 'Entrar na PNITE', cadastro: 'Criar conta', recuperar: 'Recuperar senha', 'nova-senha': 'Definir nova senha' };
+    const botoes = { entrar: 'Entrar', cadastro: 'Criar conta', recuperar: 'Enviar link de recuperação', 'nova-senha': 'Salvar nova senha' };
+    const subs = {
+      entrar: 'Usuários autorizados podem baixar gráficos, tabelas, indicadores e o mapa. A consulta à plataforma continua aberta a todos.',
+      cadastro: 'Somente e-mails autorizados pelo administrador podem criar conta. Você receberá um e-mail para confirmar o cadastro.',
+      recuperar: 'Informe o seu e-mail para receber o link de redefinição de senha.',
+      'nova-senha': 'Digite a nova senha da sua conta (mínimo de 6 caracteres).'
+    };
+    const set = function(id, txt) { const el = document.getElementById(id); if (el) el.textContent = txt; };
+    set('pniteLoginTitle', titulos[m]);
+    set('pniteLoginSubmit', botoes[m]);
+    set('pniteLoginSub', subs[m]);
+    const emailF = document.getElementById('pniteLoginEmailField');
+    const senhaF = document.getElementById('pniteLoginSenhaField');
+    if (emailF) emailF.hidden = (m === 'nova-senha');
+    if (senhaF) senhaF.hidden = (m === 'recuperar');
+    const senha = document.getElementById('pniteLoginSenha');
+    if (senha) senha.setAttribute('autocomplete', m === 'entrar' ? 'current-password' : 'new-password');
+    const vis = function(id, v) { const el = document.getElementById(id); if (el) el.hidden = !v; };
+    vis('pniteLinkEntrar', m !== 'entrar' && m !== 'nova-senha');
+    vis('pniteLinkCadastro', m === 'entrar');
+    vis('pniteLinkRecuperar', m === 'entrar');
+    msg('pniteLoginMsg', '');
+  }
+
+  async function enviar(ev) {
+    ev.preventDefault();
+    if (!configurado()) { msg('pniteLoginMsg', 'Configuração da API do Supabase ausente (config.local.js).', 'err'); return; }
+    const email = (document.getElementById('pniteLoginEmail').value || '').trim().toLowerCase();
+    const senha = document.getElementById('pniteLoginSenha').value || '';
+    if (modo !== 'nova-senha' && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { msg('pniteLoginMsg', 'Informe um e-mail válido.', 'err'); return; }
+    if (modo !== 'recuperar' && senha.length < 6) { msg('pniteLoginMsg', 'A senha deve ter pelo menos 6 caracteres.', 'err'); return; }
+    const btn = document.getElementById('pniteLoginSubmit');
+    btn.disabled = true;
+    msg('pniteLoginMsg', 'Aguarde…');
+    const retorno = encodeURIComponent(location.origin + location.pathname);
+    try {
+      if (modo === 'entrar') {
+        const r = await chamar('/auth/v1/token?grant_type=password', { body: { email: email, password: senha } });
+        gravarSessao(sessaoDeResposta(r));
+        await carregarAcesso();
+        document.getElementById('pniteLoginSenha').value = '';
+        fechar('pniteLoginOverlay');
+        if (!acesso) alert('Login realizado, mas este e-mail não tem autorização ativa na PNITE.');
+      } else if (modo === 'cadastro') {
+        const r = await chamar('/auth/v1/signup?redirect_to=' + retorno, { body: { email: email, password: senha } });
+        if (r && r.access_token) { gravarSessao(sessaoDeResposta(r)); await carregarAcesso(); fechar('pniteLoginOverlay'); }
+        else msg('pniteLoginMsg', 'Conta criada. Abra o link de confirmação enviado para ' + email + ' e depois entre.', 'ok');
+      } else if (modo === 'recuperar') {
+        await chamar('/auth/v1/recover?redirect_to=' + retorno, { body: { email: email } });
+        msg('pniteLoginMsg', 'Se o e-mail tiver conta, você receberá o link de redefinição.', 'ok');
+      } else if (modo === 'nova-senha') {
+        const t = await token();
+        await chamar('/auth/v1/user', { method: 'PUT', body: { password: senha }, headers: { Authorization: 'Bearer ' + t } });
+        document.getElementById('pniteLoginSenha').value = '';
+        msg('pniteLoginMsg', 'Senha alterada com sucesso.', 'ok');
+        definirModo('entrar');
+        fechar('pniteLoginOverlay');
+      }
+    } catch (e) {
+      msg('pniteLoginMsg', e.message || 'Falha de conexão com o Supabase.', 'err');
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  async function sair() {
+    const t = sessao ? sessao.access_token : null;
+    gravarSessao(null);
+    acesso = null;
+    atualizarUI();
+    fechar('pniteContaOverlay');
+    if (t) { try { await chamar('/auth/v1/logout', { headers: { Authorization: 'Bearer ' + t } }); } catch (e) {} }
+  }
+
+  // Retorno dos links de e-mail (confirmação, recuperação): tokens capturados no <head> (PNITE_AUTH_HASH)
+  async function processarRetorno() {
+    const h = window.PNITE_AUTH_HASH;
+    window.PNITE_AUTH_HASH = null;
+    if (!h) return false;
+    const p = new URLSearchParams(h);
+    if (p.get('error_description')) {
+      abrir('pniteLoginOverlay');
+      msg('pniteLoginMsg', 'Link inválido ou expirado: ' + p.get('error_description'), 'err');
+      return true;
+    }
+    if (!p.get('access_token')) return false;
+    gravarSessao({ access_token: p.get('access_token'), refresh_token: p.get('refresh_token'),
+                   expires_at: Number(p.get('expires_at')) || (Math.floor(Date.now() / 1000) + (Number(p.get('expires_in')) || 3600)), email: '' });
+    try {
+      const u = await chamar('/auth/v1/user', { method: 'GET', headers: { Authorization: 'Bearer ' + sessao.access_token } });
+      gravarSessao(Object.assign({}, sessao, { email: (u && u.email) || '' }));
+    } catch (e) {}
+    await carregarAcesso();
+    if (p.get('type') === 'recovery') { definirModo('nova-senha'); abrir('pniteLoginOverlay'); }
+    return true;
+  }
+
+  async function iniciar() {
+    sessao = lerSessao();
+    atualizarUI();
+    if (!configurado()) return;
+    if (await processarRetorno()) return;
+    if (!sessao) return;
+    try { await token(); } catch (e) { return; }
+    await carregarAcesso();
+  }
+
+  // ---------------- Gestão de acessos (administrador) ----------------
+  function dataBr(v) {
+    if (!v) return '—';
+    const d = new Date(v);
+    return Number.isNaN(d.getTime()) ? '—' : d.toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
+  }
+
+  async function listarUsuarios() {
+    const corpo = document.getElementById('pniteAdminLista');
+    if (!corpo) return;
+    corpo.innerHTML = '<tr><td colspan="8">Carregando…</td></tr>';
+    try {
+      const lista = await rpc('pnite_admin_listar_usuarios');
+      if (!lista || !lista.length) { corpo.innerHTML = '<tr><td colspan="8">Nenhum e-mail autorizado.</td></tr>'; return; }
+      corpo.innerHTML = lista.map(function(u, i) {
+        const e = escHtml(u.email);
+        const proprio = sessao && u.email === sessao.email;
+        return '<tr data-email="' + e + '">'
+          + '<td>' + e + '</td>'
+          + '<td>' + escHtml(u.nome || '—') + '</td>'
+          + '<td><span class="pab-tag">' + (u.conta_criada ? 'Criada' : 'Pendente') + '</span></td>'
+          + '<td><select class="pab-input" data-campo="papel" aria-label="Papel de ' + e + '"' + (proprio ? ' disabled' : '') + '>'
+          + '<option value="usuario"' + (u.papel === 'usuario' ? ' selected' : '') + '>Usuário</option>'
+          + '<option value="admin"' + (u.papel === 'admin' ? ' selected' : '') + '>Administrador</option></select></td>'
+          + '<td><label class="pab-check"><input type="checkbox" data-campo="pode_baixar"' + (u.pode_baixar ? ' checked' : '') + ' aria-label="Pode baixar: ' + e + '"></label></td>'
+          + '<td><label class="pab-check"><input type="checkbox" data-campo="ativo"' + (u.ativo ? ' checked' : '') + (proprio ? ' disabled' : '') + ' aria-label="Ativo: ' + e + '"></label></td>'
+          + '<td>' + dataBr(u.ultimo_acesso) + '</td>'
+          + '<td><div class="pab-actions" style="margin:0">'
+          + '<button type="button" class="pab-btn" onclick="pniteAdminSalvar(this)"><i class="ti ti-device-floppy" aria-hidden="true"></i> Salvar</button>'
+          + (proprio ? '' : '<button type="button" class="pab-btn pab-btn-danger" onclick="pniteAdminRemover(this)" aria-label="Remover ' + e + '"><i class="ti ti-trash" aria-hidden="true"></i></button>')
+          + '</div></td></tr>';
+      }).join('');
+    } catch (e) {
+      corpo.innerHTML = '<tr><td colspan="8">' + escHtml(e.message) + '</td></tr>';
+    }
+  }
+
+  async function adminDefinir(email, papel, podeBaixarV, ativo, nome) {
+    await rpc('pnite_admin_definir_acesso', { p_email: email, p_papel: papel, p_pode_baixar: podeBaixarV, p_ativo: ativo, p_nome: nome || null });
+  }
+
+  async function adminAdicionar(ev) {
+    ev.preventDefault();
+    const email = (document.getElementById('pniteAdmEmail').value || '').trim().toLowerCase();
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { msg('pniteAdminMsg', 'Informe um e-mail válido.', 'err'); return; }
+    try {
+      await adminDefinir(email, document.getElementById('pniteAdmPapel').value,
+        document.getElementById('pniteAdmBaixar').checked, true, document.getElementById('pniteAdmNome').value);
+      document.getElementById('pniteAdmEmail').value = '';
+      document.getElementById('pniteAdmNome').value = '';
+      msg('pniteAdminMsg', email + ' autorizado. A pessoa já pode criar a conta em "Entrar → Criar conta".', 'ok');
+      listarUsuarios();
+    } catch (e) { msg('pniteAdminMsg', e.message, 'err'); }
+  }
+
+  async function adminSalvar(botao) {
+    const tr = botao.closest('tr');
+    if (!tr) return;
+    const campo = function(n) { return tr.querySelector('[data-campo="' + n + '"]'); };
+    const email = tr.getAttribute('data-email');
+    try {
+      await adminDefinir(email, campo('papel').value, campo('pode_baixar').checked, campo('ativo').checked, null);
+      msg('pniteAdminMsg', 'Acesso de ' + email + ' atualizado.', 'ok');
+      listarUsuarios();
+      if (sessao && email === sessao.email) carregarAcesso();
+    } catch (e) { msg('pniteAdminMsg', e.message, 'err'); }
+  }
+
+  async function adminRemover(botao) {
+    const tr = botao.closest('tr');
+    const email = tr ? tr.getAttribute('data-email') : '';
+    if (!email || !confirm('Remover a autorização e a conta de ' + email + '? Esta ação não pode ser desfeita.')) return;
+    try {
+      await rpc('pnite_admin_remover_usuario', { p_email: email });
+      msg('pniteAdminMsg', email + ' removido.', 'ok');
+      listarUsuarios();
+    } catch (e) { msg('pniteAdminMsg', e.message, 'err'); }
+  }
+
+  return { iniciar: iniciar, abrir: abrir, fechar: fechar, definirModo: definirModo, enviar: enviar, sair: sair,
+           podeBaixar: podeBaixar, ehAdmin: ehAdmin, logado: function() { return !!sessao; },
+           email: function() { return sessao ? sessao.email : ''; },
+           listarUsuarios: listarUsuarios, adminAdicionar: adminAdicionar, adminSalvar: adminSalvar, adminRemover: adminRemover };
+})();
+
+// Funções globais usadas pelos handlers inline
+function pniteAuthBotao() {
+  if (PNITE_AUTH.logado()) PNITE_AUTH.abrir('pniteContaOverlay');
+  else { PNITE_AUTH.definirModo('entrar'); PNITE_AUTH.abrir('pniteLoginOverlay'); }
+}
+function pniteAuthModo(m) { PNITE_AUTH.definirModo(m); }
+function pniteAuthEnviar(ev) { PNITE_AUTH.enviar(ev); }
+function pniteAuthFechar(id) { PNITE_AUTH.fechar(id); }
+function pniteAuthSair() { PNITE_AUTH.sair(); }
+function pniteAbrirAdmin() { if (!PNITE_AUTH.ehAdmin()) return; PNITE_AUTH.abrir('pniteAdminOverlay'); PNITE_AUTH.listarUsuarios(); }
+function pniteAbrirDownloads() { if (!PNITE_AUTH.podeBaixar()) return; PNITE_AUTH.abrir('pniteDownloadsOverlay'); }
+function pniteAdminAdicionar(ev) { PNITE_AUTH.adminAdicionar(ev); }
+function pniteAdminSalvar(b) { PNITE_AUTH.adminSalvar(b); }
+function pniteAdminRemover(b) { PNITE_AUTH.adminRemover(b); }
+
+// ---------------- Downloads (gerados no navegador) ----------------
+function pniteNomeArquivo(base, ext) {
+  const limpo = String(base || 'pnite').normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .replace(/[^A-Za-z0-9]+/g, '_').replace(/^_+|_+$/g, '').slice(0, 60) || 'pnite';
+  const d = new Date();
+  const data = d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0');
+  return 'PNITE_' + limpo + '_' + data + '.' + ext;
+}
+
+function pniteSalvarBlob(blob, nome) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = nome;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(function() { URL.revokeObjectURL(url); }, 4000);
+}
+
+function pniteFundoTema() {
+  const cor = getComputedStyle(document.body).backgroundColor;
+  return (!cor || cor === 'rgba(0, 0, 0, 0)' || cor === 'transparent') ? '#ffffff' : cor;
+}
+
+// Título mais próximo de um elemento (cartão/seção), para nomear arquivos e abas
+function pniteTituloProximo(el) {
+  let n = el;
+  while (n && n !== document.body) {
+    const t = n.querySelector && n.querySelector('.sec-title, .msc-title, .card-title, h2, h3, h4');
+    if (t && t.textContent.trim()) return t.textContent.trim();
+    n = n.parentElement;
+  }
+  return 'grafico';
+}
+
+function pniteCanvasComFundo(canvas) {
+  const c = document.createElement('canvas');
+  c.width = canvas.width; c.height = canvas.height;
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = pniteFundoTema();
+  ctx.fillRect(0, 0, c.width, c.height);
+  ctx.drawImage(canvas, 0, 0);
+  return c;
+}
+
+function pniteBaixarCanvas(canvas, nome) {
+  pniteCanvasComFundo(canvas).toBlob(function(b) { if (b) pniteSalvarBlob(b, pniteNomeArquivo(nome, 'png')); }, 'image/png');
+}
+
+function pniteVisivel(el) { return !!(el && el.offsetParent !== null && el.getClientRects().length); }
+
+function pniteFolhaSobre(wb, extra) {
+  const linhas = [['PNITE — Plataforma Nacional de Inteligência em Transporte Escolar'],
+    ['Versão', PNITE_VERSION], ['Gerado em', new Date().toLocaleString('pt-BR')],
+    ['Usuário', PNITE_AUTH.email() || '—']].concat(extra || []);
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(linhas), 'Sobre');
+}
+
+function pniteEscopoAtual() {
+  const escopo = (typeof currentScope !== 'undefined') ? currentScope : 'nacional';
+  const chave = (typeof currentScopeKey !== 'undefined' && currentScopeKey) ? String(currentScopeKey) : '';
+  let nome = '';
+  try { const d = getD(); nome = (d && (d.label || d.nome || d.mun || d.estado || d.regiao)) || ''; } catch (e) {}
+  return { escopo: escopo, chave: chave, nome: String(nome || (escopo === 'nacional' ? 'Brasil' : chave)) };
+}
+
+function pniteSvgMapa() {
+  const svg = document.querySelector('#mapaSvgWrap svg');
+  if (!svg || !pniteVisivel(svg)) return null;
+  const clone = svg.cloneNode(true);
+  // Copia as cores calculadas (variáveis CSS do tema não existem fora da página)
+  const orig = svg.querySelectorAll('*'), copia = clone.querySelectorAll('*');
+  for (let i = 0; i < orig.length; i++) {
+    const cs = getComputedStyle(orig[i]);
+    ['fill', 'stroke', 'stroke-width', 'opacity', 'font-size', 'font-family', 'font-weight'].forEach(function(p) {
+      const v = cs.getPropertyValue(p);
+      if (v) copia[i].setAttribute(p, v);
+    });
+  }
+  const r = svg.getBoundingClientRect();
+  clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+  clone.setAttribute('width', Math.round(r.width));
+  clone.setAttribute('height', Math.round(r.height));
+  if (!clone.getAttribute('viewBox')) clone.setAttribute('viewBox', '0 0 ' + Math.round(r.width) + ' ' + Math.round(r.height));
+  return { texto: new XMLSerializer().serializeToString(clone), w: Math.round(r.width), h: Math.round(r.height) };
+}
+
+function pniteBaixar(tipo) {
+  if (!PNITE_AUTH.podeBaixar()) { pniteAuthBotao(); return; }
+  const aviso = function(t, cls) { const el = document.getElementById('pniteDownloadsMsg'); if (el) { el.textContent = t; el.className = 'pab-msg' + (cls ? ' ' + cls : ''); } };
+  aviso('');
+  const esc = pniteEscopoAtual();
+  try {
+    if (tipo === 'indicadores') {
+      if (typeof XLSX === 'undefined') { aviso('Biblioteca de planilhas indisponível (verifique a conexão).', 'err'); return; }
+      const d = getD();
+      const linhas = ALL_INDICATORS.map(function(ind) {
+        const v = d ? d[ind.sigla] : null;
+        const nac = getNationalAverage(ind.sigla);
+        return { Sigla: ind.sigla, Indicador: ind.nome, Tipo: ind.tipo, Unidade: ind.unit || ind.un || '',
+                 ['Valor (' + esc.nome + ')']: (typeof v === 'number' && isFinite(v)) ? v : '—',
+                 'Referência nacional': (typeof nac === 'number' && isFinite(nac)) ? nac : '—',
+                 'Fórmula': ind.formula || '', Fonte: ind.fonte || '' };
+      });
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(linhas), 'Indicadores');
+      pniteFolhaSobre(wb, [['Escopo', esc.escopo], ['Território', esc.nome], ['Fonte dos dados', 'API do Supabase (views public.indicadores_*)']]);
+      XLSX.writeFile(wb, pniteNomeArquivo('indicadores_' + esc.nome, 'xlsx'));
+      aviso('Planilha de indicadores gerada.', 'ok');
+    } else if (tipo === 'tabelas') {
+      if (typeof XLSX === 'undefined') { aviso('Biblioteca de planilhas indisponível (verifique a conexão).', 'err'); return; }
+      const tabelas = Array.from(document.querySelectorAll('table')).filter(function(t) {
+        return pniteVisivel(t) && !t.closest('.pnite-auth-overlay') && t.rows.length > 1;
+      });
+      if (!tabelas.length) { aviso('Nenhuma tabela visível nesta tela. Abra a seção com a tabela desejada e tente novamente.', 'err'); return; }
+      const wb = XLSX.utils.book_new();
+      const usados = {};
+      tabelas.forEach(function(t, i) {
+        let nome = pniteTituloProximo(t).replace(/[\\\/\?\*\[\]:]/g, ' ').slice(0, 26).trim() || ('Tabela ' + (i + 1));
+        if (usados[nome]) nome = nome.slice(0, 23) + ' ' + (++usados[nome]); else usados[nome] = 1;
+        XLSX.utils.book_append_sheet(wb, XLSX.utils.table_to_sheet(t, { raw: false }), nome);
+      });
+      pniteFolhaSobre(wb, [['Escopo', esc.escopo], ['Território', esc.nome]]);
+      XLSX.writeFile(wb, pniteNomeArquivo('tabelas_' + esc.nome, 'xlsx'));
+      aviso(tabelas.length + ' tabela(s) exportada(s).', 'ok');
+    } else if (tipo === 'graficos') {
+      const canvases = Array.from(document.querySelectorAll('canvas')).filter(function(c) {
+        return pniteVisivel(c) && window.Chart && Chart.getChart(c);
+      });
+      if (!canvases.length) { aviso('Nenhum gráfico visível nesta tela.', 'err'); return; }
+      canvases.forEach(function(c, i) { setTimeout(function() { pniteBaixarCanvas(c, pniteTituloProximo(c) + '_' + (i + 1)); }, i * 350); });
+      aviso(canvases.length + ' gráfico(s) em download. Se o navegador pedir, permita downloads múltiplos.', 'ok');
+    } else if (tipo === 'mapa-svg' || tipo === 'mapa-png') {
+      const m = pniteSvgMapa();
+      if (!m) { aviso('Abra a seção do mapa para baixá-lo.', 'err'); return; }
+      const titulo = (document.getElementById('mapaActiveIndTitle') || {}).textContent || 'mapa';
+      const blobSvg = new Blob([m.texto], { type: 'image/svg+xml;charset=utf-8' });
+      if (tipo === 'mapa-svg') { pniteSalvarBlob(blobSvg, pniteNomeArquivo('mapa_' + titulo, 'svg')); aviso('Mapa (SVG) gerado.', 'ok'); return; }
+      const url = URL.createObjectURL(blobSvg);
+      const img = new Image();
+      img.onload = function() {
+        const escala = 2, c = document.createElement('canvas');
+        c.width = m.w * escala; c.height = m.h * escala;
+        const ctx = c.getContext('2d');
+        ctx.fillStyle = pniteFundoTema(); ctx.fillRect(0, 0, c.width, c.height);
+        ctx.drawImage(img, 0, 0, c.width, c.height);
+        URL.revokeObjectURL(url);
+        c.toBlob(function(b) { if (b) pniteSalvarBlob(b, pniteNomeArquivo('mapa_' + titulo, 'png')); }, 'image/png');
+        aviso('Mapa (PNG) gerado.', 'ok');
+      };
+      img.onerror = function() { this.onerror = null; URL.revokeObjectURL(url); aviso('Não foi possível converter o mapa em PNG; use o SVG.', 'err'); };
+      img.src = url;
+    }
+  } catch (e) {
+    aviso('Falha ao gerar o arquivo: ' + (e && e.message ? e.message : e), 'err');
+  }
+}
+
+// Botão de download em cada gráfico Chart.js (visível só para quem pode baixar)
+if (window.Chart && typeof Chart.register === 'function') {
+  Chart.register({
+    id: 'pniteDownload',
+    afterInit: function(chart) {
+      const host = chart.canvas && chart.canvas.parentElement;
+      if (!host || host.querySelector(':scope > .pnite-dl-chart')) return;
+      if (getComputedStyle(host).position === 'static') host.classList.add('pnite-dl-host');
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'pnite-dl-chart';
+      b.setAttribute('data-pnite-dl', 'chart');
+      b.setAttribute('aria-label', 'Baixar gráfico (PNG)');
+      b.title = 'Baixar gráfico (PNG)';
+      b.innerHTML = '<i class="ti ti-download" aria-hidden="true"></i>';
+      host.appendChild(b);
+    }
+  });
+}
+
+// Listener único e delegado: download por gráfico e fechamento dos modais pelo fundo
+document.addEventListener('click', function(ev) {
+  const dl = ev.target.closest && ev.target.closest('[data-pnite-dl="chart"]');
+  if (dl) {
+    ev.preventDefault();
+    ev.stopPropagation();
+    if (!PNITE_AUTH.podeBaixar()) return;
+    const canvas = dl.parentElement && dl.parentElement.querySelector('canvas');
+    if (canvas) pniteBaixarCanvas(canvas, pniteTituloProximo(canvas));
+    return;
+  }
+  const t = ev.target;
+  if (t && t.classList && t.classList.contains('pnite-auth-overlay')) PNITE_AUTH.fechar(t.id);
+}, true);
+
+document.addEventListener('keydown', function(ev) {
+  if (ev.key !== 'Escape') return;
+  document.querySelectorAll('.pnite-auth-overlay.open').forEach(function(o) { o.classList.remove('open'); });
+});
+
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', PNITE_AUTH.iniciar);
+else PNITE_AUTH.iniciar();
+</script>
+<script>
+// ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.2.1";
-const PNITE_LAST_UPDATE = "06/10/2026";
-const PNITE_LAST_TIME = "21:29";
+const PNITE_VERSION = "v.3.2.2";
+const PNITE_LAST_UPDATE = "06/11/2026";
+const PNITE_LAST_TIME = "12:00";
 
 // Escapa texto para inserção segura via innerHTML (entradas do usuário, nomes de arquivo)
 function escHtml(s) {
@@ -15667,12 +16416,13 @@ function processarUploadExcel(event) {
       </div>
     </div>
     <div class="pif-body">
-      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.2.1</strong></div>
+      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.2.2</strong></div>
       <div class="pif-row"><span>Data da alteração:</span><span class="pnite-date-val">22/10/2026</span></div>
       <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">14:00</span></div>
       <div class="pif-row"><span>Responsável técnico:</span><span class="pnite-author-val">Equipe PNITE</span></div>
       <div class="pif-note">
         <i class="ti ti-check" style="color:var(--accent);margin-right:3px"></i>
+        <strong>Login e downloads (v.3.2.2):</strong> login de usuários do Supabase Auth (somente e-mails autorizados criam conta); usuários com permissão baixam indicadores do escopo e tabelas (XLSX), gráficos (PNG) e o mapa (PNG/SVG); o administrador (morato@ufg.br) gerencia autorizações, papéis e permissões em "Gerenciar acessos" (migração <code>0015_acesso_usuarios.sql</code>).<br>
         <strong>Scripts organizados (v.3.2.1):</strong> o <code>extrair_dados_excel.py</code> passa para a pasta <code>scripts/</code>, com caminhos resolvidos pela raiz do repositório.<br>
         <strong>Dicionário de dados (v.3.2.0):</strong> o <code>DATABASE.md</code> ganha uma seção por tabela e view do banco, com colunas, tipos, chaves, índices, descrições e o formato dos campos JSON da API.<br>
         <strong>Malha de MG via IBGE (v.3.1.9):</strong> a malha municipal de Minas Gerais deixa de ser embutida no HTML (cerca de 440 KB a menos) e passa a vir da API de malhas do IBGE, como nas demais UFs.<br>
@@ -15704,7 +16454,7 @@ function processarUploadExcel(event) {
   </div>
   <button class="pif-btn" id="pifBtn" aria-label="Informações de Versão">
     <i class="ti ti-info-circle"></i>
-    <span class="pif-btn-label pnite-version-val">v.3.2.1</span>
+    <span class="pif-btn-label pnite-version-val">v.3.2.2</span>
   </button>
 </div>
 
