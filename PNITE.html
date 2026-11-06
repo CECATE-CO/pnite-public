@@ -6305,6 +6305,70 @@ html.pnite-admin .hcn-tab { flex-shrink: 0; }
   .pu-icon-btn, .pu-seg-btn { min-height: 44px; }
   .pu-ctrl .pu-switch { min-height: 44px; }
 }
+/* ================================================================
+   v.3.2.4 — FOTO DO USUÁRIO, MENU DA CONTA E EDIÇÃO DE PERFIL
+   ================================================================ */
+.pab-menu-wrap { position: relative; display: inline-flex; }
+.pnite-auth-btn { gap: 8px; }
+html.pnite-logado .pnite-auth-btn { padding: 3px 10px 3px 3px; }
+.pab-avatar {
+  width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0; overflow: hidden;
+  display: none; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; color: #fff; background-color: var(--c-blue);
+}
+[data-theme="dark"] .pab-avatar { color: var(--c-navy); }
+.pab-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+html.pnite-logado .pnite-auth-btn .pab-avatar { display: inline-flex; }
+html.pnite-logado .pnite-auth-btn .pab-ico-login { display: none; }
+.pab-chev { display: none; font-size: 13px; color: var(--text-2); }
+html.pnite-logado .pnite-auth-btn .pab-chev { display: inline-block; }
+.pab-avatar.lg { width: 46px; height: 46px; font-size: 16px; display: inline-flex; }
+.pab-avatar.xl { width: 112px; height: 112px; font-size: 36px; display: inline-flex; }
+.pab-menu {
+  position: absolute; top: calc(100% + 8px); right: 0; z-index: 1500; width: 280px; max-width: calc(100vw - 32px);
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 8px;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, .18);
+}
+.pab-menu-head { display: flex; align-items: center; gap: 12px; padding: 10px 10px 12px; border-bottom: 1px solid var(--border); margin-bottom: 6px; min-width: 0; }
+.pab-menu-head > div { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.pab-menu-head b { font-size: 14px; color: var(--text-1); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pab-menu-head small { font-size: 12px; color: var(--text-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pab-menu-role { align-self: flex-start; font-size: 10.5px; font-weight: 700; padding: 1px 8px; border-radius: 10px; background-color: var(--bg-badge); color: var(--text-2); margin-top: 2px; }
+.pab-menu-item {
+  width: 100%; display: flex; align-items: center; gap: 10px; padding: 10px 12px; min-height: 40px;
+  border: none; border-radius: 10px; background: transparent; color: var(--text-1);
+  font-family: inherit; font-size: 13.5px; cursor: pointer; text-align: left;
+}
+.pab-menu-item i { font-size: 17px; color: var(--text-2); }
+.pab-menu-item:hover, .pab-menu-item:focus-visible { background-color: var(--bg-input); outline: none; }
+.pab-menu-item.danger, .pab-menu-item.danger i { color: #b42318; }
+[data-theme="dark"] .pab-menu-item.danger, [data-theme="dark"] .pab-menu-item.danger i { color: #ff8a80; }
+.pab-menu-sep { border: none; border-top: 1px solid var(--border); margin: 6px 4px; }
+.pab-perfil-top { display: flex; align-items: center; gap: 18px; margin-bottom: 18px; flex-wrap: wrap; }
+.pab-foto-wrap { position: relative; flex-shrink: 0; }
+.pab-foto-cam {
+  position: absolute; right: 0; bottom: 0; width: 38px; height: 38px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 18px;
+  background-color: var(--bg-card); color: var(--c-blue); border: 2px solid var(--c-blue);
+}
+.pab-foto-cam:focus-within { outline: 2px solid var(--c-blue); outline-offset: 2px; }
+.pab-foto-cam input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.pab-perfil-info { min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.pab-perfil-info b { font-size: 17px; color: var(--text-1); overflow-wrap: anywhere; }
+.pab-perfil-info small { font-size: 13px; color: var(--text-2); overflow-wrap: anywhere; }
+.pab-perfil-info .pab-link { align-self: flex-start; }
+.pab-sec-title { font-size: 12px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--text-2); margin: 18px 0 10px; padding-top: 14px; border-top: 1px solid var(--border); }
+.pu-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block; }
+.pu-avatar { overflow: hidden; }
+@media (max-width: 760px) {
+  html.pnite-logado .pnite-auth-btn { padding: 3px; }
+  .pab-chev { display: none !important; } /* sobrepõe a regra de logado no celular: só a foto */
+  .pab-menu { right: auto; left: 0; } /* no celular o botão fica à esquerda: o menu abre para a direita */
+}
+@media (pointer: coarse) {
+  .pab-menu-item { min-height: 44px; }
+  html.pnite-logado .pnite-auth-btn { min-height: 44px; }
+}
 </style>
 
 <script>
@@ -6359,9 +6423,24 @@ window.onerror = function(msg, url, line, col, err) {
         <button class="header-btn pnite-dl-header-btn" id="pniteDlHeaderBtn" type="button" onclick="pniteAbrirDownloads()" aria-label="Downloads">
           <i class="ti ti-download" aria-hidden="true"></i> <span class="pab-label">Downloads</span>
         </button>
-        <button class="header-btn pnite-auth-btn" id="pniteAuthBtn" type="button" onclick="pniteAuthBotao()" aria-label="Entrar na PNITE">
-          <i class="ti ti-login" aria-hidden="true"></i> <span class="pab-label">Entrar</span>
-        </button>
+        <div class="pab-menu-wrap" id="pniteMenuWrap">
+          <button class="header-btn pnite-auth-btn" id="pniteAuthBtn" type="button" onclick="pniteAuthBotao()" aria-label="Entrar na PNITE" aria-controls="pniteUserMenu">
+            <span class="pab-avatar" id="pniteAuthAvatar" aria-hidden="true"></span>
+            <i class="ti ti-login pab-ico-login" aria-hidden="true"></i> <span class="pab-label">Entrar</span>
+            <i class="ti ti-chevron-down pab-chev" aria-hidden="true"></i>
+          </button>
+          <div class="pab-menu" id="pniteUserMenu" role="menu" aria-label="Menu da conta" hidden>
+            <div class="pab-menu-head">
+              <span class="pab-avatar lg" id="pniteMenuAvatar" aria-hidden="true"></span>
+              <div><b id="pniteMenuNome"></b><small id="pniteMenuEmail"></small><span class="pab-menu-role" id="pniteMenuPapel"></span></div>
+            </div>
+            <button type="button" class="pab-menu-item" role="menuitem" onclick="pniteAbrirPerfil()"><i class="ti ti-user-edit" aria-hidden="true"></i> Editar perfil</button>
+            <button type="button" class="pab-menu-item" role="menuitem" id="pniteMenuDl" onclick="pniteAbrirDownloads()" hidden><i class="ti ti-download" aria-hidden="true"></i> Downloads</button>
+            <button type="button" class="pab-menu-item" role="menuitem" id="pniteMenuAdm" onclick="pniteAbrirAdmin()" hidden><i class="ti ti-users" aria-hidden="true"></i> Gerenciar usuários</button>
+            <hr class="pab-menu-sep">
+            <button type="button" class="pab-menu-item danger" role="menuitem" onclick="pniteAuthSair()"><i class="ti ti-logout" aria-hidden="true"></i> Sair</button>
+          </div>
+        </div>
         <button class="header-btn" onclick="openSettingsModal()" title="Configurações e Idioma">
           <i class="ti ti-settings"></i> <span data-i18n="config">Configurações</span>
         </button>
@@ -8028,7 +8107,7 @@ window.onerror = function(msg, url, line, col, err) {
     <div class="smb-sec">
       <div class="smb-sec-title" data-i18n="settings_info_title">Informações da Versão</div>
       <div style="font-size:12px;color:var(--text-2);display:flex;flex-direction:column;gap:4px;margin-top:6px">
-        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.2.3</b></div>
+        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.2.4</b></div>
         <div><span data-i18n="settings_updated">Última Atualização:</span> <b class="pnite-date-val">06/10/2026</b> às <b class="pnite-time-val">21:05</b></div>
         <div><span data-i18n="settings_author">Responsável Técnico:</span> <b class="pnite-author-val">Equipe PNITE</b></div>
       </div>
@@ -8091,18 +8170,37 @@ window.onerror = function(msg, url, line, col, err) {
   </div>
 </div>
 
-<div class="pnite-auth-overlay" id="pniteContaOverlay">
-  <div class="pnite-auth-box" role="dialog" aria-modal="true" aria-labelledby="pniteContaTitle">
+<div class="pnite-auth-overlay" id="pnitePerfilOverlay">
+  <div class="pnite-auth-box" role="dialog" aria-modal="true" aria-labelledby="pnitePerfilTitle">
     <div class="pab-head">
-      <h2 class="pab-title" id="pniteContaTitle">Minha conta</h2>
-      <button type="button" class="pab-close" aria-label="Fechar" onclick="pniteAuthFechar('pniteContaOverlay')"><i class="ti ti-x" aria-hidden="true"></i></button>
+      <h2 class="pab-title" id="pnitePerfilTitle">Editar perfil</h2>
+      <button type="button" class="pab-close" aria-label="Fechar" onclick="pniteAuthFechar('pnitePerfilOverlay')"><i class="ti ti-x" aria-hidden="true"></i></button>
     </div>
-    <dl class="pab-kv" id="pniteContaDados"></dl>
-    <div class="pab-actions">
-      <button type="button" class="pab-btn" id="pniteContaDownloads" onclick="pniteAbrirDownloads()" hidden><i class="ti ti-download" aria-hidden="true"></i> Downloads</button>
-      <button type="button" class="pab-btn" id="pniteContaAdmin" onclick="pniteAbrirAdmin()" hidden><i class="ti ti-users" aria-hidden="true"></i> Gerenciar usuários</button>
-      <button type="button" class="pab-btn pab-btn-danger" onclick="pniteAuthSair()"><i class="ti ti-logout" aria-hidden="true"></i> Sair</button>
-    </div>
+    <form id="pnitePerfilForm" onsubmit="pniteSalvarPerfil(event)" novalidate>
+      <div class="pab-perfil-top">
+        <div class="pab-foto-wrap">
+          <span class="pab-avatar xl" id="pnitePerfilFoto" aria-hidden="true"></span>
+          <label class="pab-foto-cam" title="Trocar foto"><i class="ti ti-camera" aria-hidden="true"></i>
+            <input type="file" id="pnitePerfilArquivo" accept="image/jpeg,image/png,image/webp" aria-label="Escolher foto do perfil" onchange="pnitePerfilFotoEscolhida(this)">
+          </label>
+        </div>
+        <div class="pab-perfil-info">
+          <b id="pnitePerfilNomeTopo"></b>
+          <small id="pnitePerfilEmail"></small>
+          <small id="pnitePerfilPapel"></small>
+          <button type="button" class="pab-link" id="pnitePerfilRemoverFoto" onclick="pnitePerfilRemoverFoto()" hidden>Remover foto</button>
+        </div>
+      </div>
+      <div class="pab-field"><label for="pnitePerfilNome">Nome</label><input class="pab-input" type="text" id="pnitePerfilNome" maxlength="120" autocomplete="name"></div>
+      <div class="pab-sec-title">Alterar senha (opcional)</div>
+      <div class="pab-field"><label for="pnitePerfilSenha">Nova senha</label><input class="pab-input" type="password" id="pnitePerfilSenha" autocomplete="new-password" minlength="8" placeholder="Deixe em branco para manter a atual"></div>
+      <div class="pab-field"><label for="pnitePerfilSenha2">Confirmar nova senha</label><input class="pab-input" type="password" id="pnitePerfilSenha2" autocomplete="new-password" minlength="8"></div>
+      <div class="pab-actions">
+        <button type="submit" class="pab-btn pab-btn-primary" id="pnitePerfilSalvar"><i class="ti ti-device-floppy" aria-hidden="true"></i> Salvar perfil</button>
+        <button type="button" class="pab-btn pab-btn-danger" onclick="pniteAuthSair()"><i class="ti ti-logout" aria-hidden="true"></i> Sair da conta</button>
+      </div>
+      <p class="pab-msg" id="pnitePerfilMsg" role="status" aria-live="polite"></p>
+    </form>
   </div>
 </div>
 
@@ -8254,33 +8352,132 @@ const PNITE_AUTH = (function() {
     raiz.classList.toggle('pnite-logado', !!sessao);
     raiz.classList.toggle('pnite-admin', ehAdmin());
     try { if (currentFront === 'usuarios' && typeof puAbrir === 'function') puAbrir(); } catch (e) {} // currentFront pode estar na zona morta no carregamento
+    const nome = (acesso && acesso.nome) || (sessao && sessao.email ? sessao.email.replace(/@.*/, '') : '');
+    const foto = acesso && acesso.foto;
     const btn = document.getElementById('pniteAuthBtn');
     if (btn) {
       const rot = btn.querySelector('.pab-label');
-      const ico = btn.querySelector('i');
-      if (sessao) {
-        if (rot) rot.textContent = (acesso && acesso.nome) || sessao.email || 'Minha conta';
-        if (ico) ico.className = 'ti ti-user-circle';
-        btn.setAttribute('aria-label', 'Minha conta: ' + (sessao.email || ''));
-      } else {
-        if (rot) rot.textContent = 'Entrar';
-        if (ico) ico.className = 'ti ti-login';
-        btn.setAttribute('aria-label', 'Entrar na PNITE');
-      }
+      if (rot) rot.textContent = sessao ? (nome || 'Minha conta') : 'Entrar';
+      btn.setAttribute('aria-label', sessao ? 'Menu da conta: ' + (sessao.email || '') : 'Entrar na PNITE');
+      if (sessao) btn.setAttribute('aria-haspopup', 'menu'); else btn.removeAttribute('aria-haspopup');
+      btn.setAttribute('aria-expanded', String(!!sessao && !document.getElementById('pniteUserMenu').hidden));
     }
-    const dados = document.getElementById('pniteContaDados');
-    if (dados && sessao) {
-      const papel = acesso ? (acesso.papel === 'admin' ? 'Administrador' : 'Usuário') : 'Sem autorização';
-      const sit = !acesso ? 'Sem autorização' : (acesso.ativo ? 'Ativo' : 'Desativado');
-      dados.innerHTML = '<dt>E-mail</dt><dd>' + escHtml(sessao.email || '—') + '</dd>'
-        + '<dt>Papel</dt><dd>' + escHtml(papel) + '</dd>'
-        + '<dt>Situação</dt><dd>' + escHtml(sit) + '</dd>'
-        + '<dt>Downloads</dt><dd>' + (podeBaixar() ? 'Liberados' : 'Não liberados') + '</dd>';
-    }
-    const bDl = document.getElementById('pniteContaDownloads');
+    ['pniteAuthAvatar', 'pniteMenuAvatar', 'pnitePerfilFoto'].forEach(function(id) {
+      const el = document.getElementById(id);
+      if (el && !(id === 'pnitePerfilFoto' && fotoPendente !== undefined)) el.innerHTML = sessao ? pniteAvatarHtml(nome, sessao.email, foto) : '';
+    });
+    const papel = !acesso ? 'Sem autorização' : (!acesso.ativo ? 'Desativado' : (acesso.papel === 'admin' ? 'Administrador' : 'Usuário'));
+    const setTxt = function(id, v) { const el = document.getElementById(id); if (el) el.textContent = v; };
+    setTxt('pniteMenuNome', nome || '—');
+    setTxt('pniteMenuEmail', sessao ? sessao.email : '');
+    setTxt('pniteMenuPapel', papel + (podeBaixar() ? ' · downloads liberados' : ''));
+    setTxt('pnitePerfilNomeTopo', nome || '—');
+    setTxt('pnitePerfilEmail', sessao ? sessao.email : '');
+    setTxt('pnitePerfilPapel', papel + ' · downloads ' + (podeBaixar() ? 'liberados' : 'não liberados'));
+    const rf = document.getElementById('pnitePerfilRemoverFoto');
+    if (rf) rf.hidden = fotoPendente === null || !(fotoPendente || foto);
+    const bDl = document.getElementById('pniteMenuDl');
     if (bDl) bDl.hidden = !podeBaixar();
-    const bAdm = document.getElementById('pniteContaAdmin');
+    const bAdm = document.getElementById('pniteMenuAdm');
     if (bAdm) bAdm.hidden = !ehAdmin();
+    if (!sessao) fecharMenu();
+  }
+
+  // ---------------- Menu da conta e edição do perfil ----------------
+  let fotoPendente;           // undefined: sem alteração; null: remover; string: nova foto (data URL)
+
+  function abrirMenu() {
+    const m = document.getElementById('pniteUserMenu');
+    if (!m) return;
+    m.hidden = false;
+    document.getElementById('pniteAuthBtn').setAttribute('aria-expanded', 'true');
+    const p = m.querySelector('.pab-menu-item:not([hidden])');
+    if (p) p.focus();
+  }
+  function fecharMenu() {
+    const m = document.getElementById('pniteUserMenu');
+    if (!m || m.hidden) return;
+    m.hidden = true;
+    const b = document.getElementById('pniteAuthBtn');
+    if (b) b.setAttribute('aria-expanded', 'false');
+  }
+  function alternarMenu() { const m = document.getElementById('pniteUserMenu'); if (m && m.hidden) abrirMenu(); else fecharMenu(); }
+
+  function abrirPerfil() {
+    fecharMenu();
+    fotoPendente = undefined;
+    document.getElementById('pnitePerfilNome').value = (acesso && acesso.nome) || '';
+    document.getElementById('pnitePerfilSenha').value = '';
+    document.getElementById('pnitePerfilSenha2').value = '';
+    document.getElementById('pnitePerfilArquivo').value = '';
+    msg('pnitePerfilMsg', '');
+    atualizarUI();
+    abrir('pnitePerfilOverlay');
+  }
+
+  // Recorta no centro e reduz para 256×256 (JPEG), para caber no banco (≤ 200 mil caracteres)
+  function escolherFoto(input) {
+    const f = input.files && input.files[0];
+    if (!f) return;
+    if (!/^image\/(jpeg|png|webp)$/.test(f.type)) { msg('pnitePerfilMsg', 'Use uma imagem JPG, PNG ou WebP.', 'err'); return; }
+    if (f.size > 15 * 1024 * 1024) { msg('pnitePerfilMsg', 'A imagem deve ter até 15 MB.', 'err'); return; }
+    const url = URL.createObjectURL(f);
+    const img = new Image();
+    img.onload = function() {
+      const lado = Math.min(img.naturalWidth, img.naturalHeight);
+      const c = document.createElement('canvas');
+      c.width = 256; c.height = 256;
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, 256, 256);
+      ctx.drawImage(img, (img.naturalWidth - lado) / 2, (img.naturalHeight - lado) / 2, lado, lado, 0, 0, 256, 256);
+      URL.revokeObjectURL(url);
+      fotoPendente = c.toDataURL('image/jpeg', 0.85);
+      document.getElementById('pnitePerfilFoto').innerHTML = pniteAvatarHtml('', '', fotoPendente);
+      const rf = document.getElementById('pnitePerfilRemoverFoto');
+      if (rf) rf.hidden = false;
+      msg('pnitePerfilMsg', 'Foto pronta. Clique em "Salvar perfil" para gravar.');
+    };
+    img.onerror = function() { this.onerror = null; URL.revokeObjectURL(url); msg('pnitePerfilMsg', 'Não foi possível ler a imagem.', 'err'); };
+    img.src = url;
+  }
+
+  function removerFoto() {
+    fotoPendente = null;
+    const nome = document.getElementById('pnitePerfilNome').value.trim() || (acesso && acesso.nome) || '';
+    document.getElementById('pnitePerfilFoto').innerHTML = pniteAvatarHtml(nome, sessao ? sessao.email : '', null);
+    document.getElementById('pnitePerfilRemoverFoto').hidden = true;
+    msg('pnitePerfilMsg', 'A foto será removida ao salvar.');
+  }
+
+  async function salvarPerfil(ev) {
+    ev.preventDefault();
+    const nome = document.getElementById('pnitePerfilNome').value.trim();
+    const s1 = document.getElementById('pnitePerfilSenha').value;
+    const s2 = document.getElementById('pnitePerfilSenha2').value;
+    if (s1 || s2) {
+      if (s1.length < 8) { msg('pnitePerfilMsg', 'A nova senha deve ter pelo menos 8 caracteres.', 'err'); return; }
+      if (s1 !== s2) { msg('pnitePerfilMsg', 'As senhas não conferem.', 'err'); return; }
+    }
+    const btn = document.getElementById('pnitePerfilSalvar');
+    btn.disabled = true;
+    msg('pnitePerfilMsg', 'Salvando…');
+    try {
+      if (acesso) {
+        acesso = await rpc('pnite_atualizar_perfil', { p_nome: nome, p_foto: typeof fotoPendente === 'string' ? fotoPendente : null,
+                                                      p_remover_foto: fotoPendente === null });
+      }
+      if (s1) {
+        const tk = await token();
+        await chamar('/auth/v1/user', { method: 'PUT', body: { password: s1 }, headers: { Authorization: 'Bearer ' + tk } });
+        document.getElementById('pnitePerfilSenha').value = '';
+        document.getElementById('pnitePerfilSenha2').value = '';
+      }
+      fotoPendente = undefined;
+      atualizarUI();
+      msg('pnitePerfilMsg', 'Perfil atualizado' + (s1 ? ' e senha alterada.' : '.'), 'ok');
+    } catch (e) {
+      msg('pnitePerfilMsg', e.message || 'Falha ao salvar o perfil.', 'err');
+    } finally { btn.disabled = false; }
   }
 
   function msg(id, texto, tipo) {
@@ -8373,7 +8570,8 @@ const PNITE_AUTH = (function() {
     gravarSessao(null);
     acesso = null;
     atualizarUI();
-    fechar('pniteContaOverlay');
+    fecharMenu();
+    fechar('pnitePerfilOverlay');
     if (t) { try { await chamar('/auth/v1/logout', { headers: { Authorization: 'Bearer ' + t } }); } catch (e) {} }
   }
 
@@ -8412,19 +8610,32 @@ const PNITE_AUTH = (function() {
 
   return { iniciar: iniciar, abrir: abrir, fechar: fechar, definirModo: definirModo, enviar: enviar, sair: sair,
            podeBaixar: podeBaixar, ehAdmin: ehAdmin, logado: function() { return !!sessao; },
-           email: function() { return sessao ? sessao.email : ''; }, rpc: rpc };
+           email: function() { return sessao ? sessao.email : ''; }, rpc: rpc,
+           alternarMenu: alternarMenu, fecharMenu: fecharMenu, abrirPerfil: abrirPerfil,
+           escolherFoto: escolherFoto, removerFoto: removerFoto, salvarPerfil: salvarPerfil };
 })();
 
 // Funções globais usadas pelos handlers inline
+// Foto do perfil (data URL) ou iniciais do nome/e-mail
+function pniteAvatarHtml(nome, email, foto) {
+  if (foto && /^data:image\/(jpeg|png|webp);base64,/.test(foto)) return '<img src="' + foto + '" alt="">';
+  const base = String(nome || String(email || '?').replace(/@.*/, '')).split(/[\s._-]+/).filter(Boolean);
+  const ini = ((base[0] || '?')[0] + (base.length > 1 ? base[base.length - 1][0] : '')).toUpperCase();
+  return escHtml(ini);
+}
+function pniteAbrirPerfil() { PNITE_AUTH.abrirPerfil(); }
+function pnitePerfilFotoEscolhida(input) { PNITE_AUTH.escolherFoto(input); }
+function pnitePerfilRemoverFoto() { PNITE_AUTH.removerFoto(); }
+function pniteSalvarPerfil(ev) { PNITE_AUTH.salvarPerfil(ev); }
 function pniteAuthBotao() {
-  if (PNITE_AUTH.logado()) PNITE_AUTH.abrir('pniteContaOverlay');
+  if (PNITE_AUTH.logado()) PNITE_AUTH.alternarMenu();
   else { PNITE_AUTH.definirModo('entrar'); PNITE_AUTH.abrir('pniteLoginOverlay'); }
 }
 function pniteAuthModo(m) { PNITE_AUTH.definirModo(m); }
 function pniteAuthEnviar(ev) { PNITE_AUTH.enviar(ev); }
 function pniteAuthFechar(id) { PNITE_AUTH.fechar(id); }
 function pniteAuthSair() { PNITE_AUTH.sair(); }
-function pniteAbrirDownloads() { if (!PNITE_AUTH.podeBaixar()) return; PNITE_AUTH.abrir('pniteDownloadsOverlay'); }
+function pniteAbrirDownloads() { if (!PNITE_AUTH.podeBaixar()) return; PNITE_AUTH.fecharMenu(); PNITE_AUTH.abrir('pniteDownloadsOverlay'); }
 
 // ---------------- v.3.2.3 — Página "Usuários" (somente administrador) ----------------
 const PU_STATE = { lista: [], modo: 'conta', carregando: null, senhaEmail: '' };
@@ -8433,7 +8644,7 @@ function puEl(id) { return document.getElementById(id); }
 function puMsg(id, t, tipo) { const el = puEl(id); if (el) { el.textContent = t || ''; el.className = 'pab-msg' + (tipo ? ' ' + tipo : ''); } }
 
 function pniteAbrirAdmin() {
-  PNITE_AUTH.fechar('pniteContaOverlay');
+  PNITE_AUTH.fecharMenu();
   switchFront('usuarios', puEl('frontTabUsuarios'));
 }
 
@@ -8467,11 +8678,6 @@ async function puCarregar() {
     puRender();
   })();
   return PU_STATE.carregando;
-}
-
-function puIniciais(u) {
-  const base = (u.nome || u.email || '?').replace(/@.*/, '').split(/[\s._-]+/).filter(Boolean);
-  return ((base[0] || '?')[0] + (base.length > 1 ? base[base.length - 1][0] : '')).toUpperCase();
 }
 
 function puData(v) {
@@ -8515,7 +8721,7 @@ function puRender() {
       .concat(!u.ativo ? ['<span class="pu-badge off">Desativado</span>'] : [])
       .concat(proprio ? ['<span class="pu-badge">Você</span>'] : []);
     return '<li class="pu-user' + (u.ativo ? '' : ' inativo') + '" data-email="' + e + '">'
-      + '<div class="pu-id"><span class="pu-avatar" aria-hidden="true">' + escHtml(puIniciais(u)) + '</span>'
+      + '<div class="pu-id"><span class="pu-avatar" aria-hidden="true">' + pniteAvatarHtml(u.nome, u.email, u.foto) + '</span>'
       + '<div class="pu-id-txt"><div class="pu-name">' + escHtml(u.nome || u.email.replace(/@.*/, '')) + '</div>'
       + '<div class="pu-mail" title="' + e + '">' + e + '</div><div class="pu-badges">' + badges.join('') + '</div></div></div>'
       + '<div class="pu-ctrl">'
@@ -8867,10 +9073,12 @@ document.addEventListener('click', function(ev) {
   }
   const t = ev.target;
   if (t && t.classList && t.classList.contains('pnite-auth-overlay')) PNITE_AUTH.fechar(t.id);
+  if (!(t && t.closest && t.closest('#pniteMenuWrap'))) PNITE_AUTH.fecharMenu();
 }, true);
 
 document.addEventListener('keydown', function(ev) {
   if (ev.key !== 'Escape') return;
+  PNITE_AUTH.fecharMenu();
   document.querySelectorAll('.pnite-auth-overlay.open').forEach(function(o) { o.classList.remove('open'); });
 });
 
@@ -8881,7 +9089,7 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.2.3";
+const PNITE_VERSION = "v.3.2.4";
 const PNITE_LAST_UPDATE = "06/11/2026";
 const PNITE_LAST_TIME = "12:00";
 
@@ -16795,12 +17003,13 @@ function processarUploadExcel(event) {
       </div>
     </div>
     <div class="pif-body">
-      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.2.3</strong></div>
+      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.2.4</strong></div>
       <div class="pif-row"><span>Data da alteração:</span><span class="pnite-date-val">22/10/2026</span></div>
       <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">14:00</span></div>
       <div class="pif-row"><span>Responsável técnico:</span><span class="pnite-author-val">Equipe PNITE</span></div>
       <div class="pif-note">
         <i class="ti ti-check" style="color:var(--accent);margin-right:3px"></i>
+        <strong>Foto e perfil (v.3.2.4):</strong> foto do usuário no cabeçalho com menu da conta (Editar perfil, Downloads, Gerenciar usuários e Sair); edição do próprio perfil (foto recortada e reduzida no navegador, nome e senha); fotos também na página de usuários (migração <code>0017_perfil_foto.sql</code>).<br>
         <strong>Página de usuários (v.3.2.3):</strong> nova página "Usuários" (aba visível só ao administrador) para cadastrar contas completas com senha inicial ou apenas autorizar e-mails, buscar e filtrar usuários, alterar papel e downloads, desativar (bloqueio no Supabase Auth), redefinir senha e remover; resumo com totais (migração <code>0016_cadastro_usuarios.sql</code>).<br>
         <strong>Login e downloads (v.3.2.2):</strong> login de usuários do Supabase Auth (somente e-mails autorizados criam conta); usuários com permissão baixam indicadores do escopo e tabelas (XLSX), gráficos (PNG) e o mapa (PNG/SVG); o administrador (morato@ufg.br) gerencia autorizações, papéis e permissões em "Gerenciar acessos" (migração <code>0015_acesso_usuarios.sql</code>).<br>
         <strong>Scripts organizados (v.3.2.1):</strong> o <code>extrair_dados_excel.py</code> passa para a pasta <code>scripts/</code>, com caminhos resolvidos pela raiz do repositório.<br>
@@ -16834,7 +17043,7 @@ function processarUploadExcel(event) {
   </div>
   <button class="pif-btn" id="pifBtn" aria-label="Informações de Versão">
     <i class="ti ti-info-circle"></i>
-    <span class="pif-btn-label pnite-version-val">v.3.2.3</span>
+    <span class="pif-btn-label pnite-version-val">v.3.2.4</span>
   </button>
 </div>
 

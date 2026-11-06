@@ -122,13 +122,13 @@ Tabelas consolidadas por `scripts/extrair_capacitacao.py`, gravadas numa única 
 
 Destino padrão de `scripts/importar_planilha.py` (pasta `upload/`). Hoje está vazio. Cada arquivo vira uma tabela, com tipos inferidos (ver [`upload/README.md`](upload/README.md)).
 
-### 3.6. `acesso` — usuários e permissões (migrações `0015` e `0016`)
+### 3.6. `acesso` — usuários e permissões (migrações `0015` a `0017`)
 
 Login da interface pelo Supabase Auth (`auth.users`). Schema privado, sem `GRANT` a `anon`/`authenticated`; acesso só pelas funções RPC `public.pnite_*`.
 
 | Tabela | Conteúdo |
 |---|---|
-| `autorizacoes` | E-mails autorizados: `nome`, `papel` (`admin`/`usuario`), `pode_baixar`, `ativo`, `atualizado_em`, `atualizado_por` |
+| `autorizacoes` | E-mails autorizados: `nome`, `papel` (`admin`/`usuario`), `pode_baixar`, `ativo`, `foto` (data URL 256×256, até ~150 KB), `atualizado_em`, `atualizado_por` |
 | `perfis` | Vínculo `auth.users.id` → e-mail autorizado (criado pelo gatilho `pnite_ao_criar_usuario`) |
 
 - Só e-mails com autorização ativa conseguem criar conta (o gatilho em `auth.users` recusa os demais).
@@ -140,7 +140,7 @@ Login da interface pelo Supabase Auth (`auth.users`). Schema privado, sem `GRANT
 
 | Tabela | Conteúdo |
 |---|---|
-| `migracoes` | Migrações aplicadas (16) |
+| `migracoes` | Migrações aplicadas (17) |
 | `cargas_log` | Histórico de cada carga: tabela, ano, filtro de UF, linhas e valores inválidos convertidos em NULL |
 | `partes_texto` | Área de trânsito para valores maiores que o limite de uma requisição (ex.: GeoJSON extenso); fica vazia após a carga |
 
@@ -194,7 +194,8 @@ Funções RPC de acesso (`POST /rest/v1/rpc/<nome>`, com `Authorization: Bearer 
 
 | Função | Quem pode | Uso |
 |---|---|---|
-| `pnite_meu_acesso()` | Usuário logado | `{email, nome, papel, pode_baixar, ativo}` da própria conta |
+| `pnite_meu_acesso()` | Usuário logado | `{email, nome, papel, foto, pode_baixar, ativo}` da própria conta |
+| `pnite_atualizar_perfil(p_nome, p_foto, p_remover_foto)` | Usuário logado | Altera o próprio nome e foto |
 | `pnite_admin_listar_usuarios()` | Administrador | Autorizações com situação da conta e último acesso |
 | `pnite_admin_definir_acesso(p_email, p_papel, p_pode_baixar, p_ativo, p_nome)` | Administrador | Cria ou altera uma autorização |
 | `pnite_admin_remover_usuario(p_email)` | Administrador | Remove a autorização e a conta vinculada |
@@ -309,6 +310,7 @@ python scripts/validar_paridade.py
 | `0014_definicoes_unicas` | Definições únicas de km, capacidade, vínculo e código de município |
 | `0015_acesso_usuarios` | Login: autorizações, perfis, papel de administrador e permissão de download |
 | `0016_cadastro_usuarios` | Cadastro de contas e redefinição de senha pela PNITE; bloqueio no Auth de contas desativadas |
+| `0017_perfil_foto` | Foto do usuário e edição do próprio perfil |
 
 ---
 
