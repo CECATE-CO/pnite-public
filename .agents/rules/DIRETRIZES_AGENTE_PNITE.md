@@ -262,6 +262,7 @@ Devem ser interpretados com rigor dentro de TODAS as regras deste documento (esc
 ---
 
 ## 22. PROCESSO OBRIGATÓRIO ANTES DA ALTERAÇÃO
+0. `git pull` — sempre, antes de começar qualquer tarefa, para trabalhar sobre a versão mais recente do repositório (ver §44.1)
 1. `git status` — e confirmar que não há outro processo Git em andamento (ver §44.1)
 2. Verificar branch atual
 3. Verificar versão atual
@@ -341,17 +342,18 @@ TODA alteração no projeto deve gerar uma nova versão sem exceções.
 ---
 
 ## 28. FLUXO OBRIGATÓRIO GIT
-1. `git status`
-2. Arquivar a versão vigente: copiar `PNITE.html` → `old/PNITE [V.X.Y.Z].html` (§3.1)
-3. Editar código em `PNITE.html`
-4. Testar
-5. Verificar `git diff`
-6. Atualizar versão
-7. Testar novamente
-8. `git status`
-9. `git add`
-10. `git commit`
-11. `git push`
+1. `git pull` (antes de iniciar a tarefa)
+2. `git status`
+3. Arquivar a versão vigente: copiar `PNITE.html` → `old/PNITE [V.X.Y.Z].html` (§3.1)
+4. Editar código em `PNITE.html`
+5. Testar
+6. Verificar `git diff`
+7. Atualizar versão
+8. Testar novamente
+9. `git status`
+10. `git add`
+11. `git commit`
+12. `git push`
 
 ---
 
@@ -486,6 +488,7 @@ Para cada solicitação recebida:
 Regras consolidadas a partir da revisão geral da v.2.9.6. Cada item corresponde a um defeito real já encontrado na PNITE e deve ser verificado sempre que o código relacionado for criado ou alterado.
 
 ### 44.1. Git e ambiente
+- **Sempre executar `git pull` antes de começar qualquer tarefa**, para garantir que o trabalho parte da versão mais recente do repositório. Se houver alterações locais não commitadas ou o pull gerar conflito, não forçar: investigar, preservar o trabalho local e resolver o conflito antes de editar.
 - Antes de qualquer operação Git, verificar se há outro processo Git ativo (clone, checkout, download LFS do GitHub Desktop) ou `.git/index.lock` presente. Aguardar a conclusão; nunca apagar o lock nem forçar operações concorrentes.
 - Se o `git status` mostrar exclusão em massa de arquivos que existem no disco, **não** fazer commit: investigar a causa (clone incompleto, índice corrompido) antes de prosseguir.
 - A pasta `data/` fica fora do Git desde a v.3.1.4 (dados brutos com dados pessoais; `.gitignore`): nunca adicioná-la de volta nem copiar seu conteúdo para pastas versionadas. A interface não lê arquivos de `data/`: indicadores e capacitação vêm da API do Supabase, e a malha do mapa da capacitação, da API do IBGE.

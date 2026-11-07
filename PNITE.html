@@ -6369,6 +6369,103 @@ html.pnite-logado .pnite-auth-btn .pab-chev { display: inline-block; }
   .pab-menu-item { min-height: 44px; }
   html.pnite-logado .pnite-auth-btn { min-height: 44px; }
 }
+/* ==========================================================================
+   v.3.2.5 — Gestão › Caminho da Escola, Monitoramento SETE e Administração
+   (componentes compartilhados: .gx-*; usa os tokens dos temas claro/escuro)
+   ========================================================================== */
+.gx-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin: 0 0 16px; padding: 4px; border-radius: 14px; background-color: var(--bg-input); border: 1px solid var(--border); }
+.gx-tab { font-family: inherit; font-size: 13px; font-weight: 600; min-height: 40px; padding: 8px 14px; border: none; border-radius: 10px; cursor: pointer; background: transparent; color: var(--text-2); display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+.gx-tab:hover { color: var(--text-1); background-color: var(--bg-badge); }
+.gx-tab[aria-selected="true"] { background-color: var(--bg-card); color: var(--text-1); box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+.gx-tab:focus-visible, .gx-btn-link:focus-visible { outline: 2px solid var(--c-blue); outline-offset: 2px; }
+.gx-panel[hidden], .gx-page [hidden], .adm-dialog[hidden] { display: none !important; } /* o atributo hidden precisa vencer display de classe */
+.gx-filtros { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(170px, 100%), 1fr)); gap: 10px; align-items: end; background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 14px; margin-bottom: 16px; }
+.gx-filtros .pab-field { margin: 0; min-width: 0; }
+.gx-filtros select, .gx-filtros input { width: 100%; max-width: 100%; min-width: 0; }
+.gx-escopo { font-size: 12.5px; color: var(--text-2); margin: -6px 0 14px; }
+.gx-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(190px, 100%), 1fr)); gap: 12px; margin-bottom: 16px; }
+.gx-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 16px; min-width: 0; }
+.gx-card-lbl { font-size: 12px; font-weight: 600; color: var(--text-2); margin-bottom: 6px; display: flex; gap: 6px; align-items: flex-start; }
+.gx-card-val { font-size: clamp(20px, 2.6vw, 26px); font-weight: 700; color: var(--text-1); line-height: 1.15; overflow-wrap: anywhere; }
+.gx-card-sub { font-size: 11.5px; color: var(--text-2); margin-top: 6px; line-height: 1.45; }
+.gx-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 10.5px; font-weight: 700; letter-spacing: .03em; padding: 2px 8px; border-radius: 999px; background-color: var(--bg-badge); color: var(--text-2); white-space: nowrap; }
+.gx-badge.ok { background-color: #dcf5e8; color: #11643c; }
+.gx-badge.warn { background-color: #fdf1d3; color: #7a4b00; }
+.gx-badge.err { background-color: #fde2e1; color: #9b1c15; }
+.gx-badge.info { background-color: #dcebfb; color: #144f8a; }
+.gx-aviso { display: flex; gap: 10px; align-items: flex-start; font-size: 13px; line-height: 1.5; color: var(--text-1); background-color: var(--bg-input); border: 1px solid var(--border); border-left: 4px solid var(--c-blue); border-radius: 12px; padding: 12px 14px; margin-bottom: 16px; }
+.gx-aviso.warn { border-left-color: #d99a00; }
+.gx-aviso.err { border-left-color: #c0362c; }
+.gx-aviso i { font-size: 18px; flex-shrink: 0; margin-top: 1px; color: var(--c-blue); }
+.gx-aviso.warn i { color: #b07c00; }
+.gx-grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(420px, 100%), 1fr)); gap: 14px; margin-bottom: 16px; }
+.gx-chart-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 16px; min-width: 0; }
+.gx-chart-card h3 { font-size: 14px; font-weight: 700; color: var(--text-1); margin: 0 0 4px; }
+.gx-chart-card p { font-size: 12px; color: var(--text-2); margin: 0 0 10px; }
+.gx-chart { position: relative; height: 280px; min-width: 0; }
+.gx-chart.alto { height: 520px; }
+.gx-chart-card details { margin-top: 10px; font-size: 12.5px; }
+.gx-chart-card summary { cursor: pointer; color: var(--c-blue); font-weight: 600; min-height: 32px; display: flex; align-items: center; }
+.gx-tabela-wrap { overflow-x: auto; max-width: 100%; border: 1px solid var(--border); border-radius: 12px; }
+.gx-tabela-wrap.alta { max-height: 520px; overflow-y: auto; }
+.gx-tabela { width: 100%; border-collapse: collapse; font-size: 12.5px; color: var(--text-1); }
+.gx-tabela th { position: sticky; top: 0; z-index: 1; text-align: left; font-weight: 700; font-size: 11.5px; color: var(--text-2); background-color: var(--bg-badge); padding: 9px 10px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+.gx-tabela td { padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+.gx-tabela tbody tr:nth-child(even) td { background-color: var(--bg-input); }
+.gx-tabela td.num, .gx-tabela th.num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.gx-tabela .gx-vazio { text-align: center; color: var(--text-2); padding: 22px 10px; }
+.gx-toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.gx-toolbar .pu-search { flex: 1 1 260px; }
+.gx-pager { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: flex-end; margin-top: 10px; font-size: 12.5px; color: var(--text-2); }
+.gx-ficha { display: grid; grid-template-columns: minmax(0, 200px) minmax(0, 1fr); gap: 8px 16px; font-size: 13px; margin: 0; }
+.gx-ficha dt { color: var(--text-2); font-weight: 600; }
+.gx-ficha dd { margin: 0; color: var(--text-1); overflow-wrap: anywhere; }
+.gx-estado { text-align: center; color: var(--text-2); font-size: 13.5px; padding: 36px 16px; background: var(--bg-card); border: 1px dashed var(--border-mid); border-radius: 16px; }
+.gx-estado i { display: block; font-size: 30px; color: var(--c-blue); margin-bottom: 8px; }
+.gx-btn-link { background: none; border: none; color: var(--c-blue); font: inherit; font-weight: 600; cursor: pointer; padding: 4px; min-height: 32px; }
+.gx-secao-titulo { font-size: 15px; font-weight: 700; color: var(--text-1); margin: 4px 0 10px; display: flex; align-items: center; gap: 8px; }
+.gx-dl { display: none; }
+html.pnite-pode-baixar .gx-dl { display: inline-flex; }
+/* Monitoramento SETE dentro da frente Transporte */
+.sm-wrap { padding: 0; }
+.sm-wrap .gx-tabs { margin-top: 4px; }
+/* Administração */
+.adm-lista { display: grid; gap: 10px; }
+.adm-item { border: 1px solid var(--border); border-radius: 14px; background-color: var(--bg-input); padding: 12px 14px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px 14px; align-items: center; }
+.adm-item-tit { font-size: 13.5px; font-weight: 700; color: var(--text-1); overflow-wrap: anywhere; }
+.adm-item-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; font-size: 11.5px; color: var(--text-2); align-items: center; }
+.adm-acoes { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; }
+.adm-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 10px 14px; }
+.adm-form .pab-field { margin: 0; min-width: 0; }
+.adm-form .adm-full { grid-column: 1 / -1; }
+.adm-form textarea.pab-input { min-height: 72px; resize: vertical; font-family: inherit; }
+.adm-dialog { position: fixed; inset: 0; z-index: 3000; display: flex; align-items: center; justify-content: center; padding: 20px; background: rgba(9, 16, 28, .55); }
+.adm-dialog-box { width: min(860px, 100%); max-height: calc(100vh - 40px); overflow-y: auto; background: var(--bg-card); border: 1px solid var(--border); border-radius: 18px; padding: 22px; color: var(--text-1); }
+.adm-dialog-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
+.adm-dialog-head h2 { font-size: 18px; margin: 0; }
+.adm-msg { font-size: 13px; margin-top: 10px; min-height: 18px; }
+.adm-msg.err { color: #b42318; }
+.adm-msg.ok { color: #11643c; }
+.adm-json { font-family: ui-monospace, Consolas, monospace; font-size: 11.5px; white-space: pre-wrap; overflow-wrap: anywhere; background-color: var(--bg-input); border: 1px solid var(--border); border-radius: 10px; padding: 10px; max-height: 260px; overflow: auto; margin: 0; }
+html[data-theme="dark"] .gx-badge.ok { background-color: #12392a; color: #7ee2b0; }
+html[data-theme="dark"] .gx-badge.warn { background-color: #3d3013; color: #ffd27a; }
+html[data-theme="dark"] .gx-badge.err { background-color: #441c1a; color: #ffaaa4; }
+html[data-theme="dark"] .gx-badge.info { background-color: #16304d; color: #9fcbff; }
+html[data-theme="dark"] .gx-aviso.warn i { color: #ffd27a; }
+html[data-theme="dark"] .pu-req, html[data-theme="dark"] .adm-msg.err { color: #ff9f97; }
+html[data-theme="dark"] .adm-msg.ok { color: #7ee2b0; }
+@media (max-width: 760px) {
+  .gx-tabs { flex-wrap: nowrap; overflow-x: auto; }
+  .gx-ficha { grid-template-columns: minmax(0, 1fr); }
+  .gx-ficha dt { margin-top: 6px; }
+  .adm-item { grid-template-columns: minmax(0, 1fr); }
+  .adm-acoes { justify-content: flex-start; }
+  .gx-chart.alto { height: 640px; }
+}
+@media (pointer: coarse) {
+  .gx-tab, .gx-btn-link, .gx-chart-card summary { min-height: 44px; }
+}
+.gx-mb { margin-bottom: 16px; }
 </style>
 
 <script>
@@ -6416,6 +6513,9 @@ window.onerror = function(msg, url, line, col, err) {
         <button class="hcn-tab pu-tab-admin" id="frontTabUsuarios" type="button" onclick="switchFront('usuarios', this)">
           <i class="ti ti-users" aria-hidden="true"></i> <span>Usuários</span>
         </button>
+        <button class="hcn-tab pu-tab-admin" id="frontTabAdmin" type="button" onclick="switchFront('admin', this)">
+          <i class="ti ti-shield-lock" aria-hidden="true"></i> <span>Administração</span>
+        </button>
       </nav>
 
       <!-- AÇÕES DO CABEÇALHO: CONFIGURAÇÕES E MODO ESCURO -->
@@ -6437,6 +6537,7 @@ window.onerror = function(msg, url, line, col, err) {
             <button type="button" class="pab-menu-item" role="menuitem" onclick="pniteAbrirPerfil()"><i class="ti ti-user-edit" aria-hidden="true"></i> Editar perfil</button>
             <button type="button" class="pab-menu-item" role="menuitem" id="pniteMenuDl" onclick="pniteAbrirDownloads()" hidden><i class="ti ti-download" aria-hidden="true"></i> Downloads</button>
             <button type="button" class="pab-menu-item" role="menuitem" id="pniteMenuAdm" onclick="pniteAbrirAdmin()" hidden><i class="ti ti-users" aria-hidden="true"></i> Gerenciar usuários</button>
+            <button type="button" class="pab-menu-item" role="menuitem" id="pniteMenuAdmPainel" onclick="pniteAbrirAdministracao()" hidden><i class="ti ti-shield-lock" aria-hidden="true"></i> Administração</button>
             <hr class="pab-menu-sep">
             <button type="button" class="pab-menu-item danger" role="menuitem" onclick="pniteAuthSair()"><i class="ti ti-logout" aria-hidden="true"></i> Sair</button>
           </div>
@@ -7097,20 +7198,143 @@ window.onerror = function(msg, url, line, col, err) {
   </div>
 
   <div class="front-view" id="frontGestao">
-    <div class="front-placeholder-view">
-      <div class="placeholder-card">
-        <div class="placeholder-icon info-icon">
-          <i class="ti ti-info-circle"></i>
+    <div class="pu-page gx-page">
+      <header class="pu-head">
+        <div class="pu-head-text">
+          <span class="pu-eyebrow"><i class="ti ti-briefcase" aria-hidden="true"></i> Gestão › Caminho da Escola</span>
+          <h1 class="pu-title">Programa Caminho da Escola</h1>
+          <p class="pu-sub">Contratações de ônibus escolares a partir da base de contratações do painel do FNDE, recalculadas na PNITE. Os conteúdos aparecem conforme publicados pela administração.</p>
         </div>
-        <div class="placeholder-badge" data-i18n="em_desenvolvimento">Em Desenvolvimento</div>
-        <h2 class="placeholder-title" data-i18n="placeholder_ges_title">Estamos trabalhando para entregar o melhor para você</h2>
-        <p class="placeholder-desc" data-i18n="placeholder_ges_desc">
-          A frente de Indicadores da Gestão reunirá análises sobre custos unitários, regulação contratual, processos licitatórios, prestação de contas e governança institucional do transporte escolar.
-        </p>
-        <button class="placeholder-back-btn" onclick="switchFront('transporte', document.getElementById('frontTabTransporte'))">
-          <i class="ti ti-arrow-left"></i> <span data-i18n="voltar_transporte">Voltar aos Indicadores do Transporte Escolar</span>
-        </button>
+        <div class="pu-head-actions">
+          <button type="button" class="pab-btn" onclick="gxRecarregar()"><i class="ti ti-refresh" aria-hidden="true"></i> Atualizar</button>
+        </div>
+      </header>
+
+      <div class="gx-tabs" role="tablist" aria-label="Páginas do Caminho da Escola">
+        <button type="button" class="gx-tab" role="tab" id="gxTab-contratacoes" aria-controls="gxPainel-contratacoes" aria-selected="true" onclick="gxAba('contratacoes')"><i class="ti ti-bus" aria-hidden="true"></i> Contratação de Ônibus</button>
+        <button type="button" class="gx-tab" role="tab" id="gxTab-detalhe" aria-controls="gxPainel-detalhe" aria-selected="false" onclick="gxAba('detalhe')"><i class="ti ti-table" aria-hidden="true"></i> Detalhamento</button>
+        <button type="button" class="gx-tab" role="tab" id="gxTab-repasses" aria-controls="gxPainel-repasses" aria-selected="false" onclick="gxAba('repasses')"><i class="ti ti-cash" aria-hidden="true"></i> Valores Repassados</button>
+        <button type="button" class="gx-tab" role="tab" id="gxTab-sobre" aria-controls="gxPainel-sobre" aria-selected="false" onclick="gxAba('sobre')"><i class="ti ti-info-circle" aria-hidden="true"></i> Sobre</button>
       </div>
+
+      <form class="gx-filtros" id="gxFiltros" aria-label="Filtros das contratações" onsubmit="event.preventDefault()">
+        <div class="pab-field"><label for="gxF-ano">Ano</label><select class="pab-input form-select" id="gxF-ano" data-gx-filtro="ano" onchange="gxFiltroAlterado(this)"><option value="">Todos</option></select></div>
+        <div class="pab-field"><label for="gxF-regiao">Região</label><select class="pab-input form-select" id="gxF-regiao" data-gx-filtro="regiao" onchange="gxFiltroAlterado(this)"><option value="">Todas</option></select></div>
+        <div class="pab-field"><label for="gxF-uf">UF</label><select class="pab-input form-select" id="gxF-uf" data-gx-filtro="uf" onchange="gxFiltroAlterado(this)"><option value="">Todas</option></select></div>
+        <div class="pab-field"><label for="gxF-esfera">Esfera</label><select class="pab-input form-select" id="gxF-esfera" data-gx-filtro="esfera" onchange="gxFiltroAlterado(this)"><option value="">Todas</option></select></div>
+        <div class="pab-field"><label for="gxF-tipo_veiculo">Tipo de veículo</label><select class="pab-input form-select" id="gxF-tipo_veiculo" data-gx-filtro="tipo_veiculo" onchange="gxFiltroAlterado(this)"><option value="">Todos</option></select></div>
+        <div class="pab-field"><label for="gxF-forma_pagamento">Forma de pagamento</label><select class="pab-input form-select" id="gxF-forma_pagamento" data-gx-filtro="forma_pagamento" onchange="gxFiltroAlterado(this)"><option value="">Todas</option></select></div>
+        <div class="pab-field"><button type="button" class="pab-btn" onclick="gxLimparFiltros()"><i class="ti ti-filter-off" aria-hidden="true"></i> Limpar filtros</button></div>
+      </form>
+      <p class="gx-escopo" id="gxEscopo" aria-live="polite"></p>
+
+      <section class="gx-panel" id="gxPainel-contratacoes" role="tabpanel" aria-labelledby="gxTab-contratacoes">
+        <div id="gxContEstado" class="gx-estado" hidden></div>
+        <div id="gxContApp" hidden>
+          <div id="gxAvisoRec"></div>
+          <div class="gx-cards" id="gxCards"></div>
+          <div class="gx-grid2">
+            <div class="gx-chart-card"><h3>Quantidade contratada por ano</h3><p>Ano da contratação (não é ano de fabricação nem de entrega).</p><div class="gx-chart"><canvas id="gxChAno" role="img" aria-label="Gráfico de colunas da quantidade contratada por ano"></canvas></div><details><summary>Ver dados em tabela</summary><div id="gxTbAno"></div></details></div>
+            <div class="gx-chart-card"><h3>Quantidade por região</h3><p>Região informada na base de contratações.</p><div class="gx-chart"><canvas id="gxChRegiao" role="img" aria-label="Gráfico de barras da quantidade contratada por região"></canvas></div><details><summary>Ver dados em tabela</summary><div id="gxTbRegiao"></div></details></div>
+          </div>
+          <div class="gx-grid2">
+            <div class="gx-chart-card"><h3>Quantidade por tipo de veículo</h3><p>Especificação de origem, sem agrupar transmissão ou acessibilidade.</p><div class="gx-chart alto"><canvas id="gxChTipo" role="img" aria-label="Gráfico de barras da quantidade contratada por tipo de veículo"></canvas></div><details><summary>Ver dados em tabela</summary><div id="gxTbTipo"></div></details></div>
+            <div class="gx-chart-card"><h3>Quantidade por UF</h3><p>UF informada na base (inclui registros de esfera estadual e federal).</p><div class="gx-chart alto"><canvas id="gxChUf" role="img" aria-label="Gráfico de barras da quantidade contratada por UF"></canvas></div><details><summary>Ver dados em tabela</summary><div id="gxTbUf"></div></details></div>
+          </div>
+          <div class="gx-chart-card gx-mb"><h3>Quantidade por esfera administrativa</h3><div class="gx-chart"><canvas id="gxChEsfera" role="img" aria-label="Gráfico de barras da quantidade contratada por esfera"></canvas></div><details><summary>Ver dados em tabela</summary><div id="gxTbEsfera"></div></details></div>
+          <div class="gx-chart-card">
+            <h3>Entidades com maior quantidade contratada</h3>
+            <p>Até 100 entidades no recorte. O nome da entidade é texto de origem, não identificador nacional único.</p>
+            <div class="gx-tabela-wrap alta" id="gxEntidades"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="gx-panel" id="gxPainel-detalhe" role="tabpanel" aria-labelledby="gxTab-detalhe" hidden>
+        <div id="gxDetEstado" class="gx-estado" hidden></div>
+        <div id="gxDetApp" hidden>
+          <div class="gx-toolbar">
+            <div class="pu-search"><i class="ti ti-search" aria-hidden="true"></i><input class="pab-input" type="search" id="gxDetBusca" placeholder="Buscar entidade, município, fornecedor, processo, termo ou pregão" aria-label="Buscar nas contratações" oninput="gxDetBuscar()"></div>
+            <select class="pab-input form-select" id="gxDetOrdem" aria-label="Ordenar contratações" onchange="gxDetPagina(1)">
+              <option value="data_desc">Mais recentes</option><option value="data_asc">Mais antigas</option>
+              <option value="valor_desc">Maior valor total</option><option value="qtd_desc">Maior quantidade</option><option value="entidade">Entidade (A–Z)</option>
+            </select>
+            <button type="button" class="pab-btn gx-dl" onclick="gxDetExportar()"><i class="ti ti-file-spreadsheet" aria-hidden="true"></i> Exportar recorte (CSV)</button>
+          </div>
+          <p class="gx-escopo" id="gxDetResumo" aria-live="polite"></p>
+          <div class="gx-tabela-wrap alta" id="gxDetTabela"></div>
+          <div class="gx-pager">
+            <span id="gxDetPagInfo"></span>
+            <button type="button" class="pab-btn" id="gxDetAnt" onclick="gxDetPagina(GX.det.pagina - 1)" aria-label="Página anterior"><i class="ti ti-chevron-left" aria-hidden="true"></i></button>
+            <button type="button" class="pab-btn" id="gxDetProx" onclick="gxDetPagina(GX.det.pagina + 1)" aria-label="Próxima página"><i class="ti ti-chevron-right" aria-hidden="true"></i></button>
+          </div>
+          <p class="gx-escopo" id="gxDetMsg" aria-live="polite"></p>
+        </div>
+      </section>
+
+      <section class="gx-panel" id="gxPainel-repasses" role="tabpanel" aria-labelledby="gxTab-repasses" hidden>
+        <div class="gx-aviso warn"><i class="ti ti-alert-triangle" aria-hidden="true"></i><div><b>Valores pagos: fonte pendente.</b> Os repasses vêm da base de pagamentos (SIGEF), que ainda não foi integrada à PNITE. O valor contratado não substitui o valor pago, por isso nenhum valor de repasse é calculado aqui.</div></div>
+        <div id="gxRepEstado" class="gx-estado" hidden></div>
+        <div id="gxRepApp" hidden></div>
+      </section>
+
+      <section class="gx-panel" id="gxPainel-sobre" role="tabpanel" aria-labelledby="gxTab-sobre" hidden>
+        <div class="gx-chart-card gx-mb">
+          <h3>Sobre o módulo</h3>
+          <p>Migração nativa do painel “Programa Caminho da Escola” (FNDE/MEC, versão 4.1; área de negócio DIRAE e área técnica DIRTI; contato paineis@fnde.gov.br). O programa busca garantir o acesso diário e a permanência de estudantes da zona rural e ribeirinhos na educação básica pública.</p>
+          <dl class="gx-ficha" id="gxSobreFicha"></dl>
+        </div>
+        <div class="gx-aviso"><i class="ti ti-info-circle" aria-hidden="true"></i><div>A base registra <b>contratações</b> (quantidade e valor). Ela não informa entrega, aceite, operação ou baixa dos veículos, nem valores efetivamente pagos. Embarcações e bicicletas não aparecem nos dados examinados e por isso não têm séries.</div></div>
+        <div class="gx-aviso"><i class="ti ti-hourglass" aria-hidden="true"></i><div>Outras análises da frente Gestão (custos unitários, regulação contratual, licitações, prestação de contas e governança) continuam em desenvolvimento.</div></div>
+      </section>
+    </div>
+  </div>
+
+  <div class="front-view" id="frontAdmin">
+    <div class="pu-page gx-page">
+      <header class="pu-head">
+        <div class="pu-head-text">
+          <span class="pu-eyebrow"><i class="ti ti-shield-lock" aria-hidden="true"></i> Administração</span>
+          <h1 class="pu-title">Administração da PNITE</h1>
+          <p class="pu-sub">Indicadores, fontes de dados, publicações, qualidade e auditoria. Cada ação é conferida no banco (administrador ativo) e registrada na trilha de auditoria.</p>
+        </div>
+        <div class="pu-head-actions">
+          <button type="button" class="pab-btn" onclick="admCarregar()"><i class="ti ti-refresh" aria-hidden="true"></i> Atualizar</button>
+          <button type="button" class="pab-btn" onclick="switchFront('transporte', document.getElementById('frontTabTransporte'))"><i class="ti ti-arrow-left" aria-hidden="true"></i> Voltar à plataforma</button>
+        </div>
+      </header>
+
+      <section class="pu-lock" id="admLock" hidden>
+        <div class="pu-lock-icon"><i class="ti ti-lock" aria-hidden="true"></i></div>
+        <h2 class="pu-lock-title">Área restrita ao administrador</h2>
+        <p class="pu-sub" id="admLockMsg">Entre com uma conta de administrador.</p>
+        <button type="button" class="pab-btn pab-btn-primary" onclick="pniteAuthBotao()"><i class="ti ti-login" aria-hidden="true"></i> Entrar</button>
+      </section>
+
+      <div id="admApp" hidden>
+        <div class="gx-tabs" role="tablist" aria-label="Seções da administração">
+          <button type="button" class="gx-tab" role="tab" id="admTab-visao" aria-controls="admPainel" aria-selected="true" onclick="admAba('visao')"><i class="ti ti-layout-dashboard" aria-hidden="true"></i> Visão geral</button>
+          <button type="button" class="gx-tab" role="tab" id="admTab-indicadores" aria-controls="admPainel" aria-selected="false" onclick="admAba('indicadores')"><i class="ti ti-chart-dots" aria-hidden="true"></i> Indicadores</button>
+          <button type="button" class="gx-tab" role="tab" id="admTab-cargas" aria-controls="admPainel" aria-selected="false" onclick="admAba('cargas')"><i class="ti ti-database-import" aria-hidden="true"></i> Fontes e cargas</button>
+          <button type="button" class="gx-tab" role="tab" id="admTab-publicacoes" aria-controls="admPainel" aria-selected="false" onclick="admAba('publicacoes')"><i class="ti ti-world-upload" aria-hidden="true"></i> Publicações</button>
+          <button type="button" class="gx-tab" role="tab" id="admTab-qualidade" aria-controls="admPainel" aria-selected="false" onclick="admAba('qualidade')"><i class="ti ti-checklist" aria-hidden="true"></i> Qualidade de dados</button>
+          <button type="button" class="gx-tab" role="tab" id="admTab-auditoria" aria-controls="admPainel" aria-selected="false" onclick="admAba('auditoria')"><i class="ti ti-history" aria-hidden="true"></i> Auditoria</button>
+          <button type="button" class="gx-tab" onclick="switchFront('usuarios', document.getElementById('frontTabUsuarios'))"><i class="ti ti-users" aria-hidden="true"></i> Usuários e acessos</button>
+        </div>
+        <div id="admPainel" role="tabpanel" aria-labelledby="admTab-visao"></div>
+        <p class="adm-msg" id="admMsg" role="status" aria-live="polite"></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="adm-dialog" id="admDialog" role="dialog" aria-modal="true" aria-labelledby="admDialogTitulo" hidden>
+    <div class="adm-dialog-box">
+      <div class="adm-dialog-head">
+        <h2 id="admDialogTitulo"></h2>
+        <button type="button" class="pu-icon-btn" onclick="admFecharDialogo()" aria-label="Fechar"><i class="ti ti-x" aria-hidden="true"></i></button>
+      </div>
+      <div id="admDialogCorpo"></div>
+      <p class="adm-msg" id="admDialogMsg" role="status" aria-live="polite"></p>
     </div>
   </div>
 
@@ -7147,6 +7371,10 @@ window.onerror = function(msg, url, line, col, err) {
       <a href="#secMapa" class="sidebar-item" data-sec="secMapa" onclick="navToSection(event, 'secMapa')">
         <i class="ti ti-map-2"></i>
         <span data-i18n="sidebar_mapa">Mapa dos Indicadores</span>
+      </a>
+      <a href="#secMonitoramento" class="sidebar-item" data-sec="secMonitoramento" onclick="navToSection(event, 'secMonitoramento')">
+        <i class="ti ti-device-desktop-analytics" aria-hidden="true"></i>
+        <span>Monitoramento SETE</span>
       </a>
     </nav>
   </aside>
@@ -7989,6 +8217,57 @@ window.onerror = function(msg, url, line, col, err) {
       </section>
 </div><!-- /#page-secMapa -->
 
+      <div class="pnite-module-page" id="page-secMonitoramento">
+<section class="sec-card-standard sm-wrap gx-page" id="secMonitoramento">
+        <div class="sec-header-standard">
+          <div class="sec-badge">09</div>
+          <div>
+            <div class="sec-title">Monitoramento SETE</div>
+            <div class="sec-sub">Cadastro do transporte escolar no SETE (Sistema Eletrônico de Gestão do Transporte Escolar) por região, UF e município, calculado pela PNITE a partir da base SETE carregada.</div>
+          </div>
+        </div>
+
+        <div class="gx-aviso"><i class="ti ti-info-circle" aria-hidden="true"></i><div>Os dados são os <b>registrados pelos entes no SETE</b> e podem não refletir integralmente a realidade: o cadastro não comprova, por si, frota em operação nem atendimento de todos os estudantes. Quando publicada pela administração, a fotografia do painel do FNDE aparece ao lado, com data e origem próprias. As duas fontes não são somadas.</div></div>
+
+        <div class="gx-tabs" role="tablist" aria-label="Páginas do Monitoramento SETE">
+          <button type="button" class="gx-tab" role="tab" id="smTab-gerais" aria-controls="smPainel" aria-selected="true" onclick="smAba('gerais')"><i class="ti ti-layout-dashboard" aria-hidden="true"></i> Indicadores Gerais</button>
+          <button type="button" class="gx-tab" role="tab" id="smTab-alunos" aria-controls="smPainel" aria-selected="false" onclick="smAba('alunos')"><i class="ti ti-users" aria-hidden="true"></i> Alunos</button>
+          <button type="button" class="gx-tab" role="tab" id="smTab-veiculos" aria-controls="smPainel" aria-selected="false" onclick="smAba('veiculos')"><i class="ti ti-bus" aria-hidden="true"></i> Veículos</button>
+          <button type="button" class="gx-tab" role="tab" id="smTab-rotas" aria-controls="smPainel" aria-selected="false" onclick="smAba('rotas')"><i class="ti ti-route" aria-hidden="true"></i> Rotas</button>
+          <button type="button" class="gx-tab" role="tab" id="smTab-sobre" aria-controls="smPainel" aria-selected="false" onclick="smAba('sobre')"><i class="ti ti-info-circle" aria-hidden="true"></i> Sobre</button>
+        </div>
+
+        <form class="gx-filtros" aria-label="Filtros territoriais do Monitoramento SETE" onsubmit="event.preventDefault()">
+          <div class="pab-field"><label for="smF-regiao">Região</label><select class="pab-input form-select" id="smF-regiao" onchange="smFiltro('regiao', this.value)"><option value="">Todas</option></select></div>
+          <div class="pab-field"><label for="smF-uf">UF</label><select class="pab-input form-select" id="smF-uf" onchange="smFiltro('uf', this.value)"><option value="">Todas</option></select></div>
+          <div class="pab-field"><label for="smF-mun">Município</label><select class="pab-input form-select" id="smF-mun" onchange="smFiltro('mun', this.value)" disabled><option value="">Selecione uma UF</option></select></div>
+          <div class="pab-field"><button type="button" class="pab-btn" onclick="smLimpar()"><i class="ti ti-filter-off" aria-hidden="true"></i> Limpar filtros</button></div>
+        </form>
+        <p class="gx-escopo" id="smEscopo" aria-live="polite"></p>
+
+        <div id="smPainel" role="tabpanel" aria-labelledby="smTab-gerais">
+          <div class="gx-estado" id="smEstado"><i class="ti ti-loader-2" aria-hidden="true"></i>Carregando dados do SETE…</div>
+          <div id="smApp" hidden>
+            <div class="gx-cards" id="smCards"></div>
+            <div class="gx-grid2" id="smGraficos">
+              <div class="gx-chart-card"><h3 id="smCh1Tit"></h3><p id="smCh1Sub"></p><div class="gx-chart"><canvas id="smCh1" role="img"></canvas></div><details><summary>Ver dados em tabela</summary><div id="smTb1"></div></details></div>
+              <div class="gx-chart-card"><h3 id="smCh2Tit"></h3><p id="smCh2Sub"></p><div class="gx-chart"><canvas id="smCh2" role="img"></canvas></div><details><summary>Ver dados em tabela</summary><div id="smTb2"></div></details></div>
+            </div>
+            <div class="gx-chart-card gx-mb" id="smTabelaCard"><h3 id="smTabTit"></h3><p id="smTabSub"></p><div class="gx-tabela-wrap alta" id="smTabela"></div></div>
+            <div id="smSnapshot"></div>
+          </div>
+          <div id="smSobre" hidden>
+            <div class="gx-chart-card gx-mb">
+              <h3>Sobre o módulo</h3>
+              <p>Migração do painel “Acompanhamento SETE” (FNDE/MEC, versão 4.0; área de negócio DIRAE e área técnica DIRTI; contato paineis@fnde.gov.br). O SETE apoia o acompanhamento de estudantes, rotas, frota e custos do transporte escolar.</p>
+              <dl class="gx-ficha" id="smSobreFicha"></dl>
+            </div>
+            <div class="gx-aviso warn"><i class="ti ti-alert-triangle" aria-hidden="true"></i><div><b>Pendências metodológicas.</b> (1) “Registrado no SETE” e “com/sem dados” do painel FNDE dependem de uma base de adesão que a PNITE não possui; aqui se mostram municípios <i>com dados na base carregada</i>. (2) O snapshot FNDE traz 894 “com dados” e 4.184 “sem dados”, o inverso aparente da tela observada (4.185 e 893): esses rótulos não foram migrados. (3) Os tipos de rota são exibidos pelo código SETE (1, 2 e 3); a correspondência de nomes está em revisão, porque o total do código 3 (4.578) coincide com “Aquaviária” no painel FNDE, enquanto a PNITE trata o código 2 como hidroviário (PRHM).</div></div>
+          </div>
+        </div>
+      </section>
+</div><!-- /#page-secMonitoramento -->
+
 
     </div>
   </div> <!-- FECHA .pnite-layout-wrap -->
@@ -8093,21 +8372,14 @@ window.onerror = function(msg, url, line, col, err) {
           </ul>
         </details>
 
-        <!-- CARREGAMENTO MANUAL DE PLANILHA VIA BROWSER -->
-        <div style="margin-top:10px;padding-top:10px;border-top:1px dashed var(--border)">
-          <label for="inputUploadExcel" style="display:block;font-size:11px;font-weight:600;color:var(--text-1);margin-bottom:4px">
-            <i class="ti ti-upload"></i> Importar ou Atualizar Planilha Excel (.xlsx) pelo Navegador:
-          </label>
-          <input type="file" id="inputUploadExcel" accept=".xlsx,.xls" onchange="processarUploadExcel(event)" style="font-size:11px;color:var(--text-2);max-width:100%" />
-          <div id="excelUploadFeedback" style="margin-top:4px;font-size:11px"></div>
-        </div>
+        <p class="gx-escopo" style="margin-top:10px">Novas bases são carregadas e ativadas pela administração (Administração › Fontes e cargas); esta área mostra apenas a origem dos dados.</p>
       </div>
     </div>
 
     <div class="smb-sec">
       <div class="smb-sec-title" data-i18n="settings_info_title">Informações da Versão</div>
       <div style="font-size:12px;color:var(--text-2);display:flex;flex-direction:column;gap:4px;margin-top:6px">
-        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.2.4</b></div>
+        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.2.5</b></div>
         <div><span data-i18n="settings_updated">Última Atualização:</span> <b class="pnite-date-val">06/10/2026</b> às <b class="pnite-time-val">21:05</b></div>
         <div><span data-i18n="settings_author">Responsável Técnico:</span> <b class="pnite-author-val">Equipe PNITE</b></div>
       </div>
@@ -8351,7 +8623,7 @@ const PNITE_AUTH = (function() {
     raiz.classList.toggle('pnite-pode-baixar', podeBaixar());
     raiz.classList.toggle('pnite-logado', !!sessao);
     raiz.classList.toggle('pnite-admin', ehAdmin());
-    try { if (currentFront === 'usuarios' && typeof puAbrir === 'function') puAbrir(); } catch (e) {} // currentFront pode estar na zona morta no carregamento
+    try { if (currentFront === 'usuarios' && typeof puAbrir === 'function') puAbrir(); if (currentFront === 'admin' && typeof admAbrir === 'function') admAbrir(); } catch (e) {} // currentFront pode estar na zona morta no carregamento
     const nome = (acesso && acesso.nome) || (sessao && sessao.email ? sessao.email.replace(/@.*/, '') : '');
     const foto = acesso && acesso.foto;
     const btn = document.getElementById('pniteAuthBtn');
@@ -8380,6 +8652,8 @@ const PNITE_AUTH = (function() {
     if (bDl) bDl.hidden = !podeBaixar();
     const bAdm = document.getElementById('pniteMenuAdm');
     if (bAdm) bAdm.hidden = !ehAdmin();
+    const bAdmP = document.getElementById('pniteMenuAdmPainel');
+    if (bAdmP) bAdmP.hidden = !ehAdmin();
     if (!sessao) fecharMenu();
   }
 
@@ -8646,6 +8920,11 @@ function puMsg(id, t, tipo) { const el = puEl(id); if (el) { el.textContent = t 
 function pniteAbrirAdmin() {
   PNITE_AUTH.fecharMenu();
   switchFront('usuarios', puEl('frontTabUsuarios'));
+}
+
+function pniteAbrirAdministracao() {
+  PNITE_AUTH.fecharMenu();
+  switchFront('admin', document.getElementById('frontTabAdmin'));
 }
 
 // Chamado por switchFront('usuarios') e quando a sessão muda
@@ -9089,7 +9368,7 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.2.4";
+const PNITE_VERSION = "v.3.2.5";
 const PNITE_LAST_UPDATE = "06/11/2026";
 const PNITE_LAST_TIME = "12:00";
 
@@ -14986,6 +15265,12 @@ function switchFront(frontId, navBtn) {
   } else if (frontId === 'gestao') {
     const el = document.getElementById('frontGestao');
     if (el) el.classList.add('active');
+    gxIniciar();
+  } else if (frontId === 'admin') {
+    const el = document.getElementById('frontAdmin');
+    if (el) el.classList.add('active');
+    window.scrollTo(0, 0);
+    admAbrir();
   } else if (frontId === 'usuarios') {
     const el = document.getElementById('frontUsuarios');
     if (el) el.classList.add('active');
@@ -14993,6 +15278,901 @@ function switchFront(frontId, navBtn) {
     puAbrir();
   }
 }
+
+// ==========================================================================
+// v.3.2.5 — API pública (RPC anônima), Gestão › Caminho da Escola,
+// Monitoramento SETE e Administração (catálogo, cargas, publicações, auditoria)
+// ==========================================================================
+
+// RPC pública (chave publishable; só funções liberadas a anon). Reaproveita a
+// promessa em andamento para a mesma chamada (§44.3).
+const PNITE_RPC_PENDENTES = new Map();
+function pniteApiRpc(nome, args) {
+  const c = window.PNITE_CONFIG || {};
+  if (!c.supabaseUrl || !c.publishableKey) return Promise.reject(new Error('API não configurada (config.local.js ausente)'));
+  const corpo = JSON.stringify(args || {});
+  const chave = nome + '|' + corpo;
+  if (PNITE_RPC_PENDENTES.has(chave)) return PNITE_RPC_PENDENTES.get(chave);
+  const p = fetch(String(c.supabaseUrl).replace(/\/$/, '') + '/rest/v1/rpc/' + nome, {
+    method: 'POST', body: corpo,
+    headers: { apikey: c.publishableKey, 'Content-Type': 'application/json', Accept: 'application/json' }
+  }).then(function(r) {
+    return r.text().then(function(t) {
+      let j = null;
+      try { j = t ? JSON.parse(t) : null; } catch (e) { j = null; }
+      if (!r.ok) throw new Error((j && (j.message || j.hint)) || ('HTTP ' + r.status));
+      return j;
+    });
+  }).finally(function() { PNITE_RPC_PENDENTES.delete(chave); });
+  PNITE_RPC_PENDENTES.set(chave, p);
+  return p;
+}
+
+// Formatação (ausência = "—", nunca 0)
+function gxNum(v, casas) {
+  if (v == null || v === '' || Number.isNaN(Number(v))) return '—';
+  return Number(v).toLocaleString('pt-BR', { minimumFractionDigits: casas || 0, maximumFractionDigits: casas || 0 });
+}
+function gxBRL(v) {
+  if (v == null || v === '' || Number.isNaN(Number(v))) return '—';
+  return Number(v).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
+function gxBRLCurto(v) {
+  if (v == null || Number.isNaN(Number(v))) return '—';
+  const n = Number(v), a = Math.abs(n);
+  if (a >= 1e9) return 'R$ ' + (n / 1e9).toLocaleString('pt-BR', { maximumFractionDigits: 2 }) + ' bi';
+  if (a >= 1e6) return 'R$ ' + (n / 1e6).toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + ' mi';
+  return gxBRL(n);
+}
+function gxData(v) {
+  if (!v) return '—';
+  const d = new Date(String(v).length === 10 ? v + 'T12:00:00' : v);
+  return Number.isNaN(d.getTime()) ? escHtml(String(v)) : d.toLocaleDateString('pt-BR');
+}
+function gxDataHora(v) {
+  if (!v) return '—';
+  const d = new Date(v);
+  return Number.isNaN(d.getTime()) ? '—' : d.toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
+}
+function gxCor(nome, padrao) {
+  const v = getComputedStyle(document.documentElement).getPropertyValue(nome).trim();
+  return v || padrao;
+}
+function gxCard(lbl, val, sub, badge) {
+  return '<div class="gx-card"><div class="gx-card-lbl"><span>' + escHtml(lbl) + '</span>' + (badge || '') + '</div>' +
+    '<div class="gx-card-val">' + val + '</div>' + (sub ? '<div class="gx-card-sub">' + sub + '</div>' : '') + '</div>';
+}
+function gxEstado(el, icone, html) {
+  el.innerHTML = '<i class="ti ti-' + icone + '" aria-hidden="true"></i>' + html;
+  el.hidden = false;
+}
+// Tabela simples (alternativa acessível aos gráficos)
+function gxTabelaHtml(cols, linhas) {
+  if (!linhas.length) return '<table class="gx-tabela"><tbody><tr><td class="gx-vazio">Sem dados no recorte.</td></tr></tbody></table>';
+  return '<table class="gx-tabela"><thead><tr>' + cols.map(function(c) {
+    return '<th scope="col"' + (c.num ? ' class="num"' : '') + '>' + escHtml(c.t) + '</th>';
+  }).join('') + '</tr></thead><tbody>' + linhas.map(function(l) {
+    return '<tr>' + cols.map(function(c) {
+      const v = c.f ? c.f(l) : escHtml(l[c.k] == null ? '—' : String(l[c.k]));
+      return '<td' + (c.num ? ' class="num"' : '') + '>' + v + '</td>';
+    }).join('') + '</tr>';
+  }).join('') + '</tbody></table>';
+}
+
+// Gráfico de barras reutilizável: destrói a instância anterior (§44.3)
+function gxGrafico(registro, chave, canvasId, rotulos, valores, opcoes) {
+  const el = document.getElementById(canvasId);
+  if (!el || typeof Chart === 'undefined') return;
+  if (registro[chave]) { registro[chave].destroy(); registro[chave] = null; }
+  const o = opcoes || {};
+  const txt = gxCor('--text-2', '#5a5f6a'), grade = gxCor('--border', '#e4e6ea');
+  const cor = o.cor || gxCor('--c-blue', '#2589F4');
+  registro[chave] = new Chart(el, {
+    type: o.tipo || 'bar',
+    data: { labels: rotulos, datasets: [{ label: o.rotulo || 'Valor', data: valores,
+      backgroundColor: o.cores || cor, borderRadius: o.tipo === 'doughnut' ? 0 : 4, maxBarThickness: 38 }] },
+    options: {
+      responsive: true, maintainAspectRatio: false, indexAxis: o.horizontal ? 'y' : 'x', animation: { duration: 300 },
+      plugins: { legend: { display: o.tipo === 'doughnut', labels: { color: txt } },
+        tooltip: { callbacks: { label: function(ctx) {
+          const v = o.horizontal ? ctx.parsed.x : (o.tipo === 'doughnut' ? ctx.parsed : ctx.parsed.y);
+          return ' ' + (o.fmt ? o.fmt(v) : gxNum(v));
+        } } } },
+      scales: o.tipo === 'doughnut' ? {} : {
+        x: { ticks: Object.assign({ color: txt, autoSkip: !o.horizontal }, o.horizontal ? { callback: function(v) { return o.fmtEixo ? o.fmtEixo(v) : gxNum(v); } } : {}), grid: { color: grade } },
+        y: { ticks: { color: txt, autoSkip: false, callback: o.horizontal ? function(v) {
+              const l = String(this.getLabelForValue(v)); return l.length > 46 ? l.slice(0, 44) + '…' : l; } : function(v) { return o.fmtEixo ? o.fmtEixo(v) : gxNum(v); } },
+             grid: { color: grade } }
+      }
+    }
+  });
+}
+
+// --------------------------------------------------------------------------
+// GESTÃO › CAMINHO DA ESCOLA
+// --------------------------------------------------------------------------
+const GX = { aba: 'contratacoes', filtros: {}, painel: null, charts: {}, seq: 0, dominios: null,
+  det: { pagina: 1, tamanho: 25, total: 0, seq: 0, timer: null, publicado: null }, rep: null };
+
+function gxIniciar() { gxAba(GX.aba); }
+function gxRecarregar() { GX.painel = null; GX.rep = null; gxAba(GX.aba); }
+
+function gxAba(nome) {
+  GX.aba = nome;
+  ['contratacoes', 'detalhe', 'repasses', 'sobre'].forEach(function(a) {
+    const t = document.getElementById('gxTab-' + a), p = document.getElementById('gxPainel-' + a);
+    if (t) { t.setAttribute('aria-selected', String(a === nome)); t.tabIndex = a === nome ? 0 : -1; }
+    if (p) p.hidden = a !== nome;
+  });
+  const filtros = document.getElementById('gxFiltros');
+  if (filtros) filtros.hidden = !(nome === 'contratacoes' || nome === 'detalhe');
+  if (nome === 'contratacoes') gxCarregarPainel();
+  else if (nome === 'detalhe') gxDetPagina(1);
+  else if (nome === 'repasses') gxCarregarRepasses();
+  else if (nome === 'sobre') gxRenderSobre();
+}
+
+function gxFiltroAlterado(sel) {
+  const k = sel.getAttribute('data-gx-filtro');
+  if (sel.value) GX.filtros[k] = k === 'ano' ? parseInt(sel.value, 10) : sel.value; else delete GX.filtros[k];
+  if (GX.aba === 'detalhe') gxDetPagina(1); else gxCarregarPainel();
+}
+function gxLimparFiltros() {
+  GX.filtros = {};
+  document.querySelectorAll('#gxFiltros select').forEach(function(s) { s.value = ''; });
+  if (GX.aba === 'detalhe') gxDetPagina(1); else gxCarregarPainel();
+}
+function gxDescreverFiltros() {
+  const nomes = { ano: 'Ano', regiao: 'Região', uf: 'UF', esfera: 'Esfera', tipo_veiculo: 'Tipo', forma_pagamento: 'Pagamento' };
+  const partes = Object.keys(GX.filtros).map(function(k) { return nomes[k] + ': ' + GX.filtros[k]; });
+  return partes.length ? 'Recorte — ' + partes.join(' · ') : 'Recorte — todas as contratações da base';
+}
+function gxPreencherDominios(dom) {
+  if (!dom || GX.dominios) return;
+  GX.dominios = dom;
+  Object.keys(dom).forEach(function(k) {
+    const sel = document.getElementById('gxF-' + k);
+    if (!sel || !Array.isArray(dom[k])) return;
+    sel.insertAdjacentHTML('beforeend', dom[k].map(function(v) {
+      return '<option value="' + escHtml(String(v)) + '">' + escHtml(String(v)) + '</option>';
+    }).join(''));
+  });
+}
+
+async function gxCarregarPainel() {
+  const s = ++GX.seq;
+  const est = document.getElementById('gxContEstado'), app = document.getElementById('gxContApp');
+  const esc = document.getElementById('gxEscopo');
+  if (esc) esc.textContent = gxDescreverFiltros();
+  if (!GX.painel) gxEstado(est, 'loader-2', 'Carregando contratações…');
+  let d;
+  try { d = await pniteApiRpc('pnite_ce_painel', { p_filtros: GX.filtros }); }
+  catch (e) {
+    if (s !== GX.seq || GX.aba !== 'contratacoes') return;
+    app.hidden = true; gxEstado(est, 'cloud-off', 'Não foi possível carregar as contratações. ' + escHtml(e.message));
+    return;
+  }
+  if (s !== GX.seq || GX.aba !== 'contratacoes') return;   // estado mudou durante a espera
+  if (!d || !d.publicado) {
+    app.hidden = true;
+    gxEstado(est, 'eye-off', '<b>Painel ainda não publicado.</b><br>O painel de contratações ficará disponível quando a administração publicá-lo.');
+    return;
+  }
+  GX.painel = d; est.hidden = true; app.hidden = false;
+  gxPreencherDominios(d.dominios);
+  gxRenderPainel(d);
+}
+
+function gxRenderPainel(d) {
+  const t = d.totais || {};
+  const dados = d.dados || {};
+  const sub = 'Base carregada em ' + gxData(dados.carregado_em) + ' · período ' + gxData(dados.periodo_inicio) + ' a ' + gxData(dados.periodo_fim);
+  document.getElementById('gxCards').innerHTML =
+    gxCard('Quantidade contratada', gxNum(t.quantidade), 'Veículos em itens de contratação. Não comprova entrega nem operação.') +
+    gxCard('Valor contratado', gxBRLCurto(t.valor_total), gxBRL(t.valor_total) + ' · valores nominais') +
+    gxCard('Preço médio ponderado', gxBRL(t.preco_medio_ponderado), 'Σ valor ÷ Σ quantidade, itens com ambos informados', '<span class="gx-badge warn">em construção</span>') +
+    gxCard('Códigos territoriais', gxNum(t.entes), gxNum(t.entidades) + ' entidades · inclui esferas estadual e federal') +
+    gxCard('Itens de contratação', gxNum(t.linhas), gxNum(t.unitario_ausente) + ' sem valor unitário · ' + gxNum(t.rp_ausente) + ' sem resultado primário');
+  // Reconciliação com o painel legado (somente sem filtros: o total do painel é global)
+  const rec = (d.reconciliacoes || [])[0];
+  const semFiltro = !Object.keys(GX.filtros).length;
+  document.getElementById('gxAvisoRec').innerHTML = rec ? '<div class="gx-aviso warn"><i class="ti ti-scale" aria-hidden="true"></i><div><b>Reconciliação pendente.</b> ' +
+    (semFiltro ? 'Base: ' + gxNum(rec.valor_base) + ' veículos · painel FNDE (' + gxData(rec.data_painel) + '): ' + gxNum(rec.valor_painel) +
+      ' · diferença de ' + gxNum(Number(rec.valor_painel) - Number(rec.valor_base)) + ', sem causa confirmada.'
+      : 'O total do painel FNDE (' + gxNum(rec.valor_painel) + ') vale só para a base inteira e não se compara com o recorte filtrado.') +
+    ' ' + escHtml(rec.nota || '') + '</div></div>' : '';
+  const amarelo = gxCor('--c-yellow', '#FFCD42'), azul = gxCor('--c-blue', '#2589F4');
+  const serie = function(arr) { return { r: arr.map(function(x) { return x.k == null ? 'Não informado' : String(x.k); }), v: arr.map(function(x) { return Number(x.qtd); }) }; };
+  const colsDim = function(t) { return [{ t: t, k: 'k' }, { t: 'Quantidade', num: true, f: function(l) { return gxNum(l.qtd); } },
+    { t: 'Valor contratado', num: true, f: function(l) { return gxBRL(l.valor); } }]; };
+  [['ano', 'gxChAno', 'gxTbAno', 'Ano', false, azul], ['por_regiao', 'gxChRegiao', 'gxTbRegiao', 'Região', true, amarelo],
+   ['por_tipo', 'gxChTipo', 'gxTbTipo', 'Tipo de veículo', true, azul], ['por_uf', 'gxChUf', 'gxTbUf', 'UF', true, azul],
+   ['por_esfera', 'gxChEsfera', 'gxTbEsfera', 'Esfera', true, amarelo]].forEach(function(c) {
+    const arr = d[c[0] === 'ano' ? 'por_ano' : c[0]] || [];
+    const s = serie(arr);
+    gxGrafico(GX.charts, c[1], c[1], s.r, s.v, { horizontal: c[4], cor: c[5], rotulo: 'Quantidade contratada' });
+    document.getElementById(c[2]).innerHTML = '<div class="gx-tabela-wrap">' + gxTabelaHtml(colsDim(c[3]), arr) + '</div>';
+  });
+  document.getElementById('gxEntidades').innerHTML = gxTabelaHtml([
+    { t: 'Entidade', k: 'entidade' }, { t: 'Município', k: 'municipio' }, { t: 'UF', k: 'uf' },
+    { t: 'Quantidade', num: true, f: function(l) { return gxNum(l.qtd); } },
+    { t: 'Valor contratado', num: true, f: function(l) { return gxBRL(l.valor); } }], d.entidades_top || []);
+  const esc = document.getElementById('gxEscopo');
+  if (esc) esc.textContent = gxDescreverFiltros() + ' · ' + sub;
+}
+
+// Detalhamento (paginado no servidor)
+const GX_DET_COLS = [
+  { t: 'Ano', k: 'ano' }, { t: 'Cód IBGE', k: 'cod_ibge' }, { t: 'Termo de Compromisso', k: 'termo' }, { t: 'Número Processo', k: 'processo' },
+  { t: 'Região', k: 'regiao' }, { t: 'UF', k: 'uf' }, { t: 'Município', k: 'municipio' }, { t: 'Esfera', k: 'esfera' }, { t: 'Entidade', k: 'entidade' },
+  { t: 'Veículos Contratados', k: 'tipo_veiculo' }, { t: 'Quantidade', k: 'quantidade', num: true, f: function(l) { return gxNum(l.quantidade); } },
+  { t: 'Valor Unitário', k: 'valor_unitario', num: true, f: function(l) { return gxBRL(l.valor_unitario); } },
+  { t: 'Valor Total', k: 'valor_total', num: true, f: function(l) { return gxBRL(l.valor_total); } },
+  { t: 'Forma de Pagamento', k: 'forma_pagamento' }, { t: 'Resultado Primário', k: 'resultado_primario' },
+  { t: 'Data da Contratação', k: 'data_contratacao', f: function(l) { return gxData(l.data_contratacao); } },
+  { t: 'Fornecedor', k: 'fornecedor' }, { t: 'Pregão', k: 'pregao' }];
+
+function gxDetBuscar() {
+  clearTimeout(GX.det.timer);
+  GX.det.timer = setTimeout(function() { gxDetPagina(1); }, 350);
+}
+async function gxDetPagina(p) {
+  const s = ++GX.det.seq;
+  const est = document.getElementById('gxDetEstado'), app = document.getElementById('gxDetApp');
+  const esc = document.getElementById('gxEscopo');
+  if (esc) esc.textContent = gxDescreverFiltros();
+  GX.det.pagina = Math.max(1, p || 1);
+  let d;
+  try {
+    d = await pniteApiRpc('pnite_ce_detalhe', { p_filtros: GX.filtros, p_busca: (document.getElementById('gxDetBusca') || {}).value || null,
+      p_pagina: GX.det.pagina, p_tamanho: GX.det.tamanho, p_ordem: (document.getElementById('gxDetOrdem') || {}).value || 'data_desc' });
+  } catch (e) {
+    if (s !== GX.det.seq) return;
+    app.hidden = true; gxEstado(est, 'cloud-off', 'Não foi possível carregar o detalhamento. ' + escHtml(e.message)); return;
+  }
+  if (s !== GX.det.seq || GX.aba !== 'detalhe') return;
+  if (!d || !d.publicado) {
+    app.hidden = true;
+    gxEstado(est, 'eye-off', '<b>Detalhamento não publicado.</b><br>A grade contratual fica disponível quando a administração publicar a visão “Detalhamento das contratações”.');
+    return;
+  }
+  est.hidden = true; app.hidden = false;
+  GX.det.total = d.total || 0;
+  const paginas = Math.max(1, Math.ceil(GX.det.total / GX.det.tamanho));
+  document.getElementById('gxDetTabela').innerHTML = gxTabelaHtml(GX_DET_COLS, d.linhas || []);
+  document.getElementById('gxDetResumo').textContent = gxNum(d.total) + ' itens · ' + gxNum(d.quantidade) + ' veículos · ' + gxBRL(d.valor_total);
+  document.getElementById('gxDetPagInfo').textContent = 'Página ' + gxNum(GX.det.pagina) + ' de ' + gxNum(paginas);
+  document.getElementById('gxDetAnt').disabled = GX.det.pagina <= 1;
+  document.getElementById('gxDetProx').disabled = GX.det.pagina >= paginas;
+}
+
+// Exportação do recorte publicado (usuários com permissão de download).
+// Protege contra injeção de fórmula em planilhas: texto iniciado por = + - @ recebe apóstrofo.
+function gxCsvCampo(v, numerico) {
+  if (v == null) return '';
+  let s = String(v);
+  if (!numerico && /^[=+\-@\t\r]/.test(s)) s = "'" + s;
+  return /[";\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+}
+async function gxDetExportar() {
+  if (!PNITE_AUTH.podeBaixar()) { pniteAuthBotao(); return; }
+  const msg = document.getElementById('gxDetMsg');
+  const total = GX.det.total;
+  if (!total) { msg.textContent = 'Nada a exportar no recorte.'; return; }
+  if (total > 20000) { msg.textContent = 'Recorte grande demais para exportar (' + gxNum(total) + ' itens). Aplique filtros.'; return; }
+  msg.textContent = 'Preparando arquivo…';
+  const linhas = [];
+  try {
+    for (let p = 1; (p - 1) * 100 < total; p++) {
+      const d = await pniteApiRpc('pnite_ce_detalhe', { p_filtros: GX.filtros, p_busca: (document.getElementById('gxDetBusca') || {}).value || null,
+        p_pagina: p, p_tamanho: 100, p_ordem: (document.getElementById('gxDetOrdem') || {}).value || 'data_desc' });
+      if (!d || !d.publicado) throw new Error('detalhamento não publicado');
+      Array.prototype.push.apply(linhas, d.linhas || []);
+    }
+  } catch (e) { msg.textContent = 'Falha na exportação: ' + e.message; return; }
+  const numericos = { ano: 1, quantidade: 1, valor_unitario: 1, valor_total: 1 };
+  const meta = ['# PNITE — Caminho da Escola: detalhamento das contratações',
+    '# Fonte: base de contratações do painel FNDE (versão de dados ' + ((GX.painel && GX.painel.dados && GX.painel.dados.id) || '—') + ')',
+    '# ' + gxDescreverFiltros().replace(/;/g, ','), '# Gerado em ' + new Date().toLocaleString('pt-BR') + ' · PNITE ' + PNITE_VERSION];
+  const csv = meta.concat([GX_DET_COLS.map(function(c) { return c.t; }).join(';')],
+    linhas.map(function(l) { return GX_DET_COLS.map(function(c) {
+      const v = l[c.k];
+      return gxCsvCampo(numericos[c.k] && v != null ? String(v).replace('.', ',') : v, !!numericos[c.k]);
+    }).join(';'); })).join('\r\n');
+  const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = 'pnite_caminho_escola_contratacoes.csv';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(function() { URL.revokeObjectURL(a.href); }, 1000);
+  msg.textContent = gxNum(linhas.length) + ' itens exportados.';
+}
+
+async function gxCarregarRepasses() {
+  const est = document.getElementById('gxRepEstado'), app = document.getElementById('gxRepApp');
+  if (!GX.rep) gxEstado(est, 'loader-2', 'Carregando…');
+  let d;
+  try { d = GX.rep || await pniteApiRpc('pnite_snapshot_painel', { p_painel: 'caminho' }); }
+  catch (e) { app.hidden = true; gxEstado(est, 'cloud-off', 'Não foi possível carregar. ' + escHtml(e.message)); return; }
+  if (GX.aba !== 'repasses') return;
+  GX.rep = d;
+  if (!d || !d.publicado) {
+    app.hidden = true;
+    gxEstado(est, 'eye-off', '<b>Fotografia dos repasses não publicada.</b><br>A administração pode publicar os valores transcritos do painel do FNDE, sempre identificados como fotografia de data fixa.');
+    return;
+  }
+  est.hidden = true; app.hidden = false;
+  const linhas = (d.linhas || []).filter(function(l) { return /repassad/i.test(l.pagina || ''); });
+  const grupos = {};
+  linhas.forEach(function(l) { (grupos[l.indicador] = grupos[l.indicador] || []).push(l); });
+  const fmtV = function(l) { return /R\$|reais/i.test(l.unidade || '') ? gxBRL(l.valor) : gxNum(l.valor, l.valor != null && Number(l.valor) % 1 ? 2 : 0); };
+  app.innerHTML = '<div class="gx-aviso"><i class="ti ti-camera" aria-hidden="true"></i><div><b>Fotografia de ' + gxData((d.dados || {}).data_captura) +
+    '</b> — valores transcritos do painel “Valores Repassados” do FNDE. Não permitem novos recortes e não se somam a valores recalculados. ' +
+    'Uma categoria de esfera não foi identificada na extração e aparece como na origem.</div></div>' +
+    Object.keys(grupos).map(function(g) {
+      return '<div class="gx-chart-card gx-mb"><h3>' + escHtml(g) + '</h3><div class="gx-tabela-wrap">' +
+        gxTabelaHtml([{ t: 'Categoria', f: function(l) { return escHtml(l.categoria || 'Total'); } }, { t: 'Valor', num: true, f: fmtV },
+          { t: 'Observação', f: function(l) { return escHtml(l.observacao || ''); } }], grupos[g]) + '</div></div>';
+    }).join('');
+}
+
+function gxRenderSobre() {
+  const d = GX.painel || {};
+  const dados = d.dados || {}, ficha = d.ficha || {};
+  const itens = [
+    ['Fonte', 'Base de contratações (download do painel “Programa Caminho da Escola”, FNDE/MEC)'],
+    ['Arquivo', dados.arquivo ? escHtml(dados.arquivo) : '—'],
+    ['Período da fonte', gxData(dados.periodo_inicio) + ' a ' + gxData(dados.periodo_fim)],
+    ['Carga na PNITE', gxDataHora(dados.carregado_em)],
+    ['Versão de dados', dados.id != null ? '#' + escHtml(String(dados.id)) : '—'],
+    ['Versão publicada do painel', ficha.versao != null ? 'v' + escHtml(String(ficha.versao)) : 'não publicada'],
+    ['Responsável pela integração', ficha.responsavel ? escHtml(ficha.responsavel) : '—'],
+    ['Versão do aplicativo', escHtml(PNITE_VERSION)]];
+  document.getElementById('gxSobreFicha').innerHTML = itens.map(function(i) { return '<dt>' + i[0] + '</dt><dd>' + i[1] + '</dd>'; }).join('');
+  if (!GX.painel) pniteApiRpc('pnite_ce_painel', { p_filtros: {} }).then(function(r) {
+    if (r && r.publicado) { GX.painel = r; gxPreencherDominios(r.dominios); if (GX.aba === 'sobre') gxRenderSobre(); }
+  }).catch(function() {});
+}
+
+// --------------------------------------------------------------------------
+// TRANSPORTE › MONITORAMENTO SETE (base SETE da PNITE: public.indicadores)
+// --------------------------------------------------------------------------
+const SM = { aba: 'gerais', f: { regiao: '', uf: '', mun: '' }, agg: null, mun: null, snap: null, charts: {}, carregando: null, seq: 0 };
+const SM_REGIOES = { 'norte': 'Norte', 'nordeste': 'Nordeste', 'centro-oeste': 'Centro-Oeste', 'sudeste': 'Sudeste', 'sul': 'Sul' };
+const SM_CAMPOS = ['al_cad', 'al_transp', 'esc_at_sete', 'tot_veic', 'vp', 'vt', 'cap_media', 'imfp', 'imft', 'tot_mot_info',
+  'tot_rotas', 'km_total', 'km_medio', 'tempo_medio', 'georref', 't1', 't2', 't3'];
+
+function smConsulta(params) {
+  const c = window.PNITE_CONFIG || {};
+  if (!c.supabaseUrl || !c.publishableKey) return Promise.reject(new Error('API não configurada'));
+  const q = Object.keys(params).map(function(k) { return k + '=' + encodeURIComponent(params[k]); }).join('&');
+  return fetch(String(c.supabaseUrl).replace(/\/$/, '') + '/rest/v1/indicadores?' + q, {
+    headers: { apikey: c.publishableKey, Accept: 'application/json' } }).then(function(r) {
+    if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); });
+}
+// A API limita cada resposta (max-rows): lê em páginas até a última
+async function smConsultaTudo(params) {
+  const tam = 1000;
+  let todas = [];
+  for (let off = 0; off < 100000; off += tam) {
+    const lote = await smConsulta(Object.assign({}, params, { limit: tam, offset: off }));
+    todas = todas.concat(lote);
+    if (lote.length < tam) break;
+  }
+  return todas.sort(function(x, y) { return String(x.label).localeCompare(String(y.label), 'pt-BR'); });
+}
+function smSelect() {
+  return 'nivel,chave,uf,regiao,label,' + SM_CAMPOS.map(function(k) { return k + ':raw->' + k; }).join(',');
+}
+function smCarregarBase() {
+  if (SM.carregando) return SM.carregando;
+  const ano = (window.PNITE_CONFIG || {}).anoCarga;
+  const filtroAno = ano ? { ano_carga: 'eq.' + ano } : {};
+  SM.carregando = Promise.all([
+    smConsulta(Object.assign({ select: smSelect(), nivel: 'in.(nacional,regiao,estado)' }, filtroAno)),
+    smConsultaTudo(Object.assign({ select: smSelect(), nivel: 'eq.municipio', order: 'chave' }, filtroAno)),
+    pniteApiRpc('pnite_snapshot_painel', { p_painel: 'sete' }).catch(function() { return null; })
+  ]).then(function(r) {
+    SM.agg = r[0]; SM.mun = r[1]; SM.snap = r[2];
+    const selR = document.getElementById('smF-regiao'), selU = document.getElementById('smF-uf');
+    selR.innerHTML = '<option value="">Todas</option>' + (Object.keys(SM_REGIOES).map(function(k) { return '<option value="' + k + '">' + SM_REGIOES[k] + '</option>'; }).join(''));
+    selR.value = SM.f.regiao;
+    smOpcoesUf();
+    void selU;
+  }).catch(function(e) { SM.carregando = null; throw e; });
+  return SM.carregando;
+}
+function smOpcoesUf() {
+  const sel = document.getElementById('smF-uf');
+  const ufs = SM.agg.filter(function(x) { return x.nivel === 'estado' && (!SM.f.regiao || x.regiao === SM.f.regiao); })
+    .sort(function(a, b) { return a.uf.localeCompare(b.uf); });
+  sel.innerHTML = '<option value="">Todas</option>' + ufs.map(function(x) {
+    return '<option value="' + escHtml(x.uf) + '">' + escHtml(x.uf.toUpperCase() + ' — ' + x.label) + '</option>'; }).join('');
+  sel.value = SM.f.uf;
+}
+function smOpcoesMun() {
+  const sel = document.getElementById('smF-mun');
+  if (!SM.f.uf) { sel.innerHTML = '<option value="">Selecione uma UF</option>'; sel.disabled = true; return; }
+  const muns = SM.mun.filter(function(m) { return m.uf === SM.f.uf; });
+  sel.innerHTML = '<option value="">Todos</option>' + muns.map(function(m) {
+    return '<option value="' + escHtml(m.chave) + '">' + escHtml(String(m.label).replace(/ \([A-Z]{2}\)$/, '')) + '</option>'; }).join('');
+  sel.disabled = false; sel.value = SM.f.mun;
+}
+function smFiltro(k, v) {
+  SM.f[k] = v || '';
+  if (k === 'regiao') { SM.f.uf = ''; SM.f.mun = ''; smOpcoesUf(); }
+  if (k === 'uf') { SM.f.mun = ''; if (v) { const e = SM.agg.find(function(x) { return x.nivel === 'estado' && x.uf === v; }); if (e) SM.f.regiao = e.regiao; document.getElementById('smF-regiao').value = SM.f.regiao; smOpcoesUf(); } }
+  smOpcoesMun();
+  smRender();
+}
+function smLimpar() {
+  SM.f = { regiao: '', uf: '', mun: '' };
+  document.getElementById('smF-regiao').value = ''; smOpcoesUf(); smOpcoesMun(); smRender();
+}
+function smAba(nome) {
+  SM.aba = nome;
+  ['gerais', 'alunos', 'veiculos', 'rotas', 'sobre'].forEach(function(a) {
+    const t = document.getElementById('smTab-' + a);
+    if (t) { t.setAttribute('aria-selected', String(a === nome)); t.tabIndex = a === nome ? 0 : -1; }
+  });
+  document.getElementById('smPainel').setAttribute('aria-labelledby', 'smTab-' + nome);
+  smRender();
+}
+// Linha agregada do escopo (valores calculados no banco para cada nível)
+function smEscopoAtual() {
+  if (SM.f.mun) { const m = SM.mun.find(function(x) { return x.chave === SM.f.mun; }); return { nivel: 'municipio', linha: m, nome: m ? m.label : '' }; }
+  if (SM.f.uf) { const e = SM.agg.find(function(x) { return x.nivel === 'estado' && x.uf === SM.f.uf; }); return { nivel: 'estado', linha: e, nome: e ? e.label : '' }; }
+  if (SM.f.regiao) { const r = SM.agg.find(function(x) { return x.nivel === 'regiao' && x.chave === SM.f.regiao; }); return { nivel: 'regiao', linha: r, nome: SM_REGIOES[SM.f.regiao] }; }
+  return { nivel: 'nacional', linha: SM.agg.find(function(x) { return x.nivel === 'nacional'; }), nome: 'Brasil' };
+}
+function smMunicipiosEscopo() {
+  return SM.mun.filter(function(m) {
+    return (!SM.f.regiao || m.regiao === SM.f.regiao) && (!SM.f.uf || m.uf === SM.f.uf) && (!SM.f.mun || m.chave === SM.f.mun);
+  });
+}
+function smTemDados(m) { return Number(m.al_cad) > 0 || Number(m.tot_rotas) > 0 || Number(m.tot_veic) > 0; }
+// Grupos do gráfico: regiões (nacional), UFs (região) ou municípios (UF)
+function smGrupos() {
+  if (SM.f.uf) return { tit: 'município', itens: smMunicipiosEscopo().map(function(m) { return { nome: String(m.label).replace(/ \([A-Z]{2}\)$/, ''), l: m }; }) };
+  if (SM.f.regiao) return { tit: 'UF', itens: SM.agg.filter(function(x) { return x.nivel === 'estado' && x.regiao === SM.f.regiao; }).map(function(x) { return { nome: x.uf.toUpperCase(), l: x, uf: x.uf }; }) };
+  return { tit: 'região', itens: SM.agg.filter(function(x) { return x.nivel === 'regiao'; }).map(function(x) { return { nome: SM_REGIOES[x.chave] || x.label, l: x, reg: x.chave }; }) };
+}
+
+async function smIniciar() {
+  const est = document.getElementById('smEstado');
+  try { await smCarregarBase(); }
+  catch (e) { document.getElementById('smApp').hidden = true; gxEstado(est, 'cloud-off', 'Não foi possível carregar os dados do SETE. ' + escHtml(e.message)); return; }
+  smRender();
+}
+
+function smRender() {
+  if (!SM.agg) return;
+  const app = document.getElementById('smApp'), sobre = document.getElementById('smSobre');
+  document.getElementById('smEstado').hidden = true;
+  const esc = smEscopoAtual();
+  document.getElementById('smEscopo').textContent = 'Escopo: ' + (esc.nome || '—') + ' · base SETE da PNITE (ano de carga ' + ((window.PNITE_CONFIG || {}).anoCarga || '—') + ')';
+  if (SM.aba === 'sobre') { app.hidden = true; sobre.hidden = false; smRenderSobre(); return; }
+  sobre.hidden = true; app.hidden = false;
+  const r = esc.linha || {};
+  const g = smGrupos();
+  const muns = smMunicipiosEscopo();
+  const azul = gxCor('--c-blue', '#2589F4'), amarelo = gxCor('--c-yellow', '#FFCD42'), rosa = gxCor('--c-rose', '#DF6D7C');
+  let cards = '', ch1 = null, ch2 = null, tab = null;
+  const soma = function(itens, k) { return itens.map(function(i) { return Number(i.l[k]); }); };
+
+  if (SM.aba === 'gerais') {
+    const com = muns.filter(smTemDados).length;
+    cards = gxCard('Municípios no escopo', gxNum(muns.length), 'Cadastro territorial da PNITE') +
+      gxCard('Com dados na base SETE', gxNum(com), 'Com alunos, rotas ou veículos registrados', '<span class="gx-badge info">PNITE</span>') +
+      gxCard('Sem dados na base SETE', gxNum(muns.length - com), 'Ausência de dado não é zero: o município pode não ter enviado') +
+      gxCard('Percentual com dados', muns.length ? gxNum(100 * com / muns.length, 2) + '%' : '—', 'Municípios com dados ÷ municípios no escopo');
+    const pct = g.itens.map(function(i) {
+      const ms = SM.mun.filter(function(m) { return i.reg ? m.regiao === i.reg : i.uf ? m.uf === i.uf : m.chave === i.l.chave; });
+      return ms.length ? 100 * ms.filter(smTemDados).length / ms.length : null;
+    });
+    ch1 = { t: 'Percentual de municípios com dados, por ' + g.tit, s: 'Não equivale a “registrado no SETE” do painel FNDE.', r: g.itens.map(function(i) { return i.nome; }), v: pct, o: { horizontal: true, cor: amarelo, fmt: function(v) { return gxNum(v, 2) + '%'; } } };
+    ch2 = { t: 'Municípios com e sem dados', s: 'Escopo selecionado', r: ['Com dados', 'Sem dados'], v: [com, muns.length - com], o: { tipo: 'doughnut', cores: [azul, rosa] } };
+    tab = { t: 'Municípios do escopo', s: 'Situação na base SETE carregada', cols: [{ t: 'Cód. IBGE', k: 'chave' }, { t: 'Região', f: function(m) { return escHtml(SM_REGIOES[m.regiao] || '—'); } },
+      { t: 'UF', f: function(m) { return escHtml(String(m.uf || '').toUpperCase()); } }, { t: 'Município', f: function(m) { return escHtml(String(m.label).replace(/ \([A-Z]{2}\)$/, '')); } },
+      { t: 'Dados no SETE', f: function(m) { return smTemDados(m) ? '<span class="gx-badge ok">Sim</span>' : '<span class="gx-badge">Não</span>'; } }], linhas: muns };
+  } else if (SM.aba === 'alunos') {
+    cards = gxCard('Alunos cadastrados', gxNum(r.al_cad), 'Cadastrados no SETE') + gxCard('Alunos transportados', gxNum(r.al_transp), 'Vinculados a rotas') +
+      gxCard('Escolas atendidas', gxNum(r.esc_at_sete), 'Escolas com alunos no SETE');
+    ch1 = { t: 'Alunos cadastrados por ' + g.tit, s: 'Contagem absoluta', r: g.itens.map(function(i) { return i.nome; }), v: soma(g.itens, 'al_cad'), o: { horizontal: true } };
+    ch2 = { t: 'Alunos transportados por ' + g.tit, s: 'Vinculados a rotas', r: g.itens.map(function(i) { return i.nome; }), v: soma(g.itens, 'al_transp'), o: { horizontal: true, cor: amarelo } };
+    tab = smTabelaMun([['Alunos cadastrados', 'al_cad'], ['Alunos transportados', 'al_transp'], ['Escolas atendidas', 'esc_at_sete']], muns);
+  } else if (SM.aba === 'veiculos') {
+    cards = gxCard('Veículos', gxNum(r.tot_veic), 'Cadastrados no SETE') + gxCard('Frota própria', gxNum(r.vp), 'Idade média ' + gxNum(r.imfp, 1) + ' anos') +
+      gxCard('Frota terceirizada', gxNum(r.vt), 'Idade média ' + gxNum(r.imft, 1) + ' anos') + gxCard('Capacidade média', gxNum(r.cap_media, 1), 'Lugares por veículo') +
+      gxCard('Motoristas', gxNum(r.tot_mot_info), 'Com informação cadastrada');
+    ch1 = { t: 'Origem da frota', s: 'Própria e terceirizada (a categoria “Mista” do painel FNDE não existe nesta base)', r: ['Própria', 'Terceirizada'], v: [Number(r.vp), Number(r.vt)], o: { cor: [azul, amarelo] } };
+    ch2 = { t: 'Veículos por ' + g.tit, s: 'Contagem absoluta', r: g.itens.map(function(i) { return i.nome; }), v: soma(g.itens, 'tot_veic'), o: { horizontal: true } };
+    tab = smTabelaMun([['Veículos', 'tot_veic'], ['Próprios', 'vp'], ['Terceirizados', 'vt'], ['Motoristas', 'tot_mot_info']], muns);
+  } else if (SM.aba === 'rotas') {
+    const sem = (r.tot_rotas != null && r.georref != null) ? Number(r.tot_rotas) - Number(r.georref) : null;
+    cards = gxCard('Rotas', gxNum(r.tot_rotas), 'Cadastradas no SETE') + gxCard('Quilometragem total', gxNum(r.km_total, 0) + ' km', 'Soma da extensão das rotas') +
+      gxCard('Km médio por rota', gxNum(r.km_medio, 1) + ' km', 'Calculado no banco para o escopo') + gxCard('Tempo médio por rota', r.tempo_medio != null ? gxNum(r.tempo_medio, 1) + ' min' : '—', 'Rotas com tempo informado') +
+      gxCard('Rotas georreferenciadas', gxNum(r.georref), r.tot_rotas ? gxNum(100 * r.georref / r.tot_rotas, 2) + '% das rotas' : '—');
+    ch1 = { t: 'Rotas por tipo (código SETE)', s: 'Nomes dos tipos em revisão: ver “Sobre”.', r: ['Tipo 1', 'Tipo 2', 'Tipo 3'], v: [Number(r.t1), Number(r.t2), Number(r.t3)], o: { cor: amarelo } };
+    ch2 = { t: 'Georreferenciamento das rotas', s: 'Denominador: total de rotas do escopo', r: ['Com traçado', 'Sem traçado'], v: [Number(r.georref), sem], o: { tipo: 'doughnut', cores: [azul, amarelo] } };
+    tab = smTabelaMun([['Rotas', 'tot_rotas'], ['Km total', 'km_total'], ['Georreferenciadas', 'georref']], muns);
+  }
+  document.getElementById('smCards').innerHTML = cards;
+  [[ch1, 'smCh1', 'smTb1', 'smCh1Tit', 'smCh1Sub'], [ch2, 'smCh2', 'smTb2', 'smCh2Tit', 'smCh2Sub']].forEach(function(c) {
+    const d = c[0];
+    document.getElementById(c[3]).textContent = d.t; document.getElementById(c[4]).textContent = d.s;
+    document.getElementById(c[1]).setAttribute('aria-label', d.t);
+    gxGrafico(SM.charts, c[1], c[1], d.r, d.v.map(function(v) { return v == null || Number.isNaN(v) ? null : v; }), d.o);
+    document.getElementById(c[2]).innerHTML = '<div class="gx-tabela-wrap">' + gxTabelaHtml([{ t: 'Categoria', k: 'c' },
+      { t: 'Valor', num: true, f: function(l) { return d.o.fmt ? d.o.fmt(l.v) : gxNum(l.v); } }], d.r.map(function(x, i) { return { c: x, v: d.v[i] }; })) + '</div>';
+  });
+  document.getElementById('smTabTit').textContent = tab.t;
+  document.getElementById('smTabSub').textContent = tab.s + (tab.linhas.length > 600 ? ' · primeiros 600 de ' + gxNum(tab.linhas.length) + '; filtre por UF para ver todos' : '');
+  document.getElementById('smTabela').innerHTML = gxTabelaHtml(tab.cols, tab.linhas.slice(0, 600));
+  smRenderSnapshot();
+}
+function smTabelaMun(campos, muns) {
+  return { t: 'Municípios do escopo', s: 'Valores municipais da base SETE', linhas: muns.slice().sort(function(a, b) { return (Number(b[campos[0][1]]) || 0) - (Number(a[campos[0][1]]) || 0); }),
+    cols: [{ t: 'Cód. IBGE', k: 'chave' }, { t: 'UF', f: function(m) { return escHtml(String(m.uf || '').toUpperCase()); } },
+      { t: 'Município', f: function(m) { return escHtml(String(m.label).replace(/ \([A-Z]{2}\)$/, '')); } }].concat(campos.map(function(c) {
+      return { t: c[0], num: true, f: function(m) { return gxNum(m[c[1]]); } }; })) };
+}
+// Fotografia do painel FNDE (somente nacional e quando publicada)
+function smRenderSnapshot() {
+  const el = document.getElementById('smSnapshot');
+  const s = SM.snap;
+  if (!s || !s.publicado) { el.innerHTML = ''; return; }
+  const pag = { gerais: /indicadores gerais/i, alunos: /alunos/i, veiculos: /ve[ií]culos/i, rotas: /rotas/i }[SM.aba];
+  const linhas = (s.linhas || []).filter(function(l) { return pag && pag.test(l.pagina || '') && !/com ao menos|sem nenhum/i.test(l.indicador || ''); });
+  if (!linhas.length) { el.innerHTML = ''; return; }
+  const fmt = function(l) { return /percentual/i.test(l.unidade || '') ? gxNum(Number(l.valor) * 100, 2) + '%' : gxNum(l.valor, Number(l.valor) % 1 ? 2 : 0); };
+  el.innerHTML = '<div class="gx-chart-card"><h3><i class="ti ti-camera" aria-hidden="true"></i> Fotografia do painel FNDE — ' + gxData((s.dados || {}).data_captura) + '</h3>' +
+    '<p>Valores transcritos do painel “Acompanhamento SETE” para comparação; referem-se ao Brasil e não respondem aos filtros acima. Rótulos de “com/sem dados” omitidos (possível inversão na origem).</p>' +
+    '<div class="gx-tabela-wrap">' + gxTabelaHtml([{ t: 'Indicador', k: 'indicador' }, { t: 'Categoria', f: function(l) { return escHtml(l.categoria || '—'); } },
+      { t: 'Valor', num: true, f: fmt }, { t: 'Unidade', f: function(l) { return escHtml(/percentual/i.test(l.unidade || '') ? '%' : (l.unidade || '')); } }], linhas) + '</div></div>';
+}
+function smRenderSobre() {
+  const s = SM.snap || {};
+  const itens = [['Fonte dos valores', 'Base SETE carregada na PNITE (API do Supabase, tabela de indicadores por escopo)'],
+    ['Ano de carga', escHtml(String((window.PNITE_CONFIG || {}).anoCarga || '—'))],
+    ['Fotografia FNDE', s.publicado ? 'Publicada · captura de ' + gxData((s.dados || {}).data_captura) : 'Não publicada'],
+    ['Responsável pela integração', (s.ficha && s.ficha.responsavel) ? escHtml(s.ficha.responsavel) : 'Equipe PNITE'],
+    ['Versão do aplicativo', escHtml(PNITE_VERSION)]];
+  document.getElementById('smSobreFicha').innerHTML = itens.map(function(i) { return '<dt>' + i[0] + '</dt><dd>' + i[1] + '</dd>'; }).join('');
+}
+
+// --------------------------------------------------------------------------
+// ADMINISTRAÇÃO
+// --------------------------------------------------------------------------
+const ADM = { aba: 'visao', cat: null, cargas: null, aud: { offset: 0, dados: null }, seq: 0 };
+const ADM_ESTADOS = { rascunho: ['Rascunho', ''], em_revisao: ['Em revisão', 'info'], aprovado: ['Aprovado', 'info'], publicado: ['Publicado', 'ok'], suspenso: ['Suspenso', 'err'], arquivado: ['Arquivado', ''] };
+const ADM_SITUACAO = { validado: ['Validado', 'ok'], em_construcao: ['Em construção', 'warn'], pendente_fonte: ['Pendente de fonte', 'err'] };
+const ADM_ACOES = { rascunho: [['enviar_revisao', 'Enviar à revisão'], ['arquivar', 'Arquivar']],
+  em_revisao: [['aprovar', 'Aprovar'], ['voltar_rascunho', 'Voltar a rascunho'], ['arquivar', 'Arquivar']],
+  aprovado: [['publicar', 'Publicar'], ['voltar_rascunho', 'Voltar a rascunho'], ['arquivar', 'Arquivar']],
+  publicado: [['suspender', 'Suspender']], suspenso: [['restaurar', 'Restaurar'], ['arquivar', 'Arquivar']], arquivado: [] };
+const ADM_COM_JUST = { aprovar: 1, publicar: 1, suspender: 1, restaurar: 1, arquivar: 1 };
+
+function admBadge(mapa, k) { const m = mapa[k] || [k || '—', '']; return '<span class="gx-badge ' + m[1] + '">' + escHtml(m[0]) + '</span>'; }
+function admMsg(t, cls) { const el = document.getElementById('admMsg'); if (el) { el.textContent = t || ''; el.className = 'adm-msg' + (cls ? ' ' + cls : ''); } }
+
+function admAbrir() {
+  const lock = document.getElementById('admLock'), app = document.getElementById('admApp');
+  if (!PNITE_AUTH.ehAdmin()) {
+    app.hidden = true; lock.hidden = false;
+    document.getElementById('admLockMsg').textContent = PNITE_AUTH.logado() ? 'Sua conta não tem acesso de administrador.' : 'Entre com uma conta de administrador.';
+    return;
+  }
+  lock.hidden = true; app.hidden = false;
+  admCarregar();
+}
+async function admCarregar() {
+  if (!PNITE_AUTH.ehAdmin()) { admAbrir(); return; }
+  const s = ++ADM.seq;
+  admMsg('Carregando…');
+  try {
+    const r = await Promise.all([PNITE_AUTH.rpc('pnite_admin_cat_listar'), PNITE_AUTH.rpc('pnite_admin_cargas')]);
+    if (s !== ADM.seq) return;
+    ADM.cat = r[0] || []; ADM.cargas = r[1] || {};
+    admMsg('');
+  } catch (e) {
+    if (s !== ADM.seq) return;
+    admMsg(e.status === 401 || e.status === 403 ? 'Acesso recusado pelo servidor.' : 'Falha ao carregar: ' + e.message, 'err'); return;
+  }
+  admAba(ADM.aba);
+}
+function admAba(nome) {
+  ADM.aba = nome;
+  ['visao', 'indicadores', 'cargas', 'publicacoes', 'qualidade', 'auditoria'].forEach(function(a) {
+    const t = document.getElementById('admTab-' + a);
+    if (t) { t.setAttribute('aria-selected', String(a === nome)); t.tabIndex = a === nome ? 0 : -1; }
+  });
+  document.getElementById('admPainel').setAttribute('aria-labelledby', 'admTab-' + nome);
+  if (!ADM.cat) return;
+  const el = document.getElementById('admPainel');
+  if (nome === 'visao') el.innerHTML = admHtmlVisao();
+  else if (nome === 'indicadores') el.innerHTML = admHtmlIndicadores();
+  else if (nome === 'cargas') el.innerHTML = admHtmlCargas();
+  else if (nome === 'publicacoes') el.innerHTML = admHtmlPublicacoes();
+  else if (nome === 'qualidade') el.innerHTML = admHtmlQualidade();
+  else if (nome === 'auditoria') { el.innerHTML = '<div class="gx-estado"><i class="ti ti-loader-2" aria-hidden="true"></i>Carregando auditoria…</div>'; admAuditoria(0); }
+}
+function admVersaoAtual(i) { return (i.versoes || [])[0] || {}; }
+function admHtmlVisao() {
+  const c = ADM.cat, ver = c.map(admVersaoAtual);
+  const cont = function(f) { return c.filter(f).length; };
+  const ativas = (ADM.cargas.versoes || []).filter(function(v) { return v.status === 'ativa'; });
+  const pend = (ADM.cargas.pendencias || []).filter(function(p) { return p.situacao === 'aberta'; }).length;
+  return '<div class="gx-cards">' +
+    gxCard('Itens no catálogo', gxNum(c.length), gxNum(cont(function(i) { return i.tipo === 'visual'; })) + ' visuais') +
+    gxCard('Publicados', gxNum(cont(function(i) { return !!i.publicacao; })), 'Visíveis ao público') +
+    gxCard('Em revisão ou aprovados', gxNum(ver.filter(function(v) { return v.estado_editorial === 'em_revisao' || v.estado_editorial === 'aprovado'; }).length), 'Aguardando decisão') +
+    gxCard('Rascunhos', gxNum(ver.filter(function(v) { return v.estado_editorial === 'rascunho'; }).length), 'Não visíveis ao público') +
+    gxCard('Cargas ativas', gxNum(ativas.length), ativas.map(function(v) { return escHtml(v.fonte); }).join(', ') || '—') +
+    gxCard('Pendências de qualidade abertas', gxNum(pend), 'Ver “Qualidade de dados”') + '</div>' +
+    '<div class="gx-aviso"><i class="ti ti-info-circle" aria-hidden="true"></i><div>Fluxo: <b>rascunho → revisão → aprovação → publicação</b>. Publicar congela a versão do indicador e a versão de dados ativa. Editar cria nova versão sem alterar a publicada. Suspender retira imediatamente do catálogo público, dos painéis e da API; cópias já baixadas por terceiros não podem ser revogadas.</div></div>';
+}
+function admHtmlIndicadores() {
+  const busca = (document.getElementById('admBusca') || {}).value || '';
+  return '<div class="gx-toolbar"><div class="pu-search"><i class="ti ti-search" aria-hidden="true"></i><input class="pab-input" type="search" id="admBusca" placeholder="Buscar por código ou título" aria-label="Buscar indicador" value="' + escHtml(busca) + '" oninput="admFiltrarLista()"></div>' +
+    '<button type="button" class="pab-btn pab-btn-primary" onclick="admNovo()"><i class="ti ti-plus" aria-hidden="true"></i> Novo indicador</button></div>' +
+    '<div class="adm-lista" id="admLista">' + admItensHtml(busca) + '</div>';
+}
+function admFiltrarLista() { const el = document.getElementById('admLista'); if (el) el.innerHTML = admItensHtml(document.getElementById('admBusca').value); }
+function admItensHtml(busca) {
+  const b = String(busca || '').toLowerCase();
+  const itens = ADM.cat.filter(function(i) { const v = admVersaoAtual(i); return !b || i.codigo.toLowerCase().indexOf(b) >= 0 || String(v.titulo || '').toLowerCase().indexOf(b) >= 0; });
+  if (!itens.length) return '<div class="pu-empty">Nenhum item encontrado.</div>';
+  return itens.map(function(i) {
+    const v = admVersaoAtual(i);
+    const pub = i.publicacao ? (i.versoes || []).find(function(x) { return x.id === i.publicacao.versao_id; }) : null;
+    return '<div class="adm-item"><div><div class="adm-item-tit">' + escHtml(i.codigo) + ' — ' + escHtml(v.titulo || '') + '</div>' +
+      '<div class="adm-item-meta"><span>' + escHtml(i.frente) + ' › ' + escHtml(i.modulo) + (i.categoria ? ' › ' + escHtml(i.categoria) : '') + '</span>' +
+      '<span>v' + escHtml(String(v.versao)) + '</span>' + admBadge(ADM_ESTADOS, v.estado_editorial) + admBadge(ADM_SITUACAO, v.situacao_metodologica) +
+      (i.tipo === 'visual' ? '<span class="gx-badge">visual</span>' : '') +
+      (pub ? '<span class="gx-badge ok">no ar: v' + escHtml(String(pub.versao)) + (i.publicacao.somente_ficha ? ' (só ficha)' : '') + '</span>' : '') + '</div></div>' +
+      '<div class="adm-acoes"><button type="button" class="pab-btn" onclick="admDetalhe(' + i.id + ')"><i class="ti ti-adjustments" aria-hidden="true"></i> Abrir</button></div></div>';
+  }).join('');
+}
+
+// Diálogo (modal acessível: Esc fecha, foco no primeiro campo)
+function admDialogo(titulo, html) {
+  document.getElementById('admDialogTitulo').textContent = titulo;
+  document.getElementById('admDialogCorpo').innerHTML = html;
+  document.getElementById('admDialogMsg').textContent = '';
+  const d = document.getElementById('admDialog');
+  ADM.foco = document.activeElement;
+  d.hidden = false;
+  const alvo = d.querySelector('input, select, textarea, button');
+  if (alvo) alvo.focus();
+}
+function admFecharDialogo() {
+  document.getElementById('admDialog').hidden = true;
+  if (ADM.foco && ADM.foco.focus) ADM.foco.focus();
+}
+function admDlgMsg(t, cls) { const el = document.getElementById('admDialogMsg'); el.textContent = t || ''; el.className = 'adm-msg' + (cls ? ' ' + cls : ''); }
+
+const ADM_CALCULOS = [['', 'Sem cálculo (ficha ou visual)'], ['sum:quantidade', 'Soma da quantidade'], ['sum:valor_total', 'Soma do valor total'],
+  ['count:', 'Contagem de itens'], ['count_distinct:codigo_territorial_origem', 'Códigos territoriais distintos'], ['count_distinct:entidade_nome', 'Entidades distintas'],
+  ['count_distinct:fornecedor_nome', 'Fornecedores distintos'], ['ratio:valor_total/quantidade', 'Razão: valor total ÷ quantidade'],
+  ['completude:resultado_primario_origem', 'Completude: resultado primário'], ['completude:valor_unitario', 'Completude: valor unitário']];
+function admCalcChave(c) {
+  if (!c) return '';
+  if (c.operacao === 'ratio') return 'ratio:' + c.numerador + '/' + c.denominador;
+  return c.operacao + ':' + (c.campo || '');
+}
+function admCalcObj(k) {
+  if (!k) return null;
+  const p = k.split(':');
+  if (p[0] === 'ratio') { const q = p[1].split('/'); return { operacao: 'ratio', numerador: q[0], denominador: q[1] }; }
+  return p[1] ? { operacao: p[0], campo: p[1] } : { operacao: p[0] };
+}
+function admOpcoes(lista, atual) {
+  return lista.map(function(o) { return '<option value="' + escHtml(o[0]) + '"' + (o[0] === (atual || '') ? ' selected' : '') + '>' + escHtml(o[1]) + '</option>'; }).join('');
+}
+function admCamposVersaoHtml(v, editavel) {
+  v = v || {};
+  const dis = editavel ? '' : ' disabled';
+  const fontes = [['', 'Nenhuma']].concat((ADM.cargas.fontes || []).map(function(f) { return [f.codigo, f.codigo + ' — ' + f.descricao]; }));
+  const campo = function(id, rot, val, tipo) {
+    return '<div class="pab-field"><label for="admV-' + id + '">' + rot + '</label><input class="pab-input" id="admV-' + id + '" type="' + (tipo || 'text') + '" value="' + escHtml(val == null ? '' : String(val)) + '"' + dis + '></div>'; };
+  const area = function(id, rot, val) {
+    return '<div class="pab-field adm-full"><label for="admV-' + id + '">' + rot + '</label><textarea class="pab-input" id="admV-' + id + '"' + dis + '>' + escHtml(val || '') + '</textarea></div>'; };
+  return '<div class="adm-form">' + campo('titulo', 'Título', v.titulo) + campo('unidade', 'Unidade', v.unidade) +
+    campo('casas_decimais', 'Casas decimais', v.casas_decimais == null ? 0 : v.casas_decimais, 'number') + campo('responsavel', 'Responsável', v.responsavel) +
+    '<div class="pab-field"><label for="admV-situacao">Situação metodológica</label><select class="pab-input form-select" id="admV-situacao"' + dis + '>' +
+      admOpcoes([['validado', 'Validado'], ['em_construcao', 'Em construção'], ['pendente_fonte', 'Pendente de fonte']], v.situacao_metodologica || 'em_construcao') + '</select></div>' +
+    '<div class="pab-field"><label for="admV-visual">Visual padrão</label><select class="pab-input form-select" id="admV-visual"' + dis + '>' +
+      admOpcoes([['cartao', 'Cartão'], ['barras', 'Barras'], ['colunas', 'Colunas'], ['tabela', 'Tabela'], ['mapa', 'Mapa'], ['pagina', 'Página']], v.visual || 'cartao') + '</select></div>' +
+    '<div class="pab-field"><label for="admV-sentido">Sentido interpretativo</label><select class="pab-input form-select" id="admV-sentido"' + dis + '>' +
+      admOpcoes([['neutro', 'Neutro'], ['maior_melhor', 'Maior é melhor'], ['menor_melhor', 'Menor é melhor']], v.sentido || 'neutro') + '</select></div>' +
+    '<div class="pab-field"><label for="admV-fonte">Fonte</label><select class="pab-input form-select" id="admV-fonte"' + dis + '>' + admOpcoes(fontes, v.fonte || '') + '</select></div>' +
+    '<div class="pab-field"><label for="admV-calculo">Cálculo (operação permitida)</label><select class="pab-input form-select" id="admV-calculo"' + dis + '>' + admOpcoes(ADM_CALCULOS, admCalcChave(v.calculo)) + '</select></div>' +
+    campo('periodo_referencia', 'Período de referência', v.periodo_referencia) +
+    campo('niveis', 'Níveis territoriais (separados por vírgula)', (v.niveis || ['nacional']).join(', ')) +
+    campo('dimensoes', 'Dimensões/filtros (separados por vírgula)', (v.dimensoes || []).join(', ')) +
+    area('descricao', 'Descrição', v.descricao) + area('objetivo', 'Objetivo', v.objetivo) + area('formula_texto', 'Fórmula (documentação)', v.formula_texto) +
+    area('regra_nulos', 'Regra de nulos', v.regra_nulos) + area('nota', 'Notas e requisitos de divulgação', v.nota) + '</div>';
+}
+function admLerCamposVersao() {
+  const g = function(id) { const el = document.getElementById('admV-' + id); return el ? el.value : null; };
+  const lista = function(id) { return String(g(id) || '').split(',').map(function(x) { return x.trim(); }).filter(Boolean); };
+  return { titulo: (g('titulo') || '').trim(), unidade: g('unidade') || null, casas_decimais: parseInt(g('casas_decimais'), 10) || 0,
+    responsavel: (g('responsavel') || '').trim() || null, situacao_metodologica: g('situacao'), visual: g('visual'), sentido: g('sentido'),
+    fonte: g('fonte') || null, calculo: admCalcObj(g('calculo')), periodo_referencia: g('periodo_referencia') || null,
+    niveis: lista('niveis'), dimensoes: lista('dimensoes'), descricao: g('descricao') || null, objetivo: g('objetivo') || null,
+    formula_texto: g('formula_texto') || null, regra_nulos: g('regra_nulos') || null, nota: g('nota') || null };
+}
+function admNovo() {
+  admDialogo('Novo indicador (rascunho)', '<div class="adm-form">' +
+    '<div class="pab-field"><label for="admN-codigo">Código (sigla)</label><input class="pab-input" id="admN-codigo" placeholder="EX_CODIGO" autocomplete="off"></div>' +
+    '<div class="pab-field"><label for="admN-slug">Slug</label><input class="pab-input" id="admN-slug" placeholder="ex-codigo" autocomplete="off"></div>' +
+    '<div class="pab-field"><label for="admN-tipo">Tipo</label><select class="pab-input form-select" id="admN-tipo">' + admOpcoes([['indicador', 'Indicador'], ['visual', 'Visual/página']], 'indicador') + '</select></div>' +
+    '<div class="pab-field"><label for="admN-frente">Frente</label><select class="pab-input form-select" id="admN-frente">' + admOpcoes([['gestao', 'Gestão'], ['transporte', 'Transporte Escolar'], ['capacitacao', 'Capacitação']], 'gestao') + '</select></div>' +
+    '<div class="pab-field"><label for="admN-modulo">Módulo</label><input class="pab-input" id="admN-modulo" value="caminho_da_escola"></div>' +
+    '<div class="pab-field"><label for="admN-categoria">Categoria</label><input class="pab-input" id="admN-categoria"></div>' +
+    '<div class="pab-field"><label for="admN-ordem">Ordem</label><input class="pab-input" id="admN-ordem" type="number" value="100"></div></div>' +
+    '<h3 class="gx-secao-titulo">Definição</h3>' + admCamposVersaoHtml({}, true) +
+    '<div class="gx-toolbar" style="margin-top:14px"><span></span><button type="button" class="pab-btn pab-btn-primary" onclick="admCriar()"><i class="ti ti-device-floppy" aria-hidden="true"></i> Criar rascunho</button></div>');
+}
+async function admCriar() {
+  const g = function(id) { return (document.getElementById('admN-' + id).value || '').trim(); };
+  const dados = admLerCamposVersao();
+  if (!g('codigo') || !g('slug') || !dados.titulo) { admDlgMsg('Preencha código, slug e título.', 'err'); return; }
+  admDlgMsg('Salvando…');
+  try {
+    await PNITE_AUTH.rpc('pnite_admin_cat_criar', { p_codigo: g('codigo'), p_slug: g('slug'), p_tipo: g('tipo'), p_frente: g('frente'),
+      p_modulo: g('modulo'), p_categoria: g('categoria'), p_ordem: parseInt(g('ordem'), 10) || 100, p_dados: dados });
+    admFecharDialogo(); await admCarregar(); admMsg('Rascunho criado. Ele não aparece ao público até ser aprovado e publicado.', 'ok');
+  } catch (e) { admDlgMsg(e.message, 'err'); }
+}
+function admDetalhe(id) {
+  const i = ADM.cat.find(function(x) { return x.id === id; });
+  if (!i) return;
+  ADM.atual = id;
+  const vers = i.versoes || [];
+  const v = vers[0];
+  const editavel = v.estado_editorial === 'rascunho' || v.estado_editorial === 'em_revisao';
+  const acoes = (ADM_ACOES[v.estado_editorial] || []).map(function(a) {
+    return '<button type="button" class="pab-btn' + (a[0] === 'publicar' ? ' pab-btn-primary' : '') + '" onclick="admTransicao(' + v.id + ',\'' + a[0] + '\',' + v.lock_version + ')">' + escHtml(a[1]) + '</button>'; }).join('');
+  const hist = vers.map(function(x) {
+    const pode = x.id !== v.id && (x.estado_editorial === 'suspenso') && x.aprovado_em;
+    return '<tr><td>v' + x.versao + '</td><td>' + admBadge(ADM_ESTADOS, x.estado_editorial) + '</td><td>' + escHtml(x.titulo) + '</td><td>' + gxDataHora(x.atualizado_em) + '</td><td>' +
+      escHtml(x.aprovado_por || '—') + '</td><td>' + (pode ? '<button type="button" class="pab-btn" onclick="admTransicao(' + x.id + ',\'restaurar\',' + x.lock_version + ')">Restaurar</button>' : '') + '</td></tr>'; }).join('');
+  admDialogo(i.codigo + ' — v' + v.versao,
+    '<div class="adm-item-meta" style="margin-bottom:12px">' + admBadge(ADM_ESTADOS, v.estado_editorial) + admBadge(ADM_SITUACAO, v.situacao_metodologica) +
+      (i.publicacao ? '<span class="gx-badge ok">publicação ativa desde ' + gxDataHora(i.publicacao.inicio) + '</span>' : '<span class="gx-badge">sem publicação ativa</span>') + '</div>' +
+    (editavel ? '' : '<div class="gx-aviso"><i class="ti ti-lock" aria-hidden="true"></i><div>Esta versão não é editável no estado atual. Crie uma nova versão para alterar a definição; a versão publicada continua no ar até a nova ser publicada.</div></div>') +
+    admCamposVersaoHtml(v, editavel) +
+    '<div class="gx-toolbar" style="margin-top:14px"><div class="adm-acoes">' +
+      (editavel ? '<button type="button" class="pab-btn pab-btn-primary" onclick="admSalvar(' + v.id + ',' + v.lock_version + ')"><i class="ti ti-device-floppy" aria-hidden="true"></i> Salvar</button>' : '') +
+      '<button type="button" class="pab-btn" onclick="admNovaVersao(' + v.id + ')"><i class="ti ti-copy" aria-hidden="true"></i> Nova versão</button>' +
+      '<button type="button" class="pab-btn" onclick="admPrevia(' + v.id + ')"><i class="ti ti-eye" aria-hidden="true"></i> Prévia privada</button></div>' +
+      '<div class="adm-acoes">' + acoes + '</div></div>' +
+    '<div id="admPreviaOut"></div>' +
+    '<h3 class="gx-secao-titulo" style="margin-top:16px">Histórico de versões</h3><div class="gx-tabela-wrap"><table class="gx-tabela"><thead><tr><th>Versão</th><th>Estado</th><th>Título</th><th>Atualizada</th><th>Aprovada por</th><th></th></tr></thead><tbody>' + hist + '</tbody></table></div>');
+}
+async function admSalvar(vid, lock) {
+  const d = admLerCamposVersao();
+  if (!d.titulo) { admDlgMsg('O título é obrigatório.', 'err'); return; }
+  admDlgMsg('Salvando…');
+  try { await PNITE_AUTH.rpc('pnite_admin_cat_editar', { p_versao_id: vid, p_lock: lock, p_dados: d }); await admCarregar(); admDetalhe(ADM.atual); admDlgMsg('Salvo (a versão volta a rascunho).', 'ok'); }
+  catch (e) { admDlgMsg(e.message, 'err'); }
+}
+async function admNovaVersao(vid) {
+  admDlgMsg('Criando nova versão…');
+  try { await PNITE_AUTH.rpc('pnite_admin_cat_nova_versao', { p_versao_base: vid }); await admCarregar(); admDetalhe(ADM.atual); admDlgMsg('Nova versão criada em rascunho. A publicação atual não mudou.', 'ok'); }
+  catch (e) { admDlgMsg(e.message, 'err'); }
+}
+async function admTransicao(vid, acao, lock) {
+  let just = null;
+  if (ADM_COM_JUST[acao]) {
+    just = window.prompt('Justificativa para "' + acao.replace('_', ' ') + '" (fica registrada na auditoria):', '');
+    if (just == null) return;
+    if (!just.trim()) { admDlgMsg('A justificativa é obrigatória.', 'err'); return; }
+  }
+  admDlgMsg('Aplicando…');
+  try {
+    const r = await PNITE_AUTH.rpc('pnite_admin_cat_transicao', { p_versao_id: vid, p_acao: acao, p_lock: lock, p_justificativa: just });
+    GX.painel = null; GX.rep = null; SM.snap = null; SM.carregando = null; SM.agg = null; // força releitura das áreas públicas
+    await admCarregar(); admDetalhe(ADM.atual);
+    admDlgMsg('Concluído: ' + (r && r.estado ? r.estado : acao) + (r && r.somente_ficha ? ' (somente ficha: indicador não validado não exibe valores)' : '') + (r && r.idempotente ? ' (já estava publicado)' : '') + '.', 'ok');
+  } catch (e) { admDlgMsg(e.message, 'err'); }
+}
+async function admPrevia(vid) {
+  const out = document.getElementById('admPreviaOut');
+  out.innerHTML = '<p class="gx-escopo">Calculando prévia…</p>';
+  try {
+    const r = await PNITE_AUTH.rpc('pnite_admin_cat_previa', { p_versao_id: vid, p_filtros: {} });
+    const res = r.resultado, pub = r.resultado_publicado;
+    const dif = r.diferencas || {};
+    out.innerHTML = '<div class="gx-cards" style="margin-top:12px">' +
+      gxCard('Resultado desta versão', res ? gxNum(res.valor, 2) : '—', res ? 'Estado: ' + escHtml(res.estado) + ' · ' + gxNum(res.n) + ' itens' : 'Sem cálculo ou sem dados ativos') +
+      gxCard('Resultado publicado', pub ? gxNum(pub.valor, 2) : '—', pub ? 'Versão de dados congelada na publicação' : 'Sem publicação com valor') + '</div>' +
+      (Object.keys(dif).length ? '<h3 class="gx-secao-titulo">Diferenças em relação à versão publicada</h3><div class="gx-tabela-wrap">' +
+        gxTabelaHtml([{ t: 'Campo', k: 'k' }, { t: 'Publicada', f: function(l) { return escHtml(JSON.stringify(l.a)); } }, { t: 'Esta versão', f: function(l) { return escHtml(JSON.stringify(l.b)); } }],
+          Object.keys(dif).map(function(k) { return { k: k, a: dif[k].publicada, b: dif[k].nova }; })) + '</div>' : '');
+  } catch (e) { out.innerHTML = '<p class="adm-msg err">' + escHtml(e.message) + '</p>'; }
+}
+
+function admHtmlCargas() {
+  const c = ADM.cargas, q = {};
+  (c.qualidade || []).forEach(function(x) { q[x.dataset_versao_id] = x; });
+  return '<div class="gx-aviso"><i class="ti ti-terminal-2" aria-hidden="true"></i><div>Novas cargas entram pelo importador <code>scripts/importar_caminho_escola.py</code> (CSV e XLSX, todas as abas previstas, hash SHA-256 para impedir carga duplicada) e chegam aqui como <b>validadas</b>. Ativar uma carga troca a versão de dados usada em novas publicações; as publicações existentes continuam presas à versão com que foram publicadas.</div></div>' +
+    '<h3 class="gx-secao-titulo">Versões de dados</h3><div class="gx-tabela-wrap">' + gxTabelaHtml([
+      { t: '#', k: 'id' }, { t: 'Fonte', k: 'fonte' }, { t: 'Arquivo', k: 'arquivo' },
+      { t: 'Situação', f: function(l) { return '<span class="gx-badge ' + (l.status === 'ativa' ? 'ok' : l.status === 'rejeitada' ? 'err' : 'info') + '">' + escHtml(l.status) + '</span>'; } },
+      { t: 'Linhas', num: true, f: function(l) { return gxNum(l.linhas); } }, { t: 'Quantidade', num: true, f: function(l) { return gxNum(l.soma_quantidade); } },
+      { t: 'Valor total', num: true, f: function(l) { return gxBRL(l.soma_valor_total); } },
+      { t: 'Alertas', num: true, f: function(l) { const x = q[l.id]; return x ? gxNum(x.unitario_ausente) + ' s/ unit. · ' + gxNum(x.produto_divergente) + ' div.' : '—'; } },
+      { t: 'Período', f: function(l) { return gxData(l.periodo_inicio) + ' a ' + gxData(l.periodo_fim); } },
+      { t: 'SHA-256', f: function(l) { return '<code title="' + escHtml(l.sha256) + '">' + escHtml(String(l.sha256).slice(0, 12)) + '…</code>'; } },
+      { t: 'Recebida', f: function(l) { return gxDataHora(l.recebido_em); } },
+      { t: '', f: function(l) { return l.status === 'validada' || l.status === 'inativa' ? '<button type="button" class="pab-btn" onclick="admAtivarCarga(' + l.id + ')">Ativar</button>' : ''; } }],
+      c.versoes || []) + '</div>' +
+    '<h3 class="gx-secao-titulo" style="margin-top:16px">Fontes cadastradas</h3><div class="gx-tabela-wrap">' + gxTabelaHtml([
+      { t: 'Código', k: 'codigo' }, { t: 'Descrição', k: 'descricao' }, { t: 'Dono', k: 'dono' }, { t: 'Classificação', k: 'classificacao' }, { t: 'Observação', k: 'observacao' }], c.fontes || []) + '</div>';
+}
+async function admAtivarCarga(id) {
+  const just = window.prompt('Justificativa para ativar a versão de dados #' + id + ':', '');
+  if (just == null) return;
+  if (!just.trim()) { admMsg('A justificativa é obrigatória.', 'err'); return; }
+  try { await PNITE_AUTH.rpc('pnite_admin_carga_ativar', { p_dataset: id, p_justificativa: just }); await admCarregar(); admMsg('Versão de dados ativada. Nenhum indicador foi publicado automaticamente.', 'ok'); }
+  catch (e) { admMsg(e.message, 'err'); }
+}
+function admHtmlPublicacoes() {
+  const pubs = ADM.cat.filter(function(i) { return i.publicacao; });
+  return '<div class="gx-aviso"><i class="ti ti-world" aria-hidden="true"></i><div>Itens visíveis ao público. Para retirar, abra o item e use “Suspender”; para voltar a uma versão aprovada anterior, use “Restaurar” no histórico.</div></div>' +
+    '<div class="gx-tabela-wrap">' + gxTabelaHtml([{ t: 'Código', k: 'codigo' }, { t: 'Título', f: function(i) { const v = (i.versoes || []).find(function(x) { return x.id === i.publicacao.versao_id; }) || {}; return escHtml(v.titulo || ''); } },
+      { t: 'Versão', f: function(i) { const v = (i.versoes || []).find(function(x) { return x.id === i.publicacao.versao_id; }) || {}; return 'v' + escHtml(String(v.versao)); } },
+      { t: 'Dados', f: function(i) { return i.publicacao.dataset_versao_id ? '#' + i.publicacao.dataset_versao_id : '—'; } },
+      { t: 'Modo', f: function(i) { return i.publicacao.somente_ficha ? '<span class="gx-badge warn">só ficha</span>' : '<span class="gx-badge ok">com valores</span>'; } },
+      { t: 'Desde', f: function(i) { return gxDataHora(i.publicacao.inicio); } }, { t: 'Por', f: function(i) { return escHtml(i.publicacao.publicado_por); } },
+      { t: '', f: function(i) { return '<button type="button" class="pab-btn" onclick="admDetalhe(' + i.id + ')">Abrir</button>'; } }], pubs) + '</div>';
+}
+function admHtmlQualidade() {
+  const c = ADM.cargas;
+  return '<h3 class="gx-secao-titulo">Reconciliações</h3><div class="gx-tabela-wrap">' + gxTabelaHtml([{ t: 'Medida', k: 'medida' },
+      { t: 'Base', num: true, f: function(l) { return gxNum(l.valor_base); } }, { t: 'Painel', num: true, f: function(l) { return gxNum(l.valor_painel); } },
+      { t: 'Diferença', num: true, f: function(l) { return gxNum(Number(l.valor_painel) - Number(l.valor_base)); } }, { t: 'Situação', k: 'situacao' }, { t: 'Nota', k: 'nota' }], c.reconciliacoes || []) + '</div>' +
+    '<h3 class="gx-secao-titulo" style="margin-top:16px">Pendências de qualidade (aba Auditoria da extração)</h3><div class="gx-tabela-wrap">' + gxTabelaHtml([
+      { t: 'Painel', k: 'painel' }, { t: 'Verificação', k: 'verificacao' }, { t: 'Valor', num: true, f: function(l) { return gxNum(l.valor, Number(l.valor) % 1 ? 2 : 0); } },
+      { t: 'Origem', k: 'origem' }, { t: 'Situação', f: function(l) { return '<span class="gx-badge ' + (l.situacao === 'aberta' ? 'warn' : 'ok') + '">' + escHtml(l.situacao) + '</span>'; } },
+      { t: 'Decisão', f: function(l) { return escHtml(l.decisao || '—') + (l.decidido_por ? '<br><small>' + escHtml(l.decidido_por) + ' · ' + gxDataHora(l.decidido_em) + '</small>' : ''); } },
+      { t: '', f: function(l) { return '<button type="button" class="pab-btn" onclick="admDecidir(' + l.id + ')">Registrar decisão</button>'; } }], c.pendencias || []) + '</div>';
+}
+async function admDecidir(id) {
+  const sit = window.prompt('Situação (aberta, aceita ou resolvida):', 'aceita');
+  if (sit == null) return;
+  const dec = window.prompt('Decisão e justificativa:', '');
+  if (dec == null) return;
+  try { await PNITE_AUTH.rpc('pnite_admin_pendencia_decidir', { p_id: id, p_situacao: sit.trim(), p_decisao: dec }); await admCarregar(); admMsg('Decisão registrada.', 'ok'); }
+  catch (e) { admMsg(e.message, 'err'); }
+}
+async function admAuditoria(offset) {
+  ADM.aud.offset = Math.max(0, offset || 0);
+  try {
+    const r = await PNITE_AUTH.rpc('pnite_admin_auditoria', { p_limite: 50, p_offset: ADM.aud.offset, p_entidade: null });
+    if (ADM.aba !== 'auditoria') return;
+    const el = document.getElementById('admPainel');
+    el.innerHTML = '<p class="gx-escopo">' + gxNum(r.total) + ' eventos (somente inclusão; não podem ser alterados nem apagados).</p><div class="gx-tabela-wrap alta">' + gxTabelaHtml([
+      { t: 'Quando', f: function(l) { return gxDataHora(l.em); } }, { t: 'Ator', k: 'ator' }, { t: 'Operação', k: 'operacao' }, { t: 'Entidade', f: function(l) { return escHtml(l.entidade + ' #' + (l.entidade_id || '')); } },
+      { t: 'Justificativa', k: 'justificativa' }, { t: 'Depois', f: function(l) { return l.depois ? '<pre class="adm-json">' + escHtml(JSON.stringify(l.depois, null, 1)) + '</pre>' : '—'; } }], r.linhas || []) + '</div>' +
+      '<div class="gx-pager"><button type="button" class="pab-btn" onclick="admAuditoria(' + (ADM.aud.offset - 50) + ')"' + (ADM.aud.offset ? '' : ' disabled') + ' aria-label="Eventos mais recentes"><i class="ti ti-chevron-left" aria-hidden="true"></i></button>' +
+      '<button type="button" class="pab-btn" onclick="admAuditoria(' + (ADM.aud.offset + 50) + ')"' + (ADM.aud.offset + 50 < r.total ? '' : ' disabled') + ' aria-label="Eventos mais antigos"><i class="ti ti-chevron-right" aria-hidden="true"></i></button></div>';
+  } catch (e) { admMsg(e.message, 'err'); }
+}
+// Troca de tema: redesenha os gráficos visíveis com as cores do novo tema (uma única observação)
+new MutationObserver(function() {
+  try {
+    const fg = document.getElementById('frontGestao');
+    if (GX.painel && fg && fg.classList.contains('active') && GX.aba === 'contratacoes') gxRenderPainel(GX.painel);
+    const pm = document.getElementById('page-secMonitoramento');
+    if (SM.agg && pm && pm.classList.contains('active-page')) smRender();
+  } catch (e) { console.warn('Redesenho após troca de tema:', e); }
+}).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+document.addEventListener('keydown', function(ev) {
+  if (ev.key === 'Escape') { const d = document.getElementById('admDialog'); if (d && !d.hidden) admFecharDialogo(); }
+});
 
 // ==========================================================================
 // FRENTE ANALÍTICA: INDICADORES DA CAPACITAÇÃO (LÓGICA, FILTROS & MAPA)
@@ -16773,7 +17953,8 @@ function switchModulePage(secId) {
     'secDesempenho': 'page-secDesempenho',
     'secDescritivos': 'page-secDescritivos',
     'secModal': 'page-secModal',
-    'secMapa': 'page-secMapa'
+    'secMapa': 'page-secMapa',
+    'secMonitoramento': 'page-secMonitoramento'
   };
 
   const targetPageId = pageMap[secId] || ('page-' + secId);
@@ -16830,6 +18011,8 @@ function switchModulePage(secId) {
     if (typeof renderRotasRanking === 'function') renderRotasRanking();
   } else if (secId === 'secHero') {
     if (typeof renderElyraHero === 'function') renderElyraHero(d);
+  } else if (secId === 'secMonitoramento') {
+    smIniciar();
   }
 
   // Se for uma das subseções do módulo inicial, rola até ela com compensação de cabeçalho
@@ -16955,41 +18138,6 @@ async function recarregarDadosExternos() {
   if (window.PNITE_API) await PNITE_API.recarregar();
 }
 
-function processarUploadExcel(event) {
-  const file = event.target.files && event.target.files[0];
-  const fb = document.getElementById('excelUploadFeedback');
-  if (!file) return;
-
-  if (typeof XLSX === 'undefined') {
-    if (fb) fb.innerHTML = '<span style="color:var(--red)">Biblioteca SheetJS não disponível para leitura direta.</span>';
-    return;
-  }
-
-  if (fb) fb.innerHTML = '<span style="color:var(--c-blue)"><i class="ti ti-loader animate-spin"></i> Lendo planilha ' + escHtml(file.name) + '...</span>';
-
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    try {
-      const data = new Uint8Array(e.target.result);
-      const workbook = XLSX.read(data, { type: 'array' });
-      const sheetName = workbook.SheetNames[0];
-      const worksheet = workbook.Sheets[sheetName];
-      const jsonRows = XLSX.utils.sheet_to_json(worksheet);
-
-      if (jsonRows && jsonRows.length > 0) {
-        if (fb) fb.innerHTML = '<span style="color:var(--accent);font-weight:600"><i class="ti ti-check"></i> Planilha "' + escHtml(file.name) + '" lida com sucesso (' + jsonRows.length + ' linhas). Os painéis continuam usando a base consolidada em data/Transporte Escolar/.</span>';
-        console.log('Upload de Excel processado:', file.name, jsonRows.length, 'linhas');
-      } else {
-        if (fb) fb.innerHTML = '<span style="color:var(--orange)">Planilha lida, mas sem registros na aba principal.</span>';
-      }
-    } catch (err) {
-      console.error('Erro ao processar Excel:', err);
-      if (fb) fb.innerHTML = '<span style="color:var(--red)">Erro ao ler o arquivo Excel: ' + escHtml(err.message || 'formato inválido') + '</span>';
-    }
-  };
-  reader.readAsArrayBuffer(file);
-}
-
 </script>
 
 <!-- WIDGET FLUTUANTE DE INFORMAÇÃO DA VERSÃO (CANTO INFERIOR DIREITO) -->
@@ -17003,12 +18151,13 @@ function processarUploadExcel(event) {
       </div>
     </div>
     <div class="pif-body">
-      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.2.4</strong></div>
+      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.2.5</strong></div>
       <div class="pif-row"><span>Data da alteração:</span><span class="pnite-date-val">22/10/2026</span></div>
       <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">14:00</span></div>
       <div class="pif-row"><span>Responsável técnico:</span><span class="pnite-author-val">Equipe PNITE</span></div>
       <div class="pif-note">
         <i class="ti ti-check" style="color:var(--accent);margin-right:3px"></i>
+        <strong>Painéis FNDE e administração (v.3.2.5):</strong> Gestão › Caminho da Escola (contratações, detalhamento, fotografia dos repasses e ficha), Transporte › Monitoramento SETE, área de Administração (catálogo com versões, rascunho/revisão/aprovação/publicação, suspensão e restauração, fontes e cargas, qualidade e auditoria imutável); conteúdo público somente quando publicado (migrações <code>0018</code> e <code>0019</code>).<br>
         <strong>Foto e perfil (v.3.2.4):</strong> foto do usuário no cabeçalho com menu da conta (Editar perfil, Downloads, Gerenciar usuários e Sair); edição do próprio perfil (foto recortada e reduzida no navegador, nome e senha); fotos também na página de usuários (migração <code>0017_perfil_foto.sql</code>).<br>
         <strong>Página de usuários (v.3.2.3):</strong> nova página "Usuários" (aba visível só ao administrador) para cadastrar contas completas com senha inicial ou apenas autorizar e-mails, buscar e filtrar usuários, alterar papel e downloads, desativar (bloqueio no Supabase Auth), redefinir senha e remover; resumo com totais (migração <code>0016_cadastro_usuarios.sql</code>).<br>
         <strong>Login e downloads (v.3.2.2):</strong> login de usuários do Supabase Auth (somente e-mails autorizados criam conta); usuários com permissão baixam indicadores do escopo e tabelas (XLSX), gráficos (PNG) e o mapa (PNG/SVG); o administrador (morato@ufg.br) gerencia autorizações, papéis e permissões em "Gerenciar acessos" (migração <code>0015_acesso_usuarios.sql</code>).<br>
@@ -17043,7 +18192,7 @@ function processarUploadExcel(event) {
   </div>
   <button class="pif-btn" id="pifBtn" aria-label="Informações de Versão">
     <i class="ti ti-info-circle"></i>
-    <span class="pif-btn-label pnite-version-val">v.3.2.4</span>
+    <span class="pif-btn-label pnite-version-val">v.3.2.5</span>
   </button>
 </div>
 

@@ -311,6 +311,8 @@ python scripts/validar_paridade.py
 | `0015_acesso_usuarios` | Login: autorizações, perfis, papel de administrador e permissão de download |
 | `0016_cadastro_usuarios` | Cadastro de contas e redefinição de senha pela PNITE; bloqueio no Auth de contas desativadas |
 | `0017_perfil_foto` | Foto do usuário e edição do próprio perfil |
+| `0018_catalogo_caminho_escola` | Schemas privados `gestao` (fontes, versões de dados com SHA-256, itens de contratação do Caminho da Escola, snapshots dos painéis FNDE, pendências de qualidade, reconciliações) e `catalogo` (indicadores, versões imutáveis, publicações, auditoria somente de inclusão); motor de cálculo por allowlist; RPCs públicas que só devolvem o que está publicado; RPCs `pnite_admin_*` de catálogo, cargas, qualidade e auditoria; proteção do último administrador |
+| `0019_catalogo_cadastro_inicial` | Cadastro inicial: 6 indicadores e 4 visuais do Caminho da Escola/SETE em rascunho e os 31 indicadores observados da PNITE em revisão (nada publicado); reconciliação 44.172 × 44.926 |
 
 ---
 
@@ -1805,3 +1807,15 @@ Todas as tabelas de `capacitacao` num único JSON (`{tabela: {colunas, linhas}}`
 - `ufs`: resumo por UF (sigla maiúscula) com `nome`, `mun`, `alunos`, `at`, `escolas`, `rotas`, `km`, `km_n`, `rt1`–`rt3`, `veiculos`, `vp`, `vt`, `cap`, `monitores`, `motoristas`, `fornecedores`, `ordens`, `normas`, `v_eta`, `v_rpe`, `v_rpv`, `v_rdm`.
 
 **`dados`** (`capacitacao_dados`): `{"capacitacoes": {"colunas": [...], "linhas": [[...]]}, …}` com uma chave por tabela de `capacitacao` (sem a coluna `seq`), mais `municipios_mapa` (469 municípios para o mapa), `versao_esquema`, `gerado_em`, `fontes` e `presentes_sem_municipio`.
+
+---
+
+## Painéis FNDE: catálogo editorial e Caminho da Escola (v.3.2.5)
+
+- **Carga:** `python scripts/importar_caminho_escola.py --csv <Base_Caminho_da_Escola_HMG.csv> --xlsx <Extracao_dois_paineis_FNDE.xlsx>`. O comando é idempotente por SHA-256 e deixa a versão `validada`. Para ativar, use `--ativar "motivo"` ou Administração › Fontes e cargas. Ativar não publica nada. A aba `Base_Contratacoes` não é carregada porque é idêntica ao CSV.
+- **Leitura pública:** `pnite_catalogo_publicado`, `pnite_indicador_valor`, `pnite_ce_painel`, `pnite_ce_detalhe`, `pnite_snapshot_painel`. Quando o item não está publicado, a resposta é `{publicado:false}` ou `{encontrado:false}`.
+- **Fluxo editorial:** rascunho → em revisão → aprovado → publicado → suspenso → restaurado/arquivado.
+  - Cada publicação congela a versão do indicador e a versão de dados.
+  - Indicador não `validado` vai a público só como ficha, sem valor.
+  - Toda transição pede trava otimista (`lock_version`); aprovar, publicar, suspender, restaurar e arquivar pedem também justificativa.
+- **Auditoria:** a tabela `catalogo.auditoria` é append-only, com gatilhos que bloqueiam UPDATE, DELETE e TRUNCATE.
