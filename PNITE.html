@@ -6381,7 +6381,8 @@ html.pnite-logado .pnite-auth-btn .pab-chev { display: inline-block; }
 .gx-panel[hidden], .gx-page [hidden], .adm-dialog[hidden] { display: none !important; } /* o atributo hidden precisa vencer display de classe */
 .gx-filtros { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(170px, 100%), 1fr)); gap: 10px; align-items: end; background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 14px; margin-bottom: 16px; }
 .gx-filtros .pab-field { margin: 0; min-width: 0; }
-.gx-filtros select, .gx-filtros input { width: 100%; max-width: 100%; min-width: 0; }
+.gx-filtros select, .gx-filtros input { width: 100%; max-width: 100%; min-width: 0; height: 42px; }
+.gx-filtros .pab-btn { width: 100%; height: 42px; justify-content: center; border-radius: 10px; }
 .gx-escopo { font-size: 12.5px; color: var(--text-2); margin: -6px 0 14px; }
 .gx-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(190px, 100%), 1fr)); gap: 12px; margin-bottom: 16px; }
 .gx-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 16px; min-width: 0; }
@@ -6426,8 +6427,8 @@ html.pnite-logado .pnite-auth-btn .pab-chev { display: inline-block; }
 .gx-secao-titulo { font-size: 15px; font-weight: 700; color: var(--text-1); margin: 4px 0 10px; display: flex; align-items: center; gap: 8px; }
 .gx-dl { display: none; }
 html.pnite-pode-baixar .gx-dl { display: inline-flex; }
-/* Monitoramento SETE dentro da frente Transporte */
-.sm-wrap { padding: 0; }
+/* Monitoramento SETE dentro da frente Transporte: mesmo padding do cartão de seção */
+.sm-wrap .sec-header-standard { margin-bottom: 18px; }
 .sm-wrap .gx-tabs { margin-top: 4px; }
 /* Administração */
 .adm-lista { display: grid; gap: 10px; }
@@ -6466,6 +6467,45 @@ html[data-theme="dark"] .adm-msg.ok { color: #7ee2b0; }
   .gx-tab, .gx-btn-link, .gx-chart-card summary { min-height: 44px; }
 }
 .gx-mb { margin-bottom: 16px; }
+/* v.3.2.6 — cabeçalho em grade: 1ª linha com a marca à esquerda e as ações (Entrar,
+   Configurações, tema) à direita; 2ª linha com as frentes centralizadas (não cabem numa linha só) */
+.header-container { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "marca acoes" "frentes frentes"; align-items: center; column-gap: 20px; row-gap: 10px; }
+.header-brand { grid-area: marca; min-width: 0; }
+.header-brand > div:last-child { min-width: 0; }
+.header-capsule-nav { grid-area: frentes; justify-self: center; min-width: 0; max-width: 100%; }
+.header-actions { grid-area: acoes; justify-self: end; flex-wrap: nowrap; }
+@media (max-width: 760px) {
+  .header-capsule-nav { justify-self: stretch; }
+  .header-actions { gap: 6px; }
+  .header-actions .header-btn [data-i18n="config"] { display: none; }
+  .hb-sub { display: none; }
+}
+/* v.3.2.6 — cartões de indicador compactos: número dentro da rosca e sigla junto do nome */
+.elyra-performance-grid { grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr)); gap: 12px; }
+.elyra-arc-card { display: grid; grid-template-columns: 76px minmax(0, 1fr); grid-template-rows: 1fr auto; grid-template-areas: "arco txt" "info info"; column-gap: 14px; row-gap: 0; align-items: center; text-align: left; padding: 14px 16px 12px; }
+.elyra-arc-svg-wrap { grid-area: arco; width: 76px; height: 76px; margin: 0; position: relative; }
+.elyra-arc-svg-wrap svg { width: 76px; height: 76px; }
+.elyra-arc-val { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; margin: 0; padding: 0 9px; text-align: center;
+  font-family: inherit; font-size: 15px; font-weight: 700; letter-spacing: -.01em; line-height: 1.05; overflow-wrap: anywhere; }
+.elyra-arc-txt { grid-area: txt; min-width: 0; }
+.elyra-arc-lbl { display: block; min-height: 0; margin: 0; padding: 0; text-align: left; font-size: 12.5px; line-height: 1.35; }
+.elyra-arc-sigla { display: inline-block; vertical-align: 1px; margin-right: 4px; padding: 1px 7px; border-radius: 999px; font-size: 10px; font-weight: 800; letter-spacing: .04em;
+  color: var(--c-blue); background-color: var(--bg-badge); border: 1px solid var(--border); }
+.elyra-arc-sub { display: block; min-height: 0; margin-top: 4px; justify-content: flex-start; text-align: left; }
+.elyra-arc-infobar { grid-area: info; margin-top: 10px; padding-top: 7px; gap: 8px; min-height: 26px; }
+.elyra-arc-selo { font-size: 10px; padding: 2px 8px; }
+.elyra-arc-selo i { font-size: 10px; }
+.elyra-arc-nome { font-weight: 700; }
+/* v.3.2.6 — mapa de calor municipal do Monitoramento SETE */
+.sm-mapa { position: relative; min-width: 0; }
+.sm-mapa svg { display: block; width: 100%; height: auto; max-height: 460px; }
+.sm-mapa path { stroke: var(--bg-card); stroke-width: .6; vector-effect: non-scaling-stroke; cursor: pointer; }
+.sm-mapa path:hover, .sm-mapa path:focus { stroke: var(--text-1); stroke-width: 1.6; outline: none; }
+.sm-mapa path.sel { stroke: var(--text-1); stroke-width: 2.2; }
+.sm-legenda { display: flex; flex-wrap: wrap; gap: 6px 12px; margin-top: 8px; font-size: 11.5px; color: var(--text-2); }
+.sm-legenda span { display: inline-flex; align-items: center; gap: 5px; }
+.sm-legenda i { width: 14px; height: 14px; border-radius: 3px; border: 1px solid var(--border); display: inline-block; }
+.sm-dica { position: absolute; pointer-events: none; z-index: 5; background: var(--bg-card); color: var(--text-1); border: 1px solid var(--border-mid); border-radius: 10px; padding: 6px 10px; font-size: 12px; box-shadow: 0 4px 14px rgba(0,0,0,.15); white-space: nowrap; }
 </style>
 
 <script>
@@ -6542,7 +6582,7 @@ window.onerror = function(msg, url, line, col, err) {
             <button type="button" class="pab-menu-item danger" role="menuitem" onclick="pniteAuthSair()"><i class="ti ti-logout" aria-hidden="true"></i> Sair</button>
           </div>
         </div>
-        <button class="header-btn" onclick="openSettingsModal()" title="Configurações e Idioma">
+        <button class="header-btn" type="button" onclick="openSettingsModal()" title="Configurações e Idioma" aria-label="Configurações e idioma">
           <i class="ti ti-settings"></i> <span data-i18n="config">Configurações</span>
         </button>
         <button class="header-btn theme-icon-btn" id="headerThemeBtn" type="button" onclick="cycleTheme()" title="Alternar Modo de Cor" aria-label="Alternar modo de cor">
@@ -7936,7 +7976,7 @@ window.onerror = function(msg, url, line, col, err) {
           </div>
         </div>
 
-        <div class="elyra-performance-grid" id="gridDesempenhoArcs" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));gap:16px"></div>
+        <div class="elyra-performance-grid" id="gridDesempenhoArcs"></div>
       </section>
 </div><!-- /#page-secDesempenho -->
 
@@ -8011,7 +8051,7 @@ window.onerror = function(msg, url, line, col, err) {
           </div>
         </div>
 
-        <div class="elyra-performance-grid" id="gridDescritivosArcs" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));gap:16px"></div>
+        <div class="elyra-performance-grid" id="gridDescritivosArcs"></div>
       </section>
 </div><!-- /#page-secDescritivos -->
 
@@ -8250,8 +8290,8 @@ window.onerror = function(msg, url, line, col, err) {
           <div id="smApp" hidden>
             <div class="gx-cards" id="smCards"></div>
             <div class="gx-grid2" id="smGraficos">
-              <div class="gx-chart-card"><h3 id="smCh1Tit"></h3><p id="smCh1Sub"></p><div class="gx-chart"><canvas id="smCh1" role="img"></canvas></div><details><summary>Ver dados em tabela</summary><div id="smTb1"></div></details></div>
-              <div class="gx-chart-card"><h3 id="smCh2Tit"></h3><p id="smCh2Sub"></p><div class="gx-chart"><canvas id="smCh2" role="img"></canvas></div><details><summary>Ver dados em tabela</summary><div id="smTb2"></div></details></div>
+              <div class="gx-chart-card"><h3 id="smCh1Tit"></h3><p id="smCh1Sub"></p><div class="gx-chart" id="smCh1Box"><canvas id="smCh1" role="img"></canvas></div><div class="sm-mapa" id="smMapa1" hidden></div><details><summary>Ver dados em tabela</summary><div id="smTb1"></div></details></div>
+              <div class="gx-chart-card"><h3 id="smCh2Tit"></h3><p id="smCh2Sub"></p><div class="gx-chart" id="smCh2Box"><canvas id="smCh2" role="img"></canvas></div><div class="sm-mapa" id="smMapa2" hidden></div><details><summary>Ver dados em tabela</summary><div id="smTb2"></div></details></div>
             </div>
             <div class="gx-chart-card gx-mb" id="smTabelaCard"><h3 id="smTabTit"></h3><p id="smTabSub"></p><div class="gx-tabela-wrap alta" id="smTabela"></div></div>
             <div id="smSnapshot"></div>
@@ -8278,7 +8318,7 @@ window.onerror = function(msg, url, line, col, err) {
       <div class="ef-container">
         <div class="ef-left">
           <span class="ef-badge pnite-version-val" id="pniteVersionBadge">v.3.0.1</span>
-          <span class="ef-badge" role="button" tabindex="0" onclick="openSettingsModal()" style="cursor:pointer;font-weight:600;font-size:11px;background:var(--accent-light);color:var(--accent-dark);padding:3px 8px;border-radius:6px;display:inline-flex;align-items:center;gap:4px" title="Clique para gerenciar fontes e dados"><i class="ti ti-file-spreadsheet"></i> Dados: Excel (pasta data/Transporte Escolar/)</span>
+          <span class="ef-badge" role="button" tabindex="0" onclick="openSettingsModal()" style="cursor:pointer;font-weight:600;font-size:11px;background:var(--accent-light);color:var(--accent-dark);padding:3px 8px;border-radius:6px;display:inline-flex;align-items:center;gap:4px" title="Origem dos dados e preferências"><i class="ti ti-database" aria-hidden="true"></i> Dados: API Supabase (base SETE)</span>
           <span>PNITE — Plataforma Nacional de Inteligência em Transporte Escolar</span>
         </div>
         <div class="ef-right">
@@ -8379,7 +8419,7 @@ window.onerror = function(msg, url, line, col, err) {
     <div class="smb-sec">
       <div class="smb-sec-title" data-i18n="settings_info_title">Informações da Versão</div>
       <div style="font-size:12px;color:var(--text-2);display:flex;flex-direction:column;gap:4px;margin-top:6px">
-        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.2.5</b></div>
+        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.2.6</b></div>
         <div><span data-i18n="settings_updated">Última Atualização:</span> <b class="pnite-date-val">06/10/2026</b> às <b class="pnite-time-val">21:05</b></div>
         <div><span data-i18n="settings_author">Responsável Técnico:</span> <b class="pnite-author-val">Equipe PNITE</b></div>
       </div>
@@ -9368,7 +9408,7 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.2.5";
+const PNITE_VERSION = "v.3.2.6";
 const PNITE_LAST_UPDATE = "06/11/2026";
 const PNITE_LAST_TIME = "12:00";
 
@@ -9576,11 +9616,11 @@ function buildArcCardHtml(ind, d) {
   // Subtítulo descritivo contextual (sem 'Percentual apurado' ou 'Métrica apurada')
   const subText = (ind.sub && ind.sub !== 'Percentual apurado' && ind.sub !== 'Métrica apurada') ? ind.sub : '';
   const subHtml = isEmConstrucao
-    ? `<div class="elyra-arc-sub"><span class="badge-construcao" style="font-size:9.5px;padding:2px 8px"><i class="ti ti-tool" style="font-size:9px"></i> Em construção</span></div>`
+    ? ''
     : (subText ? `<div class="elyra-arc-sub">${subText}</div>` : '');
 
   const infobarHtml = isEmConstrucao
-    ? ''
+    ? `<div class="elyra-arc-infobar"><span class="badge-construcao elyra-arc-selo"><i class="ti ti-tool" aria-hidden="true"></i> Em construção</span><span>${ind.fonte || 'SETE, 2026'}</span></div>`
     : `<div class="elyra-arc-infobar">
         <span>Média Nacional: <b>${medNac}</b></span>
         <span>${ind.fonte || 'SETE, 2026'}</span>
@@ -9588,8 +9628,6 @@ function buildArcCardHtml(ind, d) {
 
   return `
         <div class="elyra-arc-card" id="arcCard-${sigla}" title="${nomeCompleto} (${sigla}): ${valStr}">
-      <div style="margin-bottom:4px"><span class="badge-novo" style="font-size:10px;font-weight:700;padding:2px 8px;letter-spacing:.05em">${sigla}</span></div>
-      <div class="elyra-arc-val" id="arcVal-${sigla}">${valStr}</div>
       <div class="elyra-arc-svg-wrap">
         <svg viewBox="0 0 80 80" width="80" height="80">
           <circle cx="40" cy="40" r="34" fill="none" stroke="var(--border)" stroke-width="4.5" />
@@ -9602,9 +9640,12 @@ function buildArcCardHtml(ind, d) {
                   transform="rotate(-90 40 40)"
                   style="stroke:${isEmConstrucao ? 'var(--border)' : color}; stroke-dashoffset:${dashOffset.toFixed(1)}; transition: stroke-dashoffset 1000ms cubic-bezier(0.16, 1, 0.3, 1)" />
         </svg>
+        <div class="elyra-arc-val" id="arcVal-${sigla}">${valStr}</div>
       </div>
-      <div class="elyra-arc-lbl">${nomeCompleto}</div>
-      ${subHtml}
+      <div class="elyra-arc-txt">
+        <div class="elyra-arc-lbl"><span class="elyra-arc-sigla">${sigla}</span> <span class="elyra-arc-nome">${nomeCompleto}</span></div>
+        ${subHtml}
+      </div>
       ${infobarHtml}
     </div>  `;
 }
@@ -9634,10 +9675,10 @@ function renderElyraPerformanceArcs(d) {
       const pct = v !== null ? Math.min(100, Math.max(0, v)) : 0;
       const dashOffset = circumference * (1 - pct / 100);
       const subHtml = isConstrucao 
-        ? `<div class="elyra-arc-sub"><span class="badge-construcao" style="font-size:9.5px;padding:2px 8px"><i class="ti ti-tool" style="font-size:9px"></i> Em construção</span></div>`
+        ? `<div class="elyra-arc-sub">${g.sub}</div>`
         : `<div class="elyra-arc-sub">${g.sub}</div>`;
       const infobarHtml = isConstrucao
-        ? ''
+        ? `<div class="elyra-arc-infobar"><span class="badge-construcao elyra-arc-selo"><i class="ti ti-tool" aria-hidden="true"></i> Em construção</span><span>${g.fonte || 'SETE, 2026'}</span></div>`
         : `<div class="elyra-arc-infobar">
             <span>Média Nacional: <b>${g.medNac}</b></span>
             <span>${g.fonte || 'SETE, 2026'}</span>
@@ -9645,8 +9686,6 @@ function renderElyraPerformanceArcs(d) {
 
       return `
         <div class="elyra-arc-card" id="elyraCard-${g.sigla}" title="${g.nome} (${g.sigla}): ${vStr}">
-          <div style="margin-bottom:4px"><span class="badge-novo" style="font-size:10px;font-weight:700;padding:2px 8px;letter-spacing:.05em">${g.sigla}</span></div>
-          <div class="elyra-arc-val" id="elyraVal-${g.sigla}">${vStr}</div>
           <div class="elyra-arc-svg-wrap">
             <svg viewBox="0 0 80 80" width="80" height="80">
               <circle cx="40" cy="40" r="34" fill="none" stroke="var(--border)" stroke-width="4.5" />
@@ -9659,9 +9698,12 @@ function renderElyraPerformanceArcs(d) {
                       transform="rotate(-90 40 40)"
                       style="stroke:${isConstrucao ? 'var(--border)' : g.color}; stroke-dashoffset:${dashOffset.toFixed(1)}; transition: stroke-dashoffset 1000ms cubic-bezier(0.16, 1, 0.3, 1)" />
             </svg>
+            <div class="elyra-arc-val" id="elyraVal-${g.sigla}">${vStr}</div>
           </div>
-          <div class="elyra-arc-lbl">${g.nome}</div>
-          ${subHtml}
+          <div class="elyra-arc-txt">
+            <div class="elyra-arc-lbl"><span class="elyra-arc-sigla">${g.sigla}</span> <span class="elyra-arc-nome">${g.nome}</span></div>
+            ${subHtml}
+          </div>
           ${infobarHtml}
         </div>
       `;
@@ -9817,8 +9859,8 @@ function renderDesempenhoArcs(d) {
           if (cardEl) {
             const formatted = (info.decimals === 0) ? Math.round(info.targetVal) : info.targetVal.toFixed(info.decimals);
             cardEl.title = `${nomeCompleto} (${sigla}): ${formatted}${info.suffix}`;
-            const lblEl = cardEl.querySelector('.elyra-arc-lbl');
-            if (lblEl) lblEl.textContent = nomeCompleto;
+            const nomeEl = cardEl.querySelector('.elyra-arc-nome');
+            if (nomeEl) nomeEl.textContent = nomeCompleto;
           }
           if (circleEl) {
             const indColor = INDICATOR_COLORS[sigla] || 'var(--c-yellow)';
@@ -10180,8 +10222,8 @@ function renderDescritivosArcs(d) {
           if (cardEl) {
             const formatted = (info.decimals === 0) ? Math.round(info.targetVal) : info.targetVal.toFixed(info.decimals);
             cardEl.title = `${nomeCompleto} (${sigla}): ${formatted}${info.suffix}`;
-            const lblEl = cardEl.querySelector('.elyra-arc-lbl');
-            if (lblEl) lblEl.textContent = nomeCompleto;
+            const nomeEl = cardEl.querySelector('.elyra-arc-nome');
+            if (nomeEl) nomeEl.textContent = nomeCompleto;
           }
           if (circleEl) {
             const indColor = INDICATOR_COLORS[sigla] || 'var(--c-yellow)';
@@ -15769,7 +15811,7 @@ function smRender() {
       const ms = SM.mun.filter(function(m) { return i.reg ? m.regiao === i.reg : i.uf ? m.uf === i.uf : m.chave === i.l.chave; });
       return ms.length ? 100 * ms.filter(smTemDados).length / ms.length : null;
     });
-    ch1 = { t: 'Percentual de municípios com dados, por ' + g.tit, s: 'Não equivale a “registrado no SETE” do painel FNDE.', r: g.itens.map(function(i) { return i.nome; }), v: pct, o: { horizontal: true, cor: amarelo, fmt: function(v) { return gxNum(v, 2) + '%'; } } };
+    ch1 = { porGrupo: true, t: SM.f.uf ? 'Municípios com dados na base SETE (100% = com dados)' : 'Percentual de municípios com dados, por ' + g.tit, s: 'Não equivale a “registrado no SETE” do painel FNDE.', r: g.itens.map(function(i) { return i.nome; }), v: pct, o: { horizontal: true, cor: amarelo, fmt: function(v) { return gxNum(v, 2) + '%'; } } };
     ch2 = { t: 'Municípios com e sem dados', s: 'Escopo selecionado', r: ['Com dados', 'Sem dados'], v: [com, muns.length - com], o: { tipo: 'doughnut', cores: [azul, rosa] } };
     tab = { t: 'Municípios do escopo', s: 'Situação na base SETE carregada', cols: [{ t: 'Cód. IBGE', k: 'chave' }, { t: 'Região', f: function(m) { return escHtml(SM_REGIOES[m.regiao] || '—'); } },
       { t: 'UF', f: function(m) { return escHtml(String(m.uf || '').toUpperCase()); } }, { t: 'Município', f: function(m) { return escHtml(String(m.label).replace(/ \([A-Z]{2}\)$/, '')); } },
@@ -15777,15 +15819,15 @@ function smRender() {
   } else if (SM.aba === 'alunos') {
     cards = gxCard('Alunos cadastrados', gxNum(r.al_cad), 'Cadastrados no SETE') + gxCard('Alunos transportados', gxNum(r.al_transp), 'Vinculados a rotas') +
       gxCard('Escolas atendidas', gxNum(r.esc_at_sete), 'Escolas com alunos no SETE');
-    ch1 = { t: 'Alunos cadastrados por ' + g.tit, s: 'Contagem absoluta', r: g.itens.map(function(i) { return i.nome; }), v: soma(g.itens, 'al_cad'), o: { horizontal: true } };
-    ch2 = { t: 'Alunos transportados por ' + g.tit, s: 'Vinculados a rotas', r: g.itens.map(function(i) { return i.nome; }), v: soma(g.itens, 'al_transp'), o: { horizontal: true, cor: amarelo } };
+    ch1 = { porGrupo: true, t: 'Alunos cadastrados por ' + g.tit, s: 'Contagem absoluta', r: g.itens.map(function(i) { return i.nome; }), v: soma(g.itens, 'al_cad'), o: { horizontal: true } };
+    ch2 = { porGrupo: true, t: 'Alunos transportados por ' + g.tit, s: 'Vinculados a rotas', r: g.itens.map(function(i) { return i.nome; }), v: soma(g.itens, 'al_transp'), o: { horizontal: true, cor: amarelo } };
     tab = smTabelaMun([['Alunos cadastrados', 'al_cad'], ['Alunos transportados', 'al_transp'], ['Escolas atendidas', 'esc_at_sete']], muns);
   } else if (SM.aba === 'veiculos') {
     cards = gxCard('Veículos', gxNum(r.tot_veic), 'Cadastrados no SETE') + gxCard('Frota própria', gxNum(r.vp), 'Idade média ' + gxNum(r.imfp, 1) + ' anos') +
       gxCard('Frota terceirizada', gxNum(r.vt), 'Idade média ' + gxNum(r.imft, 1) + ' anos') + gxCard('Capacidade média', gxNum(r.cap_media, 1), 'Lugares por veículo') +
       gxCard('Motoristas', gxNum(r.tot_mot_info), 'Com informação cadastrada');
     ch1 = { t: 'Origem da frota', s: 'Própria e terceirizada (a categoria “Mista” do painel FNDE não existe nesta base)', r: ['Própria', 'Terceirizada'], v: [Number(r.vp), Number(r.vt)], o: { cor: [azul, amarelo] } };
-    ch2 = { t: 'Veículos por ' + g.tit, s: 'Contagem absoluta', r: g.itens.map(function(i) { return i.nome; }), v: soma(g.itens, 'tot_veic'), o: { horizontal: true } };
+    ch2 = { porGrupo: true, t: 'Veículos por ' + g.tit, s: 'Contagem absoluta', r: g.itens.map(function(i) { return i.nome; }), v: soma(g.itens, 'tot_veic'), o: { horizontal: true } };
     tab = smTabelaMun([['Veículos', 'tot_veic'], ['Próprios', 'vp'], ['Terceirizados', 'vt'], ['Motoristas', 'tot_mot_info']], muns);
   } else if (SM.aba === 'rotas') {
     const sem = (r.tot_rotas != null && r.georref != null) ? Number(r.tot_rotas) - Number(r.georref) : null;
@@ -15799,9 +15841,17 @@ function smRender() {
   document.getElementById('smCards').innerHTML = cards;
   [[ch1, 'smCh1', 'smTb1', 'smCh1Tit', 'smCh1Sub'], [ch2, 'smCh2', 'smTb2', 'smCh2Tit', 'smCh2Sub']].forEach(function(c) {
     const d = c[0];
-    document.getElementById(c[3]).textContent = d.t; document.getElementById(c[4]).textContent = d.s;
+    document.getElementById(c[3]).textContent = d.t; document.getElementById(c[4]).textContent = d.s + (SM.f.uf && d.porGrupo ? ' · mapa de calor em 5 faixas (quantis); clique num município para selecioná-lo' : '');
     document.getElementById(c[1]).setAttribute('aria-label', d.t);
-    gxGrafico(SM.charts, c[1], c[1], d.r, d.v.map(function(v) { return v == null || Number.isNaN(v) ? null : v; }), d.o);
+    const n = c[1].slice(-1);
+    const comoMapa = !!SM.f.uf && g.tit === 'município' && !!d.porGrupo;
+    document.getElementById('smCh' + n + 'Box').hidden = comoMapa;
+    document.getElementById('smMapa' + n).hidden = !comoMapa;
+    if (comoMapa) {
+      if (SM.charts[c[1]]) { SM.charts[c[1]].destroy(); SM.charts[c[1]] = null; }
+      smMapaCalor('smMapa' + n, SM.f.uf, g.itens, d.v.map(function(v) { return v == null || Number.isNaN(v) ? null : v; }),
+        d.o.fmt || function(v) { return gxNum(v); }, Array.isArray(d.o.cor) ? azul : (d.o.cor || azul), d.t);
+    } else gxGrafico(SM.charts, c[1], c[1], d.r, d.v.map(function(v) { return v == null || Number.isNaN(v) ? null : v; }), d.o);
     document.getElementById(c[2]).innerHTML = '<div class="gx-tabela-wrap">' + gxTabelaHtml([{ t: 'Categoria', k: 'c' },
       { t: 'Valor', num: true, f: function(l) { return d.o.fmt ? d.o.fmt(l.v) : gxNum(l.v); } }], d.r.map(function(x, i) { return { c: x, v: d.v[i] }; })) + '</div>';
   });
@@ -15810,6 +15860,75 @@ function smRender() {
   document.getElementById('smTabela').innerHTML = gxTabelaHtml(tab.cols, tab.linhas.slice(0, 600));
   smRenderSnapshot();
 }
+// Mapa de calor municipal (malha do IBGE já usada pelo Mapa dos Indicadores; 5 faixas por quantil)
+async function smMapaCalor(elId, ufSigla, itens, valores, fmt, corBase, titulo) {
+  const el = document.getElementById(elId);
+  const token = (el._smToken = (el._smToken || 0) + 1);
+  el.innerHTML = '<p class="gx-escopo"><i class="ti ti-loader-2" aria-hidden="true"></i> Carregando malha municipal…</p>';
+  const geo = await loadMunicipalGeoForUf(ufSigla);
+  if (token !== el._smToken) return;   // filtro ou aba mudou durante o carregamento
+  if (!geo || !geo.features) { el.innerHTML = '<p class="gx-escopo">Malha municipal indisponível (API do IBGE). Use a tabela abaixo.</p>'; return; }
+  const porCod = {};
+  itens.forEach(function(it, i) { porCod[String(it.l.chave)] = { nome: it.nome, v: valores[i] }; });
+  let minX = 180, maxX = -180, minY = 90, maxY = -90;
+  const anel = function(c) { c.forEach(function(pt) { if (pt[0] < minX) minX = pt[0]; if (pt[0] > maxX) maxX = pt[0]; if (pt[1] < minY) minY = pt[1]; if (pt[1] > maxY) maxY = pt[1]; }); };
+  const poligonos = function(g) { return !g ? [] : g.type === 'Polygon' ? [g.coordinates] : g.type === 'MultiPolygon' ? g.coordinates : []; };
+  geo.features.forEach(function(f) { poligonos(f.geometry).forEach(function(pl) { pl.forEach(anel); }); });
+  const pr = mapaProject({ minX: minX, maxX: maxX, minY: minY, maxY: maxY });
+  // Faixas por quantil dos valores presentes (ausência de dado fica em cinza, não como zero)
+  const presentes = valores.filter(function(v) { return v != null && !Number.isNaN(v); }).sort(function(a, b) { return a - b; });
+  const positivos = presentes.filter(function(v) { return v > 0; });
+  const temZero = positivos.length < presentes.length;
+  const q = function(t) { return positivos[Math.min(positivos.length - 1, Math.floor(t * positivos.length))]; };
+  const cortes = positivos.length ? [q(.2), q(.4), q(.6), q(.8)].filter(function(v, i, a) { return a.indexOf(v) === i && v < positivos[positivos.length - 1]; }) : [];
+  const alfas = [.18, .38, .58, .78, .97];
+  const nivel = function(i) { return alfas[Math.round(i * (alfas.length - 1) / Math.max(1, cortes.length))]; };
+  const faixa = function(v) { let i = 0; while (i < cortes.length && v > cortes[i]) i++; return i; };
+  const ZERO = .06;
+  const cor = function(a) { return 'color-mix(in srgb, ' + corBase + ' ' + Math.round(a * 100) + '%, transparent)'; };
+  const semDado = gxCor('--bg-badge', '#eee');
+  const caminhos = geo.features.map(function(f) {
+    const cod = String((f.properties && (f.properties.codarea || f.properties.CD_MUN)) || '');
+    const d = poligonos(f.geometry).map(function(pl) { return pl.map(function(r) {
+      return 'M' + r.map(function(pt) { const xy = pr.p(pt[0], pt[1]); return xy[0].toFixed(1) + ',' + xy[1].toFixed(1); }).join('L') + 'Z'; }).join(''); }).join('');
+    const info = porCod[cod];
+    const v = info ? info.v : null;
+    const preench = v == null || Number.isNaN(v) ? semDado : v <= 0 ? cor(ZERO) : cor(nivel(faixa(v)));
+    const nome = info ? info.nome : cod;
+    const txt = v == null ? 'sem dado' : fmt(v);
+    return '<path d="' + d + '" fill="' + preench + '" data-cod="' + escHtml(cod) + '" data-nome="' + escHtml(nome) + '" data-val="' + escHtml(txt) + '"' +
+      (SM.f.mun === cod ? ' class="sel"' : '') + ' tabindex="0" role="button" aria-label="' + escHtml(nome + ': ' + txt) + '"></path>';
+  }).join('');
+  const legenda = (temZero ? '<span><i style="background:' + cor(ZERO) + '"></i>' + fmt(0) + '</span>' : '') +
+    (positivos.length ? cortes.concat([null]).map(function(c, i) {
+      const de = i === 0 ? positivos[0] : cortes[i - 1], ate = c == null ? positivos[positivos.length - 1] : c;
+      return '<span><i style="background:' + cor(nivel(i)) + '"></i>' + (i === 0 ? fmt(de) : '> ' + fmt(de)) + (de === ate ? '' : ' a ' + fmt(ate)) + '</span>';
+    }).join('') : '');
+  el.innerHTML = '<svg viewBox="0 0 ' + pr.W.toFixed(0) + ' ' + pr.H.toFixed(0) + '" role="group" aria-label="' + escHtml(titulo) + '">' + caminhos + '</svg>' +
+    '<div class="sm-legenda">' + legenda + '<span><i style="background:' + semDado + '"></i>Sem dado</span></div><div class="sm-dica" hidden></div>';
+}
+// Interações do mapa de calor (delegadas no documento, registradas uma única vez)
+document.addEventListener('mousemove', function(ev) {
+  const path = ev.target.closest && ev.target.closest('.sm-mapa path');
+  document.querySelectorAll('.sm-mapa .sm-dica').forEach(function(d) {
+    const box = d.parentNode;
+    if (path && box.contains(path)) {
+      const r = box.getBoundingClientRect();
+      d.innerHTML = '<b>' + escHtml(path.getAttribute('data-nome')) + '</b><br>' + escHtml(path.getAttribute('data-val'));
+      d.hidden = false;
+      d.style.left = Math.max(0, Math.min(ev.clientX - r.left + 12, r.width - d.offsetWidth - 4)) + 'px';
+      d.style.top = (ev.clientY - r.top + 12) + 'px';
+    } else d.hidden = true;
+  });
+});
+document.addEventListener('click', function(ev) {
+  const path = ev.target.closest && ev.target.closest('.sm-mapa path');
+  if (!path) return;
+  const cod = path.getAttribute('data-cod');
+  const sel = document.getElementById('smF-mun');
+  if (sel && cod && [].some.call(sel.options, function(o) { return o.value === cod; })) { sel.value = cod; smFiltro('mun', cod); }
+});
+
 function smTabelaMun(campos, muns) {
   return { t: 'Municípios do escopo', s: 'Valores municipais da base SETE', linhas: muns.slice().sort(function(a, b) { return (Number(b[campos[0][1]]) || 0) - (Number(a[campos[0][1]]) || 0); }),
     cols: [{ t: 'Cód. IBGE', k: 'chave' }, { t: 'UF', f: function(m) { return escHtml(String(m.uf || '').toUpperCase()); } },
@@ -17246,7 +17365,7 @@ function renderGiRow(ind) {
   let badgeHtml = '';
   if (ind.badge === 'novo') badgeHtml = '<span class="badge-novo">' + t('badge_novo', 'Novo') + '</span>';
   else if (ind.badge === 'rev') badgeHtml = '<span class="badge-rev">' + t('badge_revisado', 'Revisado') + '</span>';
-  else if (ind.badge === 'construcao') badgeHtml = '<span class="badge-construcao"><i class="ti ti-tool" style="font-size:9px"></i> ' + t('badge_construcao', 'Em construção') + '</span>';
+  // "Em construção" aparece só na coluna Status (evita o selo repetido na coluna Sigla)
 
   let tipoBadge = '<span class="badge-tipo-d">' + t('tipo_descritivo', 'Descritivo') + '</span>';
   if (ind.tipo === 'P') tipoBadge = '<span class="badge-tipo-p">' + t('tipo_desempenho', 'Desempenho') + '</span>';
@@ -18151,12 +18270,13 @@ async function recarregarDadosExternos() {
       </div>
     </div>
     <div class="pif-body">
-      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.2.5</strong></div>
+      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.2.6</strong></div>
       <div class="pif-row"><span>Data da alteração:</span><span class="pnite-date-val">22/10/2026</span></div>
       <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">14:00</span></div>
       <div class="pif-row"><span>Responsável técnico:</span><span class="pnite-author-val">Equipe PNITE</span></div>
       <div class="pif-note">
         <i class="ti ti-check" style="color:var(--accent);margin-right:3px"></i>
+        <strong>Mapa de calor municipal (v.3.2.6):</strong> no Monitoramento SETE, com uma UF selecionada, os gráficos por município passam a ser mapas de calor (malha do IBGE, 5 faixas por quantil, legenda, valor ao passar o mouse e clique para selecionar o município).<br>
         <strong>Painéis FNDE e administração (v.3.2.5):</strong> Gestão › Caminho da Escola (contratações, detalhamento, fotografia dos repasses e ficha), Transporte › Monitoramento SETE, área de Administração (catálogo com versões, rascunho/revisão/aprovação/publicação, suspensão e restauração, fontes e cargas, qualidade e auditoria imutável); conteúdo público somente quando publicado (migrações <code>0018</code> e <code>0019</code>).<br>
         <strong>Foto e perfil (v.3.2.4):</strong> foto do usuário no cabeçalho com menu da conta (Editar perfil, Downloads, Gerenciar usuários e Sair); edição do próprio perfil (foto recortada e reduzida no navegador, nome e senha); fotos também na página de usuários (migração <code>0017_perfil_foto.sql</code>).<br>
         <strong>Página de usuários (v.3.2.3):</strong> nova página "Usuários" (aba visível só ao administrador) para cadastrar contas completas com senha inicial ou apenas autorizar e-mails, buscar e filtrar usuários, alterar papel e downloads, desativar (bloqueio no Supabase Auth), redefinir senha e remover; resumo com totais (migração <code>0016_cadastro_usuarios.sql</code>).<br>
@@ -18192,7 +18312,7 @@ async function recarregarDadosExternos() {
   </div>
   <button class="pif-btn" id="pifBtn" aria-label="Informações de Versão">
     <i class="ti ti-info-circle"></i>
-    <span class="pif-btn-label pnite-version-val">v.3.2.5</span>
+    <span class="pif-btn-label pnite-version-val">v.3.2.6</span>
   </button>
 </div>
 
