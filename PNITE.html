@@ -7072,20 +7072,20 @@ window.onerror = function(msg, url, line, col, err) {
           </div>
           <div class="cap-kpi-grid" id="capA616Kpis"></div>
           <div class="cap-panel">
-            <h3 class="cap-panel-title">Distribuição das notas por critério</h3>
-            <p class="cap-panel-sub">Barras 100% empilhadas de Muito ruim (1) a Excelente (5).</p>
-            <div class="cap-chart-box"><canvas id="capChartA616Dist" role="img" aria-label="Gráfico de distribuição das notas por critério"></canvas></div>
+            <h3 class="cap-panel-title">Distribuição dos conceitos por critério</h3>
+            <p class="cap-panel-sub">Barras 100% empilhadas da escala Likert, de Muito ruim a Excelente.</p>
+            <div class="cap-chart-box"><canvas id="capChartA616Dist" role="img" aria-label="Gráfico de distribuição dos conceitos por critério"></canvas></div>
           </div>
           <div class="cap-grid-2">
             <div class="cap-panel">
-              <h3 class="cap-panel-title">Nota média por critério</h3>
-              <p class="cap-panel-sub">Escala de 1 a 5.</p>
-              <div class="cap-chart-box"><canvas id="capChartA616Media" role="img" aria-label="Gráfico de nota média por critério"></canvas></div>
+              <h3 class="cap-panel-title">Favorável × desfavorável por critério</h3>
+              <p class="cap-panel-sub">À direita, Bom e Excelente; à esquerda, Ruim e Muito ruim. Neutro fica fora das barras.</p>
+              <div class="cap-chart-box"><canvas id="capChartA616Saldo" role="img" aria-label="Gráfico divergente de avaliações favoráveis e desfavoráveis por critério"></canvas></div>
             </div>
             <div class="cap-panel">
-              <h3 class="cap-panel-title">Evolução da nota média por capacitação</h3>
-              <p class="cap-panel-sub">Média de todas as notas, por cargo do respondente.</p>
-              <div class="cap-chart-box"><canvas id="capChartA616Evol" role="img" aria-label="Gráfico da evolução da nota média por capacitação"></canvas></div>
+              <h3 class="cap-panel-title">Evolução da avaliação favorável por capacitação</h3>
+              <p class="cap-panel-sub">% de conceitos Bom ou Excelente em todos os critérios, por cargo do respondente.</p>
+              <div class="cap-chart-box"><canvas id="capChartA616Evol" role="img" aria-label="Gráfico da evolução do percentual de avaliações favoráveis por capacitação"></canvas></div>
             </div>
           </div>
         </section>
@@ -8419,7 +8419,7 @@ window.onerror = function(msg, url, line, col, err) {
     <div class="smb-sec">
       <div class="smb-sec-title" data-i18n="settings_info_title">Informações da Versão</div>
       <div style="font-size:12px;color:var(--text-2);display:flex;flex-direction:column;gap:4px;margin-top:6px">
-        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.2.6</b></div>
+        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.2.7</b></div>
         <div><span data-i18n="settings_updated">Última Atualização:</span> <b class="pnite-date-val">06/10/2026</b> às <b class="pnite-time-val">21:05</b></div>
         <div><span data-i18n="settings_author">Responsável Técnico:</span> <b class="pnite-author-val">Equipe PNITE</b></div>
       </div>
@@ -9408,7 +9408,7 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.2.6";
+const PNITE_VERSION = "v.3.2.7";
 const PNITE_LAST_UPDATE = "06/11/2026";
 const PNITE_LAST_TIME = "12:00";
 
@@ -16529,14 +16529,19 @@ function capOpcoesGrafico(t, o = {}) {
   const eixoValor = { stacked: !!o.empilhado, beginAtZero: true, grid: { color: t.grade }, ticks: ticksValor, border: { display: false } };
   if (o.max != null) eixoValor.max = o.max;
   const eixoCategoria = { stacked: !!o.empilhado, grid: { display: false }, ticks: { color: t.eixo, font: { size: 11 }, autoSkip: false }, border: { color: t.grade } };
-  const tooltip = { mode: o.modoTooltip || 'index', intersect: false };
-  if (o.tooltipLabel) tooltip.callbacks = { label: o.tooltipLabel };
+  // Em gráficos horizontais a busca do item corre no eixo Y; com o padrão do Chart.js (eixo X)
+  // a caixa de informação mostrava outra barra ou nenhuma.
+  const eixoBusca = o.horizontal ? 'y' : 'x';
+  const tooltip = { mode: o.modoTooltip || 'index', intersect: false, axis: eixoBusca };
+  // Rótulos quebrados em várias linhas (capQuebra) viram título de linha única
+  tooltip.callbacks = { title: itens => itens.length ? [].concat(itens[0].label).join(' ') : '' };
+  if (o.tooltipLabel) tooltip.callbacks.label = o.tooltipLabel;
   return {
     responsive: true,
     maintainAspectRatio: false,
     indexAxis: o.horizontal ? 'y' : 'x',
     animation: { duration: 250 },
-    interaction: { mode: o.modoTooltip || 'index', intersect: false },
+    interaction: { mode: o.modoTooltip || 'index', intersect: false, axis: eixoBusca },
     plugins: {
       legend: { display: o.legenda !== false, position: 'top', align: 'start', labels: { color: t.eixo, boxWidth: 10, boxHeight: 10, font: { size: 11 } } },
       tooltip
@@ -17137,8 +17142,18 @@ function capFiltroAval616(capId, cargoId, munId) {
   return { resp: base.filter(r => !mun || r.municipio === mun), cargo, mun };
 }
 
-function capMedia(lista) {
-  return lista.length ? lista.reduce((a, n) => a + n.nota, 0) / lista.length : null;
+// As avaliações 6 a 16 usam escala Likert (ordinal): não se calcula média.
+// O resumo usa a posição central (mediana) e as proporções de conceitos favoráveis/desfavoráveis.
+function capFavoravel(lista) {
+  return lista.length ? lista.filter(n => n.nota >= 4).length / lista.length * 100 : null;
+}
+
+function capConceitoMediano(lista) {
+  if (!lista.length) return '—';
+  const o = lista.map(n => n.nota).sort((x, y) => x - y);
+  const a = o[Math.floor((o.length - 1) / 2)];
+  const b = o[Math.ceil((o.length - 1) / 2)];
+  return a === b ? CAP_ESCALA_NOTA[a - 1] : CAP_ESCALA_NOTA[a - 1] + ' / ' + CAP_ESCALA_NOTA[b - 1];
 }
 
 function capRenderAval616() {
@@ -17149,31 +17164,46 @@ function capRenderAval616() {
   capKpis('capA616Kpis', [
     { l: 'Total de respostas', v: capInt(resp.length) },
     { l: 'Municípios avaliados', v: capInt(new Set(resp.map(r => r.municipio).filter(Boolean)).size) },
-    { l: 'Nota média', v: capDec(capMedia(notas)), n: 'Escala de 1 a 5' },
-    { l: '% notas 4 ou 5', v: capPct(notas.filter(n => n.nota >= 4).length, notas.length) }
+    { l: 'Conceito mediano', v: capConceitoMediano(notas), texto: true, n: 'Posição central da escala Likert' },
+    { l: '% favorável', v: capPct(notas.filter(n => n.nota >= 4).length, notas.length), n: 'Bom ou Excelente' },
+    { l: '% desfavorável', v: capPct(notas.filter(n => n.nota <= 2).length, notas.length), n: 'Ruim ou Muito ruim' }
   ]);
   const cont = d.perg616.map(p => {
     const ns = notas.filter(n => n.ordem === p.ordem);
     const c = Object.fromEntries(CAP_ESCALA_NOTA.map(e => [e, 0]));
     ns.forEach(n => { c[CAP_ESCALA_NOTA[n.nota - 1]] += 1; });
-    return { rotulo: p.pergunta, cont: c, total: ns.length, media: capMedia(ns) };
+    return { rotulo: p.pergunta, cont: c, total: ns.length };
   });
   capGrafico('capChartA616Dist', {
     type: 'bar',
     data: { labels: cont.map(c => c.rotulo), datasets: capDatasetsPercentuais(cont, CAP_ESCALA_NOTA, t.lk, t) },
     options: capOpcoesGrafico(t, { horizontal: true, empilhado: true, pct: true, max: 100, tooltipLabel: capTooltipPercentual })
   });
-  capGrafico('capChartA616Media', {
+
+  // Gráfico divergente: desfavoráveis à esquerda (valores negativos) e favoráveis à direita
+  const lados = [['Muito ruim', t.lk[0], -1], ['Ruim', t.lk[1], -1], ['Bom', t.lk[3], 1], ['Excelente', t.lk[4], 1]];
+  capGrafico('capChartA616Saldo', {
     type: 'bar',
-    data: { labels: cont.map(c => c.rotulo), datasets: [capDataset('Nota média', cont.map(c => c.media != null ? Math.round(c.media * 100) / 100 : null), t.unica, t)] },
-    options: capOpcoesGrafico(t, { horizontal: true, max: 5, legenda: false, tooltipLabel: ctx => ` Nota média: ${capDec(ctx.parsed.x)}` })
+    data: { labels: cont.map(c => c.rotulo), datasets: lados.map(([cat, cor, sinal]) => capDataset(cat,
+      cont.map(c => (c.total ? sinal * Math.round(c.cont[cat] / c.total * 1000) / 10 : null)), cor, t,
+      { contagens: cont.map(c => c.cont[cat]) })) },
+    options: (() => {
+      const o = capOpcoesGrafico(t, { horizontal: true, empilhado: true, pct: true,
+        tooltipLabel: ctx => ` ${ctx.dataset.label}: ${capDec(Math.abs(ctx.parsed.x), 1)}% (${capInt(ctx.dataset.contagens[ctx.dataIndex])})` });
+      o.scales.x.min = -100;
+      o.scales.x.max = 100;
+      o.scales.x.beginAtZero = false;
+      o.scales.x.ticks.callback = v => Math.abs(v) + '%';
+      o.scales.x.grid.color = ctx => (ctx.tick && ctx.tick.value === 0 ? t.eixo : t.grade);
+      return o;
+    })()
   });
 
   const caps = d.caps.filter(c => c.numero >= 6);
   const base = d.resp616.filter(r => !mun || r.municipio === mun);
   const serie = cg => caps.map(c => {
-    const m = capMedia(base.filter(r => r.capacitacao === c.numero && (!cg || r.cargo === cg)).flatMap(r => r.notas));
-    return m != null ? Math.round(m * 100) / 100 : null;
+    const v = capFavoravel(base.filter(r => r.capacitacao === c.numero && (!cg || r.cargo === cg)).flatMap(r => r.notas));
+    return v != null ? Math.round(v * 10) / 10 : null;
   });
   const linha = (rotulo, dados, cor) => ({ label: rotulo, data: dados, borderColor: cor, backgroundColor: cor, borderWidth: 2, pointRadius: 4, pointHoverRadius: 6, spanGaps: true, tension: 0 });
   const series = [];
@@ -17183,7 +17213,7 @@ function capRenderAval616() {
     type: 'line',
     data: { labels: caps.map(c => capNum2(c.numero) + ' ' + c.polo), datasets: series },
     options: (() => {
-      const o = capOpcoesGrafico(t, { max: 5, tooltipLabel: ctx => ` ${ctx.dataset.label}: ${capDec(ctx.parsed.y)}` });
+      const o = capOpcoesGrafico(t, { pct: true, max: 100, tooltipLabel: ctx => ` ${ctx.dataset.label}: ${capDec(ctx.parsed.y, 1)}% favorável` });
       o.scales.x.ticks.maxRotation = 60;
       return o;
     })()
@@ -18270,12 +18300,13 @@ async function recarregarDadosExternos() {
       </div>
     </div>
     <div class="pif-body">
-      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.2.6</strong></div>
+      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.2.7</strong></div>
       <div class="pif-row"><span>Data da alteração:</span><span class="pnite-date-val">22/10/2026</span></div>
       <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">14:00</span></div>
       <div class="pif-row"><span>Responsável técnico:</span><span class="pnite-author-val">Equipe PNITE</span></div>
       <div class="pif-note">
         <i class="ti ti-check" style="color:var(--accent);margin-right:3px"></i>
+        <strong>Avaliações Likert na capacitação (v.3.2.7):</strong> nas avaliações das capacitações 6 a 16, a nota média é substituída por indicadores próprios de escala ordinal (conceito mediano, % favorável e % desfavorável), e as caixas de informação dos gráficos horizontais passam a mostrar a barra sob o cursor.<br>
         <strong>Mapa de calor municipal (v.3.2.6):</strong> no Monitoramento SETE, com uma UF selecionada, os gráficos por município passam a ser mapas de calor (malha do IBGE, 5 faixas por quantil, legenda, valor ao passar o mouse e clique para selecionar o município).<br>
         <strong>Painéis FNDE e administração (v.3.2.5):</strong> Gestão › Caminho da Escola (contratações, detalhamento, fotografia dos repasses e ficha), Transporte › Monitoramento SETE, área de Administração (catálogo com versões, rascunho/revisão/aprovação/publicação, suspensão e restauração, fontes e cargas, qualidade e auditoria imutável); conteúdo público somente quando publicado (migrações <code>0018</code> e <code>0019</code>).<br>
         <strong>Foto e perfil (v.3.2.4):</strong> foto do usuário no cabeçalho com menu da conta (Editar perfil, Downloads, Gerenciar usuários e Sair); edição do próprio perfil (foto recortada e reduzida no navegador, nome e senha); fotos também na página de usuários (migração <code>0017_perfil_foto.sql</code>).<br>
@@ -18312,7 +18343,7 @@ async function recarregarDadosExternos() {
   </div>
   <button class="pif-btn" id="pifBtn" aria-label="Informações de Versão">
     <i class="ti ti-info-circle"></i>
-    <span class="pif-btn-label pnite-version-val">v.3.2.6</span>
+    <span class="pif-btn-label pnite-version-val">v.3.2.7</span>
   </button>
 </div>
 
