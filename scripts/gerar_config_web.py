@@ -15,7 +15,21 @@ import os
 import sys
 from pathlib import Path
 
-from dotenv import load_dotenv
+try:
+    from dotenv import load_dotenv
+except ImportError:
+    def load_dotenv(path):
+        p = Path(path)
+        if not p.exists():
+            return
+        with open(p, 'r', encoding='utf-8') as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith('#') and '=' in line:
+                    k, v = line.split('=', 1)
+                    k = k.strip()
+                    v = v.strip().strip('"').strip("'")
+                    os.environ[k] = v
 
 RAIZ = Path(__file__).resolve().parent.parent
 PERMITIDAS = {"SUPABASE_URL": "supabaseUrl", "SUPABASE_PUBLISHABLE_KEY": "publishableKey",

@@ -6508,6 +6508,7 @@ html[data-theme="dark"] .adm-msg.ok { color: #7ee2b0; }
 .sm-dica { position: absolute; pointer-events: none; z-index: 5; background: var(--bg-card); color: var(--text-1); border: 1px solid var(--border-mid); border-radius: 10px; padding: 6px 10px; font-size: 12px; box-shadow: 0 4px 14px rgba(0,0,0,.15); white-space: nowrap; }
 
 /* ================================================================
+    v.3.3.3 — INTEGRAÇÃO AUTOMÁTICA DAS CHAVES DO .ENV VIA CONFIG.LOCAL.JS COM FALLBACK ROBUSTO
     v.3.3.2 — LINHAS DIVISÓRIAS ESPESSAS ENTRE MACRORREGIÕES NO MAPA DE SUBDIVISÕES
     v.3.3.1 — MAPA DE CALOR COROPLÉTICO PARA MACRORREGIÕES COM RÓTULOS DE NOME E VALOR NO MAPA
     v.3.3.0 — SUBDIVISÕES REGIONAIS NO MAPA (ANEXO 2), DOWNLOAD DE PAINÉIS (ANEXO 3) E CARDS DE INDICADORES (ANEXO 4)
@@ -9154,7 +9155,7 @@ window.onerror = function(msg, url, line, col, err) {
     <div class="smb-sec">
       <div class="smb-sec-title" data-i18n="settings_info_title">Informações da Versão</div>
       <div style="font-size:12px;color:var(--text-2);display:flex;flex-direction:column;gap:4px;margin-top:6px">
-        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.3.2</b></div>
+        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.3.3</b></div>
         <div><span data-i18n="settings_updated">Última Atualização:</span> <b class="pnite-date-val">06/10/2026</b> às <b class="pnite-time-val">21:05</b></div>
         <div><span data-i18n="settings_author">Responsável Técnico:</span> <b class="pnite-author-val">Equipe PNITE</b></div>
       </div>
@@ -10143,7 +10144,7 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.3.2";
+const PNITE_VERSION = "v.3.3.3";
 const PNITE_LAST_UPDATE = "06/11/2026";
 const PNITE_LAST_TIME = "12:00";
 
@@ -20164,7 +20165,7 @@ async function exportarMapaPnite(modo) {
       ctx.fillStyle = '#64748b';
       ctx.font = '12px Inter, system-ui, sans-serif';
       ctx.fillText('Base cartográfica: IBGE, malha simplificada; regiões geográficas: IBGE. Projeção de Mercator / SIRGAS 2000.', 60, 1145);
-      ctx.fillText('Fonte: SETE, FNDE, INEP, Censo Escolar 2026. Plataforma PNITE (v.3.3.2).', 60, 1168);
+      ctx.fillText('Fonte: SETE, FNDE, INEP, Censo Escolar 2026. Plataforma PNITE (v.3.3.3).', 60, 1168);
 
     } else {
       canvas.width = 2400 * scale;
@@ -20265,7 +20266,7 @@ async function exportarMapaPnite(modo) {
       ctx.fillStyle = '#64748b';
       ctx.font = '12px Inter, system-ui, sans-serif';
       ctx.fillText('Base cartográfica: IBGE, malha simplificada; regiões geográficas: IBGE. Projeção de Mercator / SIRGAS 2000.', 60, 1340);
-      ctx.fillText('Fonte: SETE, FNDE, INEP, Censo Escolar 2026. Plataforma PNITE (v.3.3.2).', 60, 1362);
+      ctx.fillText('Fonte: SETE, FNDE, INEP, Censo Escolar 2026. Plataforma PNITE (v.3.3.3).', 60, 1362);
     }
 
     URL.revokeObjectURL(svgUrl);
@@ -20396,7 +20397,7 @@ function pniteBaixarGraficoCard(btnOrEl) {
 
   ctx.fillStyle = '#94a3b8';
   ctx.font = '12px Inter, sans-serif';
-  ctx.fillText('Fonte: SETE; Censo Escolar (INEP), 2026. Plataforma PNITE (v.3.3.2).', 50, outH - 30);
+  ctx.fillText('Fonte: SETE; Censo Escolar (INEP), 2026. Plataforma PNITE (v.3.3.3).', 50, outH - 30);
 
   outCanvas.toBlob(function(blob) {
     if (!blob) return;
@@ -20711,7 +20712,7 @@ if (document.readyState === 'loading') {
       </div>
     </div>
     <div class="pif-body">
-      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.3.2</strong></div>
+      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.3.3</strong></div>
       <div class="pif-row"><span>Data da alteração:</span><span class="pnite-date-val">22/10/2026</span></div>
       <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">14:00</span></div>
       <div class="pif-row"><span>Responsável técnico:</span><span class="pnite-author-val">Equipe PNITE</span></div>
@@ -20754,7 +20755,7 @@ if (document.readyState === 'loading') {
   </div>
   <button class="pif-btn" id="pifBtn" aria-label="Informações de Versão">
     <i class="ti ti-info-circle"></i>
-    <span class="pif-btn-label pnite-version-val">v.3.3.2</span>
+    <span class="pif-btn-label pnite-version-val">v.3.3.3</span>
   </button>
 </div>
 
