@@ -6508,6 +6508,7 @@ html[data-theme="dark"] .adm-msg.ok { color: #7ee2b0; }
 .sm-dica { position: absolute; pointer-events: none; z-index: 5; background: var(--bg-card); color: var(--text-1); border: 1px solid var(--border-mid); border-radius: 10px; padding: 6px 10px; font-size: 12px; box-shadow: 0 4px 14px rgba(0,0,0,.15); white-space: nowrap; }
 
 /* ================================================================
+    v.3.3.1 — MAPA DE CALOR COROPLÉTICO PARA MACRORREGIÕES COM RÓTULOS DE NOME E VALOR NO MAPA
     v.3.3.0 — SUBDIVISÕES REGIONAIS NO MAPA (ANEXO 2), DOWNLOAD DE PAINÉIS (ANEXO 3) E CARDS DE INDICADORES (ANEXO 4)
     v.3.2.9 — RESTAURAÇÃO DO ZOOM NOS ESTADOS E SELEÇÃO DE MUNICÍPIOS NO MAPA
     v.3.2.8 — REMOÇÃO DA ESCALA CARTOGRÁFICA DO MAPA
@@ -9129,7 +9130,7 @@ window.onerror = function(msg, url, line, col, err) {
     <div class="smb-sec">
       <div class="smb-sec-title" data-i18n="settings_info_title">Informações da Versão</div>
       <div style="font-size:12px;color:var(--text-2);display:flex;flex-direction:column;gap:4px;margin-top:6px">
-        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.3.0</b></div>
+        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.3.1</b></div>
         <div><span data-i18n="settings_updated">Última Atualização:</span> <b class="pnite-date-val">06/10/2026</b> às <b class="pnite-time-val">21:05</b></div>
         <div><span data-i18n="settings_author">Responsável Técnico:</span> <b class="pnite-author-val">Equipe PNITE</b></div>
       </div>
@@ -10118,7 +10119,7 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.3.0";
+const PNITE_VERSION = "v.3.3.1";
 const PNITE_LAST_UPDATE = "06/11/2026";
 const PNITE_LAST_TIME = "12:00";
 
@@ -12691,6 +12692,16 @@ function fmtS(v){ return (v===null||v===undefined) ? '—' : Number(v).toLocaleS
 
 
 // v.3.3.0 — Paleta de cores oficial das 5 Macrorregiões Brasileiras (conforme Anexo 2)
+
+// v.3.3.1 — Coordenadas centrais das 5 Macrorregiões no mapa para exibição de nome e valor do indicador
+const REGIOES_CENTROIDS = {
+  'norte': { x: 250, y: 165, name: 'Norte' },
+  'nordeste': { x: 555, y: 235, name: 'Nordeste' },
+  'centro-oeste': { x: 345, y: 365, name: 'Centro-Oeste' },
+  'sudeste': { x: 485, y: 435, name: 'Sudeste' },
+  'sul': { x: 365, y: 565, name: 'Sul' }
+};
+
 const REGIOES_PALETTE = {
   'norte': { cor: '#84cc16', corDark: '#a3e635', label: 'Norte' },
   'nordeste': { cor: '#3b82f6', corDark: '#60a5fa', label: 'Nordeste' },
@@ -13262,6 +13273,11 @@ function setMapTerritoryMode(mode, regKey) {
   if (menuReg) menuReg.style.display = 'none';
   const menuDl = document.getElementById('mapDownloadMenu');
   if (menuDl) menuDl.style.display = 'none';
+
+  const searchBox = document.getElementById('mapaRankSearchBox');
+  if (searchBox && (mode === 'nacional' || mode === 'subdivisoes')) {
+    searchBox.style.display = 'none';
+  }
 
   const pNac = document.getElementById('pillMapNacional');
   const pSub = document.getElementById('pillMapSubdivisoes');
@@ -13949,10 +13965,20 @@ function renderMapa(){
     window._currentStateRankMap[key] = idx + 1;
   });
 
-  const hasData = arr.length > 0;
-  const mn = hasData ? Math.min.apply(null, arr) : 0;
-  const mx = hasData ? Math.max.apply(null, arr) : 100;
-  const span = (mx - mn) || 1;
+  let mn = 0, mx = 100, span = 1;
+  if (mapTerritoryMode === 'subdivisoes') {
+    const regVals = Object.keys(REGIOES_UFS).map(rk => (DATA.regiao && DATA.regiao[rk]) ? DATA.regiao[rk][sigla] : null).filter(v => v !== null && v !== undefined);
+    if (regVals.length > 0) {
+      mn = Math.min.apply(null, regVals);
+      mx = Math.max.apply(null, regVals);
+      span = (mx - mn) || 1;
+    }
+  } else {
+    const hasData = arr.length > 0;
+    mn = hasData ? Math.min.apply(null, arr) : 0;
+    mx = hasData ? Math.max.apply(null, arr) : 100;
+    span = (mx - mn) || 1;
+  }
 
   let paths = '';
   units.forEach(u => {
@@ -13976,8 +14002,10 @@ function renderMapa(){
       for (const [rk, ufs] of Object.entries(REGIOES_UFS)) {
         if (ufs.includes(u.key)) { ufReg = rk; break; }
       }
-      const regColor = (REGIOES_PALETTE[ufReg] ? REGIOES_PALETTE[ufReg].cor : '#eab308');
-      paths += '<path class="uf-path uf-subdiv" d="' + d + '" fill="' + regColor + '" stroke="#ffffff" stroke-width="0.85" data-k="' + u.key + '" data-reg="' + ufReg + '" data-nm="' + u.nome + '"' +
+      const vReg = (DATA.regiao && DATA.regiao[ufReg]) ? DATA.regiao[ufReg][sigla] : null;
+      const noData = (vReg === null || vReg === undefined);
+      const regColor = noData ? 'var(--bg-badge)' : mapaColor((vReg - mn) / span, dark, sigla);
+      paths += '<path class="uf-path uf-subdiv" d="' + d + '" fill="' + regColor + '" stroke="rgba(255,255,255,0.75)" stroke-width="0.75" data-k="' + u.key + '" data-reg="' + ufReg + '" data-nm="' + u.nome + '"' +
         ' onmousemove="mapaHoverSubdivisao(event,this)" onmouseleave="mapaOut()" onclick="zoomIntoState(\'' + u.key + '\')" onmouseenter="prefetchMunicipalGeo(\'' + u.key + '\')" style="cursor:pointer"></path>';
     } else if (isIncluded) {
       const noData = (v === null || v === undefined);
@@ -13993,10 +14021,27 @@ function renderMapa(){
   const targetVb = activeUfs ? getRegionViewBox(activeUfs) : { x: 0, y: 0, w: 760, h: 678.2 };
   const wrap = document.getElementById('mapaSvgWrap');
   if (wrap) {
+    let subdivLabelsSvg = '';
+    if (mapTerritoryMode === 'subdivisoes') {
+      subdivLabelsSvg = '<g id="mapaSubdivLabelsLayer" pointer-events="none">';
+      for (const [rk, c] of Object.entries(REGIOES_CENTROIDS)) {
+        const val = (DATA.regiao && DATA.regiao[rk] && DATA.regiao[rk][sigla] !== null && DATA.regiao[rk][sigla] !== undefined)
+          ? DATA.regiao[rk][sigla] : null;
+        const valStr = val !== null ? mapaFmt(val, ind.unit) : '—';
+        subdivLabelsSvg += '<g class="map-reg-tag" transform="translate(' + c.x + ',' + c.y + ')">' +
+          '<rect x="-46" y="-19" width="92" height="38" rx="8" fill="var(--bg-card)" fill-opacity="0.92" stroke="var(--border)" stroke-width="1.2" />' +
+          '<text x="0" y="-3" text-anchor="middle" font-size="11" font-weight="700" fill="var(--text-1)" font-family="Inter, system-ui, sans-serif">' + c.name + '</text>' +
+          '<text x="0" y="12" text-anchor="middle" font-size="12.5" font-weight="800" fill="var(--c-blue)" font-family="Inter, monospace">' + valStr + '</text>' +
+        '</g>';
+      }
+      subdivLabelsSvg += '</g>';
+    }
+
     wrap.innerHTML = '<div class="map-tooltip" id="mapTooltip"></div>' +
       '<svg viewBox="' + targetVb.x.toFixed(1) + ' ' + targetVb.y.toFixed(1) + ' ' + targetVb.w.toFixed(1) + ' ' + targetVb.h.toFixed(1) + '" xmlns="http://www.w3.org/2000/svg">' +
       '<g id="mapaStateLayer">' + paths + '</g>' +
       '<g id="mapaMunLayer" style="display:none"></g>' +
+      subdivLabelsSvg +
       '</svg>';
     currentViewBox = targetVb;
   }
@@ -14017,7 +14062,8 @@ function renderMapa(){
   }
 
   if (mapTerritoryMode === 'subdivisoes') {
-    renderMapaLegendSubdivisoes(ind);
+    const refVal = DATA.nacional ? DATA.nacional[sigla] : null;
+    renderMapaLegend(ind, mn, mx, refVal, false);
     renderMapaRankSubdivisoes(ind);
   } else {
     // Legenda Dinâmica Regional/Nacional
@@ -19398,21 +19444,23 @@ function renderMapaRankSubdivisoes(ind) {
     '<span style="font-size:11px;background:var(--bg-badge);padding:4px 10px;border-radius:12px;color:var(--text-2);font-weight:700">27 UFs</span>' +
   '</div>';
 
-  // 2. Coleta e formata os dados das 5 macrorregiões
+  // 2. Coleta dados e calcula escala de calor das 5 macrorregiões
   const regKeys = ['norte', 'nordeste', 'centro-oeste', 'sudeste', 'sul'];
   const items = regKeys.map(function(rk) {
     const regData = (typeof DATA !== 'undefined' && DATA.regiao && DATA.regiao[rk]) ? DATA.regiao[rk] : {};
     const val = (regData[ind.sigla] !== null && regData[ind.sigla] !== undefined) ? regData[ind.sigla] : null;
     return {
       key: rk,
-      label: (REGIOES_PALETTE[rk] ? REGIOES_PALETTE[rk].label : rk),
-      cor: (REGIOES_PALETTE[rk] ? REGIOES_PALETTE[rk].cor : '#3b82f6'),
+      label: (REGIOES_CENTROIDS[rk] ? REGIOES_CENTROIDS[rk].name : rk),
       val: val
     };
   });
 
   const validVals = items.filter(it => it.val !== null).map(it => it.val);
-  const mx = validVals.length ? Math.max.apply(null, validVals) : 1;
+  const mn = validVals.length ? Math.min.apply(null, validVals) : 0;
+  const mx = validVals.length ? Math.max.apply(null, validVals) : 100;
+  const span = (mx - mn) || 1;
+  const dark = document.documentElement.getAttribute('data-theme') === 'dark';
 
   items.sort(function(a, b) {
     if (a.val === null && b.val === null) return 0;
@@ -19424,13 +19472,14 @@ function renderMapaRankSubdivisoes(ind) {
   items.forEach(function(item, idx) {
     const valFmt = item.val !== null ? mapaFmt(item.val, ind.unit) : '—';
     const pct = (mx > 0 && item.val !== null) ? Math.max(4, Math.min(100, (item.val / mx) * 100)) : 0;
+    const barColor = (item.val !== null) ? mapaColor((item.val - mn) / span, dark, ind.sigla) : 'var(--bg-badge)';
     html += '<div class="rank-item" role="button" tabindex="0" onclick="setMapTerritoryMode(\'regiao\', \'' + item.key + '\')" title="Clique para filtrar a Região ' + item.label + '">' +
       '<span class="rk">' + (idx + 1) + 'º</span>' +
       '<span class="rl" style="display:inline-flex;align-items:center;gap:6px">' +
-        '<span style="width:11px;height:11px;border-radius:3px;background:' + item.cor + ';display:inline-block;flex-shrink:0"></span>' +
+        '<span style="width:11px;height:11px;border-radius:3px;background:' + barColor + ';display:inline-block;flex-shrink:0;border:1px solid rgba(0,0,0,0.1)"></span>' +
         item.label +
       '</span>' +
-      '<div class="rb-wrap"><div class="rb" style="width:' + pct + '%;background:' + item.cor + '"></div></div>' +
+      '<div class="rb-wrap"><div class="rb" style="width:' + pct + '%;background:' + barColor + '"></div></div>' +
       '<span class="rv">' + valFmt + '</span>' +
     '</div>';
   });
@@ -19959,7 +20008,7 @@ async function exportarMapaPnite(modo) {
       ctx.fillStyle = '#64748b';
       ctx.font = '12px Inter, system-ui, sans-serif';
       ctx.fillText('Base cartográfica: IBGE, malha simplificada; regiões geográficas: IBGE. Projeção de Mercator / SIRGAS 2000.', 60, 1145);
-      ctx.fillText('Fonte: SETE, FNDE, INEP, Censo Escolar 2026. Plataforma PNITE (v.3.3.0).', 60, 1168);
+      ctx.fillText('Fonte: SETE, FNDE, INEP, Censo Escolar 2026. Plataforma PNITE (v.3.3.1).', 60, 1168);
 
     } else {
       canvas.width = 2400 * scale;
@@ -20060,7 +20109,7 @@ async function exportarMapaPnite(modo) {
       ctx.fillStyle = '#64748b';
       ctx.font = '12px Inter, system-ui, sans-serif';
       ctx.fillText('Base cartográfica: IBGE, malha simplificada; regiões geográficas: IBGE. Projeção de Mercator / SIRGAS 2000.', 60, 1340);
-      ctx.fillText('Fonte: SETE, FNDE, INEP, Censo Escolar 2026. Plataforma PNITE (v.3.3.0).', 60, 1362);
+      ctx.fillText('Fonte: SETE, FNDE, INEP, Censo Escolar 2026. Plataforma PNITE (v.3.3.1).', 60, 1362);
     }
 
     URL.revokeObjectURL(svgUrl);
@@ -20191,7 +20240,7 @@ function pniteBaixarGraficoCard(btnOrEl) {
 
   ctx.fillStyle = '#94a3b8';
   ctx.font = '12px Inter, sans-serif';
-  ctx.fillText('Fonte: SETE; Censo Escolar (INEP), 2026. Plataforma PNITE (v.3.3.0).', 50, outH - 30);
+  ctx.fillText('Fonte: SETE; Censo Escolar (INEP), 2026. Plataforma PNITE (v.3.3.1).', 50, outH - 30);
 
   outCanvas.toBlob(function(blob) {
     if (!blob) return;
@@ -20506,7 +20555,7 @@ if (document.readyState === 'loading') {
       </div>
     </div>
     <div class="pif-body">
-      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.3.0</strong></div>
+      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.3.1</strong></div>
       <div class="pif-row"><span>Data da alteração:</span><span class="pnite-date-val">22/10/2026</span></div>
       <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">14:00</span></div>
       <div class="pif-row"><span>Responsável técnico:</span><span class="pnite-author-val">Equipe PNITE</span></div>
@@ -20549,7 +20598,7 @@ if (document.readyState === 'loading') {
   </div>
   <button class="pif-btn" id="pifBtn" aria-label="Informações de Versão">
     <i class="ti ti-info-circle"></i>
-    <span class="pif-btn-label pnite-version-val">v.3.3.0</span>
+    <span class="pif-btn-label pnite-version-val">v.3.3.1</span>
   </button>
 </div>
 
