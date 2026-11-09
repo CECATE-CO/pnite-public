@@ -6508,12 +6508,36 @@ html[data-theme="dark"] .adm-msg.ok { color: #7ee2b0; }
 .sm-dica { position: absolute; pointer-events: none; z-index: 5; background: var(--bg-card); color: var(--text-1); border: 1px solid var(--border-mid); border-radius: 10px; padding: 6px 10px; font-size: 12px; box-shadow: 0 4px 14px rgba(0,0,0,.15); white-space: nowrap; }
 
 /* ================================================================
+    v.3.3.2 — LINHAS DIVISÓRIAS ESPESSAS ENTRE MACRORREGIÕES NO MAPA DE SUBDIVISÕES
     v.3.3.1 — MAPA DE CALOR COROPLÉTICO PARA MACRORREGIÕES COM RÓTULOS DE NOME E VALOR NO MAPA
     v.3.3.0 — SUBDIVISÕES REGIONAIS NO MAPA (ANEXO 2), DOWNLOAD DE PAINÉIS (ANEXO 3) E CARDS DE INDICADORES (ANEXO 4)
     v.3.2.9 — RESTAURAÇÃO DO ZOOM NOS ESTADOS E SELEÇÃO DE MUNICÍPIOS NO MAPA
     v.3.2.8 — REMOÇÃO DA ESCALA CARTOGRÁFICA DO MAPA
    v.3.2.7 — MAPAS, RANKINGS E EXPORTAÇÃO DE INDICADORES (CARTOGRAFIA COMPLETA)
    ================================================================ */
+/* v.3.3.2 — Linhas divisórias espessas entre as Macrorregiões no mapa (Anexo 1) */
+.mapa-macro-divider-border {
+  stroke: #0f172a;
+  stroke-width: 3.2px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
+[data-theme="dark"] .mapa-macro-divider-border {
+  stroke: #f8fafc;
+}
+.mapa-macro-outer-border {
+  stroke: #334155;
+  stroke-width: 2.0px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+  opacity: 0.85;
+}
+[data-theme="dark"] .mapa-macro-outer-border {
+  stroke: #94a3b8;
+}
+
 .mapa-region-pill-group {
   display: inline-flex;
   align-items: center;
@@ -9130,7 +9154,7 @@ window.onerror = function(msg, url, line, col, err) {
     <div class="smb-sec">
       <div class="smb-sec-title" data-i18n="settings_info_title">Informações da Versão</div>
       <div style="font-size:12px;color:var(--text-2);display:flex;flex-direction:column;gap:4px;margin-top:6px">
-        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.3.1</b></div>
+        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.3.2</b></div>
         <div><span data-i18n="settings_updated">Última Atualização:</span> <b class="pnite-date-val">06/10/2026</b> às <b class="pnite-time-val">21:05</b></div>
         <div><span data-i18n="settings_author">Responsável Técnico:</span> <b class="pnite-author-val">Equipe PNITE</b></div>
       </div>
@@ -10119,7 +10143,7 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.3.1";
+const PNITE_VERSION = "v.3.3.2";
 const PNITE_LAST_UPDATE = "06/11/2026";
 const PNITE_LAST_TIME = "12:00";
 
@@ -12693,7 +12717,129 @@ function fmtS(v){ return (v===null||v===undefined) ? '—' : Number(v).toLocaleS
 
 // v.3.3.0 — Paleta de cores oficial das 5 Macrorregiões Brasileiras (conforme Anexo 2)
 
+// v.3.3.2 — Linhas divisórias entre Macrorregiões
 // v.3.3.1 — Coordenadas centrais das 5 Macrorregiões no mapa para exibição de nome e valor do indicador
+
+// v.3.3.2 — Extração topológica e renderização das linhas divisórias entre as 5 Macrorregiões e contorno do Brasil
+let _cachedMacroregionBorderD = null;
+let _cachedMacroregionOuterBorderD = null;
+function getMacroregionBorderPaths() {
+  if (_cachedMacroregionBorderD && _cachedMacroregionOuterBorderD) {
+    return { inter: _cachedMacroregionBorderD, outer: _cachedMacroregionOuterBorderD };
+  }
+
+  const ufToReg = {};
+  for (const [rk, ufs] of Object.entries(REGIOES_UFS)) {
+    ufs.forEach(u => { ufToReg[u] = rk; });
+  }
+
+  const segments = new Map();
+  BR_GEO.features.forEach(feat => {
+    const uf = feat.properties.SIGLA_UF;
+    const geom = feat.geometry;
+    const polys = geom.type === 'Polygon' ? [geom.coordinates] : geom.coordinates;
+    polys.forEach(poly => {
+      poly.forEach(ring => {
+        for (let i = 0; i < ring.length - 1; i++) {
+          const p1x = Math.round(ring[i][0] * 10000) / 10000;
+          const p1y = Math.round(ring[i][1] * 10000) / 10000;
+          const p2x = Math.round(ring[i+1][0] * 10000) / 10000;
+          const p2y = Math.round(ring[i+1][1] * 10000) / 10000;
+          const k1 = p1x + ',' + p1y;
+          const k2 = p2x + ',' + p2y;
+          const edgeKey = (k1 < k2) ? k1 + ';' + k2 : k2 + ';' + k1;
+          let entry = segments.get(edgeKey);
+          if (!entry) {
+            entry = { p1: [p1x, p1y], p2: [p2x, p2y], ufs: [] };
+            segments.set(edgeKey, entry);
+          }
+          entry.ufs.push(uf);
+        }
+      });
+    });
+  });
+
+  const interAdj = new Map();
+  const outerAdj = new Map();
+  function addAdj(map, k1, k2, pt2) {
+    let arr = map.get(k1);
+    if (!arr) { arr = []; map.set(k1, arr); }
+    arr.push({ key: k2, pt: pt2 });
+  }
+
+  segments.forEach(entry => {
+    if (entry.ufs.length === 2) {
+      const r1 = ufToReg[entry.ufs[0]];
+      const r2 = ufToReg[entry.ufs[1]];
+      if (r1 && r2 && r1 !== r2) {
+        const k1 = entry.p1[0] + ',' + entry.p1[1];
+        const k2 = entry.p2[0] + ',' + entry.p2[1];
+        addAdj(interAdj, k1, k2, entry.p2);
+        addAdj(interAdj, k2, k1, entry.p1);
+      }
+    } else if (entry.ufs.length === 1) {
+      const k1 = entry.p1[0] + ',' + entry.p1[1];
+      const k2 = entry.p2[0] + ',' + entry.p2[1];
+      addAdj(outerAdj, k1, k2, entry.p2);
+      addAdj(outerAdj, k2, k1, entry.p1);
+    }
+  });
+
+  const proj = mapaProject();
+  function traceGraph(graph) {
+    const visited = new Set();
+    let d = '';
+    const nodes = Array.from(graph.keys());
+    nodes.sort((a, b) => (graph.get(b).length % 2) - (graph.get(a).length % 2));
+
+    nodes.forEach(startKey => {
+      while (true) {
+        const nbrs = graph.get(startKey);
+        let next = null;
+        for (let i = 0; i < nbrs.length; i++) {
+          const cKey = (startKey < nbrs[i].key) ? startKey + ';' + nbrs[i].key : nbrs[i].key + ';' + startKey;
+          if (!visited.has(cKey)) {
+            next = nbrs[i];
+            visited.add(cKey);
+            break;
+          }
+        }
+        if (!next) break;
+
+        const sp = startKey.split(',').map(Number);
+        const sProj = proj.p(sp[0], sp[1]);
+        d += 'M' + sProj[0].toFixed(1) + ' ' + sProj[1].toFixed(1);
+
+        let currKey = next.key;
+        let currPt = next.pt;
+        while (true) {
+          const cp = proj.p(currPt[0], currPt[1]);
+          d += 'L' + cp[0].toFixed(1) + ' ' + cp[1].toFixed(1);
+
+          const currNbrs = graph.get(currKey);
+          let step = null;
+          for (let j = 0; j < currNbrs.length; j++) {
+            const cKey = (currKey < currNbrs[j].key) ? currKey + ';' + currNbrs[j].key : currNbrs[j].key + ';' + currKey;
+            if (!visited.has(cKey)) {
+              step = currNbrs[j];
+              visited.add(cKey);
+              break;
+            }
+          }
+          if (!step) break;
+          currKey = step.key;
+          currPt = step.pt;
+        }
+      }
+    });
+    return d;
+  }
+
+  _cachedMacroregionBorderD = traceGraph(interAdj);
+  _cachedMacroregionOuterBorderD = traceGraph(outerAdj);
+  return { inter: _cachedMacroregionBorderD, outer: _cachedMacroregionOuterBorderD };
+}
+
 const REGIOES_CENTROIDS = {
   'norte': { x: 250, y: 165, name: 'Norte' },
   'nordeste': { x: 555, y: 235, name: 'Nordeste' },
@@ -14021,8 +14167,17 @@ function renderMapa(){
   const targetVb = activeUfs ? getRegionViewBox(activeUfs) : { x: 0, y: 0, w: 760, h: 678.2 };
   const wrap = document.getElementById('mapaSvgWrap');
   if (wrap) {
+    let subdivBordersSvg = '';
     let subdivLabelsSvg = '';
     if (mapTerritoryMode === 'subdivisoes') {
+      const borders = getMacroregionBorderPaths();
+      const strokeColor = dark ? '#f8fafc' : '#0f172a';
+      const outerColor = dark ? '#94a3b8' : '#334155';
+      subdivBordersSvg = '<g id="mapaMacroregionBordersLayer" pointer-events="none">' +
+        '<path class="mapa-macro-outer-border" d="' + borders.outer + '" stroke="' + outerColor + '" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.85"></path>' +
+        '<path class="mapa-macro-divider-border" d="' + borders.inter + '" stroke="' + strokeColor + '" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>' +
+      '</g>';
+
       subdivLabelsSvg = '<g id="mapaSubdivLabelsLayer" pointer-events="none">';
       for (const [rk, c] of Object.entries(REGIOES_CENTROIDS)) {
         const val = (DATA.regiao && DATA.regiao[rk] && DATA.regiao[rk][sigla] !== null && DATA.regiao[rk][sigla] !== undefined)
@@ -14041,6 +14196,7 @@ function renderMapa(){
       '<svg viewBox="' + targetVb.x.toFixed(1) + ' ' + targetVb.y.toFixed(1) + ' ' + targetVb.w.toFixed(1) + ' ' + targetVb.h.toFixed(1) + '" xmlns="http://www.w3.org/2000/svg">' +
       '<g id="mapaStateLayer">' + paths + '</g>' +
       '<g id="mapaMunLayer" style="display:none"></g>' +
+      subdivBordersSvg +
       subdivLabelsSvg +
       '</svg>';
     currentViewBox = targetVb;
@@ -20008,7 +20164,7 @@ async function exportarMapaPnite(modo) {
       ctx.fillStyle = '#64748b';
       ctx.font = '12px Inter, system-ui, sans-serif';
       ctx.fillText('Base cartográfica: IBGE, malha simplificada; regiões geográficas: IBGE. Projeção de Mercator / SIRGAS 2000.', 60, 1145);
-      ctx.fillText('Fonte: SETE, FNDE, INEP, Censo Escolar 2026. Plataforma PNITE (v.3.3.1).', 60, 1168);
+      ctx.fillText('Fonte: SETE, FNDE, INEP, Censo Escolar 2026. Plataforma PNITE (v.3.3.2).', 60, 1168);
 
     } else {
       canvas.width = 2400 * scale;
@@ -20109,7 +20265,7 @@ async function exportarMapaPnite(modo) {
       ctx.fillStyle = '#64748b';
       ctx.font = '12px Inter, system-ui, sans-serif';
       ctx.fillText('Base cartográfica: IBGE, malha simplificada; regiões geográficas: IBGE. Projeção de Mercator / SIRGAS 2000.', 60, 1340);
-      ctx.fillText('Fonte: SETE, FNDE, INEP, Censo Escolar 2026. Plataforma PNITE (v.3.3.1).', 60, 1362);
+      ctx.fillText('Fonte: SETE, FNDE, INEP, Censo Escolar 2026. Plataforma PNITE (v.3.3.2).', 60, 1362);
     }
 
     URL.revokeObjectURL(svgUrl);
@@ -20240,7 +20396,7 @@ function pniteBaixarGraficoCard(btnOrEl) {
 
   ctx.fillStyle = '#94a3b8';
   ctx.font = '12px Inter, sans-serif';
-  ctx.fillText('Fonte: SETE; Censo Escolar (INEP), 2026. Plataforma PNITE (v.3.3.1).', 50, outH - 30);
+  ctx.fillText('Fonte: SETE; Censo Escolar (INEP), 2026. Plataforma PNITE (v.3.3.2).', 50, outH - 30);
 
   outCanvas.toBlob(function(blob) {
     if (!blob) return;
@@ -20555,7 +20711,7 @@ if (document.readyState === 'loading') {
       </div>
     </div>
     <div class="pif-body">
-      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.3.1</strong></div>
+      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.3.2</strong></div>
       <div class="pif-row"><span>Data da alteração:</span><span class="pnite-date-val">22/10/2026</span></div>
       <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">14:00</span></div>
       <div class="pif-row"><span>Responsável técnico:</span><span class="pnite-author-val">Equipe PNITE</span></div>
@@ -20598,7 +20754,7 @@ if (document.readyState === 'loading') {
   </div>
   <button class="pif-btn" id="pifBtn" aria-label="Informações de Versão">
     <i class="ti ti-info-circle"></i>
-    <span class="pif-btn-label pnite-version-val">v.3.3.1</span>
+    <span class="pif-btn-label pnite-version-val">v.3.3.2</span>
   </button>
 </div>
 
