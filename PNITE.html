@@ -6508,6 +6508,7 @@ html[data-theme="dark"] .adm-msg.ok { color: #7ee2b0; }
 .sm-dica { position: absolute; pointer-events: none; z-index: 5; background: var(--bg-card); color: var(--text-1); border: 1px solid var(--border-mid); border-radius: 10px; padding: 6px 10px; font-size: 12px; box-shadow: 0 4px 14px rgba(0,0,0,.15); white-space: nowrap; }
 
 /* ================================================================
+    v.3.3.4 — EXPORTAÇÃO EXCEL COMPLETA COM TODOS OS 5.569 MUNICÍPIOS DO BRASIL
     v.3.3.3 — INTEGRAÇÃO AUTOMÁTICA DAS CHAVES DO .ENV VIA CONFIG.LOCAL.JS COM FALLBACK ROBUSTO
     v.3.3.2 — LINHAS DIVISÓRIAS ESPESSAS ENTRE MACRORREGIÕES NO MAPA DE SUBDIVISÕES
     v.3.3.1 — MAPA DE CALOR COROPLÉTICO PARA MACRORREGIÕES COM RÓTULOS DE NOME E VALOR NO MAPA
@@ -9155,7 +9156,7 @@ window.onerror = function(msg, url, line, col, err) {
     <div class="smb-sec">
       <div class="smb-sec-title" data-i18n="settings_info_title">Informações da Versão</div>
       <div style="font-size:12px;color:var(--text-2);display:flex;flex-direction:column;gap:4px;margin-top:6px">
-        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.3.3</b></div>
+        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.3.4</b></div>
         <div><span data-i18n="settings_updated">Última Atualização:</span> <b class="pnite-date-val">06/10/2026</b> às <b class="pnite-time-val">21:05</b></div>
         <div><span data-i18n="settings_author">Responsável Técnico:</span> <b class="pnite-author-val">Equipe PNITE</b></div>
       </div>
@@ -10144,7 +10145,7 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.3.3";
+const PNITE_VERSION = "v.3.3.4";
 const PNITE_LAST_UPDATE = "06/11/2026";
 const PNITE_LAST_TIME = "12:00";
 
@@ -20165,7 +20166,7 @@ async function exportarMapaPnite(modo) {
       ctx.fillStyle = '#64748b';
       ctx.font = '12px Inter, system-ui, sans-serif';
       ctx.fillText('Base cartográfica: IBGE, malha simplificada; regiões geográficas: IBGE. Projeção de Mercator / SIRGAS 2000.', 60, 1145);
-      ctx.fillText('Fonte: SETE, FNDE, INEP, Censo Escolar 2026. Plataforma PNITE (v.3.3.3).', 60, 1168);
+      ctx.fillText('Fonte: SETE, FNDE, INEP, Censo Escolar 2026. Plataforma PNITE (v.3.3.4).', 60, 1168);
 
     } else {
       canvas.width = 2400 * scale;
@@ -20266,7 +20267,7 @@ async function exportarMapaPnite(modo) {
       ctx.fillStyle = '#64748b';
       ctx.font = '12px Inter, system-ui, sans-serif';
       ctx.fillText('Base cartográfica: IBGE, malha simplificada; regiões geográficas: IBGE. Projeção de Mercator / SIRGAS 2000.', 60, 1340);
-      ctx.fillText('Fonte: SETE, FNDE, INEP, Censo Escolar 2026. Plataforma PNITE (v.3.3.3).', 60, 1362);
+      ctx.fillText('Fonte: SETE, FNDE, INEP, Censo Escolar 2026. Plataforma PNITE (v.3.3.4).', 60, 1362);
     }
 
     URL.revokeObjectURL(svgUrl);
@@ -20397,7 +20398,7 @@ function pniteBaixarGraficoCard(btnOrEl) {
 
   ctx.fillStyle = '#94a3b8';
   ctx.font = '12px Inter, sans-serif';
-  ctx.fillText('Fonte: SETE; Censo Escolar (INEP), 2026. Plataforma PNITE (v.3.3.3).', 50, outH - 30);
+  ctx.fillText('Fonte: SETE; Censo Escolar (INEP), 2026. Plataforma PNITE (v.3.3.4).', 50, outH - 30);
 
   outCanvas.toBlob(function(blob) {
     if (!blob) return;
@@ -20478,8 +20479,47 @@ function pniteExportarIndicadoresExcel() {
   const wsEstados = XLSX.utils.json_to_sheet(estadoRows);
   XLSX.utils.book_append_sheet(wb, wsEstados, 'Detalhamento por Estado');
 
-  // 3. Detalhamento Municipal
+  // 3. Detalhamento Municipal — Todos os 5.569 Municípios Brasileiros
+  const munRows = [];
+  const seteMap = new Map();
+  const alIdx = (typeof SETE_MUN !== 'undefined' && SETE_MUN.cols) ? SETE_MUN.cols.indexOf('alunos') : 3;
+  const veicIdx = (typeof SETE_MUN !== 'undefined' && SETE_MUN.cols) ? SETE_MUN.cols.indexOf('veiculos') : 12;
+
   if (typeof SETE_MUN !== 'undefined' && SETE_MUN.municipios) {
+    SETE_MUN.municipios.forEach(function(m) {
+      seteMap.set(Number(m[0]), m);
+    });
+  }
+
+  // Base oficial de municípios do Brasil (todos os 5.569 municípios nas 27 UFs)
+  if (typeof BRAZIL_MUN_BY_UF !== 'undefined') {
+    const ufsListOrder = Object.keys(BRAZIL_MUN_BY_UF).sort();
+    ufsListOrder.forEach(function(uf) {
+      if (activeUfs && !activeUfs.includes(uf)) return;
+      if (currentMapUf && uf !== currentMapUf) return;
+
+      const munsOfUf = BRAZIL_MUN_BY_UF[uf] || [];
+      munsOfUf.forEach(function(m) {
+        const cod = Number(m.cod);
+        const sRow = seteMap.get(cod);
+        const row = {
+          'Código IBGE': cod,
+          'Município': m.nome,
+          'UF': uf,
+          'Status no SETE': sRow ? 'Integrado' : 'Sem dados no SETE',
+          'Alunos Atendidos': (sRow && sRow[alIdx] !== null && sRow[alIdx] !== undefined) ? sRow[alIdx] : '—',
+          'Veículos': (sRow && sRow[veicIdx] !== null && sRow[veicIdx] !== undefined) ? sRow[veicIdx] : '—'
+        };
+
+        ALL_INDICATORS.forEach(function(ind) {
+          const v = getMunVal(cod, ind.sigla);
+          row[ind.sigla + ' (' + (ind.unit || '%') + ')'] = (typeof v === 'number' && isFinite(v)) ? v : '—';
+        });
+
+        munRows.push(row);
+      });
+    });
+  } else if (typeof SETE_MUN !== 'undefined' && SETE_MUN.municipios) {
     const ufIdx = SETE_MUN.cols.indexOf('uf');
     let muns = SETE_MUN.municipios;
     if (activeUfs) {
@@ -20487,22 +20527,34 @@ function pniteExportarIndicadoresExcel() {
     } else if (currentMapUf) {
       muns = muns.filter(function(m) { return m[ufIdx] === currentMapUf; });
     }
-    const munRows = muns.slice(0, 1000).map(function(m) {
+    muns.forEach(function(m) {
       const cod = m[0];
-      return {
+      const row = {
         'Código IBGE': cod,
         'Município': getMunName(cod),
         'UF': m[ufIdx],
-        'Alunos Atendidos': m[3] || '—',
-        'Veículos': m[12] || '—',
-        'PRGM (%)': getMunVal(cod, 'PRGM') || '—',
-        'ATE (%)': getMunVal(cod, 'ATE') || '—',
-        'PVP (%)': getMunVal(cod, 'PVP') || '—',
-        'PVT (%)': getMunVal(cod, 'PVT') || '—',
-        'TETI (%)': getMunVal(cod, 'TETI') || '—'
+        'Status no SETE': 'Integrado',
+        'Alunos Atendidos': (m[alIdx] !== null && m[alIdx] !== undefined) ? m[alIdx] : '—',
+        'Veículos': (m[veicIdx] !== null && m[veicIdx] !== undefined) ? m[veicIdx] : '—'
       };
+      ALL_INDICATORS.forEach(function(ind) {
+        const v = getMunVal(cod, ind.sigla);
+        row[ind.sigla + ' (' + (ind.unit || '%') + ')'] = (typeof v === 'number' && isFinite(v)) ? v : '—';
+      });
+      munRows.push(row);
     });
+  }
+
+  if (munRows.length > 0) {
     const wsMun = XLSX.utils.json_to_sheet(munRows);
+    wsMun['!cols'] = [
+      { wch: 14 },
+      { wch: 32 },
+      { wch: 6 },
+      { wch: 18 },
+      { wch: 16 },
+      { wch: 12 }
+    ];
     XLSX.utils.book_append_sheet(wb, wsMun, 'Detalhamento Municipal');
   }
 
@@ -20712,7 +20764,7 @@ if (document.readyState === 'loading') {
       </div>
     </div>
     <div class="pif-body">
-      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.3.3</strong></div>
+      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.3.4</strong></div>
       <div class="pif-row"><span>Data da alteração:</span><span class="pnite-date-val">22/10/2026</span></div>
       <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">14:00</span></div>
       <div class="pif-row"><span>Responsável técnico:</span><span class="pnite-author-val">Equipe PNITE</span></div>
@@ -20755,7 +20807,7 @@ if (document.readyState === 'loading') {
   </div>
   <button class="pif-btn" id="pifBtn" aria-label="Informações de Versão">
     <i class="ti ti-info-circle"></i>
-    <span class="pif-btn-label pnite-version-val">v.3.3.3</span>
+    <span class="pif-btn-label pnite-version-val">v.3.3.4</span>
   </button>
 </div>
 
