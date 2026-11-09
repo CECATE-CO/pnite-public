@@ -6508,6 +6508,7 @@ html[data-theme="dark"] .adm-msg.ok { color: #7ee2b0; }
 .sm-dica { position: absolute; pointer-events: none; z-index: 5; background: var(--bg-card); color: var(--text-1); border: 1px solid var(--border-mid); border-radius: 10px; padding: 6px 10px; font-size: 12px; box-shadow: 0 4px 14px rgba(0,0,0,.15); white-space: nowrap; }
 
 /* ================================================================
+    v.3.2.8 — REMOÇÃO DA ESCALA CARTOGRÁFICA DO MAPA
    v.3.2.7 — MAPAS, RANKINGS E EXPORTAÇÃO DE INDICADORES (CARTOGRAFIA COMPLETA)
    ================================================================ */
 .mapa-region-pill-group {
@@ -8817,18 +8818,8 @@ window.onerror = function(msg, url, line, col, err) {
                 <div class="carto-inset-box" id="cartoInsetBox"></div>
 
                 <!-- Escala Gráfica e Projeção -->
-                <div class="carto-scale-box" id="cartoScaleBox">
-                  <div class="carto-scale-bars" id="cartoScaleBars">
-                    <div class="cs-seg-black"></div>
-                    <div class="cs-seg-white"></div>
-                  </div>
-                  <div class="carto-scale-lbl" id="cartoScaleLbl">
-                    <span>0</span>
-                    <span id="scaleMidVal">250</span>
-                    <span id="scaleMaxVal">500 km</span>
-                  </div>
-                  <div class="carto-scale-datum">Base cartográfica: IBGE • Projeção de Mercator</div>
-                </div>
+                <!-- Referência da Base Cartográfica (Escala cartográfica removida) -->
+                <div class="carto-datum-tag" id="cartoDatumTag" style="position:absolute;bottom:8px;left:14px;background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:3px 8px;font-size:9px;color:var(--text-3);box-shadow:0 1px 4px rgba(0,0,0,0.05);pointer-events:auto">Base cartográfica: IBGE • Projeção de Mercator</div>
               </div>
 
               <div class="mapa-svg-wrap" id="mapaSvgWrap"  style="position:relative;height:500px;min-height:500px;max-height:500px;padding:8px 8px 4px 8px;overflow:hidden;display:flex;align-items:center;justify-content:center">
@@ -9028,7 +9019,7 @@ window.onerror = function(msg, url, line, col, err) {
     <div class="smb-sec">
       <div class="smb-sec-title" data-i18n="settings_info_title">Informações da Versão</div>
       <div style="font-size:12px;color:var(--text-2);display:flex;flex-direction:column;gap:4px;margin-top:6px">
-        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.2.7</b></div>
+        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.2.8</b></div>
         <div><span data-i18n="settings_updated">Última Atualização:</span> <b class="pnite-date-val">06/10/2026</b> às <b class="pnite-time-val">21:05</b></div>
         <div><span data-i18n="settings_author">Responsável Técnico:</span> <b class="pnite-author-val">Equipe PNITE</b></div>
       </div>
@@ -10017,7 +10008,7 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.2.7";
+const PNITE_VERSION = "v.3.2.8";
 const PNITE_LAST_UPDATE = "06/11/2026";
 const PNITE_LAST_TIME = "12:00";
 
@@ -13266,21 +13257,7 @@ function updateMapCartographicElements() {
     insetBox.innerHTML = insetHtml;
   }
 
-  // Escala Gráfica
-  const scaleMid = document.getElementById('scaleMidVal');
-  const scaleMax = document.getElementById('scaleMaxVal');
-  if (scaleMid && scaleMax) {
-    if (isMunicipalLevel) {
-      scaleMid.textContent = '2,5';
-      scaleMax.textContent = '5 km';
-    } else if (mapTerritoryMode === 'regiao' || (currentCustomSelection && currentCustomSelection.ufs && currentCustomSelection.ufs.length < 10)) {
-      scaleMid.textContent = '100';
-      scaleMax.textContent = '200 km';
-    } else {
-      scaleMid.textContent = '250';
-      scaleMax.textContent = '500 km';
-    }
-  }
+  // Escala gráfica removida na v.3.2.8 conforme solicitação do usuário
 }
 
 function generateMiniBrasilSvg(highlightUfs, w, h) {
@@ -19267,12 +19244,12 @@ async function exportarMapaPnite(modo) {
 
       drawNorthArrowOnCanvas(ctx, 1500, 180);
       drawInsetMapOnCanvas(ctx, 1420, 240);
-      drawScaleBarOnCanvas(ctx, 80, 1020);
+//       drawScaleBarOnCanvas(ctx, 80, 1020);
 
       ctx.fillStyle = '#64748b';
       ctx.font = '12px Inter, system-ui, sans-serif';
       ctx.fillText('Base cartográfica: IBGE, malha simplificada; regiões geográficas: IBGE. Projeção de Mercator / SIRGAS 2000.', 60, 1145);
-      ctx.fillText('Fonte: SETE, FNDE, INEP, Censo Escolar 2026. Plataforma PNITE (v.3.2.7).', 60, 1168);
+      ctx.fillText('Fonte: SETE, FNDE, INEP, Censo Escolar 2026. Plataforma PNITE (v.3.2.8).', 60, 1168);
 
     } else {
       canvas.width = 2400 * scale;
@@ -19310,7 +19287,7 @@ async function exportarMapaPnite(modo) {
 
       drawNorthArrowOnCanvas(ctx, 1420, 220);
       drawInsetMapOnCanvas(ctx, 1340, 280);
-      drawScaleBarOnCanvas(ctx, 90, 1180);
+//       drawScaleBarOnCanvas(ctx, 90, 1180);
 
       const rankX = 1530, rankY = 180, rankW = 810;
       ctx.fillStyle = '#f8fafc';
@@ -19373,7 +19350,7 @@ async function exportarMapaPnite(modo) {
       ctx.fillStyle = '#64748b';
       ctx.font = '12px Inter, system-ui, sans-serif';
       ctx.fillText('Base cartográfica: IBGE, malha simplificada; regiões geográficas: IBGE. Projeção de Mercator / SIRGAS 2000.', 60, 1340);
-      ctx.fillText('Fonte: SETE, FNDE, INEP, Censo Escolar 2026. Plataforma PNITE (v.3.2.7).', 60, 1362);
+      ctx.fillText('Fonte: SETE, FNDE, INEP, Censo Escolar 2026. Plataforma PNITE (v.3.2.8).', 60, 1362);
     }
 
     URL.revokeObjectURL(svgUrl);
@@ -19452,40 +19429,7 @@ function drawInsetMapOnCanvas(ctx, x, y) {
 }
 
 function drawScaleBarOnCanvas(ctx, x, y) {
-  ctx.save();
-  ctx.translate(x, y);
-  ctx.fillStyle = '#ffffff';
-  ctx.strokeStyle = '#cbd5e1';
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.roundRect(-10, -14, 175, 50, 6);
-  ctx.fill();
-  ctx.stroke();
-
-  ctx.fillStyle = '#000000';
-  ctx.fillRect(0, 0, 75, 7);
-  ctx.fillStyle = '#ffffff';
-  ctx.fillRect(75, 0, 75, 7);
-  ctx.strokeStyle = '#000000';
-  ctx.lineWidth = 1;
-  ctx.strokeRect(0, 0, 150, 7);
-
-  ctx.fillStyle = '#0f172a';
-  ctx.font = '700 10px monospace';
-  ctx.textAlign = 'left';
-  ctx.fillText('0', 0, 20);
-  ctx.textAlign = 'center';
-  const midTxt = isMunicipalLevel ? '2,5' : (mapTerritoryMode === 'regiao' ? '100' : '250');
-  const maxTxt = isMunicipalLevel ? '5 km' : (mapTerritoryMode === 'regiao' ? '200 km' : '500 km');
-  ctx.fillText(midTxt, 75, 20);
-  ctx.textAlign = 'right';
-  ctx.fillText(maxTxt, 150, 20);
-
-  ctx.fillStyle = '#64748b';
-  ctx.font = '8px Inter, sans-serif';
-  ctx.textAlign = 'left';
-  ctx.fillText('Projeção de Mercator', 0, 31);
-  ctx.restore();
+  // v.3.2.8: Escala cartográfica removida a pedido do usuário
 }
 
 // Download dos Gráficos em Caixa Completa (Requisito 4)
@@ -19537,7 +19481,7 @@ function pniteBaixarGraficoCard(btnOrEl) {
 
   ctx.fillStyle = '#94a3b8';
   ctx.font = '12px Inter, sans-serif';
-  ctx.fillText('Fonte: SETE; Censo Escolar (INEP), 2026. Plataforma PNITE (v.3.2.7).', 50, outH - 30);
+  ctx.fillText('Fonte: SETE; Censo Escolar (INEP), 2026. Plataforma PNITE (v.3.2.8).', 50, outH - 30);
 
   outCanvas.toBlob(function(blob) {
     if (!blob) return;
@@ -19852,7 +19796,7 @@ if (document.readyState === 'loading') {
       </div>
     </div>
     <div class="pif-body">
-      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.2.7</strong></div>
+      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.2.8</strong></div>
       <div class="pif-row"><span>Data da alteração:</span><span class="pnite-date-val">22/10/2026</span></div>
       <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">14:00</span></div>
       <div class="pif-row"><span>Responsável técnico:</span><span class="pnite-author-val">Equipe PNITE</span></div>
@@ -19895,7 +19839,7 @@ if (document.readyState === 'loading') {
   </div>
   <button class="pif-btn" id="pifBtn" aria-label="Informações de Versão">
     <i class="ti ti-info-circle"></i>
-    <span class="pif-btn-label pnite-version-val">v.3.2.7</span>
+    <span class="pif-btn-label pnite-version-val">v.3.2.8</span>
   </button>
 </div>
 
