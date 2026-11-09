@@ -6508,6 +6508,7 @@ html[data-theme="dark"] .adm-msg.ok { color: #7ee2b0; }
 .sm-dica { position: absolute; pointer-events: none; z-index: 5; background: var(--bg-card); color: var(--text-1); border: 1px solid var(--border-mid); border-radius: 10px; padding: 6px 10px; font-size: 12px; box-shadow: 0 4px 14px rgba(0,0,0,.15); white-space: nowrap; }
 
 /* ================================================================
+    v.3.2.9 — RESTAURAÇÃO DO ZOOM NOS ESTADOS E SELEÇÃO DE MUNICÍPIOS NO MAPA
     v.3.2.8 — REMOÇÃO DA ESCALA CARTOGRÁFICA DO MAPA
    v.3.2.7 — MAPAS, RANKINGS E EXPORTAÇÃO DE INDICADORES (CARTOGRAFIA COMPLETA)
    ================================================================ */
@@ -9019,7 +9020,7 @@ window.onerror = function(msg, url, line, col, err) {
     <div class="smb-sec">
       <div class="smb-sec-title" data-i18n="settings_info_title">Informações da Versão</div>
       <div style="font-size:12px;color:var(--text-2);display:flex;flex-direction:column;gap:4px;margin-top:6px">
-        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.2.8</b></div>
+        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.2.9</b></div>
         <div><span data-i18n="settings_updated">Última Atualização:</span> <b class="pnite-date-val">06/10/2026</b> às <b class="pnite-time-val">21:05</b></div>
         <div><span data-i18n="settings_author">Responsável Técnico:</span> <b class="pnite-author-val">Equipe PNITE</b></div>
       </div>
@@ -10008,7 +10009,7 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.2.8";
+const PNITE_VERSION = "v.3.2.9";
 const PNITE_LAST_UPDATE = "06/11/2026";
 const PNITE_LAST_TIME = "12:00";
 
@@ -13840,7 +13841,7 @@ function renderMapa(){
       const fill = noData ? ' fill="var(--bg-badge)"' : ' fill="' + mapaColor((v - mn) / span, dark, sigla) + '"';
       const cls = 'uf-path' + (noData ? ' uf-nodata' : '');
       paths += '<path class="' + cls + '" d="' + d + '"' + fill + ' data-k="' + u.key + '" data-nm="' + u.nome + '"' +
-        ' onmousemove="mapaHover(event,this)" onmouseleave="mapaOut()" onclick="zoomIntoState(\'" + u.key + "\')" onmouseenter="prefetchMunicipalGeo(\'" + u.key + "\')"></path>';
+        ' onmousemove="mapaHover(event,this)" onmouseleave="mapaOut()" onclick="zoomIntoState(\'' + u.key + '\')" onmouseenter="prefetchMunicipalGeo(\'' + u.key + '\')" style="cursor:pointer"></path>';
     } else {
       paths += '<path class="uf-path uf-out-scope" d="' + d + '" fill="var(--bg-badge)" opacity="0.22" stroke="var(--border)" stroke-width="0.5" data-k="' + u.key + '" data-nm="' + u.nome + '" style="cursor:default"></path>';
     }
@@ -14366,7 +14367,7 @@ function renderMapaRankMunicipal(ind, ufKey, searchQuery){
     const barPct = (mx > 0 && typeof m.val === 'number') ? Math.max(3, Math.min(100, (m.val / mx) * 100)) : 0;
     const rankPos = window._currentMunRankMap[m.cod];
 
-    html += '<div class="rank-item' + (isSel ? ' active' : '') + '" role="button" tabindex="0" data-cod="' + m.cod + '" onclick="selectMunFromMap(' + m.cod + ')" title="Clique para destacar ' + m.nome + ' no mapa">' +
+    html += '<div class="rank-item' + (isSel ? ' active' : '') + '" role="button" tabindex="0" data-cod="' + m.cod + '" onclick="mapaClicarMunicipio(' + m.cod + ')" title="Clique para destacar ' + m.nome + ' no mapa">' +
       '<span class="rk">' + rankPos + 'º</span>' +
       '<span class="rl" title="' + m.nome + '">' + m.nome + '</span>' +
       '<div class="rb-wrap"><div class="rb" style="width:' + barPct + '%"></div></div>' +
@@ -14403,6 +14404,7 @@ function selectMunFromMap(cod){
       p.classList.add('selected');
     } else {
       p.classList.remove('selected');
+  if (typeof updateMapCartographicElements === "function") updateMapCartographicElements();
     }
   });
 
@@ -19249,7 +19251,7 @@ async function exportarMapaPnite(modo) {
       ctx.fillStyle = '#64748b';
       ctx.font = '12px Inter, system-ui, sans-serif';
       ctx.fillText('Base cartográfica: IBGE, malha simplificada; regiões geográficas: IBGE. Projeção de Mercator / SIRGAS 2000.', 60, 1145);
-      ctx.fillText('Fonte: SETE, FNDE, INEP, Censo Escolar 2026. Plataforma PNITE (v.3.2.8).', 60, 1168);
+      ctx.fillText('Fonte: SETE, FNDE, INEP, Censo Escolar 2026. Plataforma PNITE (v.3.2.9).', 60, 1168);
 
     } else {
       canvas.width = 2400 * scale;
@@ -19350,7 +19352,7 @@ async function exportarMapaPnite(modo) {
       ctx.fillStyle = '#64748b';
       ctx.font = '12px Inter, system-ui, sans-serif';
       ctx.fillText('Base cartográfica: IBGE, malha simplificada; regiões geográficas: IBGE. Projeção de Mercator / SIRGAS 2000.', 60, 1340);
-      ctx.fillText('Fonte: SETE, FNDE, INEP, Censo Escolar 2026. Plataforma PNITE (v.3.2.8).', 60, 1362);
+      ctx.fillText('Fonte: SETE, FNDE, INEP, Censo Escolar 2026. Plataforma PNITE (v.3.2.9).', 60, 1362);
     }
 
     URL.revokeObjectURL(svgUrl);
@@ -19481,7 +19483,7 @@ function pniteBaixarGraficoCard(btnOrEl) {
 
   ctx.fillStyle = '#94a3b8';
   ctx.font = '12px Inter, sans-serif';
-  ctx.fillText('Fonte: SETE; Censo Escolar (INEP), 2026. Plataforma PNITE (v.3.2.8).', 50, outH - 30);
+  ctx.fillText('Fonte: SETE; Censo Escolar (INEP), 2026. Plataforma PNITE (v.3.2.9).', 50, outH - 30);
 
   outCanvas.toBlob(function(blob) {
     if (!blob) return;
@@ -19660,7 +19662,7 @@ function renderArvoreTerritorial() {
     html += '<div class="mpt-region-card" data-reg="' + regKey + '">' +
       '<div class="mpt-region-head" onclick="toggleArvoreCard(this)">' +
         '<div class="mpt-region-head-left">' +
-          '<input type="checkbox" ' + (allChecked ? 'checked' : '') + ' onclick="event.stopPropagation(); toggleSelecaoRegiao(\'" + regKey + "\', this.checked)">' +
+          '<input type="checkbox" ' + (allChecked ? 'checked' : '') + ' onclick="event.stopPropagation(); toggleSelecaoRegiao(\'' + regKey + '\', this.checked)">' +
           '<span>' + regLabel + '</span>' +
         '</div>' +
         '<i class="ti ti-chevron-down" style="font-size:14px;color:var(--text-3)"></i>' +
@@ -19671,7 +19673,7 @@ function renderArvoreTerritorial() {
       const ufName = (DATA.estado[uf.toLowerCase()] ? DATA.estado[uf.toLowerCase()].label : uf);
       const isSel = currentCustomSelection.ufs.includes(uf);
       html += '<label class="mpt-uf-item' + (isSel ? ' active' : '') + '" data-uf="' + uf + '">' +
-        '<input type="checkbox" value="' + uf + '" ' + (isSel ? 'checked' : '') + ' onchange="toggleSelecaoUf(\'" + uf + "\', this.checked)">' +
+        '<input type="checkbox" value="' + uf + '" ' + (isSel ? 'checked' : '') + ' onchange="toggleSelecaoUf(\'' + uf + '\', this.checked)">' +
         '<span>' + ufName + ' (' + uf + ')</span>' +
       '</label>';
     });
@@ -19796,7 +19798,7 @@ if (document.readyState === 'loading') {
       </div>
     </div>
     <div class="pif-body">
-      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.2.8</strong></div>
+      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.2.9</strong></div>
       <div class="pif-row"><span>Data da alteração:</span><span class="pnite-date-val">22/10/2026</span></div>
       <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">14:00</span></div>
       <div class="pif-row"><span>Responsável técnico:</span><span class="pnite-author-val">Equipe PNITE</span></div>
@@ -19839,7 +19841,7 @@ if (document.readyState === 'loading') {
   </div>
   <button class="pif-btn" id="pifBtn" aria-label="Informações de Versão">
     <i class="ti ti-info-circle"></i>
-    <span class="pif-btn-label pnite-version-val">v.3.2.8</span>
+    <span class="pif-btn-label pnite-version-val">v.3.2.9</span>
   </button>
 </div>
 
