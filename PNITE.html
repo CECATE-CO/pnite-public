@@ -6506,7 +6506,521 @@ html[data-theme="dark"] .adm-msg.ok { color: #7ee2b0; }
 .sm-legenda span { display: inline-flex; align-items: center; gap: 5px; }
 .sm-legenda i { width: 14px; height: 14px; border-radius: 3px; border: 1px solid var(--border); display: inline-block; }
 .sm-dica { position: absolute; pointer-events: none; z-index: 5; background: var(--bg-card); color: var(--text-1); border: 1px solid var(--border-mid); border-radius: 10px; padding: 6px 10px; font-size: 12px; box-shadow: 0 4px 14px rgba(0,0,0,.15); white-space: nowrap; }
+
+/* ================================================================
+   v.3.2.7 — MAPAS, RANKINGS E EXPORTAÇÃO DE INDICADORES (CARTOGRAFIA COMPLETA)
+   ================================================================ */
+.mapa-region-pill-group {
+  display: inline-flex;
+  align-items: center;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 3px;
+  gap: 3px;
+  flex-wrap: wrap;
+}
+.mrg-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 11px;
+  border-radius: 7px;
+  border: none;
+  background: transparent;
+  color: var(--text-2);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .16s ease;
+  white-space: nowrap;
+}
+.mrg-pill:hover {
+  color: var(--text-1);
+  background: var(--bg-hover);
+}
+.mrg-pill.active {
+  background: var(--bg-card);
+  color: var(--c-blue);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.mrg-dropdown-wrap {
+  position: relative;
+  display: inline-flex;
+}
+.mrg-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 6px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-mid);
+  border-radius: 10px;
+  padding: 6px;
+  min-width: 175px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.14);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.mrg-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  color: var(--text-1);
+  cursor: pointer;
+  transition: background .14s ease;
+}
+.mrg-item:hover {
+  background: var(--bg-hover);
+  color: var(--c-blue);
+}
+.mrg-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--c-blue);
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 999px;
+  margin-left: 4px;
+}
+
+/* Botões de Download do Mapa e Indicadores */
+.map-actions-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.map-dl-wrap {
+  position: relative;
+  display: inline-flex;
+}
+.map-dl-btn, .btn-excel-export {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 13px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg-input);
+  color: var(--text-1);
+  cursor: pointer;
+  transition: all .16s ease;
+}
+.map-dl-btn:hover, .btn-excel-export:hover {
+  border-color: var(--c-blue);
+  color: var(--c-blue);
+  background: var(--bg-hover);
+  transform: translateY(-1px);
+}
+.btn-excel-export {
+  color: #166534;
+  border-color: #86efac;
+  background: rgba(34, 197, 94, 0.08);
+}
+.btn-excel-export:hover {
+  background: rgba(34, 197, 94, 0.16);
+  border-color: #22c55e;
+  color: #15803d;
+}
+[data-theme="dark"] .btn-excel-export {
+  color: #4ade80;
+  border-color: #166534;
+  background: rgba(34, 197, 94, 0.12);
+}
+.map-dl-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 6px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-mid);
+  border-radius: 12px;
+  padding: 8px;
+  width: 310px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.map-dl-item {
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  transition: background .15s ease;
+  color: var(--text-1);
+}
+.map-dl-item:hover {
+  background: var(--bg-hover);
+}
+.map-dl-item i {
+  font-size: 16px;
+  color: var(--c-blue);
+  margin-top: 2px;
+}
+.mdi-title {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--text-1);
+  line-height: 1.25;
+}
+.mdi-sub {
+  font-size: 11px;
+  color: var(--text-3);
+  margin-top: 2px;
+  line-height: 1.35;
+}
+
+/* Elementos Cartográficos Sobrepostos no Mapa (Requisito 9) */
+.carto-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 4;
+}
+.carto-title-tag {
+  position: absolute;
+  top: 12px;
+  left: 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-mid);
+  border-radius: 8px;
+  padding: 5px 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  pointer-events: auto;
+}
+.ctt-main {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-1);
+  letter-spacing: -.01em;
+}
+.ctt-sub {
+  font-size: 10px;
+  color: var(--text-3);
+}
+.carto-north-tag {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  width: 32px;
+  height: 40px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.carto-inset-box {
+  position: absolute;
+  top: 58px;
+  right: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  pointer-events: auto;
+}
+.carto-mini-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-mid);
+  border-radius: 8px;
+  padding: 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  text-align: center;
+}
+.carto-mini-card svg {
+  display: block;
+}
+.carto-mini-lbl {
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--text-2);
+  margin-top: 2px;
+}
+.carto-scale-box {
+  position: absolute;
+  bottom: 8px;
+  left: 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-mid);
+  border-radius: 8px;
+  padding: 6px 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  pointer-events: auto;
+}
+.carto-scale-bars {
+  display: flex;
+  height: 6px;
+  width: 140px;
+  border: 1px solid #000;
+  margin-bottom: 3px;
+}
+.cs-seg-black {
+  flex: 1;
+  background: #000;
+}
+.cs-seg-white {
+  flex: 1;
+  background: #fff;
+  border-left: 1px solid #000;
+}
+.carto-scale-lbl {
+  display: flex;
+  justify-content: space-between;
+  width: 140px;
+  font-size: 9.5px;
+  font-weight: 700;
+  color: var(--text-1);
+  font-family: monospace;
+}
+.carto-scale-datum {
+  font-size: 8.5px;
+  color: var(--text-3);
+  margin-top: 2px;
+  white-space: nowrap;
+}
+
+/* Botão de download rápido em cada caixa de gráfico */
+.gx-chart-card, .cap-chart-box {
+  position: relative;
+}
+.btn-chart-download-box {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 5;
+}
+.btn-chart-download-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-2);
+  cursor: pointer;
+  transition: all .15s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.btn-chart-download-btn:hover {
+  color: var(--c-blue);
+  border-color: var(--c-blue);
+  transform: translateY(-1px);
+}
+
+/* Modal de Seleção Territorial Personalizada */
+.modal-personalizada-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(4px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.modal-personalizada-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border-mid);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 780px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+  overflow: hidden;
+}
+.mpb-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+}
+.mpb-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-1);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.mpb-sub {
+  font-size: 11.5px;
+  color: var(--text-3);
+  margin-top: 2px;
+}
+.mpb-close {
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  color: var(--text-3);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+}
+.mpb-close:hover {
+  color: var(--text-1);
+  background: var(--bg-hover);
+}
+.mpb-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  background: var(--bg-input);
+  border-bottom: 1px solid var(--border);
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.mpb-search-wrap {
+  position: relative;
+  flex: 1;
+  min-width: 200px;
+}
+.mpb-search-wrap i {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-3);
+  font-size: 14px;
+}
+.mpb-search-input {
+  width: 100%;
+  padding: 7px 10px 7px 32px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-1);
+  font-size: 12px;
+  outline: none;
+}
+.mpb-tools-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.mpb-btn-tool {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-2);
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .14s ease;
+}
+.mpb-btn-tool:hover {
+  background: var(--bg-hover);
+  color: var(--text-1);
+}
+.mpb-tree-body {
+  padding: 16px 20px;
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.mpt-region-card {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-card);
+  overflow: hidden;
+}
+.mpt-region-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: var(--bg-input);
+  cursor: pointer;
+  user-select: none;
+}
+.mpt-region-head-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--text-1);
+}
+.mpt-ufs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 8px;
+  padding: 12px 14px;
+}
+.mpt-uf-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  font-size: 12px;
+  color: var(--text-1);
+  cursor: pointer;
+  transition: all .14s ease;
+}
+.mpt-uf-item:hover {
+  border-color: var(--c-blue);
+  background: var(--bg-hover);
+}
+.mpt-uf-item.active {
+  border-color: var(--c-blue);
+  background: rgba(37, 137, 244, 0.08);
+  font-weight: 600;
+}
+.mpb-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  border-top: 1px solid var(--border);
+  background: var(--bg-input);
+}
+.mpb-counter-lbl {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-2);
+}
+.mpb-footer-actions {
+  display: flex;
+  gap: 10px;
+}
 </style>
+
 
 <script>
 if ('scrollRestoration' in history) {
@@ -8173,41 +8687,101 @@ window.onerror = function(msg, url, line, col, err) {
           </div>
         </div>
 
-        <!-- BARRA DE CONTROLES: SELETOR DE INDICADOR, BOTÃO ESTADOS, BREADCRUMB E BOTÃO "i" -->
-        <div class="mapa-compact-controls" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 16px;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;margin-bottom:14px">
-          <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-width:0">
-              <label for="mapaIndSelect" style="font-size:12px;font-weight:600;color:var(--text-2);white-space:nowrap" data-i18n="mapa_sel_ind">Indicador no Mapa:</label>
-              <select id="mapaIndSelect" class="form-select" onchange="onMapaIndSelectChange()" style="min-width:min(280px, 100%);max-width:100%;font-size:13px;padding:6px 36px 6px 12px;border-radius:8px;border-width:1px;background-color:var(--bg-input);color:var(--text-1)"></select>
+        <!-- BARRA DE CONTROLES: SELETOR DE INDICADOR, ABRANGÊNCIA REGIONAL, EXPORTAÇÕES E BREADCRUMB -->
+        <div class="mapa-compact-controls" style="display:flex;flex-direction:column;gap:12px;padding:14px 16px;background:var(--bg-card);border:1px solid var(--border);border-radius:14px;margin-bottom:14px">
+          <!-- LINHA 1: INDICADOR, ABRANGÊNCIA REGIONAL E BOTÕES DE DOWNLOAD -->
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-width:0">
+                <label for="mapaIndSelect" style="font-size:12px;font-weight:600;color:var(--text-2);white-space:nowrap" data-i18n="mapa_sel_ind">Indicador no Mapa:</label>
+                <select id="mapaIndSelect" class="form-select" onchange="onMapaIndSelectChange()" style="min-width:min(260px, 100%);max-width:100%;font-size:13px;padding:6px 36px 6px 12px;border-radius:8px;border-width:1px;background-color:var(--bg-input);color:var(--text-1)"></select>
+              </div>
+
+              <!-- PÍLULAS DE ABRANGÊNCIA TERRITORIAL (REQUISITO 2 E 3) -->
+              <div class="mapa-region-pill-group" id="mapaRegionPills">
+                <button type="button" class="mrg-pill active" id="pillMapNacional" onclick="setMapTerritoryMode('nacional')" title="Visualizar todos os estados do Brasil">
+                  <i class="ti ti-world"></i> <span>Brasil</span>
+                </button>
+                <div class="mrg-dropdown-wrap">
+                  <button type="button" class="mrg-pill" id="btnMapRegiaoDrop" onclick="toggleMapRegiaoDropdown(event)" title="Visualizar por macrorregião brasileira">
+                    <i class="ti ti-layout-grid"></i> <span id="lblMapRegiao">Macrorregiões</span> <i class="ti ti-chevron-down" style="font-size:10px"></i>
+                  </button>
+                  <div class="mrg-dropdown-menu" id="menuMapRegioes" style="display:none">
+                    <div class="mrg-item" onclick="setMapTerritoryMode('regiao', 'norte')"><span>Norte</span> <small style="color:var(--text-3)">7 UFs</small></div>
+                    <div class="mrg-item" onclick="setMapTerritoryMode('regiao', 'nordeste')"><span>Nordeste</span> <small style="color:var(--text-3)">9 UFs</small></div>
+                    <div class="mrg-item" onclick="setMapTerritoryMode('regiao', 'centro-oeste')"><span>Centro-Oeste</span> <small style="color:var(--text-3)">4 UFs</small></div>
+                    <div class="mrg-item" onclick="setMapTerritoryMode('regiao', 'sudeste')"><span>Sudeste</span> <small style="color:var(--text-3)">4 UFs</small></div>
+                    <div class="mrg-item" onclick="setMapTerritoryMode('regiao', 'sul')"><span>Sul</span> <small style="color:var(--text-3)">3 UFs</small></div>
+                  </div>
+                </div>
+                <button type="button" class="mrg-pill" id="btnMapPersonalizada" onclick="abrirModalSelecaoPersonalizada()" title="Criar recorte territorial personalizado">
+                  <i class="ti ti-filter-cog"></i> <span id="lblMapPersonalizada">Seleção personalizada</span>
+                  <span class="mrg-count" id="countMapPersonalizada" style="display:none">0</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- AÇÕES DE DOWNLOAD: MAPA (PNG) E EXCEL (.XLSX) -->
+            <div class="map-actions-group">
+              <button type="button" class="btn-excel-export" id="btnMapExcelExport" onclick="pniteExportarIndicadoresExcel()" title="Baixar todos os indicadores no Excel (.xlsx)">
+                <i class="ti ti-file-spreadsheet"></i> <span>Download dos indicadores (Excel)</span>
+              </button>
+
+              <div class="map-dl-wrap">
+                <button type="button" class="map-dl-btn" id="btnMapDownloadMenu" onclick="toggleMapDownloadMenu(event)" title="Exportar visualização do mapa">
+                  <i class="ti ti-download"></i> <span>Exportar Mapa</span> <i class="ti ti-chevron-down" style="font-size:10px"></i>
+                </button>
+                <div class="map-dl-menu" id="mapDownloadMenu" style="display:none">
+                  <button type="button" class="map-dl-item" onclick="exportarMapaPnite('mapa')">
+                    <i class="ti ti-map"></i>
+                    <div>
+                      <div class="mdi-title">Download do mapa</div>
+                      <div class="mdi-sub">Exportar somente o mapa com elementos cartográficos (PNG alta resolução)</div>
+                    </div>
+                  </button>
+                  <button type="button" class="map-dl-item" onclick="exportarMapaPnite('completo')">
+                    <i class="ti ti-layout-columns"></i>
+                    <div>
+                      <div class="mdi-title">Download completo</div>
+                      <div class="mdi-sub">Exportar mapa junto com o ranking ao lado, legenda e metadados (PNG)</div>
+                    </div>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-            <!-- BOTÃO RETORNAR AOS ESTADOS (VISÍVEL NO NÍVEL MUNICIPAL) -->
-            <button type="button" class="btn-map-estados" id="btnMapEstados" onclick="mapaResetToNacional()" style="display:none;align-items:center;gap:6px;padding:6px 14px;font-size:12.5px;font-weight:600;border:none;border-radius:8px;cursor:pointer;transition:all 0.2s ease" title="Retornar ao nível dos estados (Brasil)">
-              <i class="ti ti-arrow-left"></i> <span data-i18n="btn_map_estados">Estados</span>
-            </button>
+          <!-- LINHA 2: NAVEGAÇÃO, BREADCRUMB, CAPITAIS E INTERPRETAÇÃO -->
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;border-top:1px solid var(--border);padding-top:10px">
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+              <!-- BOTÃO RETORNAR AOS ESTADOS (VISÍVEL NO NÍVEL MUNICIPAL OU REGIONAL) -->
+              <button type="button" class="btn-map-estados" id="btnMapEstados" onclick="mapaResetToNacional()" style="display:none;align-items:center;gap:6px;padding:6px 14px;font-size:12.5px;font-weight:600;border:none;border-radius:8px;cursor:pointer;transition:all 0.2s ease" title="Retornar à visão nacional ou regional">
+                <i class="ti ti-arrow-left"></i> <span id="lblBtnMapEstados" data-i18n="btn_map_estados">Estados</span>
+              </button>
 
-            <!-- BREADCRUMB TERRITORIAL -->
-            <div class="map-breadcrumb" id="mapBreadcrumb" style="display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:6px 12px;background:var(--bg-input);border-radius:8px;border:1px solid var(--border);color:var(--text-2)">
-              <button type="button" id="mapBcBrasil" style="font:inherit;font-weight:600;color:var(--text-1);cursor:pointer;background:none;border:0;padding:0" onclick="mapaResetToNacional()">Brasil</button>
-              <i class="ti ti-chevron-right" style="font-size:10px;opacity:0.6"></i>
-              <span id="mapBreadcrumbDetail" style="font-weight:600;color:var(--c-blue)">Divisão por Estados</span>
+              <!-- BREADCRUMB TERRITORIAL -->
+              <div class="map-breadcrumb" id="mapBreadcrumb" style="display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:6px 12px;background:var(--bg-input);border-radius:8px;border:1px solid var(--border);color:var(--text-2)">
+                <button type="button" id="mapBcBrasil" style="font:inherit;font-weight:600;color:var(--text-1);cursor:pointer;background:none;border:0;padding:0" onclick="setMapTerritoryMode('nacional')">Brasil</button>
+                <i class="ti ti-chevron-right" style="font-size:10px;opacity:0.6"></i>
+                <span id="mapBreadcrumbDetail" style="font-weight:600;color:var(--c-blue)">Divisão por Estados</span>
+              </div>
             </div>
 
-            <!-- BOTÃO DESTAQUE DE CAPITAIS (SWITCH TOGGLE PILL) -->
-            <button type="button" class="map-toggle-switch-btn active" id="mapToggleCapitaisBtn" onclick="toggleCapitaisHighlight()" role="switch" aria-checked="true" title="Capitais destacadas (clique para desativar)" style="display:none">
-              <span class="toggle-switch-track" id="mapToggleSwitchTrack">
-                <span class="toggle-switch-thumb" id="mapToggleSwitchThumb"></span>
-              </span>
-              <span class="toggle-switch-label" id="mapToggleCapitaisText" data-i18n="map_capitais_btn">Capitais Destacadas</span>
-            </button>
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+              <!-- BOTÃO DESTAQUE DE CAPITAIS (SWITCH TOGGLE PILL) -->
+              <button type="button" class="map-toggle-switch-btn active" id="mapToggleCapitaisBtn" onclick="toggleCapitaisHighlight()" role="switch" aria-checked="true" title="Capitais destacadas (clique para desativar)" style="display:none">
+                <span class="toggle-switch-track" id="mapToggleSwitchTrack">
+                  <span class="toggle-switch-thumb" id="mapToggleSwitchThumb"></span>
+                </span>
+                <span class="toggle-switch-label" id="mapToggleCapitaisText" data-i18n="map_capitais_btn">Capitais Destacadas</span>
+              </button>
 
-<!-- BOTÃO "i" DE INTERPRETAÇÃO DO INDICADOR -->
-            <button type="button" class="map-info-btn" id="mapInfoBtn" onclick="openMapInfoModal()" title="Como interpretar este indicador" style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;font-size:12.5px;font-weight:600;background:var(--bg-input);border:1px solid var(--border);color:var(--text-1);border-radius:8px;cursor:pointer;transition:all 0.2s ease">
-              <i class="ti ti-info-circle" style="color:var(--c-blue);font-size:15px"></i>
-              <span data-i18n="map_info_btn">Como Interpretar</span>
-            </button>
+              <!-- BOTÃO "i" DE INTERPRETAÇÃO DO INDICADOR -->
+              <button type="button" class="map-info-btn" id="mapInfoBtn" onclick="openMapInfoModal()" title="Como interpretar este indicador" style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;font-size:12.5px;font-weight:600;background:var(--bg-input);border:1px solid var(--border);color:var(--text-1);border-radius:8px;cursor:pointer;transition:all 0.2s ease">
+                <i class="ti ti-info-circle" style="color:var(--c-blue);font-size:15px"></i>
+                <span data-i18n="map_info_btn">Como Interpretar</span>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -8221,8 +8795,43 @@ window.onerror = function(msg, url, line, col, err) {
           
           <!-- LADO ESQUERDO: MAPA SVG COM BARRA DE ESCALA INTEGRADA E FONTE -->
           <div class="mapa-compact-left" style="display:flex;flex-direction:column;gap:12px">
-            <div class="mapa-card-container" style="background:var(--bg-card);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.04)">
-              <div class="mapa-svg-wrap" id="mapaSvgWrap" style="position:relative;height:500px;min-height:500px;max-height:500px;padding:8px 8px 4px 8px;overflow:hidden;display:flex;align-items:center;justify-content:center">
+            <div class="mapa-card-container" style="background:var(--bg-card);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.04);position:relative">
+              <!-- ELEMENTOS CARTOGRÁFICOS SOBREPOSTOS NO MAPA (REQUISITO 9) -->
+              <div class="carto-overlay" id="cartoOverlay">
+                <!-- Título Cartográfico -->
+                <div class="carto-title-tag" id="cartoTitleTag">
+                  <div class="ctt-main" id="cartoTitleMain">Brasil: Divisão por Estados</div>
+                  <div class="ctt-sub" id="cartoTitleSub">Limite territorial e espacial</div>
+                </div>
+
+                <!-- Orientação Norte Geográfico -->
+                <div class="carto-north-tag" id="cartoNorthTag" title="Orientação Norte Geográfico">
+                  <svg width="24" height="32" viewBox="0 0 24 32" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2 L19 22 L12 18 L5 22 Z" fill="var(--text-1)" stroke="var(--bg-card)" stroke-width="1"/>
+                    <path d="M12 2 L12 18 L5 22 Z" fill="var(--c-blue)"/>
+                    <text x="12" y="30" text-anchor="middle" font-size="9" font-weight="800" font-family="Inter,sans-serif" fill="var(--text-1)">N</text>
+                  </svg>
+                </div>
+
+                <!-- Mapa de Localização Inset (Mini Brasil / Mini Estado) -->
+                <div class="carto-inset-box" id="cartoInsetBox"></div>
+
+                <!-- Escala Gráfica e Projeção -->
+                <div class="carto-scale-box" id="cartoScaleBox">
+                  <div class="carto-scale-bars" id="cartoScaleBars">
+                    <div class="cs-seg-black"></div>
+                    <div class="cs-seg-white"></div>
+                  </div>
+                  <div class="carto-scale-lbl" id="cartoScaleLbl">
+                    <span>0</span>
+                    <span id="scaleMidVal">250</span>
+                    <span id="scaleMaxVal">500 km</span>
+                  </div>
+                  <div class="carto-scale-datum">Base cartográfica: IBGE • Projeção de Mercator</div>
+                </div>
+              </div>
+
+              <div class="mapa-svg-wrap" id="mapaSvgWrap"  style="position:relative;height:500px;min-height:500px;max-height:500px;padding:8px 8px 4px 8px;overflow:hidden;display:flex;align-items:center;justify-content:center">
                 <div class="map-tooltip" id="mapTooltip"></div>
                 <!-- SVG do Mapa injetado aqui -->
               </div>
@@ -8419,7 +9028,7 @@ window.onerror = function(msg, url, line, col, err) {
     <div class="smb-sec">
       <div class="smb-sec-title" data-i18n="settings_info_title">Informações da Versão</div>
       <div style="font-size:12px;color:var(--text-2);display:flex;flex-direction:column;gap:4px;margin-top:6px">
-        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.2.6</b></div>
+        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.2.7</b></div>
         <div><span data-i18n="settings_updated">Última Atualização:</span> <b class="pnite-date-val">06/10/2026</b> às <b class="pnite-time-val">21:05</b></div>
         <div><span data-i18n="settings_author">Responsável Técnico:</span> <b class="pnite-author-val">Equipe PNITE</b></div>
       </div>
@@ -9408,7 +10017,7 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.2.6";
+const PNITE_VERSION = "v.3.2.7";
 const PNITE_LAST_UPDATE = "06/11/2026";
 const PNITE_LAST_TIME = "12:00";
 
@@ -12449,6 +13058,312 @@ function getMunName(cod) {
   return 'Município ' + cod;
 }
 
+// =========================================================================
+// v.3.2.7 — ESTADO TERRITORIAL DO MAPA E SELEÇÃO PERSONALIZADA (REQS 1, 2, 3, 9)
+// =========================================================================
+var mapTerritoryMode = 'nacional'; // 'nacional' | 'regiao' | 'personalizada'
+var currentMapRegion = null; // 'norte' | 'nordeste' | 'centro-oeste' | 'sudeste' | 'sul'
+var currentCustomSelection = { ufs: [], munCods: [] };
+
+function getActiveMapUfs() {
+  if (mapTerritoryMode === 'regiao' && currentMapRegion && typeof REGIOES_UFS !== 'undefined' && REGIOES_UFS[currentMapRegion]) {
+    return REGIOES_UFS[currentMapRegion];
+  }
+  if (mapTerritoryMode === 'personalizada' && currentCustomSelection && currentCustomSelection.ufs && currentCustomSelection.ufs.length > 0) {
+    return currentCustomSelection.ufs;
+  }
+  return null; // Todas as 27 UFs
+}
+
+function getActiveTerritoryLabel() {
+  if (isMunicipalLevel && currentMapUf) {
+    const ufName = (DATA.estado[currentMapUf.toLowerCase()] ? DATA.estado[currentMapUf.toLowerCase()].label : currentMapUf);
+    if (currentSelectedMunCod) {
+      const munName = getMunName(currentSelectedMunCod);
+      return (munName ? munName + ' (' + currentMapUf + ')' : ufName);
+    }
+    return ufName + ' (' + currentMapUf + ')';
+  }
+  if (mapTerritoryMode === 'regiao' && currentMapRegion) {
+    const regNames = {
+      'norte': 'Norte', 'nordeste': 'Nordeste', 'centro-oeste': 'Centro-Oeste',
+      'sudeste': 'Sudeste', 'sul': 'Sul'
+    };
+    return 'Região ' + (regNames[currentMapRegion] || currentMapRegion);
+  }
+  if (mapTerritoryMode === 'personalizada' && currentCustomSelection && currentCustomSelection.ufs && currentCustomSelection.ufs.length > 0) {
+    if (currentCustomSelection.ufs.length <= 4) {
+      return 'Seleção: ' + currentCustomSelection.ufs.join(', ');
+    }
+    return 'Seleção Personalizada (' + currentCustomSelection.ufs.length + ' UFs)';
+  }
+  return 'Brasil (Nacional)';
+}
+
+function getRegionViewBox(ufs) {
+  if (!ufs || !ufs.length || typeof UF_VIEWBOXES === 'undefined') return { x: 0, y: 0, w: 760, h: 678.2 };
+  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+  ufs.forEach(function(uf) {
+    const vb = UF_VIEWBOXES[uf.toUpperCase()];
+    if (vb) {
+      minX = Math.min(minX, vb.x);
+      minY = Math.min(minY, vb.y);
+      maxX = Math.max(maxX, vb.x + vb.w);
+      maxY = Math.max(maxY, vb.y + vb.h);
+    }
+  });
+  if (!isFinite(minX)) return { x: 0, y: 0, w: 760, h: 678.2 };
+  const pad = 24;
+  minX -= pad; minY -= pad; maxX += pad; maxY += pad;
+  let w = maxX - minX, h = maxY - minY;
+  const ASPECT = 760 / 678.2;
+  if (w / h > ASPECT) {
+    const newH = w / ASPECT;
+    minY -= (newH - h) / 2;
+    h = newH;
+  } else {
+    const newW = h * ASPECT;
+    minX -= (newW - w) / 2;
+    w = newW;
+  }
+  return { x: minX, y: minY, w: w, h: h };
+}
+
+function setMapTerritoryMode(mode, regKey) {
+  mapTerritoryMode = mode;
+  isMunicipalLevel = false;
+  currentMapUf = null;
+  mapaSelectedUf = null;
+  currentSelectedMunCod = null;
+
+  const menuReg = document.getElementById('menuMapRegioes');
+  if (menuReg) menuReg.style.display = 'none';
+  const menuDl = document.getElementById('mapDownloadMenu');
+  if (menuDl) menuDl.style.display = 'none';
+
+  const pNac = document.getElementById('pillMapNacional');
+  const pReg = document.getElementById('btnMapRegiaoDrop');
+  const pPer = document.getElementById('btnMapPersonalizada');
+  if (pNac) pNac.classList.toggle('active', mode === 'nacional');
+  if (pReg) pReg.classList.toggle('active', mode === 'regiao');
+  if (pPer) pPer.classList.toggle('active', mode === 'personalizada');
+
+  const lblReg = document.getElementById('lblMapRegiao');
+  if (mode === 'regiao') {
+    currentMapRegion = regKey || 'centro-oeste';
+    const regNames = {
+      'norte': 'Norte', 'nordeste': 'Nordeste', 'centro-oeste': 'Centro-Oeste',
+      'sudeste': 'Sudeste', 'sul': 'Sul'
+    };
+    if (lblReg) lblReg.textContent = regNames[currentMapRegion] || currentMapRegion;
+  } else {
+    currentMapRegion = null;
+    if (lblReg) lblReg.textContent = 'Macrorregiões';
+  }
+
+  const btnEstados = document.getElementById('btnMapEstados');
+  if (btnEstados) btnEstados.style.display = (mode !== 'nacional') ? 'inline-flex' : 'none';
+  const lblBtnEstados = document.getElementById('lblBtnMapEstados');
+  if (lblBtnEstados) lblBtnEstados.textContent = (mode === 'regiao' || mode === 'personalizada') ? 'Brasil' : 'Estados';
+
+  const bcDetail = document.getElementById('mapBreadcrumbDetail');
+  if (bcDetail) {
+    if (mode === 'nacional') bcDetail.textContent = 'Divisão por Estados';
+    else if (mode === 'regiao') bcDetail.textContent = getActiveTerritoryLabel();
+    else if (mode === 'personalizada') bcDetail.textContent = 'Seleção Personalizada';
+  }
+
+  const mainTitle = document.getElementById('mapaMainTitle');
+  if (mainTitle) {
+    if (mode === 'nacional') mainTitle.textContent = 'Indicadores por Estado — Brasil';
+    else mainTitle.textContent = 'Indicadores por Estado — ' + getActiveTerritoryLabel();
+  }
+
+  // Sincroniza escopo global da plataforma
+  if (mode === 'regiao' && currentMapRegion) {
+    currentScope = 'regiao';
+    currentScopeKey = currentMapRegion;
+  } else if (mode === 'nacional') {
+    currentScope = 'nacional';
+    currentScopeKey = '';
+  }
+
+  renderMapa();
+}
+
+function toggleMapRegiaoDropdown(ev) {
+  if (ev) ev.stopPropagation();
+  const m = document.getElementById('menuMapRegioes');
+  if (!m) return;
+  const isVis = m.style.display !== 'none';
+  m.style.display = isVis ? 'none' : 'flex';
+  const dl = document.getElementById('mapDownloadMenu');
+  if (dl) dl.style.display = 'none';
+}
+
+function toggleMapDownloadMenu(ev) {
+  if (ev) ev.stopPropagation();
+  const m = document.getElementById('mapDownloadMenu');
+  if (!m) return;
+  const isVis = m.style.display !== 'none';
+  m.style.display = isVis ? 'none' : 'flex';
+  const reg = document.getElementById('menuMapRegioes');
+  if (reg) reg.style.display = 'none';
+}
+
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.mrg-dropdown-wrap')) {
+    const m = document.getElementById('menuMapRegioes');
+    if (m) m.style.display = 'none';
+  }
+  if (!e.target.closest('.map-dl-wrap')) {
+    const dl = document.getElementById('mapDownloadMenu');
+    if (dl) dl.style.display = 'none';
+  }
+});
+
+// =========================================================================
+// ELEMENTOS CARTOGRÁFICOS OFICIAIS (REQUISITO 9)
+// =========================================================================
+function updateMapCartographicElements() {
+  const titleMain = document.getElementById('cartoTitleMain');
+  const titleSub = document.getElementById('cartoTitleSub');
+  const activeLabel = getActiveTerritoryLabel();
+
+  if (titleMain) {
+    if (isMunicipalLevel && currentMapUf) {
+      titleMain.textContent = activeLabel;
+      if (titleSub) titleSub.textContent = 'Limite municipal e territorial';
+    } else if (mapTerritoryMode === 'regiao' && currentMapRegion) {
+      titleMain.textContent = activeLabel + ': limite regional';
+      if (titleSub) titleSub.textContent = 'Divisão territorial por estados';
+    } else if (mapTerritoryMode === 'personalizada') {
+      titleMain.textContent = 'Seleção Personalizada';
+      if (titleSub) titleSub.textContent = (currentCustomSelection.ufs ? currentCustomSelection.ufs.length : 0) + ' UFs selecionadas';
+    } else {
+      titleMain.textContent = 'Brasil: Divisão por Estados';
+      if (titleSub) titleSub.textContent = '27 Unidades da Federação';
+    }
+  }
+
+  // Inset Map (Miniatura de Localização)
+  const insetBox = document.getElementById('cartoInsetBox');
+  if (insetBox) {
+    let insetHtml = '';
+    const activeUfs = getActiveMapUfs() || (currentMapUf ? [currentMapUf] : []);
+    insetHtml += '<div class="carto-mini-card">' +
+      generateMiniBrasilSvg(activeUfs, 100, 85) +
+      '<div class="carto-mini-lbl">Brasil</div>' +
+    '</div>';
+
+    if (isMunicipalLevel && currentMapUf) {
+      const ufName = (DATA.estado[currentMapUf.toLowerCase()] ? DATA.estado[currentMapUf.toLowerCase()].label : currentMapUf);
+      insetHtml += '<div class="carto-mini-card" style="margin-top:4px">' +
+        generateMiniStateSvg(currentMapUf, currentSelectedMunCod, 100, 75) +
+        '<div class="carto-mini-lbl">' + ufName + '</div>' +
+      '</div>';
+    }
+    insetBox.innerHTML = insetHtml;
+  }
+
+  // Escala Gráfica
+  const scaleMid = document.getElementById('scaleMidVal');
+  const scaleMax = document.getElementById('scaleMaxVal');
+  if (scaleMid && scaleMax) {
+    if (isMunicipalLevel) {
+      scaleMid.textContent = '2,5';
+      scaleMax.textContent = '5 km';
+    } else if (mapTerritoryMode === 'regiao' || (currentCustomSelection && currentCustomSelection.ufs && currentCustomSelection.ufs.length < 10)) {
+      scaleMid.textContent = '100';
+      scaleMax.textContent = '200 km';
+    } else {
+      scaleMid.textContent = '250';
+      scaleMax.textContent = '500 km';
+    }
+  }
+}
+
+function generateMiniBrasilSvg(highlightUfs, w, h) {
+  w = w || 100; h = h || 85;
+  const b = { minX: -74.2, maxX: -28.6, minY: -33.95, maxY: 5.5 };
+  const k = Math.cos(-14.2 * Math.PI / 180);
+  const sx = w / ((b.maxX - b.minX) * k);
+  const sy = h / (b.maxY - b.minY);
+  const scale = Math.min(sx, sy) * 0.94;
+  const offX = (w - (b.maxX - b.minX) * k * scale) / 2;
+  const offY = (h - (b.maxY - b.minY) * scale) / 2;
+
+  const projMini = function(lon, lat) {
+    return [
+      offX + (lon - b.minX) * k * scale,
+      offY + (b.maxY - lat) * scale
+    ];
+  };
+
+  let paths = '';
+  const highList = (highlightUfs || []).map(function(u) { return String(u).toUpperCase(); });
+  if (typeof BR_GEO !== 'undefined' && BR_GEO.features) {
+    BR_GEO.features.forEach(function(f) {
+      const sigla = (f.properties.SIGLA_UF || '').toUpperCase();
+      const isHigh = highList.includes(sigla);
+      const polys = f.geometry.type === 'Polygon' ? [f.geometry.coordinates] : f.geometry.coordinates;
+      let d = '';
+      polys.forEach(function(poly) {
+        poly.forEach(function(ring) {
+          ring.forEach(function(pt, i) {
+            const xy = projMini(pt[0], pt[1]);
+            d += (i === 0 ? 'M' : 'L') + xy[0].toFixed(1) + ' ' + xy[1].toFixed(1);
+          });
+          d += 'Z';
+        });
+      });
+      const fill = isHigh ? '#2589F4' : '#e2e8f0';
+      const stroke = isHigh ? '#1d6cd0' : '#cbd5e1';
+      paths += '<path d="' + d + '" fill="' + fill + '" stroke="' + stroke + '" stroke-width="' + (isHigh ? '0.8' : '0.4') + '" />';
+    });
+  }
+
+  return '<svg width="' + w + '" height="' + h + '" viewBox="0 0 ' + w + ' ' + h + '" xmlns="http://www.w3.org/2000/svg">' +
+    paths +
+  '</svg>';
+}
+
+function generateMiniStateSvg(ufKey, highlightMunCod, w, h) {
+  w = w || 100; h = h || 75;
+  ufKey = (ufKey || 'MG').toUpperCase();
+  const vb = (typeof UF_VIEWBOXES !== 'undefined' && UF_VIEWBOXES[ufKey]) ? UF_VIEWBOXES[ufKey] : { x: 300, y: 300, w: 200, h: 200 };
+
+  let statePathD = '';
+  const proj = mapaProject();
+  if (typeof BR_GEO !== 'undefined' && BR_GEO.features) {
+    const f = BR_GEO.features.find(function(feat) { return (feat.properties.SIGLA_UF || '').toUpperCase() === ufKey; });
+    if (f) {
+      const polys = f.geometry.type === 'Polygon' ? [f.geometry.coordinates] : f.geometry.coordinates;
+      polys.forEach(function(poly) {
+        poly.forEach(function(ring) {
+          ring.forEach(function(pt, i) {
+            const xy = proj.p(pt[0], pt[1]);
+            statePathD += (i === 0 ? 'M' : 'L') + xy[0].toFixed(1) + ' ' + xy[1].toFixed(1);
+          });
+          statePathD += 'Z';
+        });
+      });
+    }
+  }
+
+  let munCircle = '';
+  if (typeof BRAZIL_CAPITAIS !== 'undefined' && BRAZIL_CAPITAIS[ufKey]) {
+    const cap = BRAZIL_CAPITAIS[ufKey];
+    munCircle = '<circle cx="' + cap.x.toFixed(1) + '" cy="' + cap.y.toFixed(1) + '" r="3" fill="#2589F4" stroke="#ffffff" stroke-width="1.2" />';
+  }
+
+  return '<svg width="' + w + '" height="' + h + '" viewBox="' + vb.x + ' ' + vb.y + ' ' + vb.w + ' ' + vb.h + '" xmlns="http://www.w3.org/2000/svg">' +
+    '<path d="' + statePathD + '" fill="#e2e8f0" stroke="#94a3b8" stroke-width="1" />' +
+    munCircle +
+  '</svg>';
+}
+
+
 function initMapa(){
   updateMapaIndSelect();
   renderMapActiveView();
@@ -12884,7 +13799,10 @@ function mapaResetToNacional(){
 }
 
 function renderMapa(){
-  currentMapTerritory = 'nacional';
+  if (mapTerritoryMode === 'nacional') {
+    currentMapTerritory = 'nacional';
+    currentMapRegion = null;
+  }
   isMunicipalLevel = false;
   mapaSelectedUf = null;
 
@@ -12893,18 +13811,22 @@ function renderMapa(){
   const dark = document.documentElement.getAttribute('data-theme') === 'dark';
   const proj = mapaProject();
 
+  const activeUfs = getActiveMapUfs();
   const units = BR_GEO.features.map(f => ({ key: f.properties.SIGLA_UF, nome: f.properties.NM_UF, feature: f }));
   const vals = {};
   let arr = [];
 
   units.forEach(u => {
+    const isIncluded = (!activeUfs || activeUfs.includes(u.key));
     const d = DATA.estado[u.key.toLowerCase()];
     const v = d ? d[sigla] : null;
-    vals[u.key] = v;
-    if (v !== null && v !== undefined) arr.push(v);
+    if (isIncluded) {
+      vals[u.key] = v;
+      if (v !== null && v !== undefined) arr.push(v);
+    }
   });
 
-  // Cache do ranking estadual
+  // Ranking estadual limitado ao recorte
   const sortedStateKeys = Object.keys(vals)
     .filter(u => vals[u] !== null && vals[u] !== undefined)
     .sort((a, b) => vals[b] - vals[a]);
@@ -12921,7 +13843,9 @@ function renderMapa(){
 
   let paths = '';
   units.forEach(u => {
-    const f = u.feature, v = vals[u.key];
+    const f = u.feature;
+    const isIncluded = (!activeUfs || activeUfs.includes(u.key));
+    const v = isIncluded ? vals[u.key] : null;
     const polys = f.geometry.type === 'Polygon' ? [f.geometry.coordinates] : f.geometry.coordinates;
     let d = '';
     polys.forEach(poly => {
@@ -12933,26 +13857,35 @@ function renderMapa(){
         d += 'Z';
       });
     });
-    const noData = (v === null || v === undefined);
-    const fill = noData ? ' fill="var(--bg-badge)"' : ' fill="' + mapaColor((v - mn) / span, dark, sigla) + '"';
-    const cls = 'uf-path' + (noData ? ' uf-nodata' : '');
-    paths += '<path class="' + cls + '" d="' + d + '"' + fill + ' data-k="' + u.key + '" data-nm="' + u.nome + '"' +
-      ' onmousemove="mapaHover(event,this)" onmouseleave="mapaOut()" onclick="zoomIntoState(\'' + u.key + '\')" onmouseenter="prefetchMunicipalGeo(\'' + u.key + '\')"></path>';
+
+    if (isIncluded) {
+      const noData = (v === null || v === undefined);
+      const fill = noData ? ' fill="var(--bg-badge)"' : ' fill="' + mapaColor((v - mn) / span, dark, sigla) + '"';
+      const cls = 'uf-path' + (noData ? ' uf-nodata' : '');
+      paths += '<path class="' + cls + '" d="' + d + '"' + fill + ' data-k="' + u.key + '" data-nm="' + u.nome + '"' +
+        ' onmousemove="mapaHover(event,this)" onmouseleave="mapaOut()" onclick="zoomIntoState(\'" + u.key + "\')" onmouseenter="prefetchMunicipalGeo(\'" + u.key + "\')"></path>';
+    } else {
+      paths += '<path class="uf-path uf-out-scope" d="' + d + '" fill="var(--bg-badge)" opacity="0.22" stroke="var(--border)" stroke-width="0.5" data-k="' + u.key + '" data-nm="' + u.nome + '" style="cursor:default"></path>';
+    }
   });
 
+  const targetVb = activeUfs ? getRegionViewBox(activeUfs) : { x: 0, y: 0, w: 760, h: 678.2 };
   const wrap = document.getElementById('mapaSvgWrap');
   if (wrap) {
     wrap.innerHTML = '<div class="map-tooltip" id="mapTooltip"></div>' +
-      '<svg viewBox="0 0 760 678.2" xmlns="http://www.w3.org/2000/svg">' +
+      '<svg viewBox="' + targetVb.x.toFixed(1) + ' ' + targetVb.y.toFixed(1) + ' ' + targetVb.w.toFixed(1) + ' ' + targetVb.h.toFixed(1) + '" xmlns="http://www.w3.org/2000/svg">' +
       '<g id="mapaStateLayer">' + paths + '</g>' +
       '<g id="mapaMunLayer" style="display:none"></g>' +
       '</svg>';
-    currentViewBox = { x: 0, y: 0, w: 760, h: 678.2 };
+    currentViewBox = targetVb;
   }
+
+  // Atualiza os elementos cartográficos sobrepostos (Norte, Escala, Inset, Título)
+  updateMapCartographicElements();
 
   // Subtítulo do indicador ativo
   const titleEl = document.getElementById('mapaActiveIndTitle');
-  if (titleEl) titleEl.textContent = ind.sigla + ' — ' + ind.nome;
+  if (titleEl) titleEl.textContent = ind.sigla + ' — ' + ind.nome + ' (' + getActiveTerritoryLabel() + ')';
 
   // Fonte e abrangência
   const srcText = document.getElementById('mapSourceText');
@@ -12962,14 +13895,19 @@ function renderMapa(){
       : '<b>Fonte:</b> SETE, 2026';
   }
 
-  // Legenda Dinâmica Nacional
-  const nacVal = DATA.nacional[sigla];
-  renderMapaLegend(ind, mn, mx, nacVal, false);
+  // Legenda Dinâmica Regional/Nacional
+  let refVal = null;
+  if (mapTerritoryMode === 'regiao' && currentMapRegion && DATA.regiao && DATA.regiao[currentMapRegion]) {
+    refVal = DATA.regiao[currentMapRegion][sigla];
+  } else {
+    refVal = DATA.nacional[sigla];
+  }
+  renderMapaLegend(ind, mn, mx, refVal, false);
 
-  // Ranking dos Estados
+  // Ranking dos Estados no recorte
   renderMapaRankNational(ind, vals);
 
-  // Card de Comparação Regional Acima do Mapa
+  // Card de Comparação
   renderMapComparisonCard(null, false);
 }
 
@@ -13107,6 +14045,7 @@ async function renderMapaMunicipal(ufKey, targetCod){
   } else {
     renderMapComparisonCard(null, true);
   }
+  updateMapCartographicElements();
 }
 
 function renderMapaLegend(ind, mn, mx, avgVal, isMunicipal){
@@ -13373,7 +14312,8 @@ function renderMapComparisonCard(targetCod, isMunicipal){
 
 function renderMapaRankNational(ind, vals){
   const titleEl = document.getElementById('mapaRankTitle');
-  if (titleEl) titleEl.textContent = 'Ranking dos Estados — ' + ind.sigla;
+  const territoryLabel = getActiveTerritoryLabel();
+  if (titleEl) titleEl.textContent = 'Ranking — ' + territoryLabel + ' (' + ind.sigla + ')';
 
   const badgeEl = document.getElementById('mapaRankBadge');
   const pairs = Object.keys(vals)
@@ -18257,6 +19197,648 @@ async function recarregarDadosExternos() {
   if (window.PNITE_API) await PNITE_API.recarregar();
 }
 
+
+// =========================================================================
+// v.3.2.7 — EXPORTAÇÃO DE MAPAS, GRÁFICOS E PLANILHAS EXCEL (REQS 1, 4, 5)
+// =========================================================================
+async function exportarMapaPnite(modo) {
+  if (typeof PNITE_AUTH !== 'undefined' && !PNITE_AUTH.podeBaixar()) {
+    pniteAuthBotao();
+    return;
+  }
+  const dlMenu = document.getElementById('mapDownloadMenu');
+  if (dlMenu) dlMenu.style.display = 'none';
+
+  const svgWrap = document.getElementById('mapaSvgWrap');
+  const svg = svgWrap ? svgWrap.querySelector('svg') : null;
+  if (!svg) {
+    alert('Visualização do mapa não encontrada.');
+    return;
+  }
+
+  const sigla = (document.getElementById('mapaIndSelect') ? document.getElementById('mapaIndSelect').value : null) || activeSystemIndicator || 'PRGM';
+  const ind = MAPA_INDS.find(i => i.sigla === sigla) || { sigla: sigla, nome: sigla, unit: '%' };
+  const territoryLabel = getActiveTerritoryLabel();
+  const dateStr = new Date().toLocaleDateString('pt-BR');
+
+  const cloneSvg = svg.cloneNode(true);
+  const origEls = svg.querySelectorAll('*'), cloneEls = cloneSvg.querySelectorAll('*');
+  for (let i = 0; i < origEls.length; i++) {
+    const cs = getComputedStyle(origEls[i]);
+    ['fill', 'stroke', 'stroke-width', 'opacity'].forEach(p => {
+      const v = cs.getPropertyValue(p);
+      if (v) cloneEls[i].setAttribute(p, v);
+    });
+  }
+  cloneSvg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+  const svgXml = new XMLSerializer().serializeToString(cloneSvg);
+  const svgBlob = new Blob([svgXml], { type: 'image/svg+xml;charset=utf-8' });
+  const svgUrl = URL.createObjectURL(svgBlob);
+
+  const img = new Image();
+  img.onload = function() {
+    const isComplete = (modo === 'completo');
+    const scale = 2;
+    const canvas = document.createElement('canvas');
+
+    if (!isComplete) {
+      canvas.width = 1600 * scale;
+      canvas.height = 1200 * scale;
+      const ctx = canvas.getContext('2d');
+      ctx.scale(scale, scale);
+
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, 1600, 1200);
+
+      ctx.fillStyle = '#0f172a';
+      ctx.font = '700 24px Inter, system-ui, sans-serif';
+      ctx.fillText('PNITE — Plataforma Nacional de Inteligência em Transporte Escolar', 60, 60);
+
+      ctx.fillStyle = '#2589F4';
+      ctx.font = '700 18px Inter, system-ui, sans-serif';
+      ctx.fillText(ind.sigla + ' — ' + ind.nome, 60, 92);
+
+      ctx.fillStyle = '#64748b';
+      ctx.font = '500 14px Inter, system-ui, sans-serif';
+      ctx.fillText('Recorte Territorial: ' + territoryLabel + '  •  Emissão: ' + dateStr, 60, 118);
+
+      const mapX = 60, mapY = 140, mapW = 1480, mapH = 920;
+      ctx.drawImage(img, mapX, mapY, mapW, mapH);
+
+      drawNorthArrowOnCanvas(ctx, 1500, 180);
+      drawInsetMapOnCanvas(ctx, 1420, 240);
+      drawScaleBarOnCanvas(ctx, 80, 1020);
+
+      ctx.fillStyle = '#64748b';
+      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.fillText('Base cartográfica: IBGE, malha simplificada; regiões geográficas: IBGE. Projeção de Mercator / SIRGAS 2000.', 60, 1145);
+      ctx.fillText('Fonte: SETE, FNDE, INEP, Censo Escolar 2026. Plataforma PNITE (v.3.2.7).', 60, 1168);
+
+    } else {
+      canvas.width = 2400 * scale;
+      canvas.height = 1400 * scale;
+      const ctx = canvas.getContext('2d');
+      ctx.scale(scale, scale);
+
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, 2400, 1400);
+
+      ctx.fillStyle = '#0f172a';
+      ctx.font = '700 28px Inter, system-ui, sans-serif';
+      ctx.fillText('PLATAFORMA NACIONAL DE INTELIGÊNCIA EM TRANSPORTE ESCOLAR — PNITE', 60, 65);
+
+      ctx.fillStyle = '#2589F4';
+      ctx.font = '700 22px Inter, system-ui, sans-serif';
+      ctx.fillText(ind.sigla + ' — ' + ind.nome, 60, 102);
+
+      ctx.fillStyle = '#eaf2fd';
+      ctx.fillRect(60, 120, 440, 34);
+      ctx.strokeStyle = '#2589F4';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(60, 120, 440, 34);
+
+      ctx.fillStyle = '#1d4ed8';
+      ctx.font = '600 14px Inter, system-ui, sans-serif';
+      ctx.fillText('Recorte Territorial: ' + territoryLabel, 75, 143);
+
+      ctx.fillStyle = '#64748b';
+      ctx.font = '500 14px Inter, system-ui, sans-serif';
+      ctx.fillText('Data de Emissão: ' + dateStr + '  •  Unidade de Medida: ' + (ind.unit || '%'), 525, 143);
+
+      const mapX = 60, mapY = 180, mapW = 1420, mapH = 1050;
+      ctx.drawImage(img, mapX, mapY, mapW, mapH);
+
+      drawNorthArrowOnCanvas(ctx, 1420, 220);
+      drawInsetMapOnCanvas(ctx, 1340, 280);
+      drawScaleBarOnCanvas(ctx, 90, 1180);
+
+      const rankX = 1530, rankY = 180, rankW = 810;
+      ctx.fillStyle = '#f8fafc';
+      ctx.fillRect(rankX, rankY, rankW, 1120);
+      ctx.strokeStyle = '#e2e8f0';
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(rankX, rankY, rankW, 1120);
+
+      ctx.fillStyle = '#0f172a';
+      ctx.font = '700 18px Inter, system-ui, sans-serif';
+      ctx.fillText('Ranking Territorial — ' + ind.sigla, rankX + 24, rankY + 36);
+
+      ctx.fillStyle = '#64748b';
+      ctx.font = '500 13px Inter, system-ui, sans-serif';
+      ctx.fillText('Posicionamento relativo no recorte: ' + territoryLabel, rankX + 24, rankY + 60);
+
+      const rankItems = document.querySelectorAll('#mapaRankList .rank-item');
+      let curY = rankY + 100;
+      ctx.font = '600 13px Inter, monospace';
+      ctx.fillStyle = '#475569';
+      ctx.fillText('Pos', rankX + 24, curY);
+      ctx.fillText('Localidade', rankX + 80, curY);
+      ctx.fillText('Valor (' + ind.unit + ')', rankX + 680, curY);
+
+      curY += 12;
+      ctx.strokeStyle = '#cbd5e1';
+      ctx.beginPath();
+      ctx.moveTo(rankX + 24, curY);
+      ctx.lineTo(rankX + rankW - 24, curY);
+      ctx.stroke();
+
+      curY += 26;
+      let count = 0;
+      rankItems.forEach(item => {
+        if (count >= 28) return;
+        const pos = item.querySelector('.rk') ? item.querySelector('.rk').textContent : (count + 1 + 'º');
+        const name = item.querySelector('.rl') ? item.querySelector('.rl').textContent : '';
+        const val = item.querySelector('.rv') ? item.querySelector('.rv').textContent : '';
+
+        ctx.fillStyle = (count % 2 === 0) ? '#ffffff' : '#f1f5f9';
+        ctx.fillRect(rankX + 20, curY - 18, rankW - 40, 26);
+
+        ctx.fillStyle = '#2589F4';
+        ctx.font = '700 13px Inter, monospace';
+        ctx.fillText(pos, rankX + 26, curY);
+
+        ctx.fillStyle = '#1e293b';
+        ctx.font = '500 13px Inter, sans-serif';
+        const truncatedName = (name.length > 40) ? (name.slice(0, 38) + '...') : name;
+        ctx.fillText(truncatedName, rankX + 80, curY);
+
+        ctx.fillStyle = '#0f172a';
+        ctx.font = '700 13px Inter, monospace';
+        ctx.fillText(val, rankX + 680, curY);
+
+        curY += 28;
+        count++;
+      });
+
+      ctx.fillStyle = '#64748b';
+      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.fillText('Base cartográfica: IBGE, malha simplificada; regiões geográficas: IBGE. Projeção de Mercator / SIRGAS 2000.', 60, 1340);
+      ctx.fillText('Fonte: SETE, FNDE, INEP, Censo Escolar 2026. Plataforma PNITE (v.3.2.7).', 60, 1362);
+    }
+
+    URL.revokeObjectURL(svgUrl);
+    canvas.toBlob(function(blob) {
+      if (!blob) return;
+      const cleanTerritorio = territoryLabel.replace(/[^a-zA-Z0-9]/g, '_');
+      const filename = (modo === 'completo' ? 'PNITE_Mapa_Completo_' : 'PNITE_Mapa_') + ind.sigla + '_' + cleanTerritorio + '.png';
+      pniteSalvarBlob(blob, filename);
+    }, 'image/png');
+  };
+  img.src = svgUrl;
+}
+
+function drawNorthArrowOnCanvas(ctx, x, y) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.fillStyle = '#ffffff';
+  ctx.strokeStyle = '#cbd5e1';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.roundRect(-16, -20, 32, 42, 6);
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.fillStyle = '#0f172a';
+  ctx.beginPath();
+  ctx.moveTo(0, -14);
+  ctx.lineTo(8, 8);
+  ctx.lineTo(0, 4);
+  ctx.lineTo(-8, 8);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.fillStyle = '#2589F4';
+  ctx.beginPath();
+  ctx.moveTo(0, -14);
+  ctx.lineTo(0, 4);
+  ctx.lineTo(-8, 8);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.fillStyle = '#0f172a';
+  ctx.font = '800 10px Inter, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('N', 0, 18);
+  ctx.restore();
+}
+
+function drawInsetMapOnCanvas(ctx, x, y) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.fillStyle = '#ffffff';
+  ctx.strokeStyle = '#cbd5e1';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.roundRect(0, 0, 110, 100, 8);
+  ctx.fill();
+  ctx.stroke();
+
+  const activeUfs = getActiveMapUfs() || (currentMapUf ? [currentMapUf] : []);
+  const miniSvgStr = generateMiniBrasilSvg(activeUfs, 100, 80);
+  const miniImg = new Image();
+  const miniBlob = new Blob([miniSvgStr], { type: 'image/svg+xml;charset=utf-8' });
+  const miniUrl = URL.createObjectURL(miniBlob);
+  miniImg.onload = function() {
+    ctx.drawImage(miniImg, 5, 5, 100, 80);
+    URL.revokeObjectURL(miniUrl);
+  };
+  miniImg.src = miniUrl;
+
+  ctx.fillStyle = '#475569';
+  ctx.font = '600 10px Inter, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('Brasil', 55, 94);
+  ctx.restore();
+}
+
+function drawScaleBarOnCanvas(ctx, x, y) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.fillStyle = '#ffffff';
+  ctx.strokeStyle = '#cbd5e1';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.roundRect(-10, -14, 175, 50, 6);
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.fillStyle = '#000000';
+  ctx.fillRect(0, 0, 75, 7);
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(75, 0, 75, 7);
+  ctx.strokeStyle = '#000000';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(0, 0, 150, 7);
+
+  ctx.fillStyle = '#0f172a';
+  ctx.font = '700 10px monospace';
+  ctx.textAlign = 'left';
+  ctx.fillText('0', 0, 20);
+  ctx.textAlign = 'center';
+  const midTxt = isMunicipalLevel ? '2,5' : (mapTerritoryMode === 'regiao' ? '100' : '250');
+  const maxTxt = isMunicipalLevel ? '5 km' : (mapTerritoryMode === 'regiao' ? '200 km' : '500 km');
+  ctx.fillText(midTxt, 75, 20);
+  ctx.textAlign = 'right';
+  ctx.fillText(maxTxt, 150, 20);
+
+  ctx.fillStyle = '#64748b';
+  ctx.font = '8px Inter, sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('Projeção de Mercator', 0, 31);
+  ctx.restore();
+}
+
+// Download dos Gráficos em Caixa Completa (Requisito 4)
+function pniteBaixarGraficoCard(btnOrEl) {
+  if (typeof PNITE_AUTH !== 'undefined' && !PNITE_AUTH.podeBaixar()) {
+    pniteAuthBotao();
+    return;
+  }
+  const card = btnOrEl.closest('.gx-chart-card, .cap-chart-box, .card') || btnOrEl.parentElement;
+  if (!card) return;
+  const canvas = card.querySelector('canvas');
+  if (!canvas) {
+    alert('Gráfico não encontrado.');
+    return;
+  }
+
+  const title = (card.querySelector('h3, .msc-title, .cap-card-title, .sec-title') || {}).textContent || 'Gráfico de Indicador';
+  const sub = (card.querySelector('p, .msc-sub') || {}).textContent || '';
+  const territoryLabel = getActiveTerritoryLabel();
+  const dateStr = new Date().toLocaleDateString('pt-BR');
+
+  const scale = 2;
+  const outW = Math.max(1200, canvas.width * scale + 100);
+  const outH = canvas.height * scale + 240;
+
+  const outCanvas = document.createElement('canvas');
+  outCanvas.width = outW;
+  outCanvas.height = outH;
+  const ctx = outCanvas.getContext('2d');
+
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, outW, outH);
+
+  ctx.fillStyle = '#0f172a';
+  ctx.font = '700 22px Inter, sans-serif';
+  ctx.fillText('PNITE — Plataforma Nacional de Inteligência em Transporte Escolar', 50, 50);
+
+  ctx.fillStyle = '#2589F4';
+  ctx.font = '700 18px Inter, sans-serif';
+  ctx.fillText(title, 50, 82);
+
+  ctx.fillStyle = '#64748b';
+  ctx.font = '500 13px Inter, sans-serif';
+  ctx.fillText('Recorte Territorial: ' + territoryLabel + (sub ? '  •  ' + sub : '') + '  •  Emissão: ' + dateStr, 50, 108);
+
+  const chartX = (outW - canvas.width * scale) / 2;
+  const chartY = 135;
+  ctx.drawImage(canvas, chartX, chartY, canvas.width * scale, canvas.height * scale);
+
+  ctx.fillStyle = '#94a3b8';
+  ctx.font = '12px Inter, sans-serif';
+  ctx.fillText('Fonte: SETE; Censo Escolar (INEP), 2026. Plataforma PNITE (v.3.2.7).', 50, outH - 30);
+
+  outCanvas.toBlob(function(blob) {
+    if (!blob) return;
+    const cleanTitle = title.replace(/[^a-zA-Z0-9]/g, '_').slice(0, 40);
+    const cleanTerr = territoryLabel.replace(/[^a-zA-Z0-9]/g, '_');
+    pniteSalvarBlob(blob, 'PNITE_Grafico_' + cleanTitle + '_' + cleanTerr + '.png');
+  }, 'image/png');
+}
+
+// Download Geral dos Indicadores em Excel (Requisito 5)
+function pniteExportarIndicadoresExcel() {
+  if (typeof PNITE_AUTH !== 'undefined' && !PNITE_AUTH.podeBaixar()) {
+    pniteAuthBotao();
+    return;
+  }
+  if (typeof XLSX === 'undefined') {
+    alert('Biblioteca de planilhas indisponível no navegador.');
+    return;
+  }
+
+  const territoryLabel = getActiveTerritoryLabel();
+  const dateStr = new Date().toLocaleDateString('pt-BR');
+  const activeUfs = getActiveMapUfs();
+  const wb = XLSX.utils.book_new();
+
+  // 1. Resumo dos Indicadores
+  const headerLines = [
+    ['PLATAFORMA NACIONAL DE INTELIGÊNCIA EM TRANSPORTE ESCOLAR — PNITE'],
+    ['Download Indicadores PNITE | Recorte Territorial: ' + territoryLabel],
+    ['Data de Emissão: ' + dateStr, 'Versão: ' + PNITE_VERSION],
+    ['Fonte Oficial: SETE, FNDE, INEP, Censo Escolar 2026'],
+    []
+  ];
+
+  const indRows = ALL_INDICATORS.map(function(ind) {
+    let valTerritorio = null;
+    if (mapTerritoryMode === 'regiao' && currentMapRegion && DATA.regiao && DATA.regiao[currentMapRegion]) {
+      valTerritorio = DATA.regiao[currentMapRegion][ind.sigla];
+    } else if (isMunicipalLevel && currentSelectedMunCod) {
+      valTerritorio = getMunVal(currentSelectedMunCod, ind.sigla);
+    } else if (isMunicipalLevel && currentMapUf && DATA.estado && DATA.estado[currentMapUf.toLowerCase()]) {
+      valTerritorio = DATA.estado[currentMapUf.toLowerCase()][ind.sigla];
+    } else {
+      valTerritorio = DATA.nacional[ind.sigla];
+    }
+
+    const nac = getNationalAverage(ind.sigla);
+    return {
+      'Código / Sigla': ind.sigla,
+      'Indicador': ind.nome,
+      'Dimensão': ind.tipo || '—',
+      ['Valor no Recorte (' + territoryLabel + ')']: (typeof valTerritorio === 'number' && isFinite(valTerritorio)) ? valTerritorio : '—',
+      'Unidade': ind.unit || ind.un || '%',
+      'Referência Nacional': (typeof nac === 'number' && isFinite(nac)) ? nac : '—',
+      'Metodologia / Fórmula': ind.formula || '—',
+      'Fonte': ind.fonte || 'SETE, 2026'
+    };
+  });
+
+  const wsResumo = XLSX.utils.aoa_to_sheet(headerLines);
+  XLSX.utils.sheet_add_json(wsResumo, indRows, { origin: 'A6' });
+  XLSX.utils.book_append_sheet(wb, wsResumo, 'Resumo Indicadores');
+
+  // 2. Detalhamento por Estado
+  const ufsList = activeUfs || Object.keys(DATA.estado).map(function(u) { return u.toUpperCase(); });
+  const estadoRows = ufsList.map(function(uf) {
+    const d = DATA.estado[uf.toLowerCase()] || {};
+    const row = {
+      'UF': uf,
+      'Estado': d.label || uf
+    };
+    ALL_INDICATORS.forEach(function(ind) {
+      const v = d[ind.sigla];
+      row[ind.sigla + ' (' + (ind.unit || '%') + ')'] = (typeof v === 'number' && isFinite(v)) ? v : '—';
+    });
+    return row;
+  });
+  const wsEstados = XLSX.utils.json_to_sheet(estadoRows);
+  XLSX.utils.book_append_sheet(wb, wsEstados, 'Detalhamento por Estado');
+
+  // 3. Detalhamento Municipal
+  if (typeof SETE_MUN !== 'undefined' && SETE_MUN.municipios) {
+    const ufIdx = SETE_MUN.cols.indexOf('uf');
+    let muns = SETE_MUN.municipios;
+    if (activeUfs) {
+      muns = muns.filter(function(m) { return activeUfs.includes(m[ufIdx]); });
+    } else if (currentMapUf) {
+      muns = muns.filter(function(m) { return m[ufIdx] === currentMapUf; });
+    }
+    const munRows = muns.slice(0, 1000).map(function(m) {
+      const cod = m[0];
+      return {
+        'Código IBGE': cod,
+        'Município': getMunName(cod),
+        'UF': m[ufIdx],
+        'Alunos Atendidos': m[3] || '—',
+        'Veículos': m[12] || '—',
+        'PRGM (%)': getMunVal(cod, 'PRGM') || '—',
+        'ATE (%)': getMunVal(cod, 'ATE') || '—',
+        'PVP (%)': getMunVal(cod, 'PVP') || '—',
+        'PVT (%)': getMunVal(cod, 'PVT') || '—',
+        'TETI (%)': getMunVal(cod, 'TETI') || '—'
+      };
+    });
+    const wsMun = XLSX.utils.json_to_sheet(munRows);
+    XLSX.utils.book_append_sheet(wb, wsMun, 'Detalhamento Municipal');
+  }
+
+  // 4. Metodologia e Fórmulas
+  const metaRows = ALL_INDICATORS.map(function(ind) {
+    return {
+      'Sigla': ind.sigla,
+      'Nome': ind.nome,
+      'Dimensão': ind.tipo || '—',
+      'Unidade': ind.unit || '%',
+      'Fórmula Matemática': ind.formula || '—',
+      'Interpretação e Parâmetros': ind.desc || ind.nome,
+      'Fonte Primária': ind.fonte || 'SETE, 2026'
+    };
+  });
+  const wsMeta = XLSX.utils.json_to_sheet(metaRows);
+  XLSX.utils.book_append_sheet(wb, wsMeta, 'Metodologia e Fórmulas');
+
+  // 5. Sobre o Relatório
+  const sobreLines = [
+    ['PNITE — Plataforma Nacional de Inteligência em Transporte Escolar'],
+    ['Versão do Sistema', PNITE_VERSION],
+    ['Recorte Territorial Exportado', territoryLabel],
+    ['Data e Hora de Extração', new Date().toLocaleString('pt-BR')],
+    ['Usuário Autenticado', (typeof PNITE_AUTH !== 'undefined' && PNITE_AUTH.email()) ? PNITE_AUTH.email() : 'Público'],
+    ['URL da Plataforma', window.location.href],
+    ['Segurança e Integridade', 'Dados certificados pelo algoritmo oficial de cálculo territorial']
+  ];
+  const wsSobre = XLSX.utils.aoa_to_sheet(sobreLines);
+  XLSX.utils.book_append_sheet(wb, wsSobre, 'Sobre o Relatório');
+
+  const cleanTerr = territoryLabel.replace(/[^a-zA-Z0-9]/g, '_');
+  const filename = 'PNITE_Indicadores_' + cleanTerr + '_' + new Date().toISOString().slice(0, 10) + '.xlsx';
+  XLSX.writeFile(wb, filename);
+}
+
+// Modal de Seleção Territorial Personalizada (Requisito 3)
+function abrirModalSelecaoPersonalizada() {
+  const modal = document.getElementById('modalSelecaoPersonalizada');
+  if (!modal) return;
+  modal.style.display = 'flex';
+  renderArvoreTerritorial();
+  atualizarContadorSelecao();
+}
+
+function fecharModalSelecaoPersonalizada() {
+  const modal = document.getElementById('modalSelecaoPersonalizada');
+  if (modal) modal.style.display = 'none';
+}
+
+function renderArvoreTerritorial() {
+  const container = document.getElementById('corpoArvoreTerritorial');
+  if (!container) return;
+
+  const regiaoLabels = {
+    'norte': 'Norte (7 UFs)',
+    'nordeste': 'Nordeste (9 UFs)',
+    'centro-oeste': 'Centro-Oeste (4 UFs)',
+    'sudeste': 'Sudeste (4 UFs)',
+    'sul': 'Sul (3 UFs)'
+  };
+
+  let html = '';
+  Object.keys(REGIOES_UFS).forEach(function(regKey) {
+    const ufs = REGIOES_UFS[regKey];
+    const regLabel = regiaoLabels[regKey] || regKey;
+
+    const allChecked = ufs.every(function(u) { return currentCustomSelection.ufs.includes(u); });
+    const someChecked = ufs.some(function(u) { return currentCustomSelection.ufs.includes(u); });
+
+    html += '<div class="mpt-region-card" data-reg="' + regKey + '">' +
+      '<div class="mpt-region-head" onclick="toggleArvoreCard(this)">' +
+        '<div class="mpt-region-head-left">' +
+          '<input type="checkbox" ' + (allChecked ? 'checked' : '') + ' onclick="event.stopPropagation(); toggleSelecaoRegiao(\'" + regKey + "\', this.checked)">' +
+          '<span>' + regLabel + '</span>' +
+        '</div>' +
+        '<i class="ti ti-chevron-down" style="font-size:14px;color:var(--text-3)"></i>' +
+      '</div>' +
+      '<div class="mpt-ufs-grid">';
+
+    ufs.forEach(function(uf) {
+      const ufName = (DATA.estado[uf.toLowerCase()] ? DATA.estado[uf.toLowerCase()].label : uf);
+      const isSel = currentCustomSelection.ufs.includes(uf);
+      html += '<label class="mpt-uf-item' + (isSel ? ' active' : '') + '" data-uf="' + uf + '">' +
+        '<input type="checkbox" value="' + uf + '" ' + (isSel ? 'checked' : '') + ' onchange="toggleSelecaoUf(\'" + uf + "\', this.checked)">' +
+        '<span>' + ufName + ' (' + uf + ')</span>' +
+      '</label>';
+    });
+
+    html += '</div></div>';
+  });
+
+  container.innerHTML = html;
+}
+
+function toggleArvoreCard(headEl) {
+  const grid = headEl.parentElement.querySelector('.mpt-ufs-grid');
+  const icon = headEl.querySelector('.ti-chevron-down, .ti-chevron-up');
+  if (grid) {
+    const isHidden = (grid.style.display === 'none');
+    grid.style.display = isHidden ? 'grid' : 'none';
+    if (icon) {
+      icon.className = isHidden ? 'ti ti-chevron-down' : 'ti ti-chevron-up';
+    }
+  }
+}
+
+function toggleSelecaoRegiao(regKey, checked) {
+  const ufs = REGIOES_UFS[regKey] || [];
+  ufs.forEach(function(u) {
+    const idx = currentCustomSelection.ufs.indexOf(u);
+    if (checked && idx === -1) {
+      currentCustomSelection.ufs.push(u);
+    } else if (!checked && idx !== -1) {
+      currentCustomSelection.ufs.splice(idx, 1);
+    }
+  });
+  renderArvoreTerritorial();
+  atualizarContadorSelecao();
+}
+
+function toggleSelecaoUf(uf, checked) {
+  const idx = currentCustomSelection.ufs.indexOf(uf);
+  if (checked && idx === -1) {
+    currentCustomSelection.ufs.push(uf);
+  } else if (!checked && idx !== -1) {
+    currentCustomSelection.ufs.splice(idx, 1);
+  }
+  renderArvoreTerritorial();
+  atualizarContadorSelecao();
+}
+
+function filtrarArvoreTerritorial(query) {
+  query = (query || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
+  document.querySelectorAll('.mpt-uf-item').forEach(function(el) {
+    const text = el.textContent.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+    el.style.display = (!query || text.includes(query)) ? 'flex' : 'none';
+  });
+}
+
+function limparSelecaoPersonalizada() {
+  currentCustomSelection = { ufs: [], munCods: [] };
+  renderArvoreTerritorial();
+  atualizarContadorSelecao();
+}
+
+function selecionarTudoPersonalizada() {
+  currentCustomSelection.ufs = [];
+  Object.keys(REGIOES_UFS).forEach(function(r) {
+    REGIOES_UFS[r].forEach(function(u) {
+      currentCustomSelection.ufs.push(u);
+    });
+  });
+  renderArvoreTerritorial();
+  atualizarContadorSelecao();
+}
+
+function atualizarContadorSelecao() {
+  const count = currentCustomSelection.ufs ? currentCustomSelection.ufs.length : 0;
+  const lbl = document.getElementById('lblContadorSelecao');
+  if (lbl) {
+    lbl.textContent = count === 0 ? 'Nenhuma localidade selecionada' : (count + ' Unidades Federativas selecionadas');
+  }
+  const badge = document.getElementById('countMapPersonalizada');
+  if (badge) {
+    badge.textContent = count;
+    badge.style.display = count > 0 ? 'inline-flex' : 'none';
+  }
+}
+
+function aplicarSelecaoPersonalizada() {
+  if (!currentCustomSelection.ufs || currentCustomSelection.ufs.length === 0) {
+    alert('Selecione pelo menos um estado ou região para aplicar a seleção personalizada.');
+    return;
+  }
+  fecharModalSelecaoPersonalizada();
+  setMapTerritoryMode('personalizada');
+}
+
+// Inicialização automática dos botões de download nos gráficos (Requisito 4)
+function setupChartDownloadButtons() {
+  document.querySelectorAll('.gx-chart-card, .cap-chart-box').forEach(card => {
+    if (card.querySelector('.btn-chart-download-box')) return;
+    const box = document.createElement('div');
+    box.className = 'btn-chart-download-box';
+    box.innerHTML = '<button type="button" class="btn-chart-download-btn" title="Baixar caixa completa do gráfico (PNG)" onclick="pniteBaixarGraficoCard(this)"><i class="ti ti-download" style="font-size:13px"></i></button>';
+    card.appendChild(box);
+  });
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', setupChartDownloadButtons);
+} else {
+  setTimeout(setupChartDownloadButtons, 800);
+}
+
 </script>
 
 <!-- WIDGET FLUTUANTE DE INFORMAÇÃO DA VERSÃO (CANTO INFERIOR DIREITO) -->
@@ -18270,12 +19852,13 @@ async function recarregarDadosExternos() {
       </div>
     </div>
     <div class="pif-body">
-      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.2.6</strong></div>
+      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.2.7</strong></div>
       <div class="pif-row"><span>Data da alteração:</span><span class="pnite-date-val">22/10/2026</span></div>
       <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">14:00</span></div>
       <div class="pif-row"><span>Responsável técnico:</span><span class="pnite-author-val">Equipe PNITE</span></div>
       <div class="pif-note">
         <i class="ti ti-check" style="color:var(--accent);margin-right:3px"></i>
+        <strong>Mapas, Rankings e Exportação de Indicadores (v.3.2.7):</strong> download dos mapas (mapa simples e composição completa com ranking), elementos cartográficos oficiais (mapa de localização auxiliar, orientação Norte, escala gráfica e projeção), divisão dos mapas e rankings por macrorregiões brasileiras, seleção territorial personalizada (árvore hierárquica por região, estado e município), download da caixa completa dos gráficos e exportação geral dos indicadores em Excel (.xlsx) com identificação territorial obrigatória.<br>
         <strong>Mapa de calor municipal (v.3.2.6):</strong> no Monitoramento SETE, com uma UF selecionada, os gráficos por município passam a ser mapas de calor (malha do IBGE, 5 faixas por quantil, legenda, valor ao passar o mouse e clique para selecionar o município).<br>
         <strong>Painéis FNDE e administração (v.3.2.5):</strong> Gestão › Caminho da Escola (contratações, detalhamento, fotografia dos repasses e ficha), Transporte › Monitoramento SETE, área de Administração (catálogo com versões, rascunho/revisão/aprovação/publicação, suspensão e restauração, fontes e cargas, qualidade e auditoria imutável); conteúdo público somente quando publicado (migrações <code>0018</code> e <code>0019</code>).<br>
         <strong>Foto e perfil (v.3.2.4):</strong> foto do usuário no cabeçalho com menu da conta (Editar perfil, Downloads, Gerenciar usuários e Sair); edição do próprio perfil (foto recortada e reduzida no navegador, nome e senha); fotos também na página de usuários (migração <code>0017_perfil_foto.sql</code>).<br>
@@ -18312,7 +19895,7 @@ async function recarregarDadosExternos() {
   </div>
   <button class="pif-btn" id="pifBtn" aria-label="Informações de Versão">
     <i class="ti ti-info-circle"></i>
-    <span class="pif-btn-label pnite-version-val">v.3.2.6</span>
+    <span class="pif-btn-label pnite-version-val">v.3.2.7</span>
   </button>
 </div>
 
@@ -18360,6 +19943,45 @@ async function recarregarDadosExternos() {
     <div class="mib-item">
       <div class="mib-item-lbl"><i class="ti ti-target"></i> <span data-i18n="map_info_limits_lbl">Limites e referências críticas:</span></div>
       <div class="mib-item-val" id="mibLimits"></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- MODAL DE SELEÇÃO TERRITORIAL PERSONALIZADA (REQUISITO 3) -->
+<div class="modal-personalizada-overlay" id="modalSelecaoPersonalizada" style="display:none" onclick="if(event.target===this)fecharModalSelecaoPersonalizada()">
+  <div class="modal-personalizada-box" role="dialog" aria-modal="true" aria-labelledby="mpbTitle">
+    <div class="mpb-header">
+      <div>
+        <div class="mpb-title" id="mpbTitle"><i class="ti ti-adjustments-horizontal" style="color:var(--c-blue)"></i> Seleção Territorial Personalizada</div>
+        <div class="mpb-sub">Combine macrorregiões, estados e municípios para criar seu recorte de análise territorial.</div>
+      </div>
+      <button type="button" class="mpb-close" onclick="fecharModalSelecaoPersonalizada()" title="Fechar modal" aria-label="Fechar"><i class="ti ti-x"></i></button>
+    </div>
+
+    <div class="mpb-toolbar">
+      <div class="mpb-search-wrap">
+        <i class="ti ti-search"></i>
+        <input type="text" class="mpb-search-input" id="buscaTerritorioPersonalizado" placeholder="Buscar estado ou município..." oninput="filtrarArvoreTerritorial(this.value)">
+      </div>
+      <div class="mpb-tools-actions">
+        <button type="button" class="mpb-btn-tool" onclick="selecionarTudoPersonalizada()"><i class="ti ti-check-double"></i> Selecionar Tudo</button>
+        <button type="button" class="mpb-btn-tool" onclick="limparSelecaoPersonalizada()"><i class="ti ti-eraser"></i> Limpar</button>
+      </div>
+    </div>
+
+    <div class="mpb-tree-body" id="corpoArvoreTerritorial">
+      <!-- Árvore hierárquica por macrorregião -> estados gerada dinamicamente -->
+    </div>
+
+    <div class="mpb-footer">
+      <div class="mpb-counter-lbl" id="lblContadorSelecao">Nenhuma localidade selecionada</div>
+      <div class="mpb-footer-actions">
+        <button type="button" class="btn" onclick="fecharModalSelecaoPersonalizada()" style="padding:7px 14px;font-size:12px">Cancelar</button>
+        <button type="button" class="btn btn-primary" onclick="aplicarSelecaoPersonalizada()" style="padding:7px 18px;font-size:12px;display:inline-flex;align-items:center;gap:6px">
+          <i class="ti ti-check"></i> Aplicar Seleção
+        </button>
+      </div>
     </div>
   </div>
 </div>
