@@ -1870,13 +1870,21 @@ body {
   font-weight: 600;
   color: var(--text-2);
 }
+.cap-slider-help {
+  margin: 0;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--text-2);
+}
 .cap-slider-inputs {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 .cap-range-val {
-  width: 28px;
+  min-width: 28px;
+  flex-shrink: 0;
+  padding: 0 4px;
   height: 24px;
   border-radius: 4px;
   border: 1px solid var(--border);
@@ -1890,6 +1898,8 @@ body {
 }
 .cap-slider-inputs input[type="range"] {
   flex: 1;
+  min-width: 0;
+  max-width: 100%;
   accent-color: #e8990a;
   cursor: pointer;
 }
@@ -2379,7 +2389,8 @@ body {
   .cap-field select,
   .cap-field input[type="search"],
   .cap-nav-btn,
-  .cap-filter-field select {
+  .cap-filter-field select,
+  .cap-slider-inputs input[type="range"] {
     min-height: 44px;
   }
 }
@@ -6706,27 +6717,37 @@ window.onerror = function(msg, url, line, col, err) {
 
               <!-- CONTROLES DESLIZANTES (SLIDERS) -->
               <div class="cap-sliders-card">
+                <p class="cap-slider-help" id="capMinimosAjuda">Pelo menos a quantidade indicada em cada filtro. Os três mínimos são combinados por município no período selecionado; 0 não restringe.</p>
                 <div class="cap-slider-item">
                   <div class="cap-slider-top">
-                    <span class="cap-slider-title">Total de CACS por município (máximo)</span>
+                    <label class="cap-slider-title" for="capCacsSlider">Mínimo de CACS por município</label>
                   </div>
                   <div class="cap-slider-inputs">
-                    <span class="cap-range-val" id="capCacsMinLbl">0</span>
-                    <input type="range" id="capCacsSlider" min="0" max="7" value="7" oninput="onCapSliderChange()" aria-label="Filtro máximo de CACS">
-                    <span class="cap-range-val" id="capCacsMaxLbl">7</span>
+                    <span class="cap-range-val" aria-hidden="true">0</span>
+                    <input type="range" id="capCacsSlider" min="0" max="0" step="1" value="0" oninput="onCapSliderChange()" aria-describedby="capMinimosAjuda">
+                    <output class="cap-range-val" id="capCacsMinLbl" for="capCacsSlider">0</output>
                   </div>
                 </div>
 
                 <div class="cap-slider-item">
                   <div class="cap-slider-top">
-                    <span class="cap-slider-title">Total de Gestores por município (máximo)</span>
+                    <label class="cap-slider-title" for="capGestoresSlider">Mínimo de Gestores por município</label>
                   </div>
                   <div class="cap-slider-inputs">
-                    <span class="cap-range-val" id="capGestoresMinLbl">0</span>
-                    <input type="range" id="capGestoresSlider" min="0" max="7" value="7" oninput="onCapSliderChange()" aria-label="Filtro máximo de Gestores">
-                    <span class="cap-range-val" id="capGestoresMaxLbl">7</span>
+                    <span class="cap-range-val" aria-hidden="true">0</span>
+                    <input type="range" id="capGestoresSlider" min="0" max="0" step="1" value="0" oninput="onCapSliderChange()" aria-describedby="capMinimosAjuda">
+                    <output class="cap-range-val" id="capGestoresMinLbl" for="capGestoresSlider">0</output>
                   </div>
                 </div>
+                <div class="cap-slider-item">
+                  <label class="cap-slider-title" for="capParticipantesSlider">Mínimo de participantes por município</label>
+                  <div class="cap-slider-inputs">
+                    <span class="cap-range-val" aria-hidden="true">0</span>
+                    <input type="range" id="capParticipantesSlider" min="0" max="0" step="1" value="0" oninput="onCapSliderChange()" aria-describedby="capMinimosAjuda">
+                    <output class="cap-range-val" id="capParticipantesMinLbl" for="capParticipantesSlider">0</output>
+                  </div>
+                </div>
+                <p class="cap-slider-help" id="capMinimosResultado" role="status" aria-live="polite"></p>
               </div>
 
             </div>
@@ -8315,7 +8336,7 @@ window.onerror = function(msg, url, line, col, err) {
     <div class="smb-sec">
       <div class="smb-sec-title" data-i18n="settings_info_title">Informações da Versão</div>
       <div style="font-size:12px;color:var(--text-2);display:flex;flex-direction:column;gap:4px;margin-top:6px">
-        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.2.8</b></div>
+        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.2.9</b></div>
         <div><span data-i18n="settings_updated">Última Atualização:</span> <b class="pnite-date-val">06/10/2026</b> às <b class="pnite-time-val">21:05</b></div>
         <div><span data-i18n="settings_author">Responsável Técnico:</span> <b class="pnite-author-val">Equipe PNITE</b></div>
       </div>
@@ -9304,9 +9325,9 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.2.8";
-const PNITE_LAST_UPDATE = "06/11/2026";
-const PNITE_LAST_TIME = "12:00";
+const PNITE_VERSION = "v.3.2.9";
+const PNITE_LAST_UPDATE = "11/11/2026";
+const PNITE_LAST_TIME = "11:02";
 
 // Escapa texto para inserção segura via innerHTML (entradas do usuário, nomes de arquivo)
 function escHtml(s) {
@@ -16526,11 +16547,14 @@ function initCapacitacaoView() {
       opt.textContent = a;
       anoSelect.appendChild(opt);
     });
-    [['capCacsSlider', 'capCacsMaxLbl', 'presentes_cacs'], ['capGestoresSlider', 'capGestoresMaxLbl', 'presentes_gestores']].forEach(([sid, lid, campo]) => {
-      const max = Math.max(0, ...d.fato.map(r => r[campo] || 0));
+    const totais = Array.from(capStatusMunicipios(d.fato, d).values());
+    [['Cacs', 'C'], ['Gestores', 'G'], ['Participantes', 'P']].forEach(([chave, campo]) => {
+      const sid = 'cap' + chave + 'Slider';
+      const lid = 'cap' + chave + 'MinLbl';
+      const max = totais.reduce((maior, m) => Math.max(maior, m[campo]), 0);
       const s = document.getElementById(sid);
-      if (s) { s.max = max; s.value = max; }
-      capSetTxt(lid, max);
+      if (s) { s.max = max; s.value = 0; }
+      capSetTxt(lid, 0);
     });
   }
   renderCapSubview();
@@ -16541,8 +16565,9 @@ function onCapFilterChange() {
 }
 
 function onCapSliderChange() {
-  capSetTxt('capCacsMaxLbl', capVal('capCacsSlider'));
-  capSetTxt('capGestoresMaxLbl', capVal('capGestoresSlider'));
+  ['Cacs', 'Gestores', 'Participantes'].forEach(chave => {
+    capSetTxt('cap' + chave + 'MinLbl', capVal('cap' + chave + 'Slider'));
+  });
   updateCapacitacaoView();
 }
 
@@ -16556,20 +16581,31 @@ function updateCapacitacaoView() {
   const selUf = capVal('capEstadoSelect');
   const selPart = capVal('capParticipouSelect');
   const selAno = capVal('capAnoSelect');
-  const maxCacs = parseInt(capVal('capCacsSlider'), 10);
-  const maxGestores = parseInt(capVal('capGestoresSlider'), 10);
+  const minCacs = Number(capVal('capCacsSlider')) || 0;
+  const minGestores = Number(capVal('capGestoresSlider')) || 0;
+  const minParticipantes = Number(capVal('capParticipantesSlider')) || 0;
 
-  const rows = d.fato.filter(r => {
+  const escopo = d.fato.filter(r => {
     if (selCap && String(r.capacitacao) !== selCap) return false;
     if (selUf && r.uf !== selUf) return false;
     if (selAno && String(r.ano) !== selAno) return false;
-    if (selPart === 'SIM' && !(r.presentes_total > 0)) return false;
-    if (selPart === 'NAO' && !(r.convidado === 1 && r.presentes_total === 0)) return false;
-    if (!Number.isNaN(maxCacs) && r.presentes_cacs > maxCacs) return false;
-    if (!Number.isNaN(maxGestores) && r.presentes_gestores > maxGestores) return false;
     return true;
   });
+  // Aplica os mínimos aos totais municipais, somando as capacitações do escopo.
+  const municipios = capStatusMunicipios(escopo, d);
+  const convidados = new Set(escopo.filter(r => r.convidado === 1).map(r => r.cod_ibge));
+  municipios.forEach((m, cod) => {
+    if (m.C < minCacs || m.G < minGestores || m.P < minParticipantes
+      || (selPart === 'SIM' && m.status !== 'sim')
+      || (selPart === 'NAO' && (!convidados.has(cod) || m.status !== 'nao'))) municipios.delete(cod);
+  });
+  const rows = escopo.filter(r => municipios.has(r.cod_ibge));
   const s = capResumo(rows);
+  // Conta cada município uma vez, mesmo quando consta em várias capacitações.
+  s.convidados = Array.from(municipios.keys()).filter(cod => convidados.has(cod)).length;
+  s.participou = Array.from(municipios.entries()).filter(([cod, m]) => convidados.has(cod) && m.status === 'sim').length;
+  s.ausente = s.convidados - s.participou;
+  capSetTxt('capMinimosResultado', capInt(municipios.size) + (municipios.size === 1 ? ' município atende aos filtros.' : ' municípios atendem aos filtros.'));
 
   capSetTxt('capValParticipantes', capInt(s.P));
   capSetTxt('capValGestores', capInt(s.G));
@@ -16582,7 +16618,7 @@ function updateCapacitacaoView() {
   capSetTxt('capValAusente', capInt(s.ausente));
 
   const caps = new Set(rows.map(r => r.capacitacao));
-  renderCapacitacaoMap('capSvgContainer', capStatusMunicipios(rows, d),
+  renderCapacitacaoMap('capSvgContainer', municipios,
     Array.from(caps).map(n => d.capPorNum.get(n).polo_cod_ibge));
 }
 
@@ -16657,7 +16693,7 @@ function renderCapacitacaoMap(containerId, statusPorCod, polosCod) {
   const cores = { sim: capCor('--cap-map-sim'), nao: capCor('--cap-map-nao'), fora: capCor('--cap-map-fora') };
 
   let svg = `<svg viewBox="0 0 ${g.W} ${g.H}" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="background:#e4eee2;border-radius:12px;" role="img" aria-label="Mapa dos municípios do Centro-Oeste por participação nas capacitações">`;
-  svg += `<g id="capBgCountries">
+  svg += `<g>
     <path d="M 0 160 L 95 190 L 115 310 L 80 430 L 30 520 L 0 540 Z" fill="#b9cdb6" stroke="#9bb198" stroke-width="1.2" opacity="0.85"/>
     <text x="35" y="360" font-family="system-ui, sans-serif" font-size="16" font-weight="800" fill="#6c8069" letter-spacing="3" transform="rotate(-30, 35, 360)">BOLÍVIA</text>
     <path d="M 50 640 L 160 580 L 220 620 L 245 720 L 50 720 Z" fill="#b9cdb6" stroke="#9bb198" stroke-width="1.2" opacity="0.85"/>
@@ -18196,12 +18232,13 @@ async function recarregarDadosExternos() {
       </div>
     </div>
     <div class="pif-body">
-      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.2.8</strong></div>
+      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.2.9</strong></div>
       <div class="pif-row"><span>Data da alteração:</span><span class="pnite-date-val">09/11/2026</span></div>
       <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">14:00</span></div>
       <div class="pif-row"><span>Responsável técnico:</span><span class="pnite-author-val">Equipe PNITE</span></div>
       <div class="pif-note">
         <i class="ti ti-check" style="color:var(--accent);margin-right:3px"></i>
+        <strong>Filtros mínimos de capacitação (v.3.2.9):</strong> mínimos combinados de CACS, gestores e participantes totais por município, com contagem municipal sem duplicidade e mapa sincronizado.<br>
         <strong>Barra lateral da capacitação (v.3.2.8):</strong> removido o quadro de identidade "Capacitações do Transporte Escolar / FNDE" do topo do menu lateral de Indicadores da Capacitação; o menu passa a começar direto pelo botão HOME.<br>
         <strong>Avaliações Likert na capacitação (v.3.2.7):</strong> nas avaliações das capacitações 6 a 16, a nota média é substituída por indicadores próprios de escala ordinal (conceito mediano, % favorável e % desfavorável), e as caixas de informação dos gráficos horizontais passam a mostrar a barra sob o cursor.<br>
         <strong>Mapa de calor municipal (v.3.2.6):</strong> no Monitoramento SETE, com uma UF selecionada, os gráficos por município passam a ser mapas de calor (malha do IBGE, 5 faixas por quantil, legenda, valor ao passar o mouse e clique para selecionar o município).<br>
@@ -18240,7 +18277,7 @@ async function recarregarDadosExternos() {
   </div>
   <button class="pif-btn" id="pifBtn" aria-label="Informações de Versão">
     <i class="ti ti-info-circle"></i>
-    <span class="pif-btn-label pnite-version-val">v.3.2.8</span>
+    <span class="pif-btn-label pnite-version-val">v.3.2.9</span>
   </button>
 </div>
 
