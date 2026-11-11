@@ -1569,80 +1569,6 @@ body {
   overflow-y: auto;
 }
 
-/* BRANDING DA CAPACITAÇÃO NA SIDEBAR */
-.cap-brand-box {
-  border: 1.5px solid var(--border-mid);
-  border-radius: 10px;
-  padding: 10px 10px;
-  background: var(--bg-page);
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.cap-brand-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.cap-bus-icon-wrap {
-  width: 40px;
-  height: 40px;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.cap-bus-svg {
-  width: 100%;
-  height: 100%;
-}
-.cap-brand-text {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.15;
-}
-.cap-bt-sub {
-  font-size: 10px;
-  font-weight: 600;
-  color: var(--text-2);
-}
-.cap-bt-main {
-  font-size: 11.5px;
-  font-weight: 800;
-  color: var(--text-1);
-  letter-spacing: -0.01em;
-}
-.cap-brand-fnde {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding-top: 6px;
-  border-top: 1px dashed var(--border);
-  font-size: 9px;
-}
-.cap-fnde-pill {
-  font-weight: 800;
-  background: #005a9c;
-  color: #fff;
-  padding: 2px 5px;
-  border-radius: 4px;
-  font-size: 9px;
-}
-.cap-fnde-title {
-  font-size: 8.5px;
-  color: var(--text-3);
-  line-height: 1.1;
-  flex: 1;
-}
-.cap-fnde-tag {
-  font-size: 8px;
-  font-weight: 700;
-  color: #d97706;
-  background: rgba(245, 158, 11, 0.12);
-  padding: 2px 4px;
-  border-radius: 3px;
-}
-
 /* MENU DE NAVEGAÇÃO VERTICAL */
 .cap-nav-menu {
   display: flex;
@@ -6598,38 +6524,8 @@ window.onerror = function(msg, url, line, col, err) {
   <div class="front-view" id="frontCapacitacao">
     <div class="cap-layout-wrap">
       
-      <!-- BARRA LATERAL DA CAPACITAÇÃO (7 BOTÕES + IDENTIDADE) -->
+      <!-- BARRA LATERAL DA CAPACITAÇÃO (7 BOTÕES) -->
       <aside class="cap-sidebar" id="capSidebar">
-        <!-- CABEÇALHO / LOGO DA CAPACITAÇÃO -->
-        <div class="cap-brand-box">
-          <div class="cap-brand-header">
-            <div class="cap-bus-icon-wrap">
-              <svg viewBox="0 0 48 48" class="cap-bus-svg" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="6" y="10" width="36" height="25" rx="5" fill="#f59e0b" stroke="#1f2937" stroke-width="2.2"/>
-                <rect x="10" y="14" width="12" height="10" rx="2" fill="#ffffff" stroke="#1f2937" stroke-width="1.8"/>
-                <rect x="26" y="14" width="12" height="10" rx="2" fill="#ffffff" stroke="#1f2937" stroke-width="1.8"/>
-                <rect x="6" y="27" width="36" height="3" fill="#1f2937"/>
-                <circle cx="14" cy="37" r="4" fill="#1f2937"/>
-                <circle cx="14" cy="37" r="1.5" fill="#e5e7eb"/>
-                <circle cx="34" cy="37" r="4" fill="#1f2937"/>
-                <circle cx="34" cy="37" r="1.5" fill="#e5e7eb"/>
-                <circle cx="10.5" cy="31" r="1.8" fill="#fbbf24"/>
-                <circle cx="37.5" cy="31" r="1.8" fill="#fbbf24"/>
-              </svg>
-            </div>
-            <div class="cap-brand-text">
-              <span class="cap-bt-sub">Capacitações do</span>
-              <span class="cap-bt-main">Transporte</span>
-              <span class="cap-bt-main">Escolar</span>
-            </div>
-          </div>
-          <div class="cap-brand-fnde">
-            <span class="cap-fnde-pill">FNDE</span>
-            <span class="cap-fnde-title">Fundo Nacional de Desenvolvimento da Educação</span>
-            <span class="cap-fnde-tag">CAPACITAÇÃO</span>
-          </div>
-        </div>
-
         <!-- MENU DE NAVEGAÇÃO VERTICAL (7 BOTÕES) -->
         <nav class="cap-nav-menu" role="navigation" aria-label="Navegação da Capacitação">
           <button type="button" class="cap-nav-btn active" id="capNavHome" onclick="switchCapView('home', this)">
@@ -8419,7 +8315,7 @@ window.onerror = function(msg, url, line, col, err) {
     <div class="smb-sec">
       <div class="smb-sec-title" data-i18n="settings_info_title">Informações da Versão</div>
       <div style="font-size:12px;color:var(--text-2);display:flex;flex-direction:column;gap:4px;margin-top:6px">
-        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.2.7</b></div>
+        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.2.8</b></div>
         <div><span data-i18n="settings_updated">Última Atualização:</span> <b class="pnite-date-val">06/10/2026</b> às <b class="pnite-time-val">21:05</b></div>
         <div><span data-i18n="settings_author">Responsável Técnico:</span> <b class="pnite-author-val">Equipe PNITE</b></div>
       </div>
@@ -9408,7 +9304,7 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.2.7";
+const PNITE_VERSION = "v.3.2.8";
 const PNITE_LAST_UPDATE = "06/11/2026";
 const PNITE_LAST_TIME = "12:00";
 
@@ -18300,12 +18196,13 @@ async function recarregarDadosExternos() {
       </div>
     </div>
     <div class="pif-body">
-      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.2.7</strong></div>
-      <div class="pif-row"><span>Data da alteração:</span><span class="pnite-date-val">22/10/2026</span></div>
+      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.2.8</strong></div>
+      <div class="pif-row"><span>Data da alteração:</span><span class="pnite-date-val">09/11/2026</span></div>
       <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">14:00</span></div>
       <div class="pif-row"><span>Responsável técnico:</span><span class="pnite-author-val">Equipe PNITE</span></div>
       <div class="pif-note">
         <i class="ti ti-check" style="color:var(--accent);margin-right:3px"></i>
+        <strong>Barra lateral da capacitação (v.3.2.8):</strong> removido o quadro de identidade "Capacitações do Transporte Escolar / FNDE" do topo do menu lateral de Indicadores da Capacitação; o menu passa a começar direto pelo botão HOME.<br>
         <strong>Avaliações Likert na capacitação (v.3.2.7):</strong> nas avaliações das capacitações 6 a 16, a nota média é substituída por indicadores próprios de escala ordinal (conceito mediano, % favorável e % desfavorável), e as caixas de informação dos gráficos horizontais passam a mostrar a barra sob o cursor.<br>
         <strong>Mapa de calor municipal (v.3.2.6):</strong> no Monitoramento SETE, com uma UF selecionada, os gráficos por município passam a ser mapas de calor (malha do IBGE, 5 faixas por quantil, legenda, valor ao passar o mouse e clique para selecionar o município).<br>
         <strong>Painéis FNDE e administração (v.3.2.5):</strong> Gestão › Caminho da Escola (contratações, detalhamento, fotografia dos repasses e ficha), Transporte › Monitoramento SETE, área de Administração (catálogo com versões, rascunho/revisão/aprovação/publicação, suspensão e restauração, fontes e cargas, qualidade e auditoria imutável); conteúdo público somente quando publicado (migrações <code>0018</code> e <code>0019</code>).<br>
@@ -18343,7 +18240,7 @@ async function recarregarDadosExternos() {
   </div>
   <button class="pif-btn" id="pifBtn" aria-label="Informações de Versão">
     <i class="ti ti-info-circle"></i>
-    <span class="pif-btn-label pnite-version-val">v.3.2.7</span>
+    <span class="pif-btn-label pnite-version-val">v.3.2.8</span>
   </button>
 </div>
 
