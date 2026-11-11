@@ -2230,6 +2230,14 @@ body {
   height: 380px;
 }
 /* Altura acompanha a quantidade de perguntas; rótulos completos também no celular. */
+.cap-chart-box.cap-a616-chart {
+  height: max(380px, calc(var(--cap-a616-perguntas, 1) * 64px + 80px));
+}
+@media (max-width: 768px) {
+  .cap-chart-box.cap-a616-chart {
+    height: max(460px, calc(var(--cap-a616-perguntas, 1) * 144px + 100px));
+  }
+}
 .cap-chart-box.cap-a15-chart {
   height: max(380px, calc(var(--cap-a15-perguntas, 1) * 56px + 80px));
 }
@@ -7063,8 +7071,8 @@ window.onerror = function(msg, url, line, col, err) {
           <div class="cap-kpi-grid" id="capA616Kpis"></div>
           <div class="cap-panel">
             <h3 class="cap-panel-title">Distribuição dos conceitos por critério</h3>
-            <p class="cap-panel-sub">Barras 100% empilhadas da escala Likert, de Muito ruim a Excelente.</p>
-            <div class="cap-chart-box"><canvas id="capChartA616Dist" role="img" aria-label="Gráfico de distribuição dos conceitos por critério"></canvas></div>
+            <p class="cap-panel-sub">Barras 100% empilhadas, de Muito ruim a Excelente, com percentual e quantidade de respostas. Segmentos estreitos têm o rótulo abaixo da barra.</p>
+            <div class="cap-chart-box cap-a616-chart" id="capA616DistBox"><canvas id="capChartA616Dist" role="img" aria-label="Gráfico de distribuição dos conceitos por critério"></canvas></div>
           </div>
           <div class="cap-grid-2">
             <div class="cap-panel">
@@ -8409,7 +8417,7 @@ window.onerror = function(msg, url, line, col, err) {
     <div class="smb-sec">
       <div class="smb-sec-title" data-i18n="settings_info_title">Informações da Versão</div>
       <div style="font-size:12px;color:var(--text-2);display:flex;flex-direction:column;gap:4px;margin-top:6px">
-        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.3.3</b></div>
+        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.3.4</b></div>
         <div><span data-i18n="settings_updated">Última Atualização:</span> <b class="pnite-date-val">06/10/2026</b> às <b class="pnite-time-val">21:05</b></div>
         <div><span data-i18n="settings_author">Responsável Técnico:</span> <b class="pnite-author-val">Equipe PNITE</b></div>
       </div>
@@ -9398,9 +9406,9 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.3.3";
+const PNITE_VERSION = "v.3.3.4";
 const PNITE_LAST_UPDATE = "11/11/2026";
-const PNITE_LAST_TIME = "15:49";
+const PNITE_LAST_TIME = "16:55";
 
 // Escapa texto para inserção segura via innerHTML (entradas do usuário, nomes de arquivo)
 function escHtml(s) {
@@ -17130,9 +17138,9 @@ function capBlocoAval15(id, itens, t) {
   return { cont, categorias, cores, rotulo, nota };
 }
 
-// Rótulos locais deste gráfico: números da mesma série usada no tooltip e na tabela.
-const CAP_A15_ROTULOS = {
-  id: 'capA15Rotulos',
+// Rótulos dos gráficos de distribuição: números da mesma série usada no tooltip e na tabela.
+const CAP_ROTULOS_DISTRIBUICAO = {
+  id: 'capRotulosDistribuicao',
   afterDatasetsDraw(chart) {
     const { ctx, chartArea } = chart;
     if (!chartArea || !chart.data.labels.length) return;
@@ -17224,7 +17232,7 @@ function capRenderAval15() {
   };
   capGrafico('capChartA15Perguntas', {
     type: 'bar',
-    plugins: [CAP_A15_ROTULOS],
+    plugins: [CAP_ROTULOS_DISTRIBUICAO],
     data: { labels: cont.map(c => capQuebra(c.rotulo, 44)), datasets: capDatasetsPercentuais(cont, categorias, cores, t).map(s => ({ ...s, maxBarThickness: 26 })) },
     options: opcoes
   });
@@ -17329,9 +17337,13 @@ function capRenderAval616() {
     ns.forEach(n => { c[CAP_ESCALA_NOTA[n.nota - 1]] += 1; });
     return { rotulo: p.pergunta, cont: c, total: ns.length };
   });
+  document.getElementById('capA616DistBox').style.setProperty('--cap-a616-perguntas', String(cont.length));
+  const descricaoConceitos = cont.map(c => c.rotulo + ': ' + CAP_ESCALA_NOTA.map(cat => cat + ' ' + capPct(c.cont[cat], c.total) + ' (' + capInt(c.cont[cat]) + ')').join(', ')).join('; ');
+  document.getElementById('capChartA616Dist').setAttribute('aria-label', 'Distribuição dos conceitos por critério. ' + descricaoConceitos);
   capGrafico('capChartA616Dist', {
     type: 'bar',
-    data: { labels: cont.map(c => c.rotulo), datasets: capDatasetsPercentuais(cont, CAP_ESCALA_NOTA, t.lk, t) },
+    plugins: [CAP_ROTULOS_DISTRIBUICAO],
+    data: { labels: cont.map(c => c.rotulo), datasets: capDatasetsPercentuais(cont, CAP_ESCALA_NOTA, t.lk, t).map(s => ({ ...s, maxBarThickness: 26 })) },
     options: capOpcoesGrafico(t, { horizontal: true, empilhado: true, pct: true, max: 100, tooltipLabel: capTooltipPercentual })
   });
 
@@ -18455,12 +18467,13 @@ async function recarregarDadosExternos() {
       </div>
     </div>
     <div class="pif-body">
-      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.3.3</strong></div>
+      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.3.4</strong></div>
       <div class="pif-row"><span>Data da alteração:</span><span class="pnite-date-val">09/11/2026</span></div>
       <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">14:00</span></div>
       <div class="pif-row"><span>Responsável técnico:</span><span class="pnite-author-val">Equipe PNITE</span></div>
       <div class="pif-note">
         <i class="ti ti-check" style="color:var(--accent);margin-right:3px"></i>
+        <strong>Rótulos nas avaliações 6 a 16 (v.3.3.4):</strong> distribuição dos conceitos por critério com percentual e quantidade de respostas visíveis nas barras e identificação dos segmentos estreitos.<br>
         <strong>Rótulos nas barras (v.3.3.3):</strong> gráfico das avaliações 1 a 5 com percentuais e quantidades de respostas visíveis, incluindo identificação dos segmentos estreitos.<br>
         <strong>Organização das avaliações 1 a 5 (v.3.3.2):</strong> avaliação com gráfico único filtrável por bloco; estatísticas reúne tabelas de perguntas, comparação, divulgação e respostas abertas, preservando os registros.<br>
         <strong>Mapa por polo frequentado (v.3.3.1):</strong> nova visualização com cor por sede de polo e listras para municípios que participaram em mais de uma sede, respeitando os filtros ativos.<br>
@@ -18503,7 +18516,7 @@ async function recarregarDadosExternos() {
   </div>
   <button class="pif-btn" id="pifBtn" aria-label="Informações de Versão">
     <i class="ti ti-info-circle"></i>
-    <span class="pif-btn-label pnite-version-val">v.3.3.3</span>
+    <span class="pif-btn-label pnite-version-val">v.3.3.4</span>
   </button>
 </div>
 
