@@ -2231,11 +2231,11 @@ body {
 }
 /* Altura acompanha a quantidade de perguntas; rótulos completos também no celular. */
 .cap-chart-box.cap-a15-chart {
-  height: max(380px, calc(var(--cap-a15-perguntas, 1) * 40px));
+  height: max(380px, calc(var(--cap-a15-perguntas, 1) * 56px + 80px));
 }
 @media (max-width: 768px) {
   .cap-chart-box.cap-a15-chart {
-    height: max(460px, calc(var(--cap-a15-perguntas, 1) * 72px));
+    height: max(460px, calc(var(--cap-a15-perguntas, 1) * 104px + 80px));
   }
 }
 .cap-note {
@@ -6988,7 +6988,7 @@ window.onerror = function(msg, url, line, col, err) {
           <div class="cap-kpi-grid" id="capA15Kpis"></div>
           <div class="cap-panel">
             <h3 class="cap-panel-title" id="capA15ChartTitulo">Distribuição das respostas por pergunta</h3>
-            <p class="cap-panel-sub" id="capA15ChartSub">Barras 100% empilhadas; passe o cursor para ver percentuais e quantidades.</p>
+            <p class="cap-panel-sub" id="capA15ChartSub">Barras 100% empilhadas com percentual e quantidade de respostas. Segmentos estreitos têm o rótulo abaixo da barra.</p>
             <div class="cap-empty" id="capA15Vazio" hidden>Sem respostas para os filtros selecionados.</div>
             <div class="cap-chart-box cap-a15-chart" id="capA15ChartBox"><canvas id="capChartA15Perguntas" role="img" aria-label="Gráfico de distribuição das respostas por pergunta"></canvas></div>
           </div>
@@ -8409,7 +8409,7 @@ window.onerror = function(msg, url, line, col, err) {
     <div class="smb-sec">
       <div class="smb-sec-title" data-i18n="settings_info_title">Informações da Versão</div>
       <div style="font-size:12px;color:var(--text-2);display:flex;flex-direction:column;gap:4px;margin-top:6px">
-        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.3.2</b></div>
+        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.3.3</b></div>
         <div><span data-i18n="settings_updated">Última Atualização:</span> <b class="pnite-date-val">06/10/2026</b> às <b class="pnite-time-val">21:05</b></div>
         <div><span data-i18n="settings_author">Responsável Técnico:</span> <b class="pnite-author-val">Equipe PNITE</b></div>
       </div>
@@ -9398,9 +9398,9 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.3.2";
+const PNITE_VERSION = "v.3.3.3";
 const PNITE_LAST_UPDATE = "11/11/2026";
-const PNITE_LAST_TIME = "11:56";
+const PNITE_LAST_TIME = "15:49";
 
 // Escapa texto para inserção segura via innerHTML (entradas do usuário, nomes de arquivo)
 function escHtml(s) {
@@ -17130,6 +17130,74 @@ function capBlocoAval15(id, itens, t) {
   return { cont, categorias, cores, rotulo, nota };
 }
 
+// Rótulos locais deste gráfico: números da mesma série usada no tooltip e na tabela.
+const CAP_A15_ROTULOS = {
+  id: 'capA15Rotulos',
+  afterDatasetsDraw(chart) {
+    const { ctx, chartArea } = chart;
+    if (!chartArea || !chart.data.labels.length) return;
+    const luminancia = hex => {
+      const rgb = hex.match(/[a-f0-9]{2}/gi).map(v => parseInt(v, 16) / 255)
+        .map(v => v <= 0.04045 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4));
+      return rgb[0] * 0.2126 + rgb[1] * 0.7152 + rgb[2] * 0.0722;
+    };
+    const escuro = '#111827';
+    const lumEscuro = luminancia(escuro);
+    ctx.save();
+    ctx.font = '600 11px ' + chart.options.font.family;
+    ctx.beginPath();
+    ctx.rect(chartArea.left, chartArea.top, chartArea.width, chartArea.height);
+    ctx.clip();
+    chart.data.labels.forEach((_, linha) => {
+      const estreitos = [];
+      let barraY = null;
+      let meiaAltura = 0;
+      chart.data.datasets.forEach((serie, indice) => {
+        if (!chart.isDatasetVisible(indice)) return;
+        const n = serie.contagens[linha];
+        const barra = chart.getDatasetMeta(indice).data[linha];
+        if (!barra || !n) return;
+        const pct = capDec(serie.data[linha], 1) + '%';
+        const quantidade = '(' + capInt(n) + ')';
+        const rotulo = pct + ' ' + quantidade;
+        const largura = Math.abs(barra.x - barra.base);
+        barraY = barra.y;
+        meiaAltura = Math.max(meiaAltura, barra.height / 2);
+        const cor = serie.backgroundColor;
+        const lum = luminancia(cor);
+        ctx.fillStyle = (lum + 0.05) / (lumEscuro + 0.05) >= 1.05 / (lum + 0.05) ? escuro : '#ffffff';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        const x = (barra.x + barra.base) / 2;
+        if (largura >= ctx.measureText(rotulo).width + 10) {
+          ctx.fillText(rotulo, x, barra.y);
+        } else if (largura >= Math.max(ctx.measureText(pct).width, ctx.measureText(quantidade).width) + 8 && barra.height >= 24) {
+          ctx.fillText(pct, x, barra.y - 6);
+          ctx.fillText(quantidade, x, barra.y + 6);
+        } else {
+          estreitos.push({ texto: serie.label + ': ' + rotulo, cor });
+        }
+      });
+      let x = chartArea.left;
+      let y = barraY + meiaAltura + 5;
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'top';
+      ctx.font = '11px ' + chart.options.font.family;
+      estreitos.forEach(item => {
+        const largura = ctx.measureText(item.texto).width + 13;
+        if (x > chartArea.left && x + largura > chartArea.right) { x = chartArea.left; y += 13; }
+        ctx.fillStyle = item.cor;
+        ctx.fillRect(x, y + 2, 7, 7);
+        ctx.fillStyle = chart.options.scales.x.ticks.color;
+        ctx.fillText(item.texto, x + 11, y);
+        x += largura + 14;
+      });
+      ctx.font = '600 11px ' + chart.options.font.family;
+    });
+    ctx.restore();
+  }
+};
+
 function capRenderAval15() {
   const t = capTema();
   const { resp, itens } = capFiltroAval15('capA15Cap', 'capA15Pub');
@@ -17144,8 +17212,9 @@ function capRenderAval15() {
   ]);
   const { cont, categorias, cores, rotulo, nota } = capBlocoAval15('capA15Bloco', itens, t);
   capSetTxt('capA15ChartTitulo', 'Distribuição das respostas — ' + rotulo);
-  capSetTxt('capA15ChartSub', 'Barras 100% empilhadas; passe o cursor para ver percentuais e quantidades.' + nota);
-  document.getElementById('capChartA15Perguntas').setAttribute('aria-label', 'Distribuição das respostas — ' + rotulo);
+  capSetTxt('capA15ChartSub', 'Barras 100% empilhadas com percentual e quantidade de respostas. Segmentos estreitos têm o rótulo abaixo da barra.' + nota);
+  const descricaoRespostas = cont.map(c => c.rotulo + ': ' + categorias.map(cat => cat + ' ' + capPct(c.cont[cat], c.total) + ' (' + capInt(c.cont[cat]) + ')').join(', ')).join('; ');
+  document.getElementById('capChartA15Perguntas').setAttribute('aria-label', 'Distribuição das respostas — ' + rotulo + '. ' + descricaoRespostas);
   document.getElementById('capA15Vazio').hidden = cont.length > 0;
   document.getElementById('capA15ChartBox').hidden = !cont.length;
   document.getElementById('capA15ChartBox').style.setProperty('--cap-a15-perguntas', String(cont.length));
@@ -17155,7 +17224,8 @@ function capRenderAval15() {
   };
   capGrafico('capChartA15Perguntas', {
     type: 'bar',
-    data: { labels: cont.map(c => capQuebra(c.rotulo, 44)), datasets: capDatasetsPercentuais(cont, categorias, cores, t) },
+    plugins: [CAP_A15_ROTULOS],
+    data: { labels: cont.map(c => capQuebra(c.rotulo, 44)), datasets: capDatasetsPercentuais(cont, categorias, cores, t).map(s => ({ ...s, maxBarThickness: 26 })) },
     options: opcoes
   });
 
@@ -18385,12 +18455,13 @@ async function recarregarDadosExternos() {
       </div>
     </div>
     <div class="pif-body">
-      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.3.2</strong></div>
+      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.3.3</strong></div>
       <div class="pif-row"><span>Data da alteração:</span><span class="pnite-date-val">09/11/2026</span></div>
       <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">14:00</span></div>
       <div class="pif-row"><span>Responsável técnico:</span><span class="pnite-author-val">Equipe PNITE</span></div>
       <div class="pif-note">
         <i class="ti ti-check" style="color:var(--accent);margin-right:3px"></i>
+        <strong>Rótulos nas barras (v.3.3.3):</strong> gráfico das avaliações 1 a 5 com percentuais e quantidades de respostas visíveis, incluindo identificação dos segmentos estreitos.<br>
         <strong>Organização das avaliações 1 a 5 (v.3.3.2):</strong> avaliação com gráfico único filtrável por bloco; estatísticas reúne tabelas de perguntas, comparação, divulgação e respostas abertas, preservando os registros.<br>
         <strong>Mapa por polo frequentado (v.3.3.1):</strong> nova visualização com cor por sede de polo e listras para municípios que participaram em mais de uma sede, respeitando os filtros ativos.<br>
         <strong>Filtros mínimos de capacitação (v.3.2.9):</strong> mínimos combinados de CACS, gestores e participantes totais por município, com contagem municipal sem duplicidade e mapa sincronizado.<br>
@@ -18432,7 +18503,7 @@ async function recarregarDadosExternos() {
   </div>
   <button class="pif-btn" id="pifBtn" aria-label="Informações de Versão">
     <i class="ti ti-info-circle"></i>
-    <span class="pif-btn-label pnite-version-val">v.3.3.2</span>
+    <span class="pif-btn-label pnite-version-val">v.3.3.3</span>
   </button>
 </div>
 
