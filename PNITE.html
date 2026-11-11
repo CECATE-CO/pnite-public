@@ -2229,6 +2229,15 @@ body {
 .cap-chart-box.cap-chart-tall {
   height: 380px;
 }
+/* Altura acompanha a quantidade de perguntas; rótulos completos também no celular. */
+.cap-chart-box.cap-a15-chart {
+  height: max(380px, calc(var(--cap-a15-perguntas, 1) * 40px));
+}
+@media (max-width: 768px) {
+  .cap-chart-box.cap-a15-chart {
+    height: max(460px, calc(var(--cap-a15-perguntas, 1) * 72px));
+  }
+}
 .cap-note {
   font-size: 11.5px;
   color: var(--text-3);
@@ -6960,10 +6969,10 @@ window.onerror = function(msg, url, line, col, err) {
           <header class="cap-page-head">
             <h2 id="capA15Titulo">Avaliação das Capacitações 1ª a 5ª</h2>
             <div class="cap-home-title-bar"></div>
-            <p>Respostas ao formulário de avaliação das cinco primeiras capacitações: aspectos gerais, resultados dos módulos, SETE e ensino a distância.</p>
+            <p>Explore os aspectos gerais, cada módulo, o SETE e o ensino a distância no mesmo gráfico, selecionando o bloco de perguntas.</p>
           </header>
           <div class="cap-toolbar" role="group" aria-label="Filtros da avaliação 1 a 5">
-            <div class="cap-field cap-field-wide">
+            <div class="cap-field">
               <label for="capA15Cap">Capacitação</label>
               <select id="capA15Cap" data-cap-filter></select>
             </div>
@@ -6971,34 +6980,17 @@ window.onerror = function(msg, url, line, col, err) {
               <label for="capA15Pub">Público</label>
               <select id="capA15Pub" data-cap-filter></select>
             </div>
+            <div class="cap-field cap-field-wide">
+              <label for="capA15Bloco">Bloco de perguntas</label>
+              <select id="capA15Bloco" data-cap-filter></select>
+            </div>
           </div>
           <div class="cap-kpi-grid" id="capA15Kpis"></div>
           <div class="cap-panel">
-            <h3 class="cap-panel-title">Avaliação dos aspectos gerais</h3>
-            <p class="cap-panel-sub">Percentual de respondentes em cada conceito.</p>
-            <div id="capA15Gerais"></div>
-          </div>
-          <div class="cap-panel">
-            <h3 class="cap-panel-title">Resultados dos módulos</h3>
-            <p class="cap-panel-sub">Percentual de respostas Sim, Em parte e Não por módulo.</p>
-            <div id="capA15Modulos"></div>
-          </div>
-          <div class="cap-panel">
-            <h3 class="cap-panel-title">Perguntas sobre o SETE e o ensino a distância (EAD)</h3>
-            <p class="cap-panel-sub">O bloco SETE foi aplicado a partir da 3ª capacitação.</p>
-            <div id="capA15SeteEad"></div>
-          </div>
-          <div class="cap-grid-2">
-            <div class="cap-panel">
-              <h3 class="cap-panel-title">Como ficou sabendo da capacitação?</h3>
-              <p class="cap-panel-sub">Pergunta de múltipla escolha (aplicada da 3ª à 5ª); percentual sobre os respondentes.</p>
-              <div id="capA15Canais"></div>
-            </div>
-            <div class="cap-panel">
-              <h3 class="cap-panel-title">Sugestões e comentários dos participantes</h3>
-              <p class="cap-panel-sub" id="capA15SugSub"></p>
-              <div class="cap-table-wrap" id="capA15Sugestoes"></div>
-            </div>
+            <h3 class="cap-panel-title" id="capA15ChartTitulo">Distribuição das respostas por pergunta</h3>
+            <p class="cap-panel-sub" id="capA15ChartSub">Barras 100% empilhadas; passe o cursor para ver percentuais e quantidades.</p>
+            <div class="cap-empty" id="capA15Vazio" hidden>Sem respostas para os filtros selecionados.</div>
+            <div class="cap-chart-box cap-a15-chart" id="capA15ChartBox"><canvas id="capChartA15Perguntas" role="img" aria-label="Gráfico de distribuição das respostas por pergunta"></canvas></div>
           </div>
         </section>
 
@@ -7007,7 +6999,7 @@ window.onerror = function(msg, url, line, col, err) {
           <header class="cap-page-head">
             <h2 id="capS15Titulo">Estatísticas das Avaliações 1ª a 5ª</h2>
             <div class="cap-home-title-bar"></div>
-            <p>Distribuição percentual das respostas por pergunta e comparação entre as capacitações.</p>
+            <p>Dados detalhados das perguntas, comparação entre capacitações, canais de divulgação e respostas abertas.</p>
           </header>
           <div class="cap-toolbar" role="group" aria-label="Filtros das estatísticas 1 a 5">
             <div class="cap-field">
@@ -7024,14 +7016,26 @@ window.onerror = function(msg, url, line, col, err) {
             </div>
           </div>
           <div class="cap-panel">
-            <h3 class="cap-panel-title" id="capS15ChartTitulo">Distribuição das respostas por pergunta</h3>
-            <p class="cap-panel-sub">Barras 100% empilhadas; passe o cursor para ver percentuais e quantidades.</p>
-            <div class="cap-chart-box cap-chart-tall"><canvas id="capChartS15Perguntas" role="img" aria-label="Gráfico de distribuição das respostas por pergunta"></canvas></div>
+            <h3 class="cap-panel-title" id="capS15TabelaTitulo">Dados das perguntas</h3>
+            <p class="cap-panel-sub" id="capS15TabelaSub">Percentuais por categoria e quantidade de respostas no bloco selecionado.</p>
+            <div id="capS15Perguntas"></div>
+          </div>
+          <div class="cap-grid-2">
+            <div class="cap-panel">
+              <h3 class="cap-panel-title">Satisfação por capacitação</h3>
+              <p class="cap-panel-sub">% de “Ótimo” nos aspectos gerais e % de “Sim” nos blocos Módulos, SETE e EAD.</p>
+              <div class="cap-chart-box"><canvas id="capChartS15Caps" role="img" aria-label="Gráfico de satisfação por capacitação"></canvas></div>
+            </div>
+            <div class="cap-panel">
+              <h3 class="cap-panel-title">Como ficou sabendo da capacitação?</h3>
+              <p class="cap-panel-sub">Pergunta de múltipla escolha (aplicada da 3ª à 5ª); percentual sobre os respondentes.</p>
+              <div id="capS15Canais"></div>
+            </div>
           </div>
           <div class="cap-panel">
-            <h3 class="cap-panel-title">Satisfação por capacitação</h3>
-            <p class="cap-panel-sub">% de “Ótimo” nos aspectos gerais e % de “Sim” nos blocos Módulos, SETE e EAD.</p>
-            <div class="cap-chart-box"><canvas id="capChartS15Caps" role="img" aria-label="Gráfico de satisfação por capacitação"></canvas></div>
+            <h3 class="cap-panel-title">Sugestões e comentários dos participantes</h3>
+            <p class="cap-panel-sub" id="capS15SugSub"></p>
+            <div class="cap-table-wrap" id="capS15Sugestoes"></div>
           </div>
         </section>
 
@@ -8405,7 +8409,7 @@ window.onerror = function(msg, url, line, col, err) {
     <div class="smb-sec">
       <div class="smb-sec-title" data-i18n="settings_info_title">Informações da Versão</div>
       <div style="font-size:12px;color:var(--text-2);display:flex;flex-direction:column;gap:4px;margin-top:6px">
-        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.3.1</b></div>
+        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.3.2</b></div>
         <div><span data-i18n="settings_updated">Última Atualização:</span> <b class="pnite-date-val">06/10/2026</b> às <b class="pnite-time-val">21:05</b></div>
         <div><span data-i18n="settings_author">Responsável Técnico:</span> <b class="pnite-author-val">Equipe PNITE</b></div>
       </div>
@@ -9394,9 +9398,9 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.3.1";
+const PNITE_VERSION = "v.3.3.2";
 const PNITE_LAST_UPDATE = "11/11/2026";
-const PNITE_LAST_TIME = "11:22";
+const PNITE_LAST_TIME = "11:56";
 
 // Escapa texto para inserção segura via innerHTML (entradas do usuário, nomes de arquivo)
 function escHtml(s) {
@@ -17103,6 +17107,29 @@ function capTabelaLikert(id, linhas, categorias, cores) {
   el.innerHTML = legenda + '<div class="cap-table-wrap">' + capTabelaHtml([{ t: 'Pergunta' }, { t: 'Distribuição' }].concat(categorias.map(c => ({ t: c, num: 1 })), [{ t: 'Respostas', num: 1 }]), corpo) + '</div>';
 }
 
+// Uma única seleção de blocos mantém gráfico e tabela com as mesmas categorias e contagens.
+function capBlocoAval15(id, itens, t) {
+  const d = capDados();
+  const blocoSel = document.getElementById(id);
+  if (!blocoSel.options.length) {
+    const subgrupos = Array.from(new Set(d.itens15.filter(i => i.bloco === 'Módulos').map(i => i.subgrupo))).sort((a, b) => a.localeCompare(b, 'pt-BR'));
+    capPreencherSelect(id, [{ v: 'AG', t: 'Aspectos gerais da capacitação' }]
+      .concat(subgrupos.map(s => ({ v: 'M|' + s, t: s })), [{ v: 'SETE', t: 'Sistema Eletrônico de Gestão (SETE)' }, { v: 'EAD', t: 'Ensino a distância (EAD)' }]));
+  }
+  const bloco = capVal(id) || 'AG';
+  let sel, categorias, cores;
+  if (bloco === 'AG') {
+    sel = itens.filter(i => i.bloco === 'Aspectos Gerais'); categorias = CAP_ESCALA_15; cores = [t.lk[4], t.lk[3], t.lk[1], t.lk[0]];
+  } else {
+    sel = bloco.startsWith('M|') ? itens.filter(i => i.bloco === 'Módulos' && i.subgrupo === bloco.slice(2)) : itens.filter(i => i.bloco === bloco);
+    categorias = CAP_ESCALA_SIM; cores = [t.lk[4], t.lk[2], t.lk[0]];
+  }
+  const cont = capContarRespostas(sel, categorias);
+  const rotulo = blocoSel.options[blocoSel.selectedIndex].text;
+  const nota = bloco === 'SETE' ? ' O bloco SETE foi aplicado a partir da 3ª capacitação.' : '';
+  return { cont, categorias, cores, rotulo, nota };
+}
+
 function capRenderAval15() {
   const t = capTema();
   const { resp, itens } = capFiltroAval15('capA15Cap', 'capA15Pub');
@@ -17115,62 +17142,37 @@ function capRenderAval15() {
     { l: '% Ótimo — aspectos gerais', v: capPct(gerais.filter(i => i.resposta === 'Ótimo').length, gerais.length) },
     { l: '% Sim — módulos, SETE e EAD', v: capPct(resultados.filter(i => i.resposta === 'Sim').length, resultados.length) }
   ]);
-  const cores4 = [t.lk[4], t.lk[3], t.lk[1], t.lk[0]];
-  const cores3 = [t.lk[4], t.lk[2], t.lk[0]];
-  capTabelaLikert('capA15Gerais', capContarRespostas(gerais, CAP_ESCALA_15), CAP_ESCALA_15, cores4);
-  capTabelaLikert('capA15Modulos', capContarRespostas(itens.filter(i => i.bloco === 'Módulos'), CAP_ESCALA_SIM, i => i.subgrupo), CAP_ESCALA_SIM, cores3);
-  capTabelaLikert('capA15SeteEad', capContarRespostas(itens.filter(i => i.bloco === 'SETE' || i.bloco === 'EAD'), CAP_ESCALA_SIM,
-    i => i.bloco === 'SETE' ? 'Sistema Eletrônico de Gestão do Transporte Escolar (SETE)' : 'Ensino a distância (EAD)'), CAP_ESCALA_SIM, cores3);
+  const { cont, categorias, cores, rotulo, nota } = capBlocoAval15('capA15Bloco', itens, t);
+  capSetTxt('capA15ChartTitulo', 'Distribuição das respostas — ' + rotulo);
+  capSetTxt('capA15ChartSub', 'Barras 100% empilhadas; passe o cursor para ver percentuais e quantidades.' + nota);
+  document.getElementById('capChartA15Perguntas').setAttribute('aria-label', 'Distribuição das respostas — ' + rotulo);
+  document.getElementById('capA15Vazio').hidden = cont.length > 0;
+  document.getElementById('capA15ChartBox').hidden = !cont.length;
+  document.getElementById('capA15ChartBox').style.setProperty('--cap-a15-perguntas', String(cont.length));
+  const opcoes = capOpcoesGrafico(t, { horizontal: true, empilhado: true, pct: true, max: 100, tooltipLabel: capTooltipPercentual });
+  opcoes.scales.y.ticks.callback = function(valor) {
+    return capQuebra([].concat(this.getLabelForValue(valor)).join(' '), this.chart.width < 500 ? 24 : 44);
+  };
+  capGrafico('capChartA15Perguntas', {
+    type: 'bar',
+    data: { labels: cont.map(c => capQuebra(c.rotulo, 44)), datasets: capDatasetsPercentuais(cont, categorias, cores, t) },
+    options: opcoes
+  });
 
-  const div = itens.filter(i => i.bloco === 'Divulgação');
-  const respDiv = new Set(div.map(i => i.id)).size;
-  const canais = Array.from(capAgruparPor(div, 'resposta').entries())
-    .map(([canal, l]) => ({ canal, n: new Set(l.map(i => i.id)).size })).sort((a, b) => b.n - a.n);
-  document.getElementById('capA15Canais').innerHTML = canais.length
-    ? '<div class="cap-hbar-list">' + canais.map(c => `<div class="cap-hbar-row"><span>${escHtml(c.canal)}</span>
-        <div class="cap-hbar-track"><div class="cap-hbar-fill" style="width:${c.n / respDiv * 100}%;background-color:${t.unica}"></div></div>
-        <span class="cap-hbar-val">${capPct(c.n, respDiv)} (${capInt(c.n)})</span></div>`).join('') + '</div>'
-      + `<p class="cap-note">${capInt(respDiv)} respondente(s) responderam a esta pergunta.</p>`
-    : '<div class="cap-empty">Pergunta não aplicada às capacitações selecionadas.</div>';
-
-  const d = capDados();
-  const abertas = itens.filter(i => (i.bloco === 'Sugestões' || i.bloco === 'Comentários') && i.resposta && i.resposta.length > 2)
-    .sort((a, b) => a.cap - b.cap);
-  document.getElementById('capA15Sugestoes').innerHTML = capTabelaHtml([{ t: 'Capacitação' }, { t: 'Público' }, { t: 'Tipo' }, { t: 'Resposta' }],
-    abertas.map(i => `<tr><td>${capNum2(i.cap)} — ${escHtml(d.capPorNum.get(i.cap).polo)}</td><td>${escHtml(i.pub)}</td>
-      <td>${i.bloco === 'Sugestões' ? 'Temas futuros' : 'Comentário'}</td><td class="cap-text-cell">${escHtml(i.resposta)}</td></tr>`),
-    'Nenhuma sugestão ou comentário registrado.');
-  capSetTxt('capA15SugSub', `${capInt(abertas.length)} resposta(s) de texto livre.`);
 }
 
 function capRenderStat15() {
   const d = capDados();
   const t = capTema();
   const { itens } = capFiltroAval15('capS15Cap', 'capS15Pub');
-  const blocoSel = document.getElementById('capS15Bloco');
-  if (!blocoSel.options.length) {
-    const subgrupos = Array.from(new Set(d.itens15.filter(i => i.bloco === 'Módulos').map(i => i.subgrupo))).sort((a, b) => a.localeCompare(b, 'pt-BR'));
-    capPreencherSelect('capS15Bloco', [{ v: 'AG', t: 'Aspectos gerais da capacitação' }]
-      .concat(subgrupos.map(s => ({ v: 'M|' + s, t: s })), [{ v: 'SETE', t: 'Sistema Eletrônico de Gestão (SETE)' }, { v: 'EAD', t: 'Ensino a distância (EAD)' }]));
-  }
-  const bloco = capVal('capS15Bloco') || 'AG';
-  let sel, categorias, cores;
-  if (bloco === 'AG') {
-    sel = itens.filter(i => i.bloco === 'Aspectos Gerais'); categorias = CAP_ESCALA_15; cores = [t.lk[4], t.lk[3], t.lk[1], t.lk[0]];
-  } else {
-    sel = bloco.startsWith('M|') ? itens.filter(i => i.bloco === 'Módulos' && i.subgrupo === bloco.slice(2)) : itens.filter(i => i.bloco === bloco);
-    categorias = CAP_ESCALA_SIM; cores = [t.lk[4], t.lk[2], t.lk[0]];
-  }
-  const cont = capContarRespostas(sel, categorias);
-  capSetTxt('capS15ChartTitulo', 'Distribuição das respostas — ' + (blocoSel.options[blocoSel.selectedIndex] || {}).text);
-  capGrafico('capChartS15Perguntas', {
-    type: 'bar',
-    data: { labels: cont.map(c => capQuebra(c.rotulo, 44)), datasets: capDatasetsPercentuais(cont, categorias, cores, t) },
-    options: capOpcoesGrafico(t, { horizontal: true, empilhado: true, pct: true, max: 100, tooltipLabel: capTooltipPercentual })
-  });
+  const { cont, categorias, cores, rotulo, nota } = capBlocoAval15('capS15Bloco', itens, t);
+  capSetTxt('capS15TabelaTitulo', 'Dados das perguntas — ' + rotulo);
+  capSetTxt('capS15TabelaSub', 'Percentuais por categoria e quantidade de respostas no bloco selecionado.' + nota);
+  capTabelaLikert('capS15Perguntas', cont, categorias, cores);
 
   const pub = capVal('capS15Pub');
-  const caps = d.caps.filter(c => c.numero <= 5);
+  const cap = capVal('capS15Cap');
+  const caps = d.caps.filter(c => c.numero <= 5 && (!cap || String(c.numero) === cap));
   const porCap = caps.map(c => {
     const ids = new Set(d.resp15.filter(r => r.capacitacao === c.numero && (!pub || r.publico === pub)).map(r => r.id_resposta));
     const it = d.itens15.filter(i => ids.has(i.id));
@@ -17187,6 +17189,24 @@ function capRenderStat15() {
     ] },
     options: capOpcoesGrafico(t, { pct: true, max: 100, tooltipLabel: ctx => ` ${ctx.dataset.label}: ${capDec(ctx.parsed.y, 1)}%` })
   });
+  const div = itens.filter(i => i.bloco === 'Divulgação');
+  const respDiv = new Set(div.map(i => i.id)).size;
+  const canais = Array.from(capAgruparPor(div, 'resposta').entries())
+    .map(([canal, l]) => ({ canal, n: new Set(l.map(i => i.id)).size })).sort((a, b) => b.n - a.n);
+  document.getElementById('capS15Canais').innerHTML = canais.length
+    ? '<div class="cap-hbar-list">' + canais.map(c => `<div class="cap-hbar-row"><span>${escHtml(c.canal)}</span>
+        <div class="cap-hbar-track"><div class="cap-hbar-fill" style="width:${c.n / respDiv * 100}%;background-color:${t.unica}"></div></div>
+        <span class="cap-hbar-val">${capPct(c.n, respDiv)} (${capInt(c.n)})</span></div>`).join('') + '</div>'
+      + `<p class="cap-note">${capInt(respDiv)} respondente(s) responderam a esta pergunta.</p>`
+    : '<div class="cap-empty">Pergunta não aplicada às capacitações selecionadas.</div>';
+
+  const abertas = itens.filter(i => (i.bloco === 'Sugestões' || i.bloco === 'Comentários') && i.resposta && i.resposta.length > 2)
+    .sort((a, b) => a.cap - b.cap);
+  document.getElementById('capS15Sugestoes').innerHTML = capTabelaHtml([{ t: 'Capacitação' }, { t: 'Público' }, { t: 'Tipo' }, { t: 'Resposta' }],
+    abertas.map(i => `<tr><td>${capNum2(i.cap)} — ${escHtml(d.capPorNum.get(i.cap).polo)}</td><td>${escHtml(i.pub)}</td>
+      <td>${i.bloco === 'Sugestões' ? 'Temas futuros' : 'Comentário'}</td><td class="cap-text-cell">${escHtml(i.resposta)}</td></tr>`),
+    'Nenhuma sugestão ou comentário registrado.');
+  capSetTxt('capS15SugSub', `${capInt(abertas.length)} resposta(s) de texto livre.`);
 }
 
 // --------------------------------------------------------------------------
@@ -18365,12 +18385,13 @@ async function recarregarDadosExternos() {
       </div>
     </div>
     <div class="pif-body">
-      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.3.1</strong></div>
+      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.3.2</strong></div>
       <div class="pif-row"><span>Data da alteração:</span><span class="pnite-date-val">09/11/2026</span></div>
       <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">14:00</span></div>
       <div class="pif-row"><span>Responsável técnico:</span><span class="pnite-author-val">Equipe PNITE</span></div>
       <div class="pif-note">
         <i class="ti ti-check" style="color:var(--accent);margin-right:3px"></i>
+        <strong>Organização das avaliações 1 a 5 (v.3.3.2):</strong> avaliação com gráfico único filtrável por bloco; estatísticas reúne tabelas de perguntas, comparação, divulgação e respostas abertas, preservando os registros.<br>
         <strong>Mapa por polo frequentado (v.3.3.1):</strong> nova visualização com cor por sede de polo e listras para municípios que participaram em mais de uma sede, respeitando os filtros ativos.<br>
         <strong>Filtros mínimos de capacitação (v.3.2.9):</strong> mínimos combinados de CACS, gestores e participantes totais por município, com contagem municipal sem duplicidade e mapa sincronizado.<br>
         <strong>Barra lateral da capacitação (v.3.2.8):</strong> removido o quadro de identidade "Capacitações do Transporte Escolar / FNDE" do topo do menu lateral de Indicadores da Capacitação; o menu passa a começar direto pelo botão HOME.<br>
@@ -18411,7 +18432,7 @@ async function recarregarDadosExternos() {
   </div>
   <button class="pif-btn" id="pifBtn" aria-label="Informações de Versão">
     <i class="ti ti-info-circle"></i>
-    <span class="pif-btn-label pnite-version-val">v.3.3.1</span>
+    <span class="pif-btn-label pnite-version-val">v.3.3.2</span>
   </button>
 </div>
 
