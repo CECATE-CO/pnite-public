@@ -1907,6 +1907,62 @@ body {
 /* CARD DO MAPA (MOLDURA VERDE-LIMÃO DESTACADA) */
 .cap-map-wrapper {
   width: 100%;
+  min-width: 0;
+}
+.cap-map-modes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.cap-map-mode {
+  min-height: 44px;
+  padding: 9px 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background-color: var(--bg-card);
+  color: var(--text-2);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.cap-map-mode[aria-pressed="true"] {
+  border-color: var(--c-blue);
+  background-color: var(--bg-badge);
+  color: var(--text-1);
+}
+.cap-map-mode:focus-visible {
+  outline: 2px solid var(--c-blue);
+  outline-offset: 3px;
+}
+.cap-polos-legend {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(190px, 100%), 1fr));
+  gap: 8px 14px;
+  padding: 12px 8px;
+  font-size: 11.5px;
+  color: #1a201c;
+}
+[data-theme="dark"] .cap-polos-legend { color: #f0fdf4; }
+.cap-polos-legend[hidden], .cap-map-legend-bar[hidden] { display: none; }
+.cap-polo-entry {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.cap-polo-key {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  border: 1px solid #34473b;
+  border-radius: 3px;
+  background-color: var(--cap-polo-cor);
+}
+.cap-polo-multi {
+  background-image: repeating-linear-gradient(135deg, #4477aa 0 4px, #eeaa33 4px 8px, #aa4499 8px 12px);
 }
 .cap-map-card {
   border: 3.5px solid #ccdf2b;
@@ -6753,10 +6809,14 @@ window.onerror = function(msg, url, line, col, err) {
 
             <!-- COLUNA DA DIREITA: MAPA DO CENTRO-OESTE -->
             <div class="cap-map-wrapper">
+              <div class="cap-map-modes" role="group" aria-label="Visualização do mapa da capacitação">
+                <button type="button" class="cap-map-mode" id="capMapParticipacaoBtn" aria-pressed="true" aria-controls="capSvgContainer" onclick="setCapMapMode('participacao')">Participação</button>
+                <button type="button" class="cap-map-mode" id="capMapPolosBtn" aria-pressed="false" aria-controls="capSvgContainer" onclick="setCapMapMode('polos')">Por polo frequentado</button>
+              </div>
               <div class="cap-map-card" id="capMapCard">
                 
                 <!-- LEGENDA DO MAPA -->
-                <div class="cap-map-legend-bar">
+                <div class="cap-map-legend-bar" id="capParticipacaoLegenda">
                   <span class="cap-legend-title">Município Participou?</span>
                   <div class="cap-legend-tags">
                     <span class="cap-legend-tag tag-nao">
@@ -6774,10 +6834,20 @@ window.onerror = function(msg, url, line, col, err) {
                   </div>
                 </div>
 
+                <div class="cap-map-legend-bar" id="capPolosCabecalho" hidden>
+                  <span class="cap-legend-title">Polo frequentado</span>
+                  <div class="cap-legend-tags">
+                    <span class="cap-legend-tag"><span class="cap-dot dot-nao"></span> Não participou</span>
+                    <span class="cap-legend-tag"><span class="cap-dot dot-fora"></span> Fora da seleção</span>
+                    <span class="cap-legend-tag"><span class="cap-dot dot-polo"></span> Sede do polo</span>
+                  </div>
+                </div>
                 <!-- CONTÊINER DO SVG DO MAPA -->
                 <div class="cap-svg-container" id="capSvgContainer">
                   <!-- SVG gerado dinamicamente com os 467 municípios do CO + estados vizinhos -->
                 </div>
+
+                <div class="cap-polos-legend" id="capPolosLegenda" aria-label="Cores dos polos frequentados" hidden></div>
 
                 <!-- WATERMARKS OFICIAIS -->
                 <div class="cap-map-watermarks">
@@ -8335,7 +8405,7 @@ window.onerror = function(msg, url, line, col, err) {
     <div class="smb-sec">
       <div class="smb-sec-title" data-i18n="settings_info_title">Informações da Versão</div>
       <div style="font-size:12px;color:var(--text-2);display:flex;flex-direction:column;gap:4px;margin-top:6px">
-        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.3.0</b></div>
+        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.3.1</b></div>
         <div><span data-i18n="settings_updated">Última Atualização:</span> <b class="pnite-date-val">06/10/2026</b> às <b class="pnite-time-val">21:05</b></div>
         <div><span data-i18n="settings_author">Responsável Técnico:</span> <b class="pnite-author-val">Equipe PNITE</b></div>
       </div>
@@ -9324,9 +9394,9 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.3.0";
+const PNITE_VERSION = "v.3.3.1";
 const PNITE_LAST_UPDATE = "11/11/2026";
-const PNITE_LAST_TIME = "11:02";
+const PNITE_LAST_TIME = "11:22";
 
 // Escapa texto para inserção segura via innerHTML (entradas do usuário, nomes de arquivo)
 function escHtml(s) {
@@ -16216,7 +16286,7 @@ document.addEventListener('keydown', function(ev) {
 // Base: API do Supabase (public.capacitacao_dados, gravada por scripts/extrair_capacitacao.py),
 // com tabelas {colunas, linhas} do schema `capacitacao` (supabase/migrations/0012_capacitacao.sql).
 // Malha municipal do mapa: API de malhas do IBGE (loadMunicipalGeoForUf, com cache).
-const CAP_STATE = { raw: null, malhas: null, carga: null, dados: null, charts: {}, view: 'home', eventos: false, geo: null, mapInfo: {} };
+const CAP_STATE = { raw: null, malhas: null, carga: null, dados: null, charts: {}, view: 'home', mapaModo: 'participacao', eventos: false, geo: null, mapInfo: {} };
 const CAP_UFS_MAPA = ['GO', 'MT', 'MS', 'DF'];
 const CAP_VIEWS = {
   home: 'capSubHome', capacitacoes: 'capSubCapacitacoes', uf: 'capSubUf',
@@ -16570,6 +16640,19 @@ function onCapSliderChange() {
   updateCapacitacaoView();
 }
 
+// Alternância local: mantém todos os filtros e os mesmos totais do painel.
+function setCapMapMode(modo) {
+  CAP_STATE.mapaModo = modo === 'polos' ? 'polos' : 'participacao';
+  const porPolo = CAP_STATE.mapaModo === 'polos';
+  document.getElementById('capMapParticipacaoBtn').setAttribute('aria-pressed', String(!porPolo));
+  document.getElementById('capMapPolosBtn').setAttribute('aria-pressed', String(porPolo));
+  document.getElementById('capParticipacaoLegenda').hidden = porPolo;
+  document.getElementById('capPolosCabecalho').hidden = !porPolo;
+  document.getElementById('capPolosLegenda').hidden = !porPolo;
+  document.getElementById('capMapTooltip').style.display = 'none';
+  updateCapacitacaoView();
+}
+
 // --------------------------------------------------------------------------
 // Página HOME
 // --------------------------------------------------------------------------
@@ -16618,7 +16701,7 @@ function updateCapacitacaoView() {
 
   const caps = new Set(rows.map(r => r.capacitacao));
   renderCapacitacaoMap('capSvgContainer', municipios,
-    Array.from(caps).map(n => d.capPorNum.get(n).polo_cod_ibge));
+    Array.from(caps).map(n => d.capPorNum.get(n).polo_cod_ibge), CAP_STATE.mapaModo);
 }
 
 // Situação de cada município no conjunto filtrado (SIM se teve presentes em alguma capacitação)
@@ -16626,14 +16709,20 @@ function capStatusMunicipios(rows, d) {
   const st = new Map();
   rows.forEach(r => {
     let e = st.get(r.cod_ibge);
-    if (!e) { e = { status: 'nao', P: 0, G: 0, C: 0, caps: [] }; st.set(r.cod_ibge, e); }
+    if (!e) { e = { status: 'nao', P: 0, G: 0, C: 0, caps: [], polos: new Set() }; st.set(r.cod_ibge, e); }
     e.P += r.presentes_total; e.G += r.presentes_gestores; e.C += r.presentes_cacs;
-    if (r.presentes_total > 0) e.status = 'sim';
+    if (r.presentes_total > 0) {
+      e.status = 'sim';
+      const c = d.capPorNum.get(r.capacitacao);
+      if (c) e.polos.add(capChavePolo(c));
+    }
     e.caps.push(r.capacitacao);
   });
+  const polos = capPolosMapa(d);
   st.forEach(e => {
     e.linhas = [
       ['Capacitações', e.caps.map(n => capNum2(n) + ' ' + d.capPorNum.get(n).polo).join(', ')],
+      ['Polos frequentados', Array.from(e.polos).map(k => polos.get(k).nome).join(', ') || 'Não participou'],
       ['Gestores | CACS', capInt(e.G) + ' | ' + capInt(e.C)],
       ['Total de participantes', capInt(e.P)]
     ];
@@ -16680,7 +16769,24 @@ function capGeometria() {
   return CAP_STATE.geo;
 }
 
-function renderCapacitacaoMap(containerId, statusPorCod, polosCod) {
+// A cor identifica a sede do polo, inclusive quando há várias edições no mesmo local.
+// A base completa mantém as cores estáveis ao aplicar filtros ou trocar o tema.
+function capChavePolo(c) {
+  return String(c.polo_cod_ibge || (c.polo + '|' + c.uf));
+}
+
+function capPolosMapa(d) {
+  const paleta = ['#4477aa', '#ee6677', '#228833', '#ccbb44', '#66ccee', '#aa3377', '#ee8833', '#7755aa', '#44aa99', '#bb6633', '#6699cc', '#aa4466', '#779922', '#ddaa77', '#9999cc', '#bb7799', '#337766', '#ddcc77', '#88bbdd', '#997744'];
+  const polos = new Map();
+  d.caps.forEach(c => {
+    const chave = capChavePolo(c);
+    if (!polos.has(chave)) polos.set(chave, { nome: c.polo + ' (' + c.uf + ')' });
+  });
+  return new Map(Array.from(polos).sort(([a], [b]) => a.localeCompare(b)).map(([chave, p], i) =>
+    [chave, { ...p, cor: paleta[i] || 'hsl(' + ((i * 137.508) % 360).toFixed(2) + ', 55%, 55%)' }]));
+}
+
+function renderCapacitacaoMap(containerId, statusPorCod, polosCod, modo = 'participacao') {
   const container = document.getElementById(containerId);
   if (!container) return;
   const g = capGeometria();
@@ -16691,7 +16797,9 @@ function renderCapacitacaoMap(containerId, statusPorCod, polosCod) {
   CAP_STATE.mapInfo[containerId] = statusPorCod;
   const cores = { sim: capCor('--cap-map-sim'), nao: capCor('--cap-map-nao'), fora: capCor('--cap-map-fora') };
 
-  let svg = `<svg viewBox="0 0 ${g.W} ${g.H}" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="background:#e4eee2;border-radius:12px;" role="img" aria-label="Mapa dos municípios do Centro-Oeste por participação nas capacitações">`;
+  const porPolo = modo === 'polos';
+  const polosInfo = capPolosMapa(capDados());
+  let svg = `<svg viewBox="0 0 ${g.W} ${g.H}" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="background:#e4eee2;border-radius:12px;" role="img" aria-label="${porPolo ? 'Mapa dos municípios do Centro-Oeste por polo frequentado; listras indicam participação em mais de um polo' : 'Mapa dos municípios do Centro-Oeste por participação nas capacitações'}">`;
   svg += `<g>
     <path d="M 0 160 L 95 190 L 115 310 L 80 430 L 30 520 L 0 540 Z" fill="#b9cdb6" stroke="#9bb198" stroke-width="1.2" opacity="0.85"/>
     <text x="35" y="360" font-family="system-ui, sans-serif" font-size="16" font-weight="800" fill="#6c8069" letter-spacing="3" transform="rotate(-30, 35, 360)">BOLÍVIA</text>
@@ -16710,7 +16818,20 @@ function renderCapacitacaoMap(containerId, statusPorCod, polosCod) {
   g.municipios.forEach(m => {
     const info = statusPorCod.get(m.cod);
     const status = info ? info.status : 'fora';
-    svg += `<path d="${m.d}" fill="${cores[status]}" opacity="${info ? 1 : 0.55}" data-cod="${m.cod}" data-nome="${escHtml(m.nome)}" data-uf="${escHtml(m.uf)}"/>`;
+    const polos = porPolo && info ? Array.from(info.polos).sort() : [];
+    let fill = cores[status];
+    if (polos.length === 1) fill = polosInfo.get(polos[0]).cor;
+    if (polos.length > 1) {
+      // Listras de todas as sedes realmente frequentadas, sem escolher um polo arbitrário.
+      const id = containerId + '-polos-' + m.cod;
+      const largura = polos.length * 5;
+      svg += '<defs><pattern id="' + id + '" patternUnits="userSpaceOnUse" width="' + largura + '" height="' + largura + '" patternTransform="rotate(45)">';
+      polos.forEach((k, i) => { svg += '<rect x="' + (i * 5) + '" y="0" width="5" height="' + largura + '" fill="' + polosInfo.get(k).cor + '"/>'; });
+      svg += '</pattern></defs>';
+      fill = 'url(#' + id + ')';
+    }
+    const detalhe = porPolo && polos.length ? polos.map(k => polosInfo.get(k).nome).join(', ') : (info ? (info.status === 'sim' ? 'Participou' : 'Não participou') : 'Fora da seleção');
+    svg += '<path d="' + m.d + '" fill="' + fill + '" opacity="' + (info ? 1 : 0.55) + '" data-cod="' + m.cod + '" data-nome="' + escHtml(m.nome) + '" data-uf="' + escHtml(m.uf) + '"><title>' + escHtml(m.nome + ' (' + m.uf + '): ' + detalhe) + '</title></path>';
   });
   svg += '</g>';
   svg += '<g fill="none" stroke="#132117" stroke-width="2.2" stroke-linejoin="round" pointer-events="none">' + g.contornos.map(dp => `<path d="${dp}"/>`).join('') + '</g>';
@@ -16734,6 +16855,19 @@ function renderCapacitacaoMap(containerId, statusPorCod, polosCod) {
   }
   svg += '</svg>';
   container.innerHTML = svg;
+  if (containerId === 'capSvgContainer') {
+    const presentes = new Set();
+    let multiplos = false;
+    statusPorCod.forEach(m => {
+      m.polos.forEach(k => presentes.add(k));
+      if (m.polos.size > 1) multiplos = true;
+    });
+    const legenda = document.getElementById('capPolosLegenda');
+    legenda.innerHTML = Array.from(polosInfo).filter(([k]) => presentes.has(k)).map(([, p]) =>
+      '<span class="cap-polo-entry"><span class="cap-polo-key" style="--cap-polo-cor:' + p.cor + '" aria-hidden="true"></span>' + escHtml(p.nome) + '</span>').join('')
+      + (multiplos ? '<span class="cap-polo-entry"><span class="cap-polo-key cap-polo-multi" aria-hidden="true"></span>Mais de um polo (listras nas cores dos polos)</span>' : '')
+      + (!presentes.size ? '<span class="cap-polo-entry">Nenhum município com participação nos filtros selecionados.</span>' : '');
+  }
 }
 
 function capMapHover(ev) {
@@ -18231,12 +18365,13 @@ async function recarregarDadosExternos() {
       </div>
     </div>
     <div class="pif-body">
-      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.3.0</strong></div>
+      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.3.1</strong></div>
       <div class="pif-row"><span>Data da alteração:</span><span class="pnite-date-val">09/11/2026</span></div>
       <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">14:00</span></div>
       <div class="pif-row"><span>Responsável técnico:</span><span class="pnite-author-val">Equipe PNITE</span></div>
       <div class="pif-note">
         <i class="ti ti-check" style="color:var(--accent);margin-right:3px"></i>
+        <strong>Mapa por polo frequentado (v.3.3.1):</strong> nova visualização com cor por sede de polo e listras para municípios que participaram em mais de uma sede, respeitando os filtros ativos.<br>
         <strong>Filtros mínimos de capacitação (v.3.2.9):</strong> mínimos combinados de CACS, gestores e participantes totais por município, com contagem municipal sem duplicidade e mapa sincronizado.<br>
         <strong>Barra lateral da capacitação (v.3.2.8):</strong> removido o quadro de identidade "Capacitações do Transporte Escolar / FNDE" do topo do menu lateral de Indicadores da Capacitação; o menu passa a começar direto pelo botão HOME.<br>
         <strong>Avaliações Likert na capacitação (v.3.2.7):</strong> nas avaliações das capacitações 6 a 16, a nota média é substituída por indicadores próprios de escala ordinal (conceito mediano, % favorável e % desfavorável), e as caixas de informação dos gráficos horizontais passam a mostrar a barra sob o cursor.<br>
@@ -18276,7 +18411,7 @@ async function recarregarDadosExternos() {
   </div>
   <button class="pif-btn" id="pifBtn" aria-label="Informações de Versão">
     <i class="ti ti-info-circle"></i>
-    <span class="pif-btn-label pnite-version-val">v.3.3.0</span>
+    <span class="pif-btn-label pnite-version-val">v.3.3.1</span>
   </button>
 </div>
 
