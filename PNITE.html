@@ -2226,18 +2226,6 @@ body {
   height: 280px;
   width: 100%;
 }
-/* Rolagem local mantém os rótulos legíveis em séries com muitas categorias. */
-.cap-chart-scroll {
-  width: 100%;
-  max-width: 100%;
-  overflow-x: auto;
-}
-.cap-chart-scroll .cap-chart-box {
-  min-width: var(--cap-rotulos-largura, 440px);
-}
-.cap-chart-box.cap-chart-rotulos-horizontal {
-  height: max(280px, calc(var(--cap-rotulos-linhas, 1) * 76px + 90px));
-}
 .cap-chart-box.cap-chart-tall {
   height: 380px;
 }
@@ -8429,7 +8417,7 @@ window.onerror = function(msg, url, line, col, err) {
     <div class="smb-sec">
       <div class="smb-sec-title" data-i18n="settings_info_title">Informações da Versão</div>
       <div style="font-size:12px;color:var(--text-2);display:flex;flex-direction:column;gap:4px;margin-top:6px">
-        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.3.5</b></div>
+        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.3.4</b></div>
         <div><span data-i18n="settings_updated">Última Atualização:</span> <b class="pnite-date-val">06/10/2026</b> às <b class="pnite-time-val">21:05</b></div>
         <div><span data-i18n="settings_author">Responsável Técnico:</span> <b class="pnite-author-val">Equipe PNITE</b></div>
       </div>
@@ -9418,9 +9406,9 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.3.5";
-const PNITE_LAST_UPDATE = "12/11/2026";
-const PNITE_LAST_TIME = "13:09";
+const PNITE_VERSION = "v.3.3.4";
+const PNITE_LAST_UPDATE = "11/11/2026";
+const PNITE_LAST_TIME = "16:55";
 
 // Escapa texto para inserção segura via innerHTML (entradas do usuário, nomes de arquivo)
 function escHtml(s) {
@@ -16526,93 +16514,10 @@ function capTema() {
   };
 }
 
-// Plugin local da capacitação. Os rótulos usam os valores das séries já calculadas.
-const CAP_ROTULOS_VALORES = {
-  id: 'capRotulosValores',
-  afterDatasetsDraw(chart, args, opcoes) {
-    const { ctx, chartArea } = chart;
-    if (!chartArea) return;
-    const t = capTema();
-    const horizontal = chart.options.indexAxis === 'y';
-    const ocupados = [];
-    ctx.save();
-    ctx.font = '600 11px ' + chart.options.font.family;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    chart.data.datasets.forEach((serie, indice) => {
-      if (!chart.isDatasetVisible(indice)) return;
-      const meta = chart.getDatasetMeta(indice);
-      meta.data.forEach((elemento, linha) => {
-        const valor = serie.data[linha];
-        if (valor == null || !Number.isFinite(Number(valor)) || elemento.skip) return;
-        const texto = opcoes.percentual ? capDec(Math.abs(valor), 1) + '%' : capInt(valor);
-        const largura = ctx.measureText(texto).width + 8;
-        const altura = 18;
-        const barra = meta.type === 'bar';
-        const empilhado = chart.options.scales[horizontal ? 'x' : 'y'].stacked;
-        const xOrigem = barra && horizontal ? (elemento.x + elemento.base) / 2 : elemento.x;
-        const yOrigem = barra && !horizontal && empilhado ? (elemento.y + elemento.base) / 2 : elemento.y;
-        let x = horizontal && !empilhado ? elemento.x + largura / 2 + 5 : xOrigem;
-        let y = barra && (horizontal || empilhado) ? yOrigem : yOrigem - 14;
-        x = Math.max(chartArea.left + largura / 2, Math.min(chartArea.right - largura / 2, x));
-        y = Math.max(chartArea.top + altura / 2, Math.min(chartArea.bottom - altura / 2, y));
-        // Procura a posição livre mais próxima e liga rótulos deslocados ao dado.
-        const livre = candidato => ocupados.every(r => Math.abs(r.x - x) >= (r.largura + largura) / 2 + 3 || Math.abs(r.y - candidato) >= altura + 2);
-        const yInicial = y;
-        for (let passo = 1; !livre(y) && passo <= Math.ceil(chartArea.height / 10); passo++) {
-          const deslocamento = Math.ceil(passo / 2) * (altura + 2) * (passo % 2 ? -1 : 1);
-          y = Math.max(chartArea.top + altura / 2, Math.min(chartArea.bottom - altura / 2, yInicial + deslocamento));
-        }
-        ocupados.push({ x, y, largura });
-        if (Math.abs(y - yOrigem) > altura || Math.abs(x - xOrigem) > largura) {
-          ctx.strokeStyle = t.eixo;
-          ctx.lineWidth = 1;
-          ctx.beginPath();
-          ctx.moveTo(xOrigem, yOrigem);
-          ctx.lineTo(x, y);
-          ctx.stroke();
-        }
-        ctx.fillStyle = t.superficie;
-        ctx.fillRect(x - largura / 2, y - altura / 2, largura, altura);
-        ctx.fillStyle = t.eixo;
-        ctx.fillText(texto, x, y);
-      });
-    });
-    ctx.restore();
-  }
-};
-
 function capGrafico(id, config) {
   const canvas = document.getElementById(id);
   if (!canvas || typeof Chart === 'undefined') return;
   if (CAP_STATE.charts[id]) CAP_STATE.charts[id].destroy();
-  const rotulosExistentes = (config.plugins || []).includes(CAP_ROTULOS_DISTRIBUICAO);
-  if (['bar', 'line'].includes(config.type) && !rotulosExistentes) {
-    config.plugins = [...(config.plugins || []), CAP_ROTULOS_VALORES];
-    const box = canvas.parentElement;
-    if (!box.parentElement.classList.contains('cap-chart-scroll')) {
-      const scroll = document.createElement('div');
-      scroll.className = 'cap-chart-scroll';
-      scroll.tabIndex = 0;
-      scroll.setAttribute('role', 'region');
-      scroll.setAttribute('aria-label', canvas.getAttribute('aria-label') + ' — área de rolagem');
-      box.before(scroll);
-      scroll.appendChild(box);
-    }
-    const horizontal = config.options.indexAxis === 'y';
-    box.style.setProperty('--cap-rotulos-largura', (horizontal ? 500 : Math.max(440, config.data.labels.length * 100)) + 'px');
-    box.classList.toggle('cap-chart-rotulos-horizontal', horizontal);
-    box.style.setProperty('--cap-rotulos-linhas', String(config.data.labels.length));
-    // A descrição acompanha filtros e inclui também zeros e dados ausentes.
-    const percentual = config.options.plugins.capRotulosValores.percentual;
-    const descricao = config.data.labels.map((rotulo, i) => [].concat(rotulo).join(' ') + ': ' + config.data.datasets.map(s => {
-      const v = s.data[i];
-      const texto = v == null || !Number.isFinite(Number(v)) ? '—' : percentual ? capDec(Math.abs(v), 1) + '%' : capInt(v);
-      return s.label + ' ' + texto;
-    }).join(', ')).join('; ');
-    if (!canvas.dataset.capDescricao) canvas.dataset.capDescricao = canvas.getAttribute('aria-label');
-    canvas.setAttribute('aria-label', canvas.dataset.capDescricao + '. ' + descricao);
-  }
   CAP_STATE.charts[id] = new Chart(canvas, config);
 }
 
@@ -16637,8 +16542,7 @@ function capOpcoesGrafico(t, o = {}) {
     interaction: { mode: o.modoTooltip || 'index', intersect: false, axis: eixoBusca },
     plugins: {
       legend: { display: o.legenda !== false, position: 'top', align: 'start', labels: { color: t.eixo, boxWidth: 10, boxHeight: 10, font: { size: 11 } } },
-      tooltip,
-      capRotulosValores: { percentual: !!o.pct }
+      tooltip
     },
     scales: o.horizontal ? { x: eixoValor, y: eixoCategoria } : { x: eixoCategoria, y: eixoValor }
   };
@@ -18563,13 +18467,12 @@ async function recarregarDadosExternos() {
       </div>
     </div>
     <div class="pif-body">
-      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.3.5</strong></div>
+      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.3.4</strong></div>
       <div class="pif-row"><span>Data da alteração:</span><span class="pnite-date-val">09/11/2026</span></div>
       <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">14:00</span></div>
       <div class="pif-row"><span>Responsável técnico:</span><span class="pnite-author-val">Equipe PNITE</span></div>
       <div class="pif-note">
         <i class="ti ti-check" style="color:var(--accent);margin-right:3px"></i>
-        <strong>Rótulos nos gráficos da capacitação (v.3.3.5):</strong> valores e percentuais visíveis nos gráficos de participantes, satisfação, avaliações e estatísticas, com rolagem local nas séries extensas e descrições acessíveis sincronizadas com os filtros.<br>
         <strong>Rótulos nas avaliações 6 a 16 (v.3.3.4):</strong> distribuição dos conceitos por critério com percentual e quantidade de respostas visíveis nas barras e identificação dos segmentos estreitos.<br>
         <strong>Rótulos nas barras (v.3.3.3):</strong> gráfico das avaliações 1 a 5 com percentuais e quantidades de respostas visíveis, incluindo identificação dos segmentos estreitos.<br>
         <strong>Organização das avaliações 1 a 5 (v.3.3.2):</strong> avaliação com gráfico único filtrável por bloco; estatísticas reúne tabelas de perguntas, comparação, divulgação e respostas abertas, preservando os registros.<br>
@@ -18613,7 +18516,7 @@ async function recarregarDadosExternos() {
   </div>
   <button class="pif-btn" id="pifBtn" aria-label="Informações de Versão">
     <i class="ti ti-info-circle"></i>
-    <span class="pif-btn-label pnite-version-val">v.3.3.5</span>
+    <span class="pif-btn-label pnite-version-val">v.3.3.4</span>
   </button>
 </div>
 
