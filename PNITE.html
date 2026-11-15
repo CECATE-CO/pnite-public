@@ -6998,7 +6998,6 @@ window.onerror = function(msg, url, line, col, err) {
                   </div>
                 </div>
                 <!-- CONTÊINER DO SVG DO MAPA -->
-                <p class="cap-territory-note">Mapa restrito ao Centro-Oeste. Atendimentos de outras UFs são consultados nas tabelas de Capacitações e Unidades da Federação.</p>
                 <div class="cap-svg-container" id="capSvgContainer">
                   <!-- SVG gerado dinamicamente com os 467 municípios do CO + estados vizinhos -->
                 </div>
@@ -8620,7 +8619,7 @@ window.onerror = function(msg, url, line, col, err) {
     <div class="smb-sec">
       <div class="smb-sec-title" data-i18n="settings_info_title">Informações da Versão</div>
       <div style="font-size:12px;color:var(--text-2);display:flex;flex-direction:column;gap:4px;margin-top:6px">
-        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.4.6</b></div>
+        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.4.7</b></div>
         <div><span data-i18n="settings_updated">Última Atualização:</span> <b class="pnite-date-val">06/10/2026</b> às <b class="pnite-time-val">21:05</b></div>
         <div><span data-i18n="settings_author">Responsável Técnico:</span> <b class="pnite-author-val">Equipe PNITE</b></div>
       </div>
@@ -9609,7 +9608,7 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.4.6";
+const PNITE_VERSION = "v.3.4.7";
 const PNITE_LAST_UPDATE = "15/11/2026";
 const PNITE_LAST_TIME = "11:27";
 
@@ -19084,12 +19083,13 @@ async function recarregarDadosExternos() {
       </div>
     </div>
     <div class="pif-body">
-      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.4.6</strong></div>
+      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.4.7</strong></div>
       <div class="pif-row"><span>Data da alteração:</span><span class="pnite-date-val">09/11/2026</span></div>
       <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">14:00</span></div>
       <div class="pif-row"><span>Responsável técnico:</span><span class="pnite-author-val">Equipe PNITE</span></div>
       <div class="pif-note">
         <i class="ti ti-check" style="color:var(--accent);margin-right:3px"></i>
+        <strong>Mapa da Home (v.3.4.7):</strong> removida a nota explicativa acima do mapa.<br>
         <strong>Filtro territorial lateral (v.3.4.6):</strong> controle isolado à direita, com Centro-Oeste, Outros e Todos os atendimentos, sem o bloco de explicações.<br>
         <strong>Recorte regional da capacitação (v.3.4.5):</strong> Centro-Oeste como padrão, atendimentos de outras UFs e origens não identificadas preservados separadamente; cobertura restrita à área regional e avaliações territoriais apenas quando a base permite.<br>
         <strong>Simplificação dos painéis (v.3.4.4):</strong> removidos a tabela de bases por critério, a lista expansível de polos e o bloco de interpretação das colunas, preservando os gráficos e indicadores.<br>
@@ -19145,7 +19145,7 @@ async function recarregarDadosExternos() {
   </div>
   <button class="pif-btn" id="pifBtn" aria-label="Informações de Versão">
     <i class="ti ti-info-circle"></i>
-    <span class="pif-btn-label pnite-version-val">v.3.4.6</span>
+    <span class="pif-btn-label pnite-version-val">v.3.4.7</span>
   </button>
 </div>
 
