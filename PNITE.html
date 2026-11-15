@@ -1673,6 +1673,15 @@ body {
   display: block;
 }
 
+/* Duas páginas por faixa, com avaliação e estatísticas em abas internas. */
+.cap-evaluation-tabs { display: flex; gap: 8px; margin-bottom: 20px; padding: 6px; border: 1px solid var(--border); border-radius: 12px; background-color: var(--bg-card); }
+.cap-evaluation-tabs [role="tab"] { flex: 1; min-width: 0; min-height: 44px; padding: 10px 16px; border: 1px solid transparent; border-radius: 8px; background-color: transparent; color: var(--text-2); font: inherit; font-weight: 600; cursor: pointer; }
+.cap-evaluation-tabs [aria-selected="true"] { background-color: var(--bg-active); color: var(--text-1); border-color: var(--accent); }
+.cap-evaluation-tabs [role="tab"]:focus-visible, .cap-evaluation-panel:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.cap-evaluation-panel[hidden] { display: none; }
+.cap-evaluation-panel > .cap-page-head h3 { font-size: 19px; color: var(--text-1); margin-bottom: 6px; }
+.cap-evaluation-panel > .cap-page-head .cap-home-title-bar { display: none; }
+
 /* CABEÇALHO DO RELATÓRIO HOME & FILTROS */
 .cap-home-header-grid {
   display: grid;
@@ -6702,9 +6711,9 @@ window.onerror = function(msg, url, line, col, err) {
   <div class="front-view" id="frontCapacitacao">
     <div class="cap-layout-wrap">
       
-      <!-- BARRA LATERAL DA CAPACITAÇÃO (7 BOTÕES) -->
+      <!-- BARRA LATERAL DA CAPACITAÇÃO (5 BOTÕES) -->
       <aside class="cap-sidebar" id="capSidebar">
-        <!-- MENU DE NAVEGAÇÃO VERTICAL (7 BOTÕES) -->
+        <!-- MENU DE NAVEGAÇÃO VERTICAL (5 BOTÕES) -->
         <nav class="cap-nav-menu" role="navigation" aria-label="Navegação da Capacitação">
           <button type="button" class="cap-nav-btn active" id="capNavHome" onclick="switchCapView('home', this)">
             <i class="ti ti-home"></i>
@@ -6718,21 +6727,13 @@ window.onerror = function(msg, url, line, col, err) {
             <i class="ti ti-map-2"></i>
             <span>UNIDADES DA FEDERAÇÃO</span>
           </button>
-          <button type="button" class="cap-nav-btn" id="capNavAval1_5" onclick="switchCapView('aval1_5', this)">
+          <button type="button" class="cap-nav-btn" id="capNavAval1_5" aria-controls="capSubGrupo1_5" onclick="switchCapView('cap1_5', this)">
             <i class="ti ti-clipboard-check"></i>
-            <span>AVALIAÇÃO DAS CAPACITAÇÕES 1 AO 5</span>
+            <span>CAPACITAÇÕES 1 A 5</span>
           </button>
-          <button type="button" class="cap-nav-btn" id="capNavStat1_5" onclick="switchCapView('stat1_5', this)">
-            <i class="ti ti-chart-bar"></i>
-            <span>ESTATÍSTICAS DAS AVALIAÇÕES 1 A 5</span>
-          </button>
-          <button type="button" class="cap-nav-btn" id="capNavAval6_16" onclick="switchCapView('aval6_16', this)">
+          <button type="button" class="cap-nav-btn" id="capNavAval6_16" aria-controls="capSubGrupo6_16" onclick="switchCapView('cap6_16', this)">
             <i class="ti ti-clipboard-check"></i>
-            <span>AVALIAÇÃO DAS CAPACITAÇÕES 6 AO 16</span>
-          </button>
-          <button type="button" class="cap-nav-btn" id="capNavStat6_16" onclick="switchCapView('stat6_16', this)">
-            <i class="ti ti-chart-bar"></i>
-            <span>ESTATÍSTICAS DAS AVALIAÇÕES 6 A 16</span>
+            <span>CAPACITAÇÕES 6 A 16</span>
           </button>
         </nav>
 
@@ -7108,9 +7109,18 @@ window.onerror = function(msg, url, line, col, err) {
         </section>
 
         <!-- SUB-VIEW 4: AVALIAÇÃO DAS CAPACITAÇÕES 1 A 5 -->
-        <section class="cap-subview" id="capSubAval1_5" aria-labelledby="capA15Titulo">
+        <section class="cap-subview" id="capSubGrupo1_5" aria-labelledby="capGrupoTitulo1_5">
           <header class="cap-page-head">
-            <h2 id="capA15Titulo">Avaliação das Capacitações 1ª a 5ª</h2>
+            <h2 id="capGrupoTitulo1_5">Capacitações 1 a 5</h2>
+            <div class="cap-home-title-bar"></div>
+          </header>
+          <div class="cap-evaluation-tabs" role="tablist" aria-label="Análises das capacitações 1 a 5" onkeydown="capNavegarAbas(event)">
+            <button type="button" role="tab" id="capTabAval1_5" aria-selected="true" aria-controls="capSubAval1_5" tabindex="0" onclick="switchCapView('aval1_5')">Avaliação</button>
+            <button type="button" role="tab" id="capTabStat1_5" aria-selected="false" aria-controls="capSubStat1_5" tabindex="-1" onclick="switchCapView('stat1_5')">Estatísticas</button>
+          </div>
+          <section class="cap-evaluation-panel" role="tabpanel" tabindex="0" id="capSubAval1_5" aria-labelledby="capTabAval1_5">
+          <header class="cap-page-head">
+            <h3 id="capA15Titulo">Avaliação</h3>
             <div class="cap-home-title-bar"></div>
             <p>Explore os aspectos gerais, cada módulo, o SETE e o ensino a distância no mesmo gráfico, selecionando o bloco de perguntas.</p>
           </header>
@@ -7137,10 +7147,9 @@ window.onerror = function(msg, url, line, col, err) {
           </div>
         </section>
 
-        <!-- SUB-VIEW 5: ESTATÍSTICAS DAS AVALIAÇÕES 1 A 5 -->
-        <section class="cap-subview" id="capSubStat1_5" aria-labelledby="capS15Titulo">
+          <section class="cap-evaluation-panel" role="tabpanel" tabindex="0" hidden id="capSubStat1_5" aria-labelledby="capTabStat1_5">
           <header class="cap-page-head">
-            <h2 id="capS15Titulo">Estatísticas das Avaliações 1ª a 5ª</h2>
+            <h3 id="capS15Titulo">Estatísticas</h3>
             <div class="cap-home-title-bar"></div>
             <p>Comparação entre capacitações, canais de divulgação e respostas abertas.</p>
           </header>
@@ -7172,11 +7181,21 @@ window.onerror = function(msg, url, line, col, err) {
             <div class="cap-table-wrap" id="capS15Sugestoes"></div>
           </div>
         </section>
+        </section>
 
         <!-- SUB-VIEW 6: AVALIAÇÃO DAS CAPACITAÇÕES 6 A 16 -->
-        <section class="cap-subview" id="capSubAval6_16" aria-labelledby="capA616Titulo">
+        <section class="cap-subview" id="capSubGrupo6_16" aria-labelledby="capGrupoTitulo6_16">
           <header class="cap-page-head">
-            <h2 id="capA616Titulo">Avaliação das Capacitações 6ª a 16ª</h2>
+            <h2 id="capGrupoTitulo6_16">Capacitações 6 a 16</h2>
+            <div class="cap-home-title-bar"></div>
+          </header>
+          <div class="cap-evaluation-tabs" role="tablist" aria-label="Análises das capacitações 6 a 16" onkeydown="capNavegarAbas(event)">
+            <button type="button" role="tab" id="capTabAval6_16" aria-selected="true" aria-controls="capSubAval6_16" tabindex="0" onclick="switchCapView('aval6_16')">Avaliação</button>
+            <button type="button" role="tab" id="capTabStat6_16" aria-selected="false" aria-controls="capSubStat6_16" tabindex="-1" onclick="switchCapView('stat6_16')">Estatísticas</button>
+          </div>
+          <section class="cap-evaluation-panel" role="tabpanel" tabindex="0" id="capSubAval6_16" aria-labelledby="capTabAval6_16">
+          <header class="cap-page-head">
+            <h3 id="capA616Titulo">Avaliação</h3>
             <div class="cap-home-title-bar"></div>
             <p>Notas de 1 (ruim) a 5 (excelente) atribuídas pelos participantes a sete critérios da formação.</p>
           </header>
@@ -7214,10 +7233,9 @@ window.onerror = function(msg, url, line, col, err) {
           </div>
         </section>
 
-        <!-- SUB-VIEW 7: ESTATÍSTICAS DAS AVALIAÇÕES 6 A 16 -->
-        <section class="cap-subview" id="capSubStat6_16" aria-labelledby="capS616Titulo">
+          <section class="cap-evaluation-panel" role="tabpanel" tabindex="0" hidden id="capSubStat6_16" aria-labelledby="capTabStat6_16">
           <header class="cap-page-head">
-            <h2 id="capS616Titulo">Pesquisa e Percepções — Capacitações 6ª a 16ª</h2>
+            <h3 id="capS616Titulo">Estatísticas</h3>
             <div class="cap-home-title-bar"></div>
             <p>Canais de divulgação e respostas abertas (aspectos positivos, aspectos a melhorar, temas futuros e comentários).</p>
           </header>
@@ -7263,6 +7281,7 @@ window.onerror = function(msg, url, line, col, err) {
             <p class="cap-panel-sub" id="capS616TabelaSub"></p>
             <div class="cap-table-wrap" id="capS616Tabela"></div>
           </div>
+        </section>
         </section>
       </main>
     </div>
@@ -8543,7 +8562,7 @@ window.onerror = function(msg, url, line, col, err) {
     <div class="smb-sec">
       <div class="smb-sec-title" data-i18n="settings_info_title">Informações da Versão</div>
       <div style="font-size:12px;color:var(--text-2);display:flex;flex-direction:column;gap:4px;margin-top:6px">
-        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.4.0</b></div>
+        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.4.1</b></div>
         <div><span data-i18n="settings_updated">Última Atualização:</span> <b class="pnite-date-val">06/10/2026</b> às <b class="pnite-time-val">21:05</b></div>
         <div><span data-i18n="settings_author">Responsável Técnico:</span> <b class="pnite-author-val">Equipe PNITE</b></div>
       </div>
@@ -9532,7 +9551,7 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.4.0";
+const PNITE_VERSION = "v.3.4.1";
 const PNITE_LAST_UPDATE = "15/11/2026";
 const PNITE_LAST_TIME = "11:27";
 
@@ -16424,11 +16443,11 @@ document.addEventListener('keydown', function(ev) {
 // Base: API do Supabase (public.capacitacao_dados, gravada por scripts/extrair_capacitacao.py),
 // com tabelas {colunas, linhas} do schema `capacitacao` (supabase/migrations/0012_capacitacao.sql).
 // Malha municipal do mapa: API de malhas do IBGE (loadMunicipalGeoForUf, com cache).
-const CAP_STATE = { raw: null, malhas: null, carga: null, dados: null, charts: {}, view: 'home', mapaModo: 'participacao', eventos: false, geo: null, mapInfo: {} };
+const CAP_STATE = { raw: null, malhas: null, carga: null, dados: null, charts: {}, view: 'home', abas: { cap1_5: 'aval1_5', cap6_16: 'aval6_16' }, mapaModo: 'participacao', eventos: false, geo: null, mapInfo: {} };
 const CAP_UFS_MAPA = ['GO', 'MT', 'MS', 'DF'];
 const CAP_VIEWS = {
   home: 'capSubHome', capacitacoes: 'capSubCapacitacoes', uf: 'capSubUf',
-  aval1_5: 'capSubAval1_5', stat1_5: 'capSubStat1_5', aval6_16: 'capSubAval6_16', stat6_16: 'capSubStat6_16'
+  aval1_5: 'capSubGrupo1_5', stat1_5: 'capSubGrupo1_5', aval6_16: 'capSubGrupo6_16', stat6_16: 'capSubGrupo6_16'
 };
 const CAP_ESCALA_15 = ['Ótimo', 'Bom', 'Regular', 'Ruim'];
 const CAP_ESCALA_SIM = ['Sim', 'Em parte', 'Não'];
@@ -16716,15 +16735,38 @@ function capTooltipPercentual(ctx) {
 // Navegação entre as páginas da frente
 // --------------------------------------------------------------------------
 function switchCapView(subviewId, btnEl) {
-  CAP_STATE.view = CAP_VIEWS[subviewId] ? subviewId : 'home';
+  const destino = CAP_STATE.abas[subviewId] || subviewId;
+  CAP_STATE.view = CAP_VIEWS[destino] ? destino : 'home';
+  const grupo = /^(aval|stat)(1_5|6_16)$/.exec(CAP_STATE.view);
+  if (grupo) CAP_STATE.abas['cap' + grupo[2]] = CAP_STATE.view;
+  const navIds = { home: 'capNavHome', capacitacoes: 'capNavCapacitacoes', uf: 'capNavUf', aval1_5: 'capNavAval1_5', stat1_5: 'capNavAval1_5', aval6_16: 'capNavAval6_16', stat6_16: 'capNavAval6_16' };
   document.querySelectorAll('.cap-nav-btn').forEach(b => {
-    b.classList.toggle('active', b === btnEl);
-    if (b === btnEl) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
+    const ativo = b.id === navIds[CAP_STATE.view];
+    b.classList.toggle('active', ativo);
+    if (ativo) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
   });
-  document.querySelectorAll('.cap-subview').forEach(v => v.classList.remove('active'));
-  const subviewEl = document.getElementById(CAP_VIEWS[CAP_STATE.view]);
-  if (subviewEl) subviewEl.classList.add('active');
+  document.querySelectorAll('.cap-subview').forEach(v => v.classList.toggle('active', v.id === CAP_VIEWS[CAP_STATE.view]));
+  ['1_5', '6_16'].forEach(faixa => {
+    ['aval', 'stat'].forEach(tipo => {
+      const ativo = CAP_STATE.abas['cap' + faixa] === tipo + faixa;
+      const tab = document.getElementById('capTab' + (tipo === 'aval' ? 'Aval' : 'Stat') + faixa);
+      tab.setAttribute('aria-selected', String(ativo));
+      tab.tabIndex = ativo ? 0 : -1;
+      document.getElementById(tab.getAttribute('aria-controls')).hidden = !ativo;
+    });
+  });
   renderCapSubview();
+}
+
+function capNavegarAbas(ev) {
+  if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(ev.key)) return;
+  const tabs = Array.from(ev.currentTarget.querySelectorAll('[role="tab"]'));
+  const atual = tabs.indexOf(ev.target);
+  if (atual < 0) return;
+  ev.preventDefault(); ev.stopPropagation();
+  const indice = ev.key === 'Home' ? 0 : ev.key === 'End' ? tabs.length - 1 : (atual + (ev.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
+  tabs[indice].click();
+  tabs[indice].focus();
 }
 
 function renderCapSubview() {
@@ -18815,12 +18857,13 @@ async function recarregarDadosExternos() {
       </div>
     </div>
     <div class="pif-body">
-      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.4.0</strong></div>
+      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.4.1</strong></div>
       <div class="pif-row"><span>Data da alteração:</span><span class="pnite-date-val">09/11/2026</span></div>
       <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">14:00</span></div>
       <div class="pif-row"><span>Responsável técnico:</span><span class="pnite-author-val">Equipe PNITE</span></div>
       <div class="pif-note">
         <i class="ti ti-check" style="color:var(--accent);margin-right:3px"></i>
+        <strong>Navegação das avaliações (v.3.4.1):</strong> duas páginas por faixa de capacitação, com abas superiores de Avaliação e Estatísticas.<br>
         <strong>Página Capacitações (v.3.4.0):</strong> cartões organizados, síntese da participação, seleção pelo mapa, busca e ordenação da tabela e totais nas barras.<br>
         <strong>Home da capacitação (v.3.3.9):</strong> indicadores de síntese, resumo do recorte e limpeza dos filtros, com cobertura contextualizada.<br>
         <strong>Estatísticas das avaliações 1 a 5 (v.3.3.8):</strong> removidos o quadro de perguntas e o filtro de bloco duplicados; preservados os filtros de capacitação e público e os demais conteúdos.<br>
@@ -18870,7 +18913,7 @@ async function recarregarDadosExternos() {
   </div>
   <button class="pif-btn" id="pifBtn" aria-label="Informações de Versão">
     <i class="ti ti-info-circle"></i>
-    <span class="pif-btn-label pnite-version-val">v.3.4.0</span>
+    <span class="pif-btn-label pnite-version-val">v.3.4.1</span>
   </button>
 </div>
 
