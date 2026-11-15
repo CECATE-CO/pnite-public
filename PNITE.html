@@ -1663,6 +1663,7 @@ body {
 
 /* ÁREA PRINCIPAL DA CAPACITAÇÃO */
 .cap-main-area {
+  order: 1;
   flex: 1;
   min-width: 0;
 }
@@ -2304,10 +2305,13 @@ body {
 @media (max-width: 420px) { #capCapKpis { grid-template-columns: minmax(0, 1fr); } }
 
 /* Escopo territorial comum; a origem municipal é independente da sede do evento. */
-.cap-territory-panel { padding: 14px 16px; margin-bottom: 20px; border: 1px solid var(--border); border-radius: 12px; background-color: var(--bg-card); min-width: 0; }
-.cap-territory-panel select { min-height: 44px; }
-.cap-territory-panel .cap-coverage-note { margin-top: 10px; margin-bottom: 0; }
-#capTerritorioResumo { color: var(--text-2); line-height: 1.6; }
+.cap-territory-panel { order: 2; flex: 0 0 210px; width: 210px; padding: 12px; border: 1px solid var(--border); border-radius: 12px; background-color: var(--bg-card); min-width: 0; position: sticky; top: 76px; }
+.cap-territory-panel select { min-height: 44px; max-width: 100%; }
+@media (max-width: 1150px) {
+  .cap-territory-panel { order: 1; flex: 0 0 auto; width: min(280px, 100%); align-self: flex-end; position: static; }
+  .cap-main-area { order: 2; }
+}
+@media (max-width: 600px) { .cap-territory-panel { width: 100%; align-self: stretch; } }
 .cap-territory-note { color: var(--text-2); font-size: 12px; line-height: 1.6; margin-bottom: 14px; }
 
 /* Organização exclusiva da comparação por UF. */
@@ -6777,15 +6781,13 @@ window.onerror = function(msg, url, line, col, err) {
         </div>
       </aside>
 
+      <aside class="cap-territory-panel" aria-label="Recorte territorial da capacitação">
+        <div class="cap-field"><label for="capTerritorio">Origem do município representado</label><select id="capTerritorio" onchange="capTrocarTerritorio()"><option value="co">Centro-Oeste</option><option value="outros">Outros — outras UFs</option><option value="todos">Todos os atendimentos</option></select></div>
+      </aside>
+
       <!-- CONTEÚDO PRINCIPAL DA CAPACITAÇÃO -->
       <main class="cap-main-area">
         <div class="cap-empty cap-status" id="capStatus" role="status" aria-live="polite" hidden></div>
-
-        <section class="cap-territory-panel" aria-label="Recorte territorial da capacitação">
-          <div class="cap-field"><label for="capTerritorio">Origem do município representado</label><select id="capTerritorio" onchange="capTrocarTerritorio()" aria-describedby="capTerritorioMetodo"><option value="co">Centro-Oeste</option><option value="outros">Outros — outras UFs</option><option value="nao_identificada">Origem não identificada</option><option value="todos">Todos os atendimentos</option></select></div>
-          <p id="capTerritorioMetodo" class="cap-coverage-note">O Centro-Oeste é a área de atuação prioritária. Atendimentos externos são preservados, sem compor a cobertura regional.</p>
-          <p id="capTerritorioResumo" class="cap-coverage-note" role="status" aria-live="polite"></p>
-        </section>
 
         <!-- SUB-VIEW 1: HOME (INICIAL) -->
         <section class="cap-subview active" id="capSubHome" aria-label="Visão Geral das Capacitações">
@@ -6996,7 +6998,7 @@ window.onerror = function(msg, url, line, col, err) {
                   </div>
                 </div>
                 <!-- CONTÊINER DO SVG DO MAPA -->
-                <p class="cap-territory-note">Mapa restrito ao Centro-Oeste. Atendimentos de outras UFs são consultados nas tabelas e no resumo territorial.</p>
+                <p class="cap-territory-note">Mapa restrito ao Centro-Oeste. Atendimentos de outras UFs são consultados nas tabelas de Capacitações e Unidades da Federação.</p>
                 <div class="cap-svg-container" id="capSvgContainer">
                   <!-- SVG gerado dinamicamente com os 467 municípios do CO + estados vizinhos -->
                 </div>
@@ -8618,7 +8620,7 @@ window.onerror = function(msg, url, line, col, err) {
     <div class="smb-sec">
       <div class="smb-sec-title" data-i18n="settings_info_title">Informações da Versão</div>
       <div style="font-size:12px;color:var(--text-2);display:flex;flex-direction:column;gap:4px;margin-top:6px">
-        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.4.5</b></div>
+        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.4.6</b></div>
         <div><span data-i18n="settings_updated">Última Atualização:</span> <b class="pnite-date-val">06/10/2026</b> às <b class="pnite-time-val">21:05</b></div>
         <div><span data-i18n="settings_author">Responsável Técnico:</span> <b class="pnite-author-val">Equipe PNITE</b></div>
       </div>
@@ -9607,7 +9609,7 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.4.5";
+const PNITE_VERSION = "v.3.4.6";
 const PNITE_LAST_UPDATE = "15/11/2026";
 const PNITE_LAST_TIME = "11:27";
 
@@ -16656,25 +16658,10 @@ function capTrocarTerritorio() {
 }
 
 function capAtualizarTerritorio() {
-  const d = capDados();
   const semOrigemNaBase = ['aval1_5', 'stat1_5'].includes(CAP_STATE.view);
-  document.getElementById('capTerritorio').disabled = semOrigemNaBase;
-  capSetTxt('capTerritorioMetodo', semOrigemNaBase ? 'Recorte territorial indisponível nas avaliações 1 a 5: município e UF do respondente não constam na base. Os resultados abrangem o evento completo.' : 'Recorte: ' + capNomeTerritorio() + '. A origem é a do município representado, independentemente da sede do evento. A cobertura regional usa somente GO, MT, MS e DF; outras UFs são atendimentos complementares.');
-  if (!d || semOrigemNaBase) { capSetTxt('capTerritorioResumo', ''); return; }
-  if (['aval6_16', 'stat6_16'].includes(CAP_STATE.view)) {
-    const prefixo = CAP_STATE.view === 'aval6_16' ? 'capA616' : 'capS616';
-    const cap = capVal(prefixo + 'Cap'), cargo = capVal(prefixo + 'Cargo');
-    const rows = d.resp616.filter(r => (!cap || String(r.capacitacao) === cap) && (!cargo || r.cargo === cargo));
-    const n = grupo => rows.filter(r => capGrupoOrigem(r) === grupo).length;
-    capSetTxt('capTerritorioResumo', 'Antes dos filtros de origem e município: ' + capInt(rows.length) + ' respondentes; Centro-Oeste: ' + capInt(n('co')) + '; Outros (outras UFs): ' + capInt(n('outros')) + '; origem não identificada: ' + capInt(n('nao_identificada')) + '. Respostas sem origem conhecida não são atribuídas ao Centro-Oeste.');
-    return;
-  }
-  const cap = CAP_STATE.view === 'home' ? capVal('capPoloSelect') : CAP_STATE.view === 'capacitacoes' ? capVal('capCapSel') : '';
-  const ano = CAP_STATE.view === 'home' ? capVal('capAnoSelect') : CAP_STATE.view === 'uf' ? capVal('capUfAno') : '';
-  const rows = d.fato.filter(r => (!cap || String(r.capacitacao) === cap) && (!ano || String(r.ano) === ano));
-  const somar = grupo => capResumo(rows.filter(r => capGrupoOrigem(r) === grupo)).P;
-  const semMunicipio = d.caps.filter(c => (!cap || String(c.numero) === cap) && (!ano || String(c.ano) === ano)).reduce((n, c) => n + (Number((d.semMunicipio || {})[c.numero]) || 0), 0);
-  capSetTxt('capTerritorioResumo', 'Total geral realizado antes dos filtros de origem e município: ' + capInt(capResumo(rows).P + semMunicipio) + ' presenças. Centro-Oeste: ' + capInt(somar('co')) + '; Outros (outras UFs): ' + capInt(somar('outros')) + ' em ' + capInt(capMunicipiosComPresenca(rows.filter(r => capGrupoOrigem(r) === 'outros'))) + ' municípios; origem não identificada: ' + capInt(somar('nao_identificada') + semMunicipio) + '. Destas, ' + capInt(semMunicipio) + ' presenças não possuem registro municipal e ficam fora dos indicadores municipais abaixo. Presenças podem repetir a mesma pessoa em eventos diferentes.');
+  const filtro = document.getElementById('capTerritorio');
+  filtro.disabled = semOrigemNaBase;
+  filtro.title = semOrigemNaBase ? 'Recorte indisponível: as avaliações 1 a 5 não identificam a origem municipal.' : '';
 }
 
 function capResumo(rows) {
@@ -17099,7 +17086,7 @@ function updateCapacitacaoView() {
   const caps = new Set(rows.map(r => r.capacitacao));
   const cobertura = capCoberturaMunicipal(rows, capUfsCobertura(selUf));
   capKpis('capHomeKpis', [
-    { l: 'Participantes', v: capInt(rows.length ? s.P : null), n: 'Presenças com registro municipal neste recorte; sem registros, —. O total geral inclui origens não identificadas separadamente.' },
+    { l: 'Participantes', v: capInt(rows.length ? s.P : null), n: 'Presenças com registro municipal no recorte selecionado.' },
     { l: 'Capacitações', v: capInt(caps.size), n: 'Eventos com registros municipais no recorte selecionado.' },
     { l: 'Municípios alcançados', v: capInt(capMunicipiosComPresenca(rows)), n: 'Municípios únicos com presença no território analisado.' },
     { l: 'Cobertura regional', v: capPct(cobertura.alcancados, cobertura.total), n: cobertura.total != null ? capInt(cobertura.alcancados) + ' de ' + capInt(cobertura.total) + ' municípios do território.' : (capUfsCobertura(selUf).length ? 'Base territorial indisponível.' : 'Não se aplica: recorte fora da área regional.') }
@@ -17422,7 +17409,7 @@ function capRenderCapacitacoes() {
     { l: 'Municípios participantes', v: capInt(rows.length ? s.participou : null), n: s.espontaneos ? `+ ${s.espontaneos} não convidado(s) com participantes` : 'Convidados com ao menos 1 presente' },
     { l: 'Taxa de participação', v: capPct(s.participou, s.convidados), n: 'Participantes ÷ convidados' },
     { l: 'Inscritos', v: capInt(s.inscritos), n: s.inscritos == null ? 'Sem formulário de inscrição' : (c ? 'Formulário de inscrição' : 'Formulários da 5ª à 16ª') },
-    { l: 'Participantes', v: capInt(rows.length ? s.P : null), n: semMun > 0 ? `${semMun} presenças sem município identificado constam somente no total geral acima` : 'Presentes na lista de presença' },
+    { l: 'Participantes', v: capInt(rows.length ? s.P : null), n: semMun > 0 ? `${semMun} presenças sem município identificado não integram este indicador municipal` : 'Presentes na lista de presença' },
     { l: 'Comparecimento', v: capPct(s.presentesComInscricao, s.inscritos), n: c ? 'Presentes ÷ inscritos' : 'Presentes ÷ inscritos (5ª à 16ª)' }
   );
   capKpis('capCapEvento', kpis.splice(0, c ? 3 : 2));
@@ -19097,12 +19084,13 @@ async function recarregarDadosExternos() {
       </div>
     </div>
     <div class="pif-body">
-      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.4.5</strong></div>
+      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.4.6</strong></div>
       <div class="pif-row"><span>Data da alteração:</span><span class="pnite-date-val">09/11/2026</span></div>
       <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">14:00</span></div>
       <div class="pif-row"><span>Responsável técnico:</span><span class="pnite-author-val">Equipe PNITE</span></div>
       <div class="pif-note">
         <i class="ti ti-check" style="color:var(--accent);margin-right:3px"></i>
+        <strong>Filtro territorial lateral (v.3.4.6):</strong> controle isolado à direita, com Centro-Oeste, Outros e Todos os atendimentos, sem o bloco de explicações.<br>
         <strong>Recorte regional da capacitação (v.3.4.5):</strong> Centro-Oeste como padrão, atendimentos de outras UFs e origens não identificadas preservados separadamente; cobertura restrita à área regional e avaliações territoriais apenas quando a base permite.<br>
         <strong>Simplificação dos painéis (v.3.4.4):</strong> removidos a tabela de bases por critério, a lista expansível de polos e o bloco de interpretação das colunas, preservando os gráficos e indicadores.<br>
         <strong>Resultados e percepções (v.3.4.3):</strong> abas renomeadas, filtros compartilhados, bases dos percentuais explícitas e consulta às respostas originais com busca e expansão de textos.<br>
@@ -19157,7 +19145,7 @@ async function recarregarDadosExternos() {
   </div>
   <button class="pif-btn" id="pifBtn" aria-label="Informações de Versão">
     <i class="ti ti-info-circle"></i>
-    <span class="pif-btn-label pnite-version-val">v.3.4.5</span>
+    <span class="pif-btn-label pnite-version-val">v.3.4.6</span>
   </button>
 </div>
 

@@ -1,6 +1,6 @@
 # PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 
-Versão atual: **v.3.4.5**.
+Versão atual: **v.3.4.6**.
 
 A **PNITE** é uma plataforma analítica desenvolvida para visualização, monitoramento, exploração e interpretação de informações estratégicas sobre o transporte escolar público brasileiro.
 
@@ -166,6 +166,6 @@ A plataforma segue um versionamento sequencial $Z \rightarrow Y \rightarrow X$ e
 
 ### Recorte territorial das capacitações
 
-O recorte inicial é Centro-Oeste (GO, MT, MS e DF). O controle de origem municipal permite consultar outras UFs (Outros), origens não identificadas ou todos os atendimentos. A cobertura regional sempre usa somente municípios do Centro-Oeste; não se soma o território de estados externos ao denominador. Atendimentos externos ficam disponíveis em quadro próprio e nos recortes operacionais. A sede do evento não determina a origem do participante. As avaliações 1 a 5 não possuem origem municipal e permanecem como avaliações completas dos eventos, com o controle territorial desabilitado e a limitação explícita. Nas avaliações 6 a 16, o código municipal identifica a origem; ausência de código/UF reconhecível é mantida como não identificada. Presenças sem registro municipal constam no resumo geral, sem serem imputadas a indicadores municipais.
+O recorte inicial é Centro-Oeste (GO, MT, MS e DF). O filtro lateral de origem municipal oferece Centro-Oeste, Outros (outras UFs) e Todos os atendimentos, nessa ordem. Origens não identificadas permanecem na base e são incluídas em Todos quando há registro disponível. A cobertura regional sempre usa somente municípios do Centro-Oeste; não se soma o território de estados externos ao denominador. Atendimentos externos ficam disponíveis em quadro próprio e nos recortes operacionais. A sede do evento não determina a origem do participante. As avaliações 1 a 5 não possuem origem municipal e permanecem como avaliações completas dos eventos, com o controle territorial desabilitado e a limitação explícita. Nas avaliações 6 a 16, o código municipal identifica a origem; ausência de código/UF reconhecível é mantida como não identificada. Presenças sem registro municipal são informadas nos avisos dos eventos, sem serem imputadas a indicadores municipais.
 
 O cadastro do importador aceita municípios das 27 UFs. UF explícita incompatível não é substituída pela sede do evento; a associação fica não identificada. Esta alteração não reimporta nem modifica os registros já gravados no banco.
