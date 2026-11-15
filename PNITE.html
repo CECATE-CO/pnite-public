@@ -2260,6 +2260,30 @@ body {
   line-height: 1.35;
 }
 
+/* Organização exclusiva da página Capacitações. */
+#capCapEvento { grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); }
+#capCapKpis { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+#capCapParticipacao { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 12px; }
+#capSubCapacitacoes .cap-event-scope { margin: 0 0 16px; padding: 12px 14px; border: 1px solid var(--border); border-radius: 12px; background-color: var(--bg-card); }
+#capSubCapacitacoes .cap-event-public-chart { height: 240px; max-width: 360px; margin: 0 auto 14px; }
+.cap-event-public-summary { display: grid; gap: 6px; margin-bottom: 20px; color: var(--text-2); font-size: 12px; }
+.cap-event-public-summary p { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; }
+.cap-event-deselect { margin-bottom: 10px; }
+#capSubCapacitacoes .cap-map-legend-bar, #capSubCapacitacoes .cap-legend-tags { flex-wrap: wrap; min-width: 0; }
+#capSubCapacitacoes .cap-legend-tag { white-space: nowrap; }
+#capSubCapacitacoes .cap-dot { flex-shrink: 0; }
+#capSubCapacitacoes .cap-field select, #capSubCapacitacoes .cap-field input { min-height: 44px; }
+.cap-event-series-scroll { overflow-x: auto; max-width: 100%; }
+.cap-event-series { min-width: 720px; }
+#capCapSvg path[role="button"] { cursor: pointer; }
+#capCapSvg path[aria-pressed="true"], #capCapSvg path[role="button"]:focus-visible { stroke: var(--text-1); stroke-width: 3px; stroke-dasharray: 5 3; }
+#capCapTabela .cap-event-row-selected td { background-color: var(--bg-active); }
+@media (max-width: 760px) {
+  #capCapKpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  #capCapParticipacao { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 420px) { #capCapKpis { grid-template-columns: minmax(0, 1fr); } }
+
 /* PAINÉIS E GRADES */
 .cap-grid-2 {
   display: grid;
@@ -6986,11 +7010,17 @@ window.onerror = function(msg, url, line, col, err) {
               <select id="capCapMun" data-cap-filter></select>
             </div>
           </div>
-          <div class="cap-kpi-grid" id="capCapKpis"></div>
+          <div class="cap-event-scope cap-home-scope">
+            <p id="capCapRecorte" role="status" aria-live="polite"></p>
+            <button type="button" class="cap-home-clear" onclick="capLimparFiltrosEvento()">Limpar filtros</button>
+          </div>
+          <div class="cap-kpi-grid" id="capCapEvento" role="group" aria-label="Identificação e período dos eventos"></div>
+          <div class="cap-kpi-grid" id="capCapKpis" role="group" aria-label="Indicadores de municípios e participantes"></div>
           <div class="cap-grid-2">
             <div class="cap-panel">
               <h3 class="cap-panel-title">Mapa da capacitação</h3>
-              <p class="cap-panel-sub">Situação dos municípios convidados e marcador do polo.</p>
+              <p class="cap-panel-sub">Situação dos municípios e marcador do polo. Selecione um município para consultar seus registros; o filtro Município oferece a mesma seleção por teclado.</p>
+              <button type="button" class="cap-home-clear cap-event-deselect" id="capCapDesfazer" onclick="capLimparMunicipioEvento()" hidden>Desfazer seleção do município</button>
               <div class="cap-map-card cap-map-compact" id="capCapMapCard">
                 <div class="cap-map-legend-bar">
                   <span class="cap-legend-title">Município participou?</span>
@@ -7009,18 +7039,27 @@ window.onerror = function(msg, url, line, col, err) {
             <div class="cap-panel">
               <h3 class="cap-panel-title">Participantes por público</h3>
               <p class="cap-panel-sub">Distribuição dos presentes entre gestores municipais e conselheiros do CACS-FUNDEB.</p>
-              <div class="cap-chart-box"><canvas id="capChartCapPublico" role="img" aria-label="Gráfico de participantes por público"></canvas></div>
+              <div class="cap-chart-box cap-event-public-chart"><canvas id="capChartCapPublico" role="img" aria-label="Gráfico de participantes por público"></canvas></div>
+              <div id="capCapPublicoResumo" class="cap-event-public-summary"></div>
+              <h4 class="cap-panel-title">Participação dos municípios convidados</h4>
+              <div class="cap-kpi-grid" id="capCapParticipacao"></div>
+              <p class="cap-panel-sub" id="capCapParticipacaoNota"></p>
             </div>
           </div>
           <div class="cap-panel">
             <h3 class="cap-panel-title">Participantes por capacitação</h3>
-            <p class="cap-panel-sub">Gestores e CACS presentes em cada capacitação; a selecionada fica em destaque.</p>
-            <div class="cap-chart-box"><canvas id="capChartCapSerie" role="img" aria-label="Gráfico de participantes por capacitação"></canvas></div>
+            <p class="cap-panel-sub">Gestores e CACS presentes em cada capacitação; a selecionada fica em destaque. Os totais sobre as barras somam os públicos visíveis.</p>
+            <div class="cap-event-series-scroll" tabindex="0" role="region" aria-label="Comparação por capacitação; role horizontalmente em telas menores"><div class="cap-chart-box cap-event-series"><canvas id="capChartCapSerie" role="img" aria-label="Gráfico de participantes por capacitação"></canvas></div></div>
           </div>
           <div class="cap-panel">
             <h3 class="cap-panel-title">Municípios da capacitação</h3>
             <p class="cap-panel-sub" id="capCapTabelaSub"></p>
-            <div class="cap-table-wrap" id="capCapTabela"></div>
+            <div class="cap-toolbar" role="group" aria-label="Consulta à tabela de municípios">
+              <div class="cap-field cap-field-wide"><label for="capCapBusca">Buscar município na tabela</label><input type="search" id="capCapBusca" placeholder="Nome ou código IBGE" oninput="capRenderTabelaEvento()"></div>
+              <div class="cap-field"><label for="capCapOrdem">Ordenar registros</label><select id="capCapOrdem" onchange="capRenderTabelaEvento()"><option value="evento">Capacitação, UF e município</option><option value="nome">Município (A–Z)</option><option value="participantes">Mais participantes</option><option value="gestores">Mais gestores</option><option value="cacs">Mais CACS</option><option value="situacao">Participou primeiro</option></select></div>
+            </div>
+            <p class="cap-panel-sub" id="capCapConsultaNota">Busca e ordenação afetam somente a tabela.</p>
+            <div class="cap-table-wrap" id="capCapTabela" tabindex="0" role="region" aria-label="Registros municipais das capacitações"></div>
           </div>
         </section>
 
@@ -8504,7 +8543,7 @@ window.onerror = function(msg, url, line, col, err) {
     <div class="smb-sec">
       <div class="smb-sec-title" data-i18n="settings_info_title">Informações da Versão</div>
       <div style="font-size:12px;color:var(--text-2);display:flex;flex-direction:column;gap:4px;margin-top:6px">
-        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.3.9</b></div>
+        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.4.0</b></div>
         <div><span data-i18n="settings_updated">Última Atualização:</span> <b class="pnite-date-val">06/10/2026</b> às <b class="pnite-time-val">21:05</b></div>
         <div><span data-i18n="settings_author">Responsável Técnico:</span> <b class="pnite-author-val">Equipe PNITE</b></div>
       </div>
@@ -9493,7 +9532,7 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.3.9";
+const PNITE_VERSION = "v.3.4.0";
 const PNITE_LAST_UPDATE = "15/11/2026";
 const PNITE_LAST_TIME = "11:27";
 
@@ -16707,6 +16746,9 @@ function capRegistrarEventos() {
   document.addEventListener('input', e => {
     if (e.target && e.target.type === 'search' && e.target.matches('[data-cap-filter]')) renderCapSubview();
   });
+  const mapaEventos = document.getElementById('capCapSvg');
+  mapaEventos.addEventListener('click', capSelecionarMunicipioEvento);
+  mapaEventos.addEventListener('keydown', capSelecionarMunicipioEvento);
   document.querySelectorAll('#frontCapacitacao .cap-svg-container').forEach(cont => {
     cont.addEventListener('mousemove', capMapHover);
     cont.addEventListener('mouseleave', capMapOut);
@@ -17085,6 +17127,59 @@ function capMapOut(ev) {
 // --------------------------------------------------------------------------
 // Página CAPACITAÇÕES
 // --------------------------------------------------------------------------
+function capLimparMunicipioEvento() {
+  document.getElementById('capCapMun').value = '';
+  document.getElementById('capCapBusca').value = '';
+  capRenderCapacitacoes();
+}
+
+function capLimparFiltrosEvento() {
+  document.getElementById('capCapSel').value = '';
+  document.getElementById('capCapOrdem').value = 'evento';
+  capLimparMunicipioEvento();
+}
+
+function capSelecionarMunicipioEvento(ev) {
+  const path = ev.target.closest ? ev.target.closest('#capCapSvg path[role="button"]') : null;
+  if (!path) return;
+  if (ev.type === 'keydown') {
+    if (ev.key !== 'Enter' && ev.key !== ' ') return;
+    ev.preventDefault(); ev.stopPropagation();
+  }
+  document.getElementById('capCapMun').value = path.getAttribute('data-cod');
+  document.getElementById('capCapBusca').value = '';
+  capRenderCapacitacoes();
+  document.getElementById('capCapDesfazer').focus();
+}
+
+function capRenderTabelaEvento() {
+  const d = capDados();
+  if (!d) return;
+  const sel = capVal('capCapSel');
+  const mun = capVal('capCapMun');
+  const rows = d.fato.filter(r => (!sel || String(r.capacitacao) === sel) && (!mun || r.cod_ibge === mun));
+  const busca = capNormTxt(capVal('capCapBusca')).trim();
+  const filtradas = rows.filter(r => !busca || capNormTxt(r.nome).includes(busca) || String(r.cod_ibge).includes(busca));
+  const ordem = capVal('capCapOrdem');
+  const campos = { participantes: 'presentes_total', gestores: 'presentes_gestores', cacs: 'presentes_cacs' };
+  const comparar = (a, b) => {
+    const desempate = a.nome.localeCompare(b.nome, 'pt-BR') || a.capacitacao - b.capacitacao;
+    if (campos[ordem]) return (b[campos[ordem]] - a[campos[ordem]]) || desempate;
+    if (ordem === 'situacao') return Number(b.presentes_total > 0) - Number(a.presentes_total > 0) || desempate;
+    if (ordem === 'nome') return desempate;
+    return a.capacitacao - b.capacitacao || a.uf.localeCompare(b.uf) || desempate;
+  };
+  const linhas = filtradas.sort(comparar)
+    .map(r => `<tr class="${mun ? 'cap-event-row-selected' : ''}"><td>${capNum2(r.capacitacao)} — ${escHtml(d.capPorNum.get(r.capacitacao).polo)}</td><td>${escHtml(r.uf)}</td><td>${escHtml(r.nome)}</td>
+      <td>${r.convidado === 1 ? '<span class="cap-tag cap-tag-neutro">Convidado</span>' : '<span class="cap-tag cap-tag-neutro">Não convidado</span>'}</td>
+      <td>${capTagSimNao(r.presentes_total > 0)}</td><td class="num">${capInt(r.inscritos_total)}</td><td class="num">${capInt(r.presentes_total)}</td>
+      <td class="num">${capInt(r.presentes_gestores)}</td><td class="num">${capInt(r.presentes_cacs)}</td><td class="num">${capDec(r.distancia_polo_km, 0)}</td></tr>`);
+  document.getElementById('capCapTabela').innerHTML = capTabelaHtml(
+    [{ t: 'Capacitação' }, { t: 'UF' }, { t: 'Município' }, { t: 'Convite' }, { t: 'Participou?' }, { t: 'Inscritos', num: 1 },
+      { t: 'Participantes', num: 1 }, { t: 'Gestores', num: 1 }, { t: 'CACS', num: 1 }, { t: 'Distância ao polo (km)', num: 1 }], linhas);
+  capSetTxt('capCapTabelaSub', `${capInt(filtradas.length)} de ${capInt(rows.length)} registro(s) município × capacitação. Distância em linha reta entre os centróides do município e do polo.`);
+}
+
 function capRenderCapacitacoes() {
   const d = capDados();
   const t = capTema();
@@ -17117,11 +17212,30 @@ function capRenderCapacitacoes() {
     { l: 'Participantes', v: capInt(s.P), n: semMun > 0 ? `+ ${semMun} presente(s) sem município identificado` : 'Presentes na lista de presença' },
     { l: 'Comparecimento', v: capPct(s.presentesComInscricao, s.inscritos), n: c ? 'Presentes ÷ inscritos' : 'Presentes ÷ inscritos (5ª à 16ª)' }
   );
+  capKpis('capCapEvento', kpis.splice(0, c ? 3 : 2));
   capKpis('capCapKpis', kpis);
+  capSetTxt('capCapRecorte', 'Recorte atual: ' + (c ? capRotulo(c) + ' · ' + capPeriodo(c) : 'Todas as capacitações') + ' · ' + (mun ? document.getElementById('capCapMun').selectedOptions[0].text : 'Todos os municípios'));
+  document.getElementById('capCapDesfazer').hidden = !mun;
 
   renderCapacitacaoMap('capCapSvg', capStatusMunicipios(rows, d),
     c ? [c.polo_cod_ibge] : Array.from(new Set(rows.map(r => d.capPorNum.get(r.capacitacao).polo_cod_ibge))));
 
+  const codigosDisponiveis = new Set(rowsCap.map(r => r.cod_ibge));
+  document.querySelectorAll('#capCapSvg path[data-cod]').forEach(path => {
+    const cod = path.getAttribute('data-cod');
+    if (!codigosDisponiveis.has(cod)) return;
+    path.setAttribute('role', 'button');
+    path.setAttribute('tabindex', '0');
+    path.setAttribute('aria-label', 'Selecionar ' + path.getAttribute('data-nome'));
+    path.setAttribute('aria-pressed', String(cod === mun));
+  });
+  capKpis('capCapParticipacao', [
+    { l: 'Convidados', v: capInt(s.convidados) },
+    { l: 'Participaram', v: capInt(s.participou) },
+    { l: 'Ausentes', v: capInt(s.ausente) }
+  ]);
+  capSetTxt('capCapParticipacaoNota', capPct(s.participou, s.convidados) + ' de participação entre convidados. ' + (sel ? 'Contagem de municípios no evento.' : 'Contagem de registros município × capacitação; um município pode aparecer em vários eventos.'));
+  document.getElementById('capCapPublicoResumo').innerHTML = [['Gestores', s.G], ['CACS', s.C], ['Outros', s.O]].map(([nome, valor]) => '<p><span>' + nome + '</span><strong>' + capInt(valor) + ' · ' + capPct(valor, s.P) + '</strong></p>').join('');
   const publico = [['Gestores', s.G, t.gest], ['CACS', s.C, t.cacs], ['Outros', s.O, t.outros]].filter(p => p[1] > 0);
   capGrafico('capChartCapPublico', {
     type: 'doughnut',
@@ -17143,6 +17257,21 @@ function capRenderCapacitacoes() {
   const realce = (cor, n) => (!sel || String(n) === sel) ? cor : cor + '55';
   capGrafico('capChartCapSerie', {
     type: 'bar',
+    plugins: [{
+      id: 'capTotaisEventos',
+      afterDatasetsDraw(chart) {
+        const { ctx } = chart;
+        ctx.save(); ctx.fillStyle = t.eixo; ctx.font = '600 11px sans-serif'; ctx.textAlign = 'center';
+        chart.data.labels.forEach((_, i) => {
+          const visiveis = chart.data.datasets.map((s, j) => ({ s, j })).filter(({ j }) => chart.isDatasetVisible(j));
+          const barras = visiveis.map(({ j }) => chart.getDatasetMeta(j).data[i]).filter(Boolean);
+          if (!barras.length) return;
+          const total = visiveis.reduce((soma, { s }) => soma + s.data[i], 0);
+          ctx.fillText(capInt(total), barras[0].x, Math.min(...barras.map(barra => barra.y)) - 7);
+        });
+        ctx.restore();
+      }
+    }],
     data: {
       labels: d.caps.map(x => capNum2(x.numero) + ' ' + x.polo),
       datasets: [
@@ -17153,20 +17282,23 @@ function capRenderCapacitacoes() {
     options: (() => {
       const o = capOpcoesGrafico(t, { empilhado: true });
       o.scales.x.ticks.maxRotation = 60;
+      o.scales.y.grace = '15%';
+      o.layout = { padding: { top: 20 } };
+      o.plugins.tooltip.callbacks.title = items => {
+        const evento = items.length ? d.caps[items[0].dataIndex] : null;
+        return evento ? capRotulo(evento) + ' · ' + capPeriodo(evento) : '';
+      };
+      o.plugins.tooltip.callbacks.afterBody = items => {
+        if (!items.length) return '';
+        const p = porCap[items[0].dataIndex];
+        return 'Total de gestores e CACS: ' + capInt(p.G + p.C);
+      };
       o.plugins.legend.labels.generateLabels = () => [['Gestores', t.gest], ['CACS', t.cacs]].map(([l, cor], i) => ({ text: l, fillStyle: cor, strokeStyle: cor, fontColor: t.eixo, datasetIndex: i }));
       return o;
     })()
   });
 
-  const linhas = rows.slice().sort((a, b) => a.capacitacao - b.capacitacao || a.uf.localeCompare(b.uf) || a.nome.localeCompare(b.nome, 'pt-BR'))
-    .map(r => `<tr><td>${capNum2(r.capacitacao)} — ${escHtml(d.capPorNum.get(r.capacitacao).polo)}</td><td>${escHtml(r.uf)}</td><td>${escHtml(r.nome)}</td>
-      <td>${r.convidado === 1 ? '<span class="cap-tag cap-tag-neutro">Convidado</span>' : '<span class="cap-tag cap-tag-neutro">Não convidado</span>'}</td>
-      <td>${capTagSimNao(r.presentes_total > 0)}</td><td class="num">${capInt(r.inscritos_total)}</td><td class="num">${capInt(r.presentes_total)}</td>
-      <td class="num">${capInt(r.presentes_gestores)}</td><td class="num">${capInt(r.presentes_cacs)}</td><td class="num">${capDec(r.distancia_polo_km, 0)}</td></tr>`);
-  document.getElementById('capCapTabela').innerHTML = capTabelaHtml(
-    [{ t: 'Capacitação' }, { t: 'UF' }, { t: 'Município' }, { t: 'Convite' }, { t: 'Participou?' }, { t: 'Inscritos', num: 1 },
-      { t: 'Participantes', num: 1 }, { t: 'Gestores', num: 1 }, { t: 'CACS', num: 1 }, { t: 'Distância ao polo (km)', num: 1 }], linhas);
-  capSetTxt('capCapTabelaSub', `${capInt(rows.length)} registro(s) município × capacitação. Distância em linha reta entre os centróides do município e do polo.`);
+  capRenderTabelaEvento();
 }
 
 // Percentuais escritos junto às barras, inclusive 0% e ausência de base territorial.
@@ -18683,12 +18815,13 @@ async function recarregarDadosExternos() {
       </div>
     </div>
     <div class="pif-body">
-      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.3.9</strong></div>
+      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.4.0</strong></div>
       <div class="pif-row"><span>Data da alteração:</span><span class="pnite-date-val">09/11/2026</span></div>
       <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">14:00</span></div>
       <div class="pif-row"><span>Responsável técnico:</span><span class="pnite-author-val">Equipe PNITE</span></div>
       <div class="pif-note">
         <i class="ti ti-check" style="color:var(--accent);margin-right:3px"></i>
+        <strong>Página Capacitações (v.3.4.0):</strong> cartões organizados, síntese da participação, seleção pelo mapa, busca e ordenação da tabela e totais nas barras.<br>
         <strong>Home da capacitação (v.3.3.9):</strong> indicadores de síntese, resumo do recorte e limpeza dos filtros, com cobertura contextualizada.<br>
         <strong>Estatísticas das avaliações 1 a 5 (v.3.3.8):</strong> removidos o quadro de perguntas e o filtro de bloco duplicados; preservados os filtros de capacitação e público e os demais conteúdos.<br>
         <strong>Posição da cobertura (v.3.3.7):</strong> gráfico de municípios alcançados movido para o final da Home, abaixo dos cartões e do mapa.<br>
@@ -18737,7 +18870,7 @@ async function recarregarDadosExternos() {
   </div>
   <button class="pif-btn" id="pifBtn" aria-label="Informações de Versão">
     <i class="ti ti-info-circle"></i>
-    <span class="pif-btn-label pnite-version-val">v.3.3.9</span>
+    <span class="pif-btn-label pnite-version-val">v.3.4.0</span>
   </button>
 </div>
 
