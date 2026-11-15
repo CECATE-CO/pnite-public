@@ -1673,6 +1673,16 @@ body {
   display: block;
 }
 
+/* Textos originais e bases de respostas nas avaliações. */
+.cap-answer-detail { min-width: 0; }
+.cap-answer-detail summary { min-height: 44px; cursor: pointer; padding: 8px 0; color: var(--text-1); }
+.cap-answer-detail summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.cap-answer-detail p { margin-top: 8px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.cap-answer-preview { color: var(--text-2); overflow-wrap: anywhere; }
+.cap-evaluation-tabs [role="tab"] { overflow-wrap: anywhere; }
+#capSubGrupo1_5 input, #capSubGrupo1_5 select, #capSubGrupo6_16 input, #capSubGrupo6_16 select { min-height: 44px; }
+#capS15Bases, #capA616Bases { margin-bottom: 14px; }
+
 /* Duas páginas por faixa, com avaliação e estatísticas em abas internas. */
 .cap-evaluation-tabs { display: flex; gap: 8px; margin-bottom: 20px; padding: 6px; border: 1px solid var(--border); border-radius: 12px; background-color: var(--bg-card); }
 .cap-evaluation-tabs [role="tab"] { flex: 1; min-width: 0; min-height: 44px; padding: 10px 16px; border: 1px solid transparent; border-radius: 8px; background-color: transparent; color: var(--text-2); font: inherit; font-weight: 600; cursor: pointer; }
@@ -7141,12 +7151,12 @@ window.onerror = function(msg, url, line, col, err) {
             <div class="cap-home-title-bar"></div>
           </header>
           <div class="cap-evaluation-tabs" role="tablist" aria-label="Análises das capacitações 1 a 5" onkeydown="capNavegarAbas(event)">
-            <button type="button" role="tab" id="capTabAval1_5" aria-selected="true" aria-controls="capSubAval1_5" tabindex="0" onclick="switchCapView('aval1_5')">Avaliação</button>
-            <button type="button" role="tab" id="capTabStat1_5" aria-selected="false" aria-controls="capSubStat1_5" tabindex="-1" onclick="switchCapView('stat1_5')">Estatísticas</button>
+            <button type="button" role="tab" id="capTabAval1_5" aria-selected="true" aria-controls="capSubAval1_5" tabindex="0" onclick="switchCapView('aval1_5')">Avaliação por pergunta</button>
+            <button type="button" role="tab" id="capTabStat1_5" aria-selected="false" aria-controls="capSubStat1_5" tabindex="-1" onclick="switchCapView('stat1_5')">Resultados e percepções</button>
           </div>
           <section class="cap-evaluation-panel" role="tabpanel" tabindex="0" id="capSubAval1_5" aria-labelledby="capTabAval1_5">
           <header class="cap-page-head">
-            <h3 id="capA15Titulo">Avaliação</h3>
+            <h3 id="capA15Titulo">Avaliação por pergunta</h3>
             <div class="cap-home-title-bar"></div>
             <p>Explore os aspectos gerais, cada módulo, o SETE e o ensino a distância no mesmo gráfico, selecionando o bloco de perguntas.</p>
           </header>
@@ -7168,6 +7178,7 @@ window.onerror = function(msg, url, line, col, err) {
           <div class="cap-panel">
             <h3 class="cap-panel-title" id="capA15ChartTitulo">Distribuição das respostas por pergunta</h3>
             <p class="cap-panel-sub" id="capA15ChartSub">Barras 100% empilhadas com percentual e quantidade de respostas. Segmentos estreitos têm o rótulo abaixo da barra.</p>
+            <p class="cap-panel-sub" id="capA15Base"></p>
             <div class="cap-empty" id="capA15Vazio" hidden>Sem respostas para os filtros selecionados.</div>
             <div class="cap-chart-box cap-a15-chart" id="capA15ChartBox"><canvas id="capChartA15Perguntas" role="img" aria-label="Gráfico de distribuição das respostas por pergunta"></canvas></div>
           </div>
@@ -7175,11 +7186,11 @@ window.onerror = function(msg, url, line, col, err) {
 
           <section class="cap-evaluation-panel" role="tabpanel" tabindex="0" hidden id="capSubStat1_5" aria-labelledby="capTabStat1_5">
           <header class="cap-page-head">
-            <h3 id="capS15Titulo">Estatísticas</h3>
+            <h3 id="capS15Titulo">Resultados e percepções dos participantes</h3>
             <div class="cap-home-title-bar"></div>
-            <p>Comparação entre capacitações, canais de divulgação e respostas abertas.</p>
+            <p>Comparação da satisfação entre capacitações, canais de divulgação, sugestões e comentários.</p>
           </header>
-          <div class="cap-toolbar" role="group" aria-label="Filtros das estatísticas 1 a 5">
+          <div class="cap-toolbar" role="group" aria-label="Filtros dos resultados e percepções 1 a 5">
             <div class="cap-field">
               <label for="capS15Cap">Capacitação</label>
               <select id="capS15Cap" data-cap-filter></select>
@@ -7193,6 +7204,8 @@ window.onerror = function(msg, url, line, col, err) {
             <div class="cap-panel">
               <h3 class="cap-panel-title">Satisfação por capacitação</h3>
               <p class="cap-panel-sub">% de “Ótimo” nos aspectos gerais e % de “Sim” nos blocos Módulos, SETE e EAD.</p>
+              <p class="cap-panel-sub">“Ótimo” e “Sim” pertencem a escalas distintas. As bases somam respostas válidas às perguntas de cada conjunto, não pessoas únicas.</p>
+              <div class="cap-table-wrap" id="capS15Bases"></div>
               <div class="cap-chart-box"><canvas id="capChartS15Caps" role="img" aria-label="Gráfico de satisfação por capacitação"></canvas></div>
             </div>
             <div class="cap-panel">
@@ -7203,7 +7216,11 @@ window.onerror = function(msg, url, line, col, err) {
           </div>
           <div class="cap-panel">
             <h3 class="cap-panel-title">Sugestões e comentários dos participantes</h3>
-            <p class="cap-panel-sub" id="capS15SugSub"></p>
+            <p class="cap-panel-sub" id="capS15SugSub" role="status" aria-live="polite"></p>
+            <div class="cap-toolbar" role="group" aria-label="Consulta às respostas abertas 1 a 5">
+              <div class="cap-field"><label for="capS15Tipo">Tipo da resposta</label><select id="capS15Tipo" data-cap-filter><option value="">Todos</option><option value="Sugestões">Temas futuros</option><option value="Comentários">Comentários</option></select></div>
+              <div class="cap-field cap-field-wide"><label for="capS15Busca">Buscar no texto</label><input type="search" id="capS15Busca" data-cap-filter placeholder="Buscar nas respostas originais"></div>
+            </div>
             <div class="cap-table-wrap" id="capS15Sugestoes"></div>
           </div>
         </section>
@@ -7216,14 +7233,14 @@ window.onerror = function(msg, url, line, col, err) {
             <div class="cap-home-title-bar"></div>
           </header>
           <div class="cap-evaluation-tabs" role="tablist" aria-label="Análises das capacitações 6 a 16" onkeydown="capNavegarAbas(event)">
-            <button type="button" role="tab" id="capTabAval6_16" aria-selected="true" aria-controls="capSubAval6_16" tabindex="0" onclick="switchCapView('aval6_16')">Avaliação</button>
-            <button type="button" role="tab" id="capTabStat6_16" aria-selected="false" aria-controls="capSubStat6_16" tabindex="-1" onclick="switchCapView('stat6_16')">Estatísticas</button>
+            <button type="button" role="tab" id="capTabAval6_16" aria-selected="true" aria-controls="capSubAval6_16" tabindex="0" onclick="switchCapView('aval6_16')">Avaliação por critério</button>
+            <button type="button" role="tab" id="capTabStat6_16" aria-selected="false" aria-controls="capSubStat6_16" tabindex="-1" onclick="switchCapView('stat6_16')">Resultados e percepções</button>
           </div>
           <section class="cap-evaluation-panel" role="tabpanel" tabindex="0" id="capSubAval6_16" aria-labelledby="capTabAval6_16">
           <header class="cap-page-head">
-            <h3 id="capA616Titulo">Avaliação</h3>
+            <h3 id="capA616Titulo">Avaliação por critério</h3>
             <div class="cap-home-title-bar"></div>
-            <p>Notas de 1 (ruim) a 5 (excelente) atribuídas pelos participantes a sete critérios da formação.</p>
+            <p>Conceitos de 1 (Muito ruim) a 5 (Excelente) atribuídos pelos participantes aos critérios da formação. Favoráveis: Bom e Excelente; neutro: Neutro; desfavoráveis: Ruim e Muito ruim.</p>
           </header>
           <div class="cap-toolbar" role="group" aria-label="Filtros da avaliação 6 a 16">
             <div class="cap-field">
@@ -7243,6 +7260,8 @@ window.onerror = function(msg, url, line, col, err) {
           <div class="cap-panel">
             <h3 class="cap-panel-title">Distribuição dos conceitos por critério</h3>
             <p class="cap-panel-sub">Barras 100% empilhadas, de Muito ruim a Excelente, com percentual e quantidade de respostas. Segmentos estreitos têm o rótulo abaixo da barra.</p>
+            <p class="cap-panel-sub" id="capA616Base"></p>
+            <div class="cap-table-wrap" id="capA616Bases"></div>
             <div class="cap-chart-box cap-a616-chart" id="capA616DistBox"><canvas id="capChartA616Dist" role="img" aria-label="Gráfico de distribuição dos conceitos por critério"></canvas></div>
           </div>
           <div class="cap-grid-2">
@@ -7261,11 +7280,11 @@ window.onerror = function(msg, url, line, col, err) {
 
           <section class="cap-evaluation-panel" role="tabpanel" tabindex="0" hidden id="capSubStat6_16" aria-labelledby="capTabStat6_16">
           <header class="cap-page-head">
-            <h3 id="capS616Titulo">Estatísticas</h3>
+            <h3 id="capS616Titulo">Resultados e percepções dos participantes</h3>
             <div class="cap-home-title-bar"></div>
-            <p>Canais de divulgação e respostas abertas (aspectos positivos, aspectos a melhorar, temas futuros e comentários).</p>
+            <p>Canais de divulgação, aspectos positivos, pontos a melhorar, temas sugeridos e comentários.</p>
           </header>
-          <div class="cap-toolbar" role="group" aria-label="Filtros das estatísticas 6 a 16">
+          <div class="cap-toolbar" role="group" aria-label="Filtros dos resultados e percepções 6 a 16">
             <div class="cap-field">
               <label for="capS616Cap">Capacitação</label>
               <select id="capS616Cap" data-cap-filter></select>
@@ -7284,6 +7303,7 @@ window.onerror = function(msg, url, line, col, err) {
             <div class="cap-panel">
               <h3 class="cap-panel-title">Respondentes por canal de divulgação</h3>
               <p class="cap-panel-sub">Pergunta de múltipla escolha; um respondente pode citar mais de um canal.</p>
+              <p class="cap-panel-sub" id="capS616CanaisBase"></p>
               <div class="cap-chart-box"><canvas id="capChartS616Canais" role="img" aria-label="Gráfico de respondentes por canal de divulgação"></canvas></div>
             </div>
             <div class="cap-panel">
@@ -7304,7 +7324,7 @@ window.onerror = function(msg, url, line, col, err) {
                 <input type="search" id="capS616Busca" data-cap-filter placeholder="Ex.: SETE, horário, prestação de contas">
               </div>
             </div>
-            <p class="cap-panel-sub" id="capS616TabelaSub"></p>
+            <p class="cap-panel-sub" id="capS616TabelaSub" role="status" aria-live="polite"></p>
             <div class="cap-table-wrap" id="capS616Tabela"></div>
           </div>
         </section>
@@ -8588,7 +8608,7 @@ window.onerror = function(msg, url, line, col, err) {
     <div class="smb-sec">
       <div class="smb-sec-title" data-i18n="settings_info_title">Informações da Versão</div>
       <div style="font-size:12px;color:var(--text-2);display:flex;flex-direction:column;gap:4px;margin-top:6px">
-        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.4.2</b></div>
+        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.4.3</b></div>
         <div><span data-i18n="settings_updated">Última Atualização:</span> <b class="pnite-date-val">06/10/2026</b> às <b class="pnite-time-val">21:05</b></div>
         <div><span data-i18n="settings_author">Responsável Técnico:</span> <b class="pnite-author-val">Equipe PNITE</b></div>
       </div>
@@ -9577,7 +9597,7 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.4.2";
+const PNITE_VERSION = "v.3.4.3";
 const PNITE_LAST_UPDATE = "15/11/2026";
 const PNITE_LAST_TIME = "11:27";
 
@@ -16762,6 +16782,7 @@ function capTooltipPercentual(ctx) {
 // --------------------------------------------------------------------------
 function switchCapView(subviewId, btnEl) {
   const destino = CAP_STATE.abas[subviewId] || subviewId;
+  capSincronizarFiltrosAbas(CAP_STATE.view, destino);
   CAP_STATE.view = CAP_VIEWS[destino] ? destino : 'home';
   const grupo = /^(aval|stat)(1_5|6_16)$/.exec(CAP_STATE.view);
   if (grupo) CAP_STATE.abas['cap' + grupo[2]] = CAP_STATE.view;
@@ -16782,6 +16803,39 @@ function switchCapView(subviewId, btnEl) {
     });
   });
   renderCapSubview();
+}
+
+function capSincronizarFiltrosAbas(origem, destino) {
+  const a = /^(aval|stat)(1_5|6_16)$/.exec(origem);
+  const b = /^(aval|stat)(1_5|6_16)$/.exec(destino);
+  if (!a || !b || a[2] !== b[2] || origem === destino || !capDados()) return;
+  const prefixo = vista => ({ aval1_5: 'capA15', stat1_5: 'capS15', aval6_16: 'capA616', stat6_16: 'capS616' })[vista];
+  const de = prefixo(origem), para = prefixo(destino);
+  const copiar = campo => {
+    const el = document.getElementById(para + campo);
+    const valor = capVal(de + campo);
+    el.value = Array.from(el.options).some(o => o.value === valor) ? valor : '';
+  };
+  if (a[2] === '1_5') {
+    capFiltroAval15(para + 'Cap', para + 'Pub');
+    ['Cap', 'Pub'].forEach(copiar);
+  } else {
+    capFiltroAval616(para + 'Cap', para + 'Cargo', para + 'Mun');
+    ['Cap', 'Cargo'].forEach(copiar);
+    capFiltroAval616(para + 'Cap', para + 'Cargo', para + 'Mun');
+    copiar('Mun');
+  }
+}
+
+function capTextoResposta(texto) {
+  const original = String(texto || '');
+  if (original.length <= 220) return escHtml(original);
+  return '<div class="cap-answer-preview">' + escHtml(original.slice(0, 180)) + '…</div><details class="cap-answer-detail"><summary>Ler resposta completa</summary><p>' + escHtml(original) + '</p></details>';
+}
+
+function capMensagemSemRespostas15(bloco, capacitacao) {
+  if (['SETE', 'Divulgação'].includes(bloco) && capacitacao && Number(capacitacao) < 3) return 'Pergunta não aplicada nesta capacitação; este bloco foi aplicado a partir da 3ª.';
+  return 'Sem respostas registradas para os filtros selecionados. A ausência de respostas não confirma que a pergunta não foi aplicada.';
 }
 
 function capNavegarAbas(ev) {
@@ -17676,14 +17730,16 @@ function capRenderAval15() {
     { l: 'Respondentes', v: capInt(resp.length) },
     { l: 'Gestores', v: capInt(resp.filter(r => r.publico === 'Gestores').length) },
     { l: 'CACS', v: capInt(resp.filter(r => r.publico === 'CACS').length) },
-    { l: '% Ótimo — aspectos gerais', v: capPct(gerais.filter(i => i.resposta === 'Ótimo').length, gerais.length) },
-    { l: '% Sim — módulos, SETE e EAD', v: capPct(resultados.filter(i => i.resposta === 'Sim').length, resultados.length) }
+    { l: '% Ótimo — aspectos gerais', v: capPct(gerais.filter(i => i.resposta === 'Ótimo').length, gerais.length), n: 'Base: ' + capInt(gerais.length) + ' respostas nos aspectos gerais' },
+    { l: '% Sim — módulos, SETE e EAD', v: capPct(resultados.filter(i => i.resposta === 'Sim').length, resultados.length), n: 'Base: ' + capInt(resultados.length) + ' respostas nos módulos, SETE e EAD' }
   ]);
   const { cont, categorias, cores, rotulo, nota } = capBlocoAval15('capA15Bloco', itens, t);
   capSetTxt('capA15ChartTitulo', 'Distribuição das respostas — ' + rotulo);
   capSetTxt('capA15ChartSub', 'Barras 100% empilhadas com percentual e quantidade de respostas. Segmentos estreitos têm o rótulo abaixo da barra.' + nota);
   const descricaoRespostas = cont.map(c => c.rotulo + ': ' + categorias.map(cat => cat + ' ' + capPct(c.cont[cat], c.total) + ' (' + capInt(c.cont[cat]) + ')').join(', ')).join('; ');
   document.getElementById('capChartA15Perguntas').setAttribute('aria-label', 'Distribuição das respostas — ' + rotulo + '. ' + descricaoRespostas);
+  capSetTxt('capA15Base', 'Base do recorte: ' + capInt(resp.length) + ' respondente(s). No bloco selecionado: ' + capInt(cont.reduce((n, c) => n + c.total, 0)) + ' respostas válidas somadas em ' + capInt(cont.length) + ' pergunta(s). Cada percentual usa as respostas válidas da própria pergunta.');
+  capSetTxt('capA15Vazio', capMensagemSemRespostas15(capVal('capA15Bloco'), capVal('capA15Cap')));
   document.getElementById('capA15Vazio').hidden = cont.length > 0;
   document.getElementById('capA15ChartBox').hidden = !cont.length;
   document.getElementById('capA15ChartBox').style.setProperty('--cap-a15-perguntas', String(cont.length));
@@ -17714,15 +17770,16 @@ function capRenderStat15() {
     const g = it.filter(i => i.bloco === 'Aspectos Gerais');
     const r = it.filter(i => ['Módulos', 'SETE', 'EAD'].includes(i.bloco) && CAP_ESCALA_SIM.includes(i.resposta));
     const pct = (n, den) => den ? Math.round(n / den * 1000) / 10 : null;
-    return { o: pct(g.filter(i => i.resposta === 'Ótimo').length, g.length), s: pct(r.filter(i => i.resposta === 'Sim').length, r.length) };
+    return { o: pct(g.filter(i => i.resposta === 'Ótimo').length, g.length), s: pct(r.filter(i => i.resposta === 'Sim').length, r.length), baseG: g.length, baseR: r.length, respondentes: ids.size };
   });
+  document.getElementById('capS15Bases').innerHTML = capTabelaHtml([{ t: 'Capacitação' }, { t: 'Respondentes', num: 1 }, { t: 'Base aspectos gerais', num: 1 }, { t: 'Base módulos, SETE e EAD', num: 1 }], caps.map((c, i) => '<tr><td>' + escHtml(capRotulo(c)) + '</td><td class="num">' + capInt(porCap[i].respondentes) + '</td><td class="num">' + capInt(porCap[i].baseG) + '</td><td class="num">' + capInt(porCap[i].baseR) + '</td></tr>'));
   capGrafico('capChartS15Caps', {
     type: 'bar',
     data: { labels: caps.map(c => capNum2(c.numero) + ' ' + c.polo), datasets: [
       capDataset('% Ótimo — aspectos gerais', porCap.map(p => p.o), t.unica, t),
       capDataset('% Sim — módulos, SETE e EAD', porCap.map(p => p.s), t.serie2, t)
     ] },
-    options: capOpcoesGrafico(t, { pct: true, max: 100, tooltipLabel: ctx => ` ${ctx.dataset.label}: ${capDec(ctx.parsed.y, 1)}%` })
+    options: capOpcoesGrafico(t, { pct: true, max: 100, tooltipLabel: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y != null ? capDec(ctx.parsed.y, 1) + '%' : '—'} · base: ${capInt(ctx.datasetIndex === 0 ? porCap[ctx.dataIndex].baseG : porCap[ctx.dataIndex].baseR)} respostas` })
   });
   const div = itens.filter(i => i.bloco === 'Divulgação');
   const respDiv = new Set(div.map(i => i.id)).size;
@@ -17732,16 +17789,19 @@ function capRenderStat15() {
     ? '<div class="cap-hbar-list">' + canais.map(c => `<div class="cap-hbar-row"><span>${escHtml(c.canal)}</span>
         <div class="cap-hbar-track"><div class="cap-hbar-fill" style="width:${c.n / respDiv * 100}%;background-color:${t.unica}"></div></div>
         <span class="cap-hbar-val">${capPct(c.n, respDiv)} (${capInt(c.n)})</span></div>`).join('') + '</div>'
-      + `<p class="cap-note">${capInt(respDiv)} respondente(s) responderam a esta pergunta.</p>`
-    : '<div class="cap-empty">Pergunta não aplicada às capacitações selecionadas.</div>';
+      + `<p class="cap-note">${capInt(respDiv)} respondente(s) com resposta registrada: base dos percentuais. Múltipla escolha; a soma pode ultrapassar 100%.</p>`
+    : '<div class="cap-empty">' + escHtml(capMensagemSemRespostas15('Divulgação', cap)) + '</div>';
 
   const abertas = itens.filter(i => (i.bloco === 'Sugestões' || i.bloco === 'Comentários') && i.resposta && i.resposta.length > 2)
     .sort((a, b) => a.cap - b.cap);
+  const busca = capNormTxt(capVal('capS15Busca').trim());
+  const tipo = capVal('capS15Tipo');
+  const lista = abertas.filter(i => (!tipo || i.bloco === tipo) && (!busca || capNormTxt(i.resposta).includes(busca)));
   document.getElementById('capS15Sugestoes').innerHTML = capTabelaHtml([{ t: 'Capacitação' }, { t: 'Público' }, { t: 'Tipo' }, { t: 'Resposta' }],
-    abertas.map(i => `<tr><td>${capNum2(i.cap)} — ${escHtml(d.capPorNum.get(i.cap).polo)}</td><td>${escHtml(i.pub)}</td>
-      <td>${i.bloco === 'Sugestões' ? 'Temas futuros' : 'Comentário'}</td><td class="cap-text-cell">${escHtml(i.resposta)}</td></tr>`),
+    lista.map(i => `<tr><td>${capNum2(i.cap)} — ${escHtml(d.capPorNum.get(i.cap).polo)}</td><td>${escHtml(i.pub)}</td>
+      <td>${i.bloco === 'Sugestões' ? 'Temas futuros' : 'Comentário'}</td><td class="cap-text-cell">${capTextoResposta(i.resposta)}</td></tr>`),
     'Nenhuma sugestão ou comentário registrado.');
-  capSetTxt('capS15SugSub', `${capInt(abertas.length)} resposta(s) de texto livre.`);
+  capSetTxt('capS15SugSub', `${capInt(lista.length)} de ${capInt(abertas.length)} resposta(s) de texto livre exibida(s). Busca e tipo afetam somente esta tabela.`);
 }
 
 // --------------------------------------------------------------------------
@@ -17794,6 +17854,8 @@ function capRenderAval616() {
     ns.forEach(n => { c[CAP_ESCALA_NOTA[n.nota - 1]] += 1; });
     return { rotulo: p.pergunta, cont: c, total: ns.length };
   });
+  capSetTxt('capA616Base', 'Base: ' + capInt(resp.length) + ' respondente(s) e ' + capInt(notas.length) + ' conceitos registrados. Percentuais por critério usam a base de respostas do próprio critério. Neutros: ' + capInt(notas.filter(n => n.nota === 3).length) + '.' + (!notas.length ? ' Sem conceitos registrados; não é possível concluir se os critérios foram aplicados.' : ''));
+  document.getElementById('capA616Bases').innerHTML = capTabelaHtml([{ t: 'Critério' }, { t: 'Respostas válidas', num: 1 }], cont.map(c => '<tr><td>' + escHtml(c.rotulo) + '</td><td class="num">' + capInt(c.total) + '</td></tr>'));
   document.getElementById('capA616DistBox').style.setProperty('--cap-a616-perguntas', String(cont.length));
   const descricaoConceitos = cont.map(c => c.rotulo + ': ' + CAP_ESCALA_NOTA.map(cat => cat + ' ' + capPct(c.cont[cat], c.total) + ' (' + capInt(c.cont[cat]) + ')').join(', ')).join('; ');
   document.getElementById('capChartA616Dist').setAttribute('aria-label', 'Distribuição dos conceitos por critério. ' + descricaoConceitos);
@@ -17864,6 +17926,7 @@ function capRenderStat616() {
     { l: 'Respostas com comentários', v: capInt(resp.filter(r => r.comentarios).length), n: capPct(resp.filter(r => r.comentarios).length, resp.length) + ' dos respondentes' }
   ]);
 
+  capSetTxt('capS616CanaisBase', 'Base dos percentuais: ' + capInt(resp.length) + ' respondente(s) no recorte; ' + capInt(resp.filter(r => r.canais.length).length) + ' informaram ao menos um canal. Múltipla escolha; a soma pode ultrapassar 100%.' + (!resp.some(r => r.canais.length) ? ' Sem canais registrados; isso não comprova que a pergunta não foi aplicada.' : ''));
   const canais = Array.from(resp.reduce((m, r) => { new Set(r.canais).forEach(c => m.set(c, (m.get(c) || 0) + 1)); return m; }, new Map()).entries())
     .sort((a, b) => b[1] - a[1]);
   capGrafico('capChartS616Canais', {
@@ -17884,9 +17947,9 @@ function capRenderStat616() {
     .sort((a, b) => a.r.capacitacao - b.r.capacitacao || (a.r.municipio || '').localeCompare(b.r.municipio || '', 'pt-BR'));
   document.getElementById('capS616Tabela').innerHTML = capTabelaHtml([{ t: 'Capacitação' }, { t: 'Município' }, { t: 'Cargo' }, { t: 'Tipo' }, { t: 'Resposta' }],
     lista.map(a => `<tr><td>${capNum2(a.r.capacitacao)} — ${escHtml(d.capPorNum.get(a.r.capacitacao).polo)}</td><td>${escHtml(a.r.municipio || '—')}</td>
-      <td>${escHtml(a.r.cargo)}</td><td>${escHtml(a.tipo.rotulo)}</td><td class="cap-text-cell">${escHtml(a.r[a.tipo.campo])}</td></tr>`),
+      <td>${escHtml(a.r.cargo)}</td><td>${escHtml(a.tipo.rotulo)}</td><td class="cap-text-cell">${capTextoResposta(a.r[a.tipo.campo])}</td></tr>`),
     'Nenhuma resposta encontrada para os filtros e a busca informados.');
-  capSetTxt('capS616TabelaSub', `${capInt(lista.length)} resposta(s) exibida(s).`);
+  capSetTxt('capS616TabelaSub', `${capInt(lista.length)} de ${capInt(filtradas.length)} resposta(s) do tipo selecionado exibida(s); ${capInt(abertas.length)} campos de texto no recorte. A busca afeta somente esta tabela.`);
 }
 
 // --------------------------------------------------------------------------
@@ -18924,12 +18987,13 @@ async function recarregarDadosExternos() {
       </div>
     </div>
     <div class="pif-body">
-      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.4.2</strong></div>
+      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.4.3</strong></div>
       <div class="pif-row"><span>Data da alteração:</span><span class="pnite-date-val">09/11/2026</span></div>
       <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">14:00</span></div>
       <div class="pif-row"><span>Responsável técnico:</span><span class="pnite-author-val">Equipe PNITE</span></div>
       <div class="pif-note">
         <i class="ti ti-check" style="color:var(--accent);margin-right:3px"></i>
+        <strong>Resultados e percepções (v.3.4.3):</strong> abas renomeadas, filtros compartilhados, bases dos percentuais explícitas e consulta às respostas originais com busca e expansão de textos.<br>
         <strong>Comparação por UF (v.3.4.2):</strong> indicadores agrupados, taxas contextualizadas, evolução por participantes ou municípios únicos e tabela ordenável com destaque do estado.<br>
         <strong>Navegação das avaliações (v.3.4.1):</strong> duas páginas por faixa de capacitação, com abas superiores de Avaliação e Estatísticas.<br>
         <strong>Página Capacitações (v.3.4.0):</strong> cartões organizados, síntese da participação, seleção pelo mapa, busca e ordenação da tabela e totais nas barras.<br>
@@ -18981,7 +19045,7 @@ async function recarregarDadosExternos() {
   </div>
   <button class="pif-btn" id="pifBtn" aria-label="Informações de Versão">
     <i class="ti ti-info-circle"></i>
-    <span class="pif-btn-label pnite-version-val">v.3.4.2</span>
+    <span class="pif-btn-label pnite-version-val">v.3.4.3</span>
   </button>
 </div>
 
