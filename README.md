@@ -1,5 +1,7 @@
 # PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 
+Versão atual: **v.3.3.5**.
+
 A **PNITE** é uma plataforma analítica desenvolvida para visualização, monitoramento, exploração e interpretação de informações estratégicas sobre o transporte escolar público brasileiro.
 
 A ferramenta consolida dados operacionais do Sistema Eletrônico de Gestão do Transporte Escolar (**SETE**), do **Censo Escolar** (MEC/Inep) e das ações de formação do Centro Colaborador de Apoio ao Transporte Escolar (**CECATE/UFG**).
@@ -36,6 +38,14 @@ A PNITE é uma aplicação web de alta performance projetada para execução dir
      # ou
      python -m http.server 8000
      ```
+
+### Cobertura municipal das capacitações
+
+Na Home de Indicadores da Capacitação, o gráfico apresenta a cobertura do Centro-Oeste (ou da UF selecionada). Em Unidades da Federação, as barras comparam a cobertura por UF, acompanhadas das contagens e da fórmula:
+
+**Municípios únicos com ao menos um participante presente ÷ total de municípios do território × 100.**
+
+O numerador respeita os filtros de cada página, inclui participantes não convidados e conta cada município uma única vez. O denominador usa códigos municipais de 7 dígitos do cadastro territorial disponível na API da capacitação; para UFs fora desse cadastro, usa o cadastro nacional do IBGE já presente na PNITE. Não depende da quantidade de polígonos da malha. Brasília representa o DF como unidade territorial equivalente a município. Sem base territorial completa, o percentual aparece como —.
 
 ### Publicação na Vercel
 
