@@ -1681,7 +1681,7 @@ body {
 .cap-answer-preview { color: var(--text-2); overflow-wrap: anywhere; }
 .cap-evaluation-tabs [role="tab"] { overflow-wrap: anywhere; }
 #capSubGrupo1_5 input, #capSubGrupo1_5 select, #capSubGrupo6_16 input, #capSubGrupo6_16 select { min-height: 44px; }
-#capS15Bases, #capA616Bases { margin-bottom: 14px; }
+#capS15Bases { margin-bottom: 14px; }
 
 /* Duas páginas por faixa, com avaliação e estatísticas em abas internas. */
 .cap-evaluation-tabs { display: flex; gap: 8px; margin-bottom: 20px; padding: 6px; border: 1px solid var(--border); border-radius: 12px; background-color: var(--bg-card); }
@@ -2309,13 +2309,9 @@ body {
 #capUfKpis { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 #capUfEstrutura { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .cap-uf-rates { margin-top: 14px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-.cap-uf-polos summary, .cap-uf-method summary { cursor: pointer; min-height: 44px; display: list-item; padding: 10px 4px; color: var(--text-1); }
-.cap-uf-polos ul { padding: 8px 0 0 22px; color: var(--text-2); line-height: 1.8; }
-.cap-uf-method { margin-bottom: 12px; color: var(--text-2); line-height: 1.6; }
 .cap-uf-evolution-field { margin: 10px 0; }
 #capSubUf select { min-height: 44px; }
 #capUfTabela .cap-uf-selected td, #capUfCoberturaTabela .cap-uf-selected td { background-color: var(--bg-active); font-weight: 700; }
-#capSubUf summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 @media (max-width: 900px) { #capUfEstrutura { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 600px) { #capUfKpis, #capUfEstrutura, .cap-uf-rates { grid-template-columns: minmax(0, 1fr); } }
 
@@ -7112,7 +7108,6 @@ window.onerror = function(msg, url, line, col, err) {
           <div class="cap-kpi-grid" id="capUfKpis"></div>
           <h3 class="cap-panel-title cap-uf-group-title">Estrutura dos eventos e deslocamento</h3>
           <div class="cap-kpi-grid" id="capUfEstrutura"></div>
-          <details class="cap-panel cap-uf-polos"><summary>Polos sediados no recorte selecionado</summary><ul id="capUfPolos"></ul></details>
           <section class="cap-panel" aria-labelledby="capUfCoberturaTitulo">
             <h3 class="cap-panel-title" id="capUfCoberturaTitulo">Cobertura municipal por Unidade da Federação</h3>
             <div class="cap-kpi-grid cap-uf-rates" id="capUfTaxas"></div>
@@ -7138,8 +7133,6 @@ window.onerror = function(msg, url, line, col, err) {
             <h3 class="cap-panel-title">Quadro comparativo por estado</h3>
             <p class="cap-panel-sub">Taxa de participação = municípios convidados que participaram ÷ municípios convidados (por capacitação).</p>
             <div class="cap-toolbar" role="group" aria-label="Ordenação do comparativo por estado"><div class="cap-field"><label for="capUfOrdem">Ordenar estados</label><select id="capUfOrdem" onchange="capRenderUf()"><option value="uf">UF (A–Z)</option><option value="cobertura">Maior cobertura territorial</option><option value="taxa">Maior participação entre convidados</option><option value="participantes">Mais participantes</option><option value="distancia">Maior distância média</option></select></div></div>
-            <details class="cap-uf-method"><summary>Como interpretar as colunas</summary><p>Convites e participaram contam registros município × capacitação. Participantes, gestores e CACS somam presenças; a mesma pessoa pode frequentar mais de um evento. Médias de gestores e CACS usam os registros municipais com presença. Distância média considera somente participantes com distância conhecida, em linha reta até o polo. Cobertura territorial conta municípios únicos no cadastro territorial completo. Polos sediados são sedes distintas dos eventos do ano, independentemente da origem dos participantes.</p></details>
-            <p class="cap-panel-sub">Sem registros = nenhum registro municipal no recorte. Sem presença registrada = há registros, mas nenhuma presença. “—” indica medida indisponível ou sem denominador.</p>
             <div class="cap-table-wrap" id="capUfTabela" tabindex="0" role="region" aria-label="Comparativo dos estados; role horizontalmente para consultar todas as colunas"></div>
           </div>
         </section>
@@ -7261,7 +7254,6 @@ window.onerror = function(msg, url, line, col, err) {
             <h3 class="cap-panel-title">Distribuição dos conceitos por critério</h3>
             <p class="cap-panel-sub">Barras 100% empilhadas, de Muito ruim a Excelente, com percentual e quantidade de respostas. Segmentos estreitos têm o rótulo abaixo da barra.</p>
             <p class="cap-panel-sub" id="capA616Base"></p>
-            <div class="cap-table-wrap" id="capA616Bases"></div>
             <div class="cap-chart-box cap-a616-chart" id="capA616DistBox"><canvas id="capChartA616Dist" role="img" aria-label="Gráfico de distribuição dos conceitos por critério"></canvas></div>
           </div>
           <div class="cap-grid-2">
@@ -8608,7 +8600,7 @@ window.onerror = function(msg, url, line, col, err) {
     <div class="smb-sec">
       <div class="smb-sec-title" data-i18n="settings_info_title">Informações da Versão</div>
       <div style="font-size:12px;color:var(--text-2);display:flex;flex-direction:column;gap:4px;margin-top:6px">
-        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.4.3</b></div>
+        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.4.4</b></div>
         <div><span data-i18n="settings_updated">Última Atualização:</span> <b class="pnite-date-val">06/10/2026</b> às <b class="pnite-time-val">21:05</b></div>
         <div><span data-i18n="settings_author">Responsável Técnico:</span> <b class="pnite-author-val">Equipe PNITE</b></div>
       </div>
@@ -9597,7 +9589,7 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.4.3";
+const PNITE_VERSION = "v.3.4.4";
 const PNITE_LAST_UPDATE = "15/11/2026";
 const PNITE_LAST_TIME = "11:27";
 
@@ -17524,7 +17516,6 @@ function capRenderUf() {
     { l: 'Distância média ao polo', v: k.dist != null ? capDec(k.dist, 0) + ' km' : '—', n: 'Municípios participantes (linha reta)' }
   ]);
 
-  document.getElementById('capUfPolos').innerHTML = polos.size ? Array.from(polos).map(cod => '<li>' + escHtml((d.municipios.get(cod) || {}).nome || String(cod)) + '</li>').join('') : '<li>Nenhum polo sediado no recorte.</li>';
   const coberturaRecorte = capCoberturaMunicipal(rowsUf, uf ? [uf] : ufs);
   capSetTxt('capUfRecorte', 'Recorte atual: ' + (uf || 'Todos os estados') + ' · ' + (ano || 'Todos os anos') + '. ' + (coberturaRecorte.total != null ? capInt(coberturaRecorte.alcancados) + ' de ' + capInt(coberturaRecorte.total) + ' municípios com presença registrada.' : 'Base territorial incompleta para calcular a cobertura.') + (!rowsUf.length ? ' Sem registros municipais neste recorte.' : !k.s.P ? ' Há registros, mas nenhuma presença registrada.' : ''));
   capKpis('capUfTaxas', [
@@ -17855,7 +17846,6 @@ function capRenderAval616() {
     return { rotulo: p.pergunta, cont: c, total: ns.length };
   });
   capSetTxt('capA616Base', 'Base: ' + capInt(resp.length) + ' respondente(s) e ' + capInt(notas.length) + ' conceitos registrados. Percentuais por critério usam a base de respostas do próprio critério. Neutros: ' + capInt(notas.filter(n => n.nota === 3).length) + '.' + (!notas.length ? ' Sem conceitos registrados; não é possível concluir se os critérios foram aplicados.' : ''));
-  document.getElementById('capA616Bases').innerHTML = capTabelaHtml([{ t: 'Critério' }, { t: 'Respostas válidas', num: 1 }], cont.map(c => '<tr><td>' + escHtml(c.rotulo) + '</td><td class="num">' + capInt(c.total) + '</td></tr>'));
   document.getElementById('capA616DistBox').style.setProperty('--cap-a616-perguntas', String(cont.length));
   const descricaoConceitos = cont.map(c => c.rotulo + ': ' + CAP_ESCALA_NOTA.map(cat => cat + ' ' + capPct(c.cont[cat], c.total) + ' (' + capInt(c.cont[cat]) + ')').join(', ')).join('; ');
   document.getElementById('capChartA616Dist').setAttribute('aria-label', 'Distribuição dos conceitos por critério. ' + descricaoConceitos);
@@ -18987,12 +18977,13 @@ async function recarregarDadosExternos() {
       </div>
     </div>
     <div class="pif-body">
-      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.4.3</strong></div>
+      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.4.4</strong></div>
       <div class="pif-row"><span>Data da alteração:</span><span class="pnite-date-val">09/11/2026</span></div>
       <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">14:00</span></div>
       <div class="pif-row"><span>Responsável técnico:</span><span class="pnite-author-val">Equipe PNITE</span></div>
       <div class="pif-note">
         <i class="ti ti-check" style="color:var(--accent);margin-right:3px"></i>
+        <strong>Simplificação dos painéis (v.3.4.4):</strong> removidos a tabela de bases por critério, a lista expansível de polos e o bloco de interpretação das colunas, preservando os gráficos e indicadores.<br>
         <strong>Resultados e percepções (v.3.4.3):</strong> abas renomeadas, filtros compartilhados, bases dos percentuais explícitas e consulta às respostas originais com busca e expansão de textos.<br>
         <strong>Comparação por UF (v.3.4.2):</strong> indicadores agrupados, taxas contextualizadas, evolução por participantes ou municípios únicos e tabela ordenável com destaque do estado.<br>
         <strong>Navegação das avaliações (v.3.4.1):</strong> duas páginas por faixa de capacitação, com abas superiores de Avaliação e Estatísticas.<br>
@@ -19045,7 +19036,7 @@ async function recarregarDadosExternos() {
   </div>
   <button class="pif-btn" id="pifBtn" aria-label="Informações de Versão">
     <i class="ti ti-info-circle"></i>
-    <span class="pif-btn-label pnite-version-val">v.3.4.3</span>
+    <span class="pif-btn-label pnite-version-val">v.3.4.4</span>
   </button>
 </div>
 
