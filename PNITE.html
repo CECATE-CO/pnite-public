@@ -7078,7 +7078,7 @@ window.onerror = function(msg, url, line, col, err) {
           <header class="cap-page-head">
             <h2 id="capS15Titulo">Estatísticas das Avaliações 1ª a 5ª</h2>
             <div class="cap-home-title-bar"></div>
-            <p>Dados detalhados das perguntas, comparação entre capacitações, canais de divulgação e respostas abertas.</p>
+            <p>Comparação entre capacitações, canais de divulgação e respostas abertas.</p>
           </header>
           <div class="cap-toolbar" role="group" aria-label="Filtros das estatísticas 1 a 5">
             <div class="cap-field">
@@ -7089,15 +7089,6 @@ window.onerror = function(msg, url, line, col, err) {
               <label for="capS15Pub">Público</label>
               <select id="capS15Pub" data-cap-filter></select>
             </div>
-            <div class="cap-field cap-field-wide">
-              <label for="capS15Bloco">Bloco de perguntas</label>
-              <select id="capS15Bloco" data-cap-filter></select>
-            </div>
-          </div>
-          <div class="cap-panel">
-            <h3 class="cap-panel-title" id="capS15TabelaTitulo">Dados das perguntas</h3>
-            <p class="cap-panel-sub" id="capS15TabelaSub">Percentuais por categoria e quantidade de respostas no bloco selecionado.</p>
-            <div id="capS15Perguntas"></div>
           </div>
           <div class="cap-grid-2">
             <div class="cap-panel">
@@ -8488,7 +8479,7 @@ window.onerror = function(msg, url, line, col, err) {
     <div class="smb-sec">
       <div class="smb-sec-title" data-i18n="settings_info_title">Informações da Versão</div>
       <div style="font-size:12px;color:var(--text-2);display:flex;flex-direction:column;gap:4px;margin-top:6px">
-        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.3.7</b></div>
+        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.3.8</b></div>
         <div><span data-i18n="settings_updated">Última Atualização:</span> <b class="pnite-date-val">06/10/2026</b> às <b class="pnite-time-val">21:05</b></div>
         <div><span data-i18n="settings_author">Responsável Técnico:</span> <b class="pnite-author-val">Equipe PNITE</b></div>
       </div>
@@ -9477,7 +9468,7 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.3.7";
+const PNITE_VERSION = "v.3.3.8";
 const PNITE_LAST_UPDATE = "15/11/2026";
 const PNITE_LAST_TIME = "11:27";
 
@@ -17281,7 +17272,7 @@ function capTabelaLikert(id, linhas, categorias, cores) {
   el.innerHTML = legenda + '<div class="cap-table-wrap">' + capTabelaHtml([{ t: 'Pergunta' }, { t: 'Distribuição' }].concat(categorias.map(c => ({ t: c, num: 1 })), [{ t: 'Respostas', num: 1 }]), corpo) + '</div>';
 }
 
-// Uma única seleção de blocos mantém gráfico e tabela com as mesmas categorias e contagens.
+// A seleção de blocos define as categorias e contagens do gráfico de avaliações.
 function capBlocoAval15(id, itens, t) {
   const d = capDados();
   const blocoSel = document.getElementById(id);
@@ -17409,10 +17400,6 @@ function capRenderStat15() {
   const d = capDados();
   const t = capTema();
   const { itens } = capFiltroAval15('capS15Cap', 'capS15Pub');
-  const { cont, categorias, cores, rotulo, nota } = capBlocoAval15('capS15Bloco', itens, t);
-  capSetTxt('capS15TabelaTitulo', 'Dados das perguntas — ' + rotulo);
-  capSetTxt('capS15TabelaSub', 'Percentuais por categoria e quantidade de respostas no bloco selecionado.' + nota);
-  capTabelaLikert('capS15Perguntas', cont, categorias, cores);
 
   const pub = capVal('capS15Pub');
   const cap = capVal('capS15Cap');
@@ -18633,12 +18620,13 @@ async function recarregarDadosExternos() {
       </div>
     </div>
     <div class="pif-body">
-      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.3.7</strong></div>
+      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.3.8</strong></div>
       <div class="pif-row"><span>Data da alteração:</span><span class="pnite-date-val">09/11/2026</span></div>
       <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">14:00</span></div>
       <div class="pif-row"><span>Responsável técnico:</span><span class="pnite-author-val">Equipe PNITE</span></div>
       <div class="pif-note">
         <i class="ti ti-check" style="color:var(--accent);margin-right:3px"></i>
+        <strong>Estatísticas das avaliações 1 a 5 (v.3.3.8):</strong> removidos o quadro de perguntas e o filtro de bloco duplicados; preservados os filtros de capacitação e público e os demais conteúdos.<br>
         <strong>Posição da cobertura (v.3.3.7):</strong> gráfico de municípios alcançados movido para o final da Home, abaixo dos cartões e do mapa.<br>
         <strong>Resumo da cobertura (v.3.3.6):</strong> gráfico da Home com descrição curta.<br>
         <strong>Cobertura municipal (v.3.3.5):</strong> Home com percentual de municípios alcançados no Centro-Oeste e comparação por UF, com municípios únicos, base territorial completa, filtros e memória de cálculo.<br>
@@ -18685,7 +18673,7 @@ async function recarregarDadosExternos() {
   </div>
   <button class="pif-btn" id="pifBtn" aria-label="Informações de Versão">
     <i class="ti ti-info-circle"></i>
-    <span class="pif-btn-label pnite-version-val">v.3.3.7</span>
+    <span class="pif-btn-label pnite-version-val">v.3.3.8</span>
   </button>
 </div>
 
