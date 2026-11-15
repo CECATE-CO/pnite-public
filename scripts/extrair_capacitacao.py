@@ -62,7 +62,18 @@ TIPO_COLUNA = {
 TABELAS_BANCO = ["municipios", "capacitacoes", "municipio_capacitacao", "aval15_perguntas", "aval15_respondentes",
                  "aval15_respostas", "aval616_perguntas", "aval616_respondentes", "aval616_notas", "aval616_canais"]
 
-UF_POR_CODIGO = {"50": "MS", "51": "MT", "52": "GO", "53": "DF", "15": "PA"}
+# Cadastro nacional para preservar atendimentos externos sem presumir origem regional.
+UF_POR_CODIGO = {
+    "11": "RO", "12": "AC", "13": "AM",
+    "14": "RR", "15": "PA", "16": "AP",
+    "17": "TO", "21": "MA", "22": "PI",
+    "23": "CE", "24": "RN", "25": "PB",
+    "26": "PE", "27": "AL", "28": "SE",
+    "29": "BA", "31": "MG", "32": "ES",
+    "33": "RJ", "35": "SP", "41": "PR",
+    "42": "SC", "43": "RS", "50": "MS",
+    "51": "MT", "52": "GO", "53": "DF",
+}
 
 # UFs de onde vieram os municípios convidados de cada capacitação (texto da convocação).
 # Usadas para desambiguar nomes iguais em UFs diferentes (ex.: Mundo Novo GO/MS).
@@ -112,8 +123,18 @@ def chave_nome(s):
     return re.sub(r"\s+", " ", s).strip()
 
 
-NOMES_UF = {"goias": "GO", "mato grosso do sul": "MS", "mato grosso": "MT", "distrito federal": "DF",
-            "para": "PA", "go": "GO", "ms": "MS", "mt": "MT", "df": "DF", "pa": "PA"}
+NOMES_UF = {
+    "rondonia": "RO", "acre": "AC", "amazonas": "AM",
+    "roraima": "RR", "para": "PA", "amapa": "AP",
+    "tocantins": "TO", "maranhao": "MA", "piaui": "PI",
+    "ceara": "CE", "rio grande do norte": "RN", "paraiba": "PB",
+    "pernambuco": "PE", "alagoas": "AL", "sergipe": "SE",
+    "bahia": "BA", "minas gerais": "MG", "espirito santo": "ES",
+    "rio de janeiro": "RJ", "sao paulo": "SP", "parana": "PR",
+    "santa catarina": "SC", "rio grande do sul": "RS", "mato grosso do sul": "MS",
+    "mato grosso": "MT", "goias": "GO", "distrito federal": "DF",
+}
+NOMES_UF.update({uf.lower(): uf for uf in UF_POR_CODIGO.values()})
 
 
 def separa_uf(texto):
@@ -129,7 +150,7 @@ def separa_uf(texto):
 
 
 def carrega_municipios():
-    """Municípios de GO, MT, MS, DF e PA a partir da lista oficial do IBGE."""
+    """Municípios das 27 UFs; o recorte regional é aplicado na análise, não no cadastro."""
     muns = {}
     with open(LISTA_IBGE, encoding="utf-8-sig") as f:
         next(f)
@@ -167,7 +188,7 @@ def localiza_municipio(texto, ufs_preferidas=None, convidados=None):
         if perto:
             cands = [m for m in pool if chave_nome(m["nome"]) == perto[0]]
     if uf:
-        cands = [m for m in cands if m["uf"] == uf] or cands
+        cands = [m for m in cands if m["uf"] == uf]
     if len(cands) > 1 and convidados:
         c2 = [m for m in cands if m["cod_ibge"] in convidados]
         if c2:
