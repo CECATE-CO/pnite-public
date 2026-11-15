@@ -1,6 +1,6 @@
 # PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 
-Versão atual: **v.3.3.5**.
+Versão atual: **v.3.3.6**.
 
 A **PNITE** é uma plataforma analítica desenvolvida para visualização, monitoramento, exploração e interpretação de informações estratégicas sobre o transporte escolar público brasileiro.
 
@@ -41,7 +41,7 @@ A PNITE é uma aplicação web de alta performance projetada para execução dir
 
 ### Cobertura municipal das capacitações
 
-Na Home de Indicadores da Capacitação, o gráfico apresenta a cobertura do Centro-Oeste (ou da UF selecionada). Em Unidades da Federação, as barras comparam a cobertura por UF, acompanhadas das contagens e da fórmula:
+Na Home de Indicadores da Capacitação, o gráfico apresenta a cobertura do Centro-Oeste (ou da UF selecionada), com apenas uma descrição curta. Em Unidades da Federação, as barras comparam a cobertura por UF, acompanhadas das contagens e da fórmula:
 
 **Municípios únicos com ao menos um participante presente ÷ total de municípios do território × 100.**
 

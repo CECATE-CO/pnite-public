@@ -6772,14 +6772,11 @@ window.onerror = function(msg, url, line, col, err) {
             <h2 class="cap-panel-title" id="capCoberturaTitulo">Municípios alcançados no Centro-Oeste</h2>
             <div class="cap-coverage-layout">
               <div class="cap-coverage-ring">
-                <canvas id="capChartHomeCobertura" role="img" aria-label="Cobertura municipal das capacitações" aria-describedby="capCoberturaResumo capCoberturaContagem capCoberturaMetodo"></canvas>
+                <canvas id="capChartHomeCobertura" role="img" aria-label="Cobertura municipal das capacitações" aria-describedby="capCoberturaResumo"></canvas>
                 <div class="cap-coverage-center" aria-hidden="true"><strong id="capCoberturaPct">—</strong><span>de cobertura</span></div>
               </div>
               <div>
                 <p class="cap-coverage-summary" id="capCoberturaResumo" role="status" aria-live="polite">Carregando a cobertura municipal…</p>
-                <p class="cap-coverage-note" id="capCoberturaContagem"></p>
-                <p class="cap-coverage-note" id="capCoberturaMetodo">Cobertura = municípios únicos com ao menos um participante presente ÷ total de municípios do território × 100. Cada município é contado uma única vez, inclusive os participantes não convidados.</p>
-                <p class="cap-coverage-note">Os filtros alteram os municípios alcançados; o total territorial permanece fixo. Fonte: listas de presença e cadastro municipal do IBGE disponível na PNITE. O DF é representado por Brasília, unidade territorial equivalente a município.</p>
               </div>
             </div>
           </section>
@@ -8488,7 +8485,7 @@ window.onerror = function(msg, url, line, col, err) {
     <div class="smb-sec">
       <div class="smb-sec-title" data-i18n="settings_info_title">Informações da Versão</div>
       <div style="font-size:12px;color:var(--text-2);display:flex;flex-direction:column;gap:4px;margin-top:6px">
-        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.3.5</b></div>
+        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.3.6</b></div>
         <div><span data-i18n="settings_updated">Última Atualização:</span> <b class="pnite-date-val">06/10/2026</b> às <b class="pnite-time-val">21:05</b></div>
         <div><span data-i18n="settings_author">Responsável Técnico:</span> <b class="pnite-author-val">Equipe PNITE</b></div>
       </div>
@@ -9477,9 +9474,9 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.3.5";
+const PNITE_VERSION = "v.3.3.6";
 const PNITE_LAST_UPDATE = "15/11/2026";
-const PNITE_LAST_TIME = "11:05";
+const PNITE_LAST_TIME = "11:27";
 
 // Escapa texto para inserção segura via innerHTML (entradas do usuário, nomes de arquivo)
 function escHtml(s) {
@@ -16813,15 +16810,11 @@ function capRenderCoberturaHome(rows, uf) {
   const c = capCoberturaMunicipal(rows, uf ? [uf] : CAP_UFS_MAPA);
   const territorio = uf ? 'de ' + uf : 'do Centro-Oeste';
   const pct = capPct(c.alcancados, c.total);
-  const resumo = c.total != null ? pct + ' dos municípios ' + territorio + ' já foram alcançados pelas capacitações nos filtros atuais.'
+  const resumo = c.total != null ? pct + ' dos municípios ' + territorio + ' já participaram das capacitações.'
     : 'Sem base territorial para calcular a cobertura ' + territorio + '.';
   capSetTxt('capCoberturaTitulo', 'Municípios alcançados ' + (uf ? 'em ' + uf : 'no Centro-Oeste'));
   capSetTxt('capCoberturaPct', pct);
   capSetTxt('capCoberturaResumo', resumo);
-  capSetTxt('capCoberturaContagem', c.total != null
-    ? capInt(c.alcancados) + ' de ' + capInt(c.total) + ' municípios com ao menos um participante presente; '
-      + capInt(c.total - c.alcancados) + ' sem presença registrada nos filtros atuais.'
-    : 'O total territorial não está disponível; nenhum percentual foi estimado.');
   const canvas = document.getElementById('capChartHomeCobertura');
   canvas.setAttribute('aria-label', resumo);
   const t = capTema();
@@ -18637,12 +18630,13 @@ async function recarregarDadosExternos() {
       </div>
     </div>
     <div class="pif-body">
-      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.3.5</strong></div>
+      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.3.6</strong></div>
       <div class="pif-row"><span>Data da alteração:</span><span class="pnite-date-val">09/11/2026</span></div>
       <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">14:00</span></div>
       <div class="pif-row"><span>Responsável técnico:</span><span class="pnite-author-val">Equipe PNITE</span></div>
       <div class="pif-note">
         <i class="ti ti-check" style="color:var(--accent);margin-right:3px"></i>
+        <strong>Resumo da cobertura (v.3.3.6):</strong> gráfico da Home com descrição curta.<br>
         <strong>Cobertura municipal (v.3.3.5):</strong> Home com percentual de municípios alcançados no Centro-Oeste e comparação por UF, com municípios únicos, base territorial completa, filtros e memória de cálculo.<br>
         <strong>Rótulos nas avaliações 6 a 16 (v.3.3.4):</strong> distribuição dos conceitos por critério com percentual e quantidade de respostas visíveis nas barras e identificação dos segmentos estreitos.<br>
         <strong>Rótulos nas barras (v.3.3.3):</strong> gráfico das avaliações 1 a 5 com percentuais e quantidades de respostas visíveis, incluindo identificação dos segmentos estreitos.<br>
@@ -18687,7 +18681,7 @@ async function recarregarDadosExternos() {
   </div>
   <button class="pif-btn" id="pifBtn" aria-label="Informações de Versão">
     <i class="ti ti-info-circle"></i>
-    <span class="pif-btn-label pnite-version-val">v.3.3.5</span>
+    <span class="pif-btn-label pnite-version-val">v.3.3.6</span>
   </button>
 </div>
 
