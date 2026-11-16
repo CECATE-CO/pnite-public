@@ -1,6 +1,6 @@
 # PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 
-Versão atual: **v.3.4.7**.
+Versão atual: **v.3.4.8**.
 
 A **PNITE** é uma plataforma analítica desenvolvida para visualização, monitoramento, exploração e interpretação de informações estratégicas sobre o transporte escolar público brasileiro.
 
