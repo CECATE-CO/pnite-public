@@ -3,7 +3,9 @@
 Estrutura do banco que alimenta a **PNITE**: o que existe em cada schema, como os dados fluem dos arquivos brutos até a interface, quais regras de cálculo ficam no banco e como atualizar.
 
 > Retrato de 23/10/2026 (migração `0014`), carga do SETE `ano_carga = 2026` e Censo Escolar 2025. Banco com cerca de 2,2 GB.
-> Indicadores e views da cascata atualizados até a migração `0021` (19/11/2026): PAIH, PAFI, TVA e MQT calculados; PARI com a regra do PAIH.
+> Indicadores e views da cascata atualizados até a migração `0024` (19/11/2026): PAIH, PAFI, TVA e MQT calculados; PARI com a regra do PAIH; **várias cargas do SETE** (a carga existente é `202605` = Maio/2026).
+>
+> **Cargas do SETE (desde a 0022).** Cada extração do SETE é uma carga identificada por `carga` (AAAAMM da data de referência: `202605` = maio de 2026, `202611` = novembro de 2026), registrada em `ref.cargas` com rótulo, data e Censo pareado. Todas as tabelas do SETE, as views de análise e as views da API têm a coluna `carga`, e as junções usam `(carga, codigo_cidade, id)`. `ano_carga` continua sendo o **ano** de referência (base da idade da frota) e é o mesmo nas cargas de um mesmo ano. A interface lista as cargas em `public.cargas_sete`, filtra tudo por `carga=eq.<carga>` e compara duas cargas na página **Comparativo entre Cargas**.
 > A fonte da verdade da estrutura são as migrações em [`supabase/migrations/`](supabase/migrations/); este documento as resume.
 > **As colunas de cada tabela e view estão na [seção 10 — Dicionário de dados](#10-dicionário-de-dados--uma-seção-por-tabela)**, uma subseção por tabela.
 
@@ -70,7 +72,7 @@ flowchart LR
 
 Todas as tabelas brutas têm `ano_carga` (ano de referência da carga), `codigo_cidade` (código IBGE de 7 dígitos) e `uf`. Os comentários de coluna no banco trazem as descrições do dicionário do SETE. As colunas de cada tabela estão na seção 10.
 
-### 3.1. `sete` — SETE (`ano_carga = 2026`)
+### 3.1. `sete` — SETE (carga `202605` = Maio/2026)
 
 | Tabela | Linhas | Conteúdo |
 |---|---:|---|
@@ -102,8 +104,8 @@ Todas as tabelas brutas têm `ano_carga` (ano de referência da carga), `codigo_
 |---|---:|---|
 | `uf` | 27 | Sigla (minúscula), nome, código IBGE, região |
 | `municipios` | 5.571 | Municípios IBGE com regiões geográficas intermediária e imediata. Só códigos de 7 dígitos |
-| `cargas` | 1 | Pareamento entre cargas: SETE 2026 ↔ Censo 2025 |
-| `raw_referencia` | 33 | Valores de referência por escopo (legado + planilhas consolidadas), sobrepostos pelos contadores calculados |
+| `cargas` | 1 | Uma linha por carga do SETE (`carga` AAAAMM, `rotulo`, `data_referencia`, `ano_carga_sete`) e o Censo pareado (`ano_carga_censo`). Hoje: `202605` Maio/2026 ↔ Censo 2025 |
+| `raw_referencia` | 33 | Valores de referência por carga e escopo (legado + planilhas consolidadas; só a carga `202605`), sobrepostos pelos contadores calculados. Cargas sem planilha usam `analise.referencia_calculada` |
 | `detalhes_scripts` | 377 | Detalhes por UF/escopo vindos das planilhas consolidadas (exibidos no painel estadual) |
 
 ### 3.4. `capacitacao` — Capacitações (migração `0012`)
@@ -170,26 +172,28 @@ As views de alunos, rotas, veículos, motoristas e monitores aceitam **apenas c�
 |---|---:|---|
 | `mv_base_municipio` | 5.571 | Contagens e somas **aditivas** por município (SETE + Censo pareado). Somar municípios reproduz UF, região e Brasil |
 | `mv_tempo_rotas` | 2.908 | Mediana e média do tempo das rotas por escopo (não aditivas) |
+| `mv_medianas_nivel` | 33 | Medianas de referência por carga em UF, região e Brasil (MIFCE e MEDATE), usadas nas cargas sem planilha consolidada |
 | `mv_rotas_estatisticas` | 2.918 | MQT: mediana, P5, P95, mínimo e máximo do km e P5, P95, mínimo e máximo do tempo das rotas por escopo (não aditivas) |
 | `mv_complemento_municipio` | 5.571 | Indicadores municipais do Censo (ATE, MEDATE, PATM, PATE) e da frota (PVPCE, IMFP, IMFT, MIFCE) |
-| `mv_sete_municipio` | 3.990 | Tabela "Dados SETE" por município (45 colunas) |
+| `mv_sete_municipio` | 3.990 | Tabela "Dados SETE" por carga e município |
 
 ---
 
 ## 5. API pública (`public`)
 
-Todas as views exigem o cabeçalho `apikey: {SUPABASE_PUBLISHABLE_KEY}` e são filtradas por `ano_carga`, exceto `capacitacao_dados`. A API devolve no máximo **1.000 linhas por requisição**; para mais, pagine com `limit`/`offset`.
+Todas as views exigem o cabeçalho `apikey: {SUPABASE_PUBLISHABLE_KEY}` e são filtradas por `carga` (a interface usa a carga escolhida no seletor **Base SETE**), exceto `capacitacao_dados` e `cargas_sete`. Os números de linhas abaixo são por carga. A API devolve no máximo **1.000 linhas por requisição**; para mais, pagine com `limit`/`offset`.
 
 | View | Linhas | Uso na interface | Exemplo |
 |---|---:|---|---|
-| `indicadores_nacional` | 1 | Painel, escopo Brasil | `?ano_carga=eq.2026` |
-| `indicadores_regiao` | 5 | Painel, escopo região | `?ano_carga=eq.2026&regiao=eq.centro-oeste` |
-| `indicadores_estado` | 27 | Painel, escopo UF (inclui `detalhes`) | `?ano_carga=eq.2026&uf=eq.go` |
-| `indicadores_municipio` | 5.571 | Painel, escopo município | `?ano_carga=eq.2026&codigo_cidade=eq.5208707` |
-| `indicadores` | — | União dos quatro níveis (`nivel`, `chave`) | `?ano_carga=eq.2026&nivel=eq.estado&chave=eq.go` |
-| `indicadores_municipio_complemento` | 5.571 | Complementa o município: `censo` e `frota` | `?ano_carga=eq.2026&codigo_cidade=eq.5208707` |
-| `sete_municipios` | 1 | Tabela "Dados SETE", mapa municipal, comparações: `{cols, municipios, ufs}` | `?ano_carga=eq.2026&select=dados` |
-| `rotas_tracado` | 31.626 | Traçado das rotas no mapa do município (GeoJSON EPSG:4326, simplificado ~10 m) | `?ano_carga=eq.2026&codigo_cidade=eq.5212501` |
+| `indicadores_nacional` | 1 | Painel, escopo Brasil | `?carga=eq.202605` |
+| `indicadores_regiao` | 5 | Painel, escopo região | `?carga=eq.202605&regiao=eq.centro-oeste` |
+| `indicadores_estado` | 27 | Painel, escopo UF (inclui `detalhes`) | `?carga=eq.202605&uf=eq.go` |
+| `indicadores_municipio` | 5.571 | Painel, escopo município | `?carga=eq.202605&codigo_cidade=eq.5208707` |
+| `indicadores` | — | União dos quatro níveis (`nivel`, `chave`) | `?carga=eq.202605&nivel=eq.estado&chave=eq.go` |
+| `indicadores_municipio_complemento` | 5.571 | Complementa o município: `censo` e `frota` | `?carga=eq.202605&codigo_cidade=eq.5208707` |
+| `sete_municipios` | 1 | Tabela "Dados SETE", mapa municipal, comparações: `{cols, municipios, ufs}` | `?carga=eq.202605&select=dados` |
+| `rotas_tracado` | 31.626 | Traçado das rotas no mapa do município (GeoJSON EPSG:4326, simplificado ~10 m) | `?carga=eq.202605&codigo_cidade=eq.5212501` |
+| `cargas_sete` | 1 | Cargas com dados: `carga`, `rotulo`, `data_referencia`, `ano_carga`, `ano_censo`, `atual` (a mais recente) | `?order=carga` |
 | `capacitacao_dados` | 1 | Frente de Capacitação: `{tabela: {colunas, linhas}}` | `?select=dados` |
 
 Funções RPC de acesso (`POST /rest/v1/rpc/<nome>`, com `Authorization: Bearer <token do usuário>`; só `authenticated`):
@@ -267,13 +271,14 @@ Cada nível soma o anterior. Os percentuais são sempre recalculados a partir do
 
 ### Ordem de atualização
 
-`pnite_meta.atualizar_indicadores()` atualiza as views materializadas nesta ordem (≈ 20 s), usando `CONCURRENTLY` quando há índice único:
+`pnite_meta.atualizar_indicadores()` atualiza as views materializadas de todas as cargas nesta ordem (≈ 35 s com uma carga, acima do limite de ~30 s do gateway: `scripts/atualizar_indicadores.py` aguarda o término no banco), usando `CONCURRENTLY` quando há índice único:
 
-1. `analise.mv_base_municipio`, `analise.mv_tempo_rotas`, `analise.mv_rotas_estatisticas`
+1. `analise.mv_base_municipio`, `analise.mv_tempo_rotas`, `analise.mv_rotas_estatisticas`, `analise.mv_medianas_nivel`
 2. `public.indicadores_municipio` → `indicadores_estado` → `indicadores_regiao` → `indicadores_nacional`
 3. `public.rotas_tracado`
 4. `analise.mv_complemento_municipio`, `analise.mv_sete_municipio`
 5. `public.indicadores_municipio_complemento`, `public.sete_municipios`
+6. `public.cargas_sete`
 
 `public.capacitacao_dados` é atualizada pelo próprio `extrair_capacitacao.py`.
 
@@ -282,8 +287,9 @@ Cada nível soma o anterior. Os percentuais são sempre recalculados a partir do
 ```bash
 python scripts/supabase_migrar.py                                     # aplica migrações pendentes
 python scripts/criar_banco_dados_brutos.py --tabelas municipios referencia
-python scripts/criar_banco_dados_brutos.py                            # SETE + Censo (--retomar se interromper)
-python -c "import sys; sys.path.insert(0,'scripts'); from supabase_api import executar_sql; executar_sql('SELECT pnite_meta.atualizar_indicadores();')"
+python scripts/criar_banco_dados_brutos.py --carga 2026-11 --pasta upload/sete/2026-11   # uma carga do SETE (--retomar se interromper)
+python scripts/criar_banco_dados_brutos.py --tabelas censo           # Censo (só quando mudar)
+python scripts/atualizar_indicadores.py                               # recalcula as views de todas as cargas
 python scripts/extrair_capacitacao.py                                 # capacitações
 python scripts/importar_planilha.py --simular                         # planilhas da pasta upload/
 python scripts/validar_paridade.py
@@ -291,11 +297,14 @@ python scripts/validar_paridade.py
 
 > Se o Python acusar `CERTIFICATE_VERIFY_FAILED` numa máquina com antivírus que inspeciona HTTPS (ex.: Avast), adicione o domínio do Supabase às exceções do antivírus.
 
-### Nova carga (outro ano)
+### Nova carga do SETE (ex.: novembro de 2026)
 
-1. Ajustar `ANO_CARGA_SETE` / `ANO_CARGA_CENSO` no `.env` e incluir o pareamento em `ref.cargas`.
-2. Carregar os dados brutos. A carga é idempotente por `ano_carga`: apaga e reinsere o mesmo ano.
-3. Rodar `pnite_meta.atualizar_indicadores()`. As views públicas passam a ter linhas para os dois anos, e a interface filtra pelo `anoCarga` da configuração.
+1. Colocar os 15 CSVs da extração (`script_01_alunos_consolidado.csv` … `script_17_rota_dirigida_por_motorista_consolidado.csv`, com os mesmos cabeçalhos) numa pasta fora do Git, por exemplo `upload/sete/2026-11/`.
+2. Publicar antes a interface v.3.3.7 ou posterior: versões anteriores filtram só pelo ano e misturariam as duas cargas.
+3. Opcional: piloto de uma UF, `python scripts/criar_banco_dados_brutos.py --carga 2026-11 --pasta upload/sete/2026-11 --uf go`.
+4. Carga completa: `python scripts/criar_banco_dados_brutos.py --carga 2026-11 --pasta upload/sete/2026-11`. O script registra a carga em `ref.cargas` (rótulo `Novembro/2026`, Censo pareado `ANO_CARGA_CENSO`) e substitui só as linhas da mesma carga; as demais cargas não são tocadas. Ocupa cerca de 1,9 GB a mais no banco.
+5. `python scripts/atualizar_indicadores.py`. A nova carga aparece em `public.cargas_sete`, vira a padrão da interface (a mais recente) e entra no seletor **Base SETE** e no **Comparativo entre Cargas**.
+6. Nos níveis UF, região e Brasil, a nova carga não tem planilha consolidada: PVPCE, IMFP, IMFT, MIFCE, MEDATE, PATM e PATE vêm de `analise.referencia_calculada` (iguais aos legados na carga de maio). O ATE de UF usa as escolas atendidas pelo SETE (`esc_at_sete`), e o legado de maio usa outra contagem (27.751 × 29.525 no Brasil): a diferença aparece no comparativo.
 
 ---
 
@@ -324,6 +333,9 @@ python scripts/validar_paridade.py
 | `0019_catalogo_cadastro_inicial` | Cadastro inicial: 6 indicadores e 4 visuais do Caminho da Escola/SETE em rascunho e os 31 indicadores observados da PNITE em revisão (nada publicado); reconciliação 44.172 × 44.926 |
 | `0020_indicadores_paih_pafi_tva_mqt` | PAIH, PAFI (15 anos, provisório), TVA e MQT calculados; `analise.mv_rotas_estatisticas`; km médio ÷ rotas com km válido; tabela Dados SETE com PAIH, PAFI, TVA e MQT; cascata recriada com os novos contadores |
 | `0021_pari_regra_paih_e_catalogo` | PARI com a regra do PAIH (`al_transp_imp` ÷ `al_transp_sete`); tabela Dados SETE com `PARI` e `alunos_imped`; catálogo: PAIH, PAFI, TVA e MQT validados, fórmulas de PARI, PRPM e IPE padronizadas e notas dos indicadores em construção (versões seguem em revisão, com auditoria) |
+| `0022_cargas_do_sete` | Várias cargas do SETE: coluna `carga` (AAAAMM) nas tabelas do SETE, `ref.raw_referencia`, `ref.detalhes_scripts` e `pnite_meta.cargas_log` (existente = `202605`, Maio/2026); `ref.cargas` com rótulo e data; views de análise e da API chaveadas por carga; `public.cargas_sete`; `analise.mv_medianas_nivel` e `analise.referencia_calculada` para cargas sem planilha |
+| `0023_referencia_calculada_so_sem_planilha` | A referência calculada só vale onde a carga não tem linha em `ref.raw_referencia` (a carga de maio fica idêntica, inclusive o ATE regional "—") |
+| `0024_indices_sete_por_carga` | Índices das tabelas do SETE passam de `(ano_carga, …)` para `(carga, …)` |
 
 ---
 
@@ -347,8 +359,8 @@ Estrutura lida do catálogo do banco em 23/10/2026 (`pg_attribute`, `pg_constrai
 
 **Convenções**
 
-- **Chave lógica do SETE:** os ids (`id_aluno`, `id_rota`, `id_escola`, `id_veiculo`…) **não são globais**: só identificam um registro junto com `codigo_cidade` (e `ano_carga`). Sempre junte por `(ano_carga, codigo_cidade, id_x)`.
-- **As tabelas de `sete` e `censo` não têm chave primária** (são cópias fiéis dos CSVs); têm índices pelas chaves lógicas e por `(ano_carga, uf)`.
+- **Chave lógica do SETE:** os ids (`id_aluno`, `id_rota`, `id_escola`, `id_veiculo`…) **não são globais**: só identificam um registro junto com `codigo_cidade` e a `carga`. Sempre junte por `(carga, codigo_cidade, id_x)`: desde a 0022 pode haver mais de uma carga no mesmo `ano_carga`.
+- **As tabelas de `sete` e `censo` não têm chave primária** (são cópias fiéis dos CSVs); têm índices pelas chaves lógicas e por `(carga, uf)` (Censo: `(ano_carga, …)`). As tabelas do SETE têm `carga integer NOT NULL` com chave estrangeira para `ref.cargas`.
 - **UF:** maiúscula em `sete` e `censo` (`GO`); minúscula em `ref`, `analise` e `public` (`go`). Na `capacitacao`, maiúscula.
 - **S/N:** nas tabelas brutas os campos binários são `char(1)` com `S`/`N`; nas views `analise.v_*` viram `boolean` (`analise.sn`).
 - **Dados pessoais:** CPF (`sete.rota_dirigida_por_motorista`), placa e RENAVAM (`sete.veiculos`), coordenadas de alunos e contatos de escolas. Ficam só nos schemas privados; nada disso chega ao `public`.

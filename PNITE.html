@@ -5842,6 +5842,48 @@ html {
   }
 }
 
+/* v.3.3.7 — Base SETE (carga) na barra de território e Comparativo entre Cargas */
+.mtb-carga { display: inline-flex; align-items: center; gap: 6px; margin-left: 6px; min-width: 0; max-width: 100%; }
+.mtb-carga label, .mtb-carga-lbl { font-size: 12.5px; font-weight: 700; color: var(--text-2); white-space: nowrap; }
+.mtb-select-carga { width: auto; min-width: 150px; max-width: 100%; height: 32px; padding: 4px 32px 4px 10px; font-size: 12.5px; }
+.cmp-controles { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px 16px; margin: 4px 0 16px; }
+.cmp-campo { display: flex; flex-direction: column; gap: 6px; flex: 0 1 240px; min-width: 0; max-width: 100%; }
+.cmp-campo label { font-size: 12px; font-weight: 600; color: var(--text-2); }
+.cmp-campo .form-select { width: 100%; }
+.cmp-seta { color: var(--text-3); font-size: 18px; padding-bottom: 10px; }
+.cmp-escopo { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; color: var(--text-1); padding-bottom: 8px; }
+.cmp-escopo .ti { color: var(--c-blue); }
+.cmp-aviso { display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: 10px; background-color: var(--bg-input); border: 1px solid var(--border); color: var(--text-1); font-size: 13px; line-height: 1.5; margin-bottom: 14px; }
+.cmp-aviso[hidden] { display: none; }
+.cmp-aviso .ti { color: var(--c-blue); font-size: 17px; margin-top: 1px; }
+.cmp-aviso.erro .ti { color: var(--c-rose); }
+.cmp-tabela-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 12px; background-color: var(--bg-card); }
+.cmp-tabela-wrap:focus-visible { outline: 2px solid var(--c-blue); outline-offset: 2px; }
+.cmp-tabela-wrap[aria-busy="true"] { opacity: .55; transition: opacity .2s ease; }
+.cmp-tabela { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 620px; }
+.cmp-tabela caption { text-align: left; padding: 12px 14px 4px; font-size: 12.5px; color: var(--text-2); }
+.cmp-tabela th, .cmp-tabela td { padding: 9px 14px; border-bottom: 1px solid var(--border); text-align: right; white-space: nowrap; color: var(--text-1); }
+.cmp-tabela thead th { font-size: 12px; color: var(--text-2); font-weight: 700; background-color: var(--bg-card); }
+.cmp-tabela thead th:first-child, .cmp-tabela tbody th[scope="row"] { text-align: left; white-space: normal; font-weight: 500; }
+.cmp-tabela tr.cmp-grupo th { background-color: var(--bg-input); text-align: left; font-size: 11.5px; text-transform: uppercase; letter-spacing: .04em; color: var(--text-2); font-weight: 700; }
+.cmp-tabela tbody tr:last-child td, .cmp-tabela tbody tr:last-child th { border-bottom: none; }
+.cmp-sigla { display: inline-block; font-weight: 700; font-size: 11px; padding: 1px 7px; border-radius: 6px; background-color: rgba(37, 99, 235, .08); color: var(--c-blue); margin-right: 6px; }
+[data-theme="dark"] .cmp-sigla { background-color: rgba(59, 130, 246, .16); color: #93c5fd; }
+.cmp-var { display: inline-flex; align-items: center; gap: 3px; font-variant-numeric: tabular-nums; }
+.cmp-var .ti { font-size: 14px; color: var(--text-3); }
+.cmp-tabela td { font-variant-numeric: tabular-nums; }
+.cmp-nota { font-size: 12px; color: var(--text-3); margin: 12px 2px 0; line-height: 1.5; }
+@media (max-width: 760px) {
+  .cmp-escopo { margin-left: 0; width: 100%; padding-bottom: 0; }
+  .cmp-seta { display: none; }
+  .cmp-campo { flex: 1 1 100%; }
+  .mtb-carga { margin-left: 0; flex: 1 1 100%; }
+  .mtb-select-carga { flex: 1 1 auto; min-width: 0; width: 100%; }
+}
+@media (pointer: coarse) {
+  .mtb-select-carga { min-height: 44px; }
+}
+
 /* Barra Integrada de Localidade / Território nos Módulos */
 .module-territory-bar {
   display: block;
@@ -6508,6 +6550,7 @@ html[data-theme="dark"] .adm-msg.ok { color: #7ee2b0; }
 .sm-dica { position: absolute; pointer-events: none; z-index: 5; background: var(--bg-card); color: var(--text-1); border: 1px solid var(--border-mid); border-radius: 10px; padding: 6px 10px; font-size: 12px; box-shadow: 0 4px 14px rgba(0,0,0,.15); white-space: nowrap; }
 
 /* ================================================================
+    v.3.3.7 — CARGAS DO SETE (MAIO/2026 E PRÓXIMAS), SELETOR "BASE SETE" E COMPARATIVO ENTRE CARGAS (MIGRAÇÕES 0022 A 0024)
     v.3.3.6 — PARI COM A REGRA DO PAIH, TEXTOS DE PRPM/IPE PADRONIZADOS E CATÁLOGO ATUALIZADO (MIGRAÇÃO 0021)
     v.3.3.5 — PAIH, PAFI, TVA E MQT CALCULADOS NO BANCO E PUBLICADOS (MIGRAÇÃO 0020)
     v.3.3.4 — EXPORTAÇÃO EXCEL COMPLETA COM TODOS OS 5.569 MUNICÍPIOS DO BRASIL
@@ -8053,6 +8096,10 @@ window.onerror = function(msg, url, line, col, err) {
         <i class="ti ti-device-desktop-analytics" aria-hidden="true"></i>
         <span>Monitoramento SETE</span>
       </a>
+      <a href="#secComparativo" class="sidebar-item" data-sec="secComparativo" onclick="navToSection(event, 'secComparativo')">
+        <i class="ti ti-git-compare" aria-hidden="true"></i>
+        <span>Comparativo entre Cargas</span>
+      </a>
     </nav>
   </aside>
 <div class="editorial-container">
@@ -9046,6 +9093,96 @@ window.onerror = function(msg, url, line, col, err) {
         </div>
       </section>
 </div><!-- /#page-secMonitoramento -->
+      <!-- SEÇÃO 10: COMPARATIVO ENTRE CARGAS DO SETE (v.3.3.7) -->
+      <div class="pnite-module-page" id="page-secComparativo">
+<section class="sec-card-standard" id="secComparativo" aria-labelledby="cmpTitulo">
+        <div class="sec-header-standard">
+          <div class="sec-badge">10</div>
+          <div>
+            <div class="sec-title" id="cmpTitulo">Comparativo entre Cargas do SETE</div>
+            <div class="sec-sub">Indicadores e contadores do mesmo território em duas extrações do SETE (ex.: maio e novembro de 2026), calculados com as mesmas regras. A variação é a diferença da segunda carga em relação à primeira.</div>
+          </div>
+        </div>
+
+        <!-- BARRA INTEGRADA DE SELEÇÃO TERRITORIAL (COMPARATIVO ENTRE CARGAS) -->
+        <div class="module-territory-bar" data-mod="comparativo">
+          <div class="mtb-header">
+            <div class="mtb-label-wrap">
+              <i class="ti ti-map-pin" style="color:var(--c-blue);font-size:16px"></i>
+              <span class="mtb-label" data-i18n="territorio_escopo_label">Localidade / Território:</span>
+              <span class="mtb-badge territory-active-badge-val">Brasil (Nacional)</span>
+            </div>
+            <div class="mtb-level-pills">
+              <button type="button" class="mtb-pill active" data-level="nacional" onclick="setTerritoryLevel('nacional')">
+                <i class="ti ti-world"></i> <span data-i18n="territory_nacional">Nacional</span>
+              </button>
+              <button type="button" class="mtb-pill" data-level="regiao" onclick="setTerritoryLevel('regiao')">
+                <i class="ti ti-layout-grid"></i> <span data-i18n="territory_regiao">Região</span>
+              </button>
+              <button type="button" class="mtb-pill" data-level="estado" onclick="setTerritoryLevel('estado')">
+                <i class="ti ti-map"></i> <span data-i18n="territory_estado">Estado</span>
+              </button>
+              <button type="button" class="mtb-pill" data-level="municipio" onclick="setTerritoryLevel('municipio')">
+                <i class="ti ti-building-community"></i> <span data-i18n="territory_municipio">Município</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="mtb-subselects">
+            <div class="mtb-group mtb-group-nacional">
+              <span style="font-size:12.5px;color:var(--text-2);display:inline-flex;align-items:center;gap:6px">
+                <i class="ti ti-check" style="color:var(--c-mint)"></i> <span data-i18n="scope_nac_desc">Escopo Nacional — Brasil (Dados consolidados de todos os municípios e estados)</span>
+              </span>
+            </div>
+            <div class="mtb-group mtb-group-regiao" style="display:none">
+              <label data-i18n="sel_regiao_lbl" style="font-size:12px;font-weight:600;color:var(--text-2);display:block;margin-bottom:6px">Selecione a Região:</label>
+              <select class="form-select mtb-select-regiao" aria-label="Região" onchange="syncTerritoryRegiao(this.value)" style="width:100%;max-width:380px">
+                <option value="centro-oeste" selected data-i18n="regiao_centro_oeste">Centro-Oeste</option>
+                <option value="norte" data-i18n="regiao_norte">Norte</option>
+                <option value="nordeste" data-i18n="regiao_nordeste">Nordeste</option>
+                <option value="sudeste" data-i18n="regiao_sudeste">Sudeste</option>
+                <option value="sul" data-i18n="regiao_sul">Sul</option>
+              </select>
+            </div>
+            <div class="mtb-group mtb-group-estado" style="display:none">
+              <label data-i18n="sel_estado_lbl" style="font-size:12px;font-weight:600;color:var(--text-2);display:block;margin-bottom:6px">Selecione a UF / Estado:</label>
+              <select class="form-select mtb-select-estado" aria-label="Estado" onchange="syncTerritoryEstado(this.value)" style="width:100%;max-width:380px"></select>
+            </div>
+            <div class="mtb-group mtb-group-municipio" style="display:none">
+              <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-end;width:100%">
+                <div style="flex:1;min-width:180px">
+                  <label data-i18n="sel_mun_uf_lbl" style="font-size:12px;font-weight:600;color:var(--text-2);display:block;margin-bottom:6px">UF do Município:</label>
+                  <select class="form-select mtb-select-mun-uf" aria-label="UF do município" onchange="syncTerritoryMunUf(this.value)" style="width:100%"></select>
+                </div>
+                <div style="flex:2;min-width:260px">
+                  <label data-i18n="sel_mun_lbl" style="font-size:12px;font-weight:600;color:var(--text-2);display:block;margin-bottom:6px">2. Município:</label>
+                  <select class="form-select mtb-select-mun-city" aria-label="Município" onchange="syncTerritoryMunCity(this.value)" style="width:100%"></select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cmp-controles">
+          <div class="cmp-campo">
+            <label for="cmpCargaA">Carga de referência</label>
+            <select id="cmpCargaA" class="form-select" onchange="renderComparativo()"></select>
+          </div>
+          <i class="ti ti-arrow-right cmp-seta" aria-hidden="true"></i>
+          <div class="cmp-campo">
+            <label for="cmpCargaB">Comparar com</label>
+            <select id="cmpCargaB" class="form-select" onchange="renderComparativo()"></select>
+          </div>
+          <div class="cmp-escopo"><i class="ti ti-map-pin" aria-hidden="true"></i> <span id="cmpEscopo">Brasil</span></div>
+        </div>
+        <div id="cmpAviso" class="cmp-aviso" role="status" hidden></div>
+        <div class="cmp-tabela-wrap" id="cmpTabelaWrap" role="region" aria-label="Tabela comparativa entre cargas" tabindex="0">
+          <table class="cmp-tabela" id="cmpTabela"></table>
+        </div>
+        <p class="cmp-nota"><i class="ti ti-info-circle" aria-hidden="true"></i> Indicadores em % variam em pontos percentuais (p.p.); a variação relativa é a diferença dividida pelo valor da carga de referência. Ausência de dado aparece como “—”. As duas cargas usam o mesmo Censo Escolar pareado, por isso os indicadores do Censo (ATE, MEDATE, PATM, PATE) só mudam se o pareamento mudar.</p>
+      </section>
+</div><!-- /#page-secComparativo -->
+
 
 
     </div>
@@ -9158,7 +9295,7 @@ window.onerror = function(msg, url, line, col, err) {
     <div class="smb-sec">
       <div class="smb-sec-title" data-i18n="settings_info_title">Informações da Versão</div>
       <div style="font-size:12px;color:var(--text-2);display:flex;flex-direction:column;gap:4px;margin-top:6px">
-        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.3.6</b></div>
+        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.3.7</b></div>
         <div><span data-i18n="settings_updated">Última Atualização:</span> <b class="pnite-date-val">06/10/2026</b> às <b class="pnite-time-val">21:05</b></div>
         <div><span data-i18n="settings_author">Responsável Técnico:</span> <b class="pnite-author-val">Equipe PNITE</b></div>
       </div>
@@ -10147,9 +10284,9 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.3.6";
+const PNITE_VERSION = "v.3.3.7";
 const PNITE_LAST_UPDATE = "19/11/2026";
-const PNITE_LAST_TIME = "13:10";
+const PNITE_LAST_TIME = "16:30";
 
 // Escapa texto para inserção segura via innerHTML (entradas do usuário, nomes de arquivo)
 function escHtml(s) {
@@ -11083,14 +11220,20 @@ window.PNITE_API = (function() {
   let resumoCarregado = false;
   let controleEscopo = null;
   let ultimaAtualizacao = null;
+  // Cargas do SETE (public.cargas_sete): cada extração é uma carga AAAAMM (ex.: 202605 = Maio/2026)
+  let cargas = [];
+  let cargaAtiva = null;
+  const CHAVE_PREF_CARGA = 'pnite_carga_sete';
 
   function cfg() { return window.PNITE_CONFIG || null; }
   function configurado() { const c = cfg(); return !!(c && c.supabaseUrl && c.publishableKey); }
 
   async function consultar(view, filtros, sinalExterno) {
     const c = cfg();
-    // ano_carga: null em filtros consulta views sem ano de carga (ex.: capacitacao_dados)
-    const params = Object.assign({ ano_carga: 'eq.' + c.anoCarga }, filtros);
+    // Filtro padrão: a carga ativa (ou, sem lista de cargas, o ano de carga da configuração).
+    // carga/ano_carga: null em filtros consulta views sem carga (ex.: capacitacao_dados).
+    const padrao = cargaAtiva ? { carga: 'eq.' + cargaAtiva } : { ano_carga: 'eq.' + c.anoCarga };
+    const params = Object.assign(padrao, filtros);
     Object.keys(params).forEach(function(k) { if (params[k] == null) delete params[k]; });
     const qs = new URLSearchParams(params);
     const url = c.supabaseUrl.replace(/\/$/, '') + '/rest/v1/' + view + '?' + qs.toString();
@@ -11143,11 +11286,13 @@ window.PNITE_API = (function() {
 
   async function carregarResumo() {
     const sel = 'label,raw,indicadores';
+    const carga = cargaAtiva;
     const resp = await Promise.all([
       consultar('indicadores_nacional', { select: sel }),
       consultar('indicadores_regiao', { select: 'regiao,' + sel }),
       consultar('indicadores_estado', { select: 'uf,' + sel })
     ]);
+    if (carga !== cargaAtiva) return;            // resposta de uma carga já trocada
     ufsCarregadas = resp[2].map(function(l) { return l.uf; });
     const novo = pniteDadosVazios();
     aplicar(novo, 'nacional', 'nacional', resp[0][0] || null);
@@ -11166,8 +11311,10 @@ window.PNITE_API = (function() {
   let seteStatus = 'pendente';
   async function carregarSete() {
     seteStatus = 'carregando';
+    const carga = cargaAtiva;
     try {
       const linhas = await consultar('sete_municipios', { select: 'dados' });
+      if (carga !== cargaAtiva) { seteStatus = 'pendente'; return; }   // carga trocada durante a consulta
       if (!linhas.length || !linhas[0].dados) throw new Error('tabela Dados SETE vazia na API');
       aplicarSeteMun(linhas[0].dados);
       seteStatus = 'ok';
@@ -11230,6 +11377,104 @@ window.PNITE_API = (function() {
     }
   }
 
+  function preferenciaCarga(valor) {
+    try {
+      if (valor === undefined) return parseInt(window.localStorage.getItem(CHAVE_PREF_CARGA), 10) || null;
+      window.localStorage.setItem(CHAVE_PREF_CARGA, String(valor));
+    } catch (e) { /* armazenamento indisponível: vale a carga mais recente */ }
+    return null;
+  }
+
+  // Lista de cargas com dados; a ativa é a escolhida pelo usuário (se ainda existir) ou a mais recente
+  async function carregarCargas() {
+    try {
+      const linhas = await consultar('cargas_sete', { carga: null, ano_carga: null,
+        select: 'carga,rotulo,data_referencia,ano_carga,atual', order: 'carga' });
+      cargas = Array.isArray(linhas) ? linhas : [];
+    } catch (e) {
+      cargas = [];
+      console.warn('PNITE API — lista de cargas indisponível; usando o ano de carga da configuração', e);
+    }
+    const pref = preferenciaCarga();
+    const escolhida = cargas.find(function(c) { return c.carga === pref; })
+      || cargas.find(function(c) { return c.atual; }) || cargas[cargas.length - 1] || null;
+    cargaAtiva = escolhida ? escolhida.carga : null;
+    renderSeletoresCarga();
+  }
+
+  function rotuloCarga(carga) {
+    const c = cargas.find(function(x) { return x.carga === carga; });
+    if (c) return c.rotulo;
+    return carga ? String(carga).replace(/^(\d{4})(\d{2})$/, '$2/$1') : 'ano de carga ' + ((cfg() || {}).anoCarga || '—');
+  }
+
+  // Seletor "Base SETE" nas barras de território (uma opção por carga; com uma só, apenas o rótulo)
+  function renderSeletoresCarga() {
+    document.querySelectorAll('.module-territory-bar').forEach(function(bar) {
+      const wrap = bar.querySelector('.mtb-label-wrap');
+      if (!wrap) return;
+      let el = wrap.querySelector('.mtb-carga');
+      if (!el) {
+        el = document.createElement('span');
+        el.className = 'mtb-carga';
+        wrap.appendChild(el);
+      }
+      const id = 'mtbCarga-' + (bar.getAttribute('data-mod') || 'x');
+      if (cargas.length > 1) {
+        el.innerHTML = '<label for="' + id + '">Base SETE:</label>'
+          + '<select id="' + id + '" class="form-select mtb-select-carga" data-acao="carga-sete">'
+          + cargas.map(function(c) {
+              return '<option value="' + c.carga + '"' + (c.carga === cargaAtiva ? ' selected' : '') + '>'
+                + escHtml(c.rotulo) + (c.atual ? ' (mais recente)' : '') + '</option>';
+            }).join('') + '</select>';
+      } else {
+        el.innerHTML = '<span class="mtb-carga-lbl">Base SETE:</span><span class="mtb-badge mtb-badge-carga">'
+          + escHtml(rotuloCarga(cargaAtiva)) + '</span>';
+      }
+    });
+  }
+
+  // Troca a carga de toda a plataforma: limpa o que depende da carga e recarrega
+  function definirCarga(nova) {
+    nova = parseInt(nova, 10);
+    if (!nova || nova === cargaAtiva || !cargas.some(function(c) { return c.carga === nova; })) return Promise.resolve();
+    cargaAtiva = nova;
+    preferenciaCarga(nova);
+    renderSeletoresCarga();
+    document.dispatchEvent(new CustomEvent('pnite:carga', { detail: { carga: nova } }));
+    return recarregar();
+  }
+
+  // Indicadores e contadores de um escopo em várias cargas: { carga: { ind, raw } }
+  async function comparar(nivel, chave, lista) {
+    const filtro = { carga: 'in.(' + lista.map(function(c) { return parseInt(c, 10); }).join(',') + ')' };
+    const sel = 'carga,label,raw,indicadores';
+    let linhas = [], comp = [];
+    if (nivel === 'municipio') {
+      const cod = parseInt(chave, 10);
+      if (!cod) return {};
+      const r = await Promise.all([
+        consultar('indicadores_municipio', Object.assign({ codigo_cidade: 'eq.' + cod, select: 'uf,' + sel }, filtro)),
+        consultar('indicadores_municipio_complemento', Object.assign({ codigo_cidade: 'eq.' + cod, select: 'carga,censo,frota' }, filtro))
+      ]);
+      linhas = r[0]; comp = r[1];
+    } else if (nivel === 'regiao') {
+      linhas = await consultar('indicadores_regiao', Object.assign({ regiao: 'eq.' + chave, select: sel }, filtro));
+    } else if (nivel === 'estado') {
+      linhas = await consultar('indicadores_estado', Object.assign({ uf: 'eq.' + chave, select: sel }, filtro));
+    } else {
+      linhas = await consultar('indicadores_nacional', Object.assign({ select: sel }, filtro));
+    }
+    const res = {};
+    linhas.forEach(function(l) {
+      const ind = nivel === 'municipio'
+        ? pniteMunicipioDaApi(Object.assign({}, l, { complemento: comp.find(function(x) { return x.carga === l.carga; }) || null }), parseInt(chave, 10))
+        : Object.assign(pniteEscopoVazio(l.label), l.indicadores);
+      res[l.carga] = { ind: ind, raw: l.raw || {} };
+    });
+    return res;
+  }
+
   async function iniciar() {
     if (!configurado()) {
       definirStatus('sem-config');
@@ -11237,6 +11482,7 @@ window.PNITE_API = (function() {
     }
     definirCarregando(true);
     definirStatus('carregando');
+    await carregarCargas();
     if (seteStatus !== 'ok' && seteStatus !== 'carregando') carregarSete();
     try {
       await carregarResumo();
@@ -11313,8 +11559,8 @@ window.PNITE_API = (function() {
       if (st) st.textContent = 'Conectando à API do Supabase…';
     } else if (tipo === 'ok') {
       const hora = ultimaAtualizacao ? ultimaAtualizacao.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : '';
-      if (st) st.innerHTML = '<span style="color:var(--accent);font-weight:600"><i class="ti ti-check" aria-hidden="true"></i> API do Supabase</span> — ano de carga '
-        + cfg().anoCarga + (basePartial() ? ', base parcial: ' + siglasCarregadas() : '')
+      if (st) st.innerHTML = '<span style="color:var(--accent);font-weight:600"><i class="ti ti-check" aria-hidden="true"></i> API do Supabase</span> — base SETE '
+        + escHtml(rotuloCarga(cargaAtiva)) + (basePartial() ? ', base parcial: ' + siglasCarregadas() : '')
         + (hora ? ' (atualizado às ' + hora + ')' : '');
       const el = document.getElementById('pniteApiAviso');
       if (el && el.classList.contains('erro') && el.dataset.origem !== 'sete') el.hidden = true;
@@ -11342,6 +11588,11 @@ window.PNITE_API = (function() {
     configurado: configurado,
     seteStatus: function() { return configurado() ? seteStatus : 'sem-config'; },
     municipio: function(cod) { return municipios.get(parseInt(cod, 10)); },
+    cargas: function() { return cargas.slice(); },
+    cargaAtiva: function() { return cargaAtiva; },
+    rotuloCarga: rotuloCarga,
+    definirCarga: definirCarga,
+    comparar: comparar,
     ufsCarregadas: function() { return ufsCarregadas.slice(); },
     // Traçado simplificado das rotas do município (public.rotas_tracado, GeoJSON em EPSG:4326)
     rotasMunicipio: function(cod, sinal) {
@@ -11352,7 +11603,7 @@ window.PNITE_API = (function() {
     // Base das capacitações (public.capacitacao_dados): objeto {tabela: {colunas, linhas}}
     capacitacao: function() {
       if (!configurado()) return Promise.reject(new Error('API não configurada (config.local.js ausente)'));
-      return consultar('capacitacao_dados', { ano_carga: null, select: 'dados' }).then(function(linhas) {
+      return consultar('capacitacao_dados', { ano_carga: null, carga: null, select: 'dados' }).then(function(linhas) {
         if (!linhas.length || !linhas[0].dados) throw new Error('base das capacitações vazia na API');
         return linhas[0].dados;
       });
@@ -16960,6 +17211,15 @@ function gxRenderSobre() {
 // TRANSPORTE › MONITORAMENTO SETE (base SETE da PNITE: public.indicadores)
 // --------------------------------------------------------------------------
 const SM = { aba: 'gerais', f: { regiao: '', uf: '', mun: '' }, agg: null, mun: null, snap: null, charts: {}, carregando: null, seq: 0 };
+function smRotuloCarga() {
+  return (window.PNITE_API && PNITE_API.rotuloCarga) ? PNITE_API.rotuloCarga(PNITE_API.cargaAtiva()) : ('ano de carga ' + ((window.PNITE_CONFIG || {}).anoCarga || '—'));
+}
+// Troca da base SETE: descarta os dados do monitoramento e recarrega se o módulo estiver aberto
+document.addEventListener('pnite:carga', function() {
+  SM.carregando = null; SM.agg = null; SM.mun = null;
+  const pm = document.getElementById('page-secMonitoramento');
+  if (pm && pm.classList.contains('active-page')) smIniciar();
+});
 const SM_REGIOES = { 'norte': 'Norte', 'nordeste': 'Nordeste', 'centro-oeste': 'Centro-Oeste', 'sudeste': 'Sudeste', 'sul': 'Sul' };
 const SM_CAMPOS = ['al_cad', 'al_transp', 'esc_at_sete', 'tot_veic', 'vp', 'vt', 'cap_media', 'imfp', 'imft', 'tot_mot_info',
   'tot_rotas', 'km_total', 'km_medio', 'tempo_medio', 'georref', 't1', 't2', 't3'];
@@ -16988,8 +17248,10 @@ function smSelect() {
 }
 function smCarregarBase() {
   if (SM.carregando) return SM.carregando;
+  // Carga ativa do SETE (seletor "Base SETE"); sem lista de cargas, o ano de carga da configuração
+  const carga = (window.PNITE_API && PNITE_API.cargaAtiva) ? PNITE_API.cargaAtiva() : null;
   const ano = (window.PNITE_CONFIG || {}).anoCarga;
-  const filtroAno = ano ? { ano_carga: 'eq.' + ano } : {};
+  const filtroAno = carga ? { carga: 'eq.' + carga } : (ano ? { ano_carga: 'eq.' + ano } : {});
   SM.carregando = Promise.all([
     smConsulta(Object.assign({ select: smSelect(), nivel: 'in.(nacional,regiao,estado)' }, filtroAno)),
     smConsultaTudo(Object.assign({ select: smSelect(), nivel: 'eq.municipio', order: 'chave' }, filtroAno)),
@@ -17072,7 +17334,7 @@ function smRender() {
   const app = document.getElementById('smApp'), sobre = document.getElementById('smSobre');
   document.getElementById('smEstado').hidden = true;
   const esc = smEscopoAtual();
-  document.getElementById('smEscopo').textContent = 'Escopo: ' + (esc.nome || '—') + ' · base SETE da PNITE (ano de carga ' + ((window.PNITE_CONFIG || {}).anoCarga || '—') + ')';
+  document.getElementById('smEscopo').textContent = 'Escopo: ' + (esc.nome || '—') + ' · base SETE da PNITE (' + smRotuloCarga() + ')';
   if (SM.aba === 'sobre') { app.hidden = true; sobre.hidden = false; smRenderSobre(); return; }
   sobre.hidden = true; app.hidden = false;
   const r = esc.linha || {};
@@ -17233,7 +17495,7 @@ function smRenderSnapshot() {
 function smRenderSobre() {
   const s = SM.snap || {};
   const itens = [['Fonte dos valores', 'Base SETE carregada na PNITE (API do Supabase, tabela de indicadores por escopo)'],
-    ['Ano de carga', escHtml(String((window.PNITE_CONFIG || {}).anoCarga || '—'))],
+    ['Base SETE', escHtml(smRotuloCarga())],
     ['Fotografia FNDE', s.publicado ? 'Publicada · captura de ' + gxData((s.dados || {}).data_captura) : 'Não publicada'],
     ['Responsável pela integração', (s.ficha && s.ficha.responsavel) ? escHtml(s.ficha.responsavel) : 'Equipe PNITE'],
     ['Versão do aplicativo', escHtml(PNITE_VERSION)]];
@@ -19257,6 +19519,162 @@ function closeSettingsModal() {
 // --------------------------------------------------------------------------
 // 8. RENDERIZAÇÃO GERAL SINCRONIZADA
 // --------------------------------------------------------------------------
+// ==========================================================================
+// v.3.3.7 — COMPARATIVO ENTRE CARGAS DO SETE (ex.: maio × novembro de 2026)
+// Mesmo território (barra de território da página) em duas cargas, lidas da API por carga.
+// ==========================================================================
+let cmpSeq = 0;
+const CMP_CONTADORES = [
+  { k: 'al_cad', nome: 'Alunos cadastrados' },
+  { k: 'al_transp', nome: 'Alunos transportados' },
+  { k: 'esc_at_sete', nome: 'Escolas atendidas por rotas' },
+  { k: 'tot_rotas', nome: 'Rotas cadastradas' },
+  { k: 'georref', nome: 'Rotas georreferenciadas' },
+  { k: 'km_total', nome: 'Extensão total das rotas (km)', casas: 1 },
+  { k: 'tot_veic', nome: 'Veículos' },
+  { k: 'ce_veic_sete', nome: 'Veículos do Caminho da Escola' },
+  { k: 'tot_mot_info', nome: 'Motoristas com vínculo informado' },
+  { k: 'tot_mon', nome: 'Monitores com vínculo informado' }
+];
+const CMP_GRUPOS = [['FNL', 'Finalísticos'], ['P', 'Desempenho'], ['D', 'Descritivos']];
+
+function cmpCasas(unit) { return unit === 'alunos' || unit === 'minutos' ? 0 : (unit === 'índice' ? 2 : 1); }
+function cmpSufixo(unit) {
+  return unit === '%' ? '%' : unit === 'anos' ? ' anos' : unit === 'alunos' ? ' alunos'
+    : unit === 'km/min' ? ' km' : unit === 'minutos' ? ' min' : '';
+}
+function cmpNumero(v, casas) {
+  return Number(v).toLocaleString('pt-BR', { minimumFractionDigits: casas, maximumFractionDigits: casas });
+}
+// Valor numérico do indicador (com os aliases PRIO←PRDAM etc.); ausência de dado → null
+function cmpValor(d, sigla) {
+  if (!d) return null;
+  let v = d[sigla];
+  if ((v === null || v === undefined) && NATIONAL_AVG_ALIASES[sigla]) v = d[NATIONAL_AVG_ALIASES[sigla]];
+  if (v === null || v === undefined || v === '') return null;
+  v = Number(v);
+  return isFinite(v) ? v : null;
+}
+function cmpCelula(v, casas, sufixo) { return v === null ? '—' : cmpNumero(v, casas) + sufixo; }
+function cmpVariacao(a, b, casas, sufixo, pp) {
+  if (a === null || b === null) return { abs: '—', rel: '—' };
+  const dif = b - a;
+  const sinal = dif > 0 ? '+' : (dif < 0 ? '−' : '');
+  const icone = dif > 0 ? 'ti-arrow-up-right' : (dif < 0 ? 'ti-arrow-down-right' : 'ti-equal');
+  const abs = '<span class="cmp-var"><i class="ti ' + icone + '" aria-hidden="true"></i>' + sinal
+    + cmpNumero(Math.abs(dif), casas) + (pp ? ' p.p.' : sufixo) + '</span>';
+  const rel = a !== 0 ? sinal + cmpNumero(Math.abs(dif / a * 100), 1) + '%' : '—';
+  return { abs: abs, rel: rel };
+}
+
+function cmpEscopo() {
+  const nivel = (typeof currentScope !== 'undefined' && currentScope) ? currentScope : 'nacional';
+  const chave = (typeof currentScopeKey !== 'undefined' && currentScopeKey) ? String(currentScopeKey) : '';
+  let nome = 'Brasil';
+  if (nivel === 'regiao') nome = 'Região ' + (PNITE_API_REGIOES[chave] || chave || '—');
+  else if (nivel === 'estado') nome = PNITE_API_ESTADOS[chave] ? PNITE_API_ESTADOS[chave][0] : String(chave).toUpperCase();
+  else if (nivel === 'municipio') nome = (typeof getMunName === 'function') ? getMunName(chave) : chave;
+  return { nivel: nivel, chave: chave, nome: nome };
+}
+
+function cmpAviso(texto, tipo) {
+  const el = document.getElementById('cmpAviso');
+  if (!el) return;
+  if (!texto) { el.hidden = true; el.innerHTML = ''; return; }
+  el.className = 'cmp-aviso' + (tipo === 'erro' ? ' erro' : '');
+  el.setAttribute('role', tipo === 'erro' ? 'alert' : 'status');
+  el.innerHTML = '<i class="ti ' + (tipo === 'erro' ? 'ti-alert-triangle' : 'ti-info-circle') + '" aria-hidden="true"></i><div>' + texto + '</div>';
+  el.hidden = false;
+}
+
+// Mantém as opções dos seletores de carga e escolhe, por padrão, a penúltima × a mais recente
+function cmpPrepararSeletores(cargas) {
+  const selA = document.getElementById('cmpCargaA'), selB = document.getElementById('cmpCargaB');
+  const opcoes = cargas.map(function(c) { return '<option value="' + c.carga + '">' + escHtml(c.rotulo) + '</option>'; }).join('');
+  [selA, selB].forEach(function(s) {
+    if (s.dataset.opcoes !== opcoes) { const atual = s.value; s.innerHTML = opcoes; s.dataset.opcoes = opcoes; s.value = atual; }
+  });
+  const existe = function(v) { return cargas.some(function(c) { return String(c.carga) === v; }); };
+  if (!existe(selA.value)) selA.value = cargas.length > 1 ? String(cargas[cargas.length - 2].carga) : (cargas[0] ? String(cargas[0].carga) : '');
+  if (!existe(selB.value)) selB.value = cargas.length ? String(cargas[cargas.length - 1].carga) : '';
+  selA.disabled = selB.disabled = cargas.length < 2;
+  return { a: parseInt(selA.value, 10) || null, b: parseInt(selB.value, 10) || null };
+}
+
+async function renderComparativo() {
+  const page = document.getElementById('page-secComparativo');
+  if (!page || !page.classList.contains('active-page')) return;
+  const tabela = document.getElementById('cmpTabela'), wrap = document.getElementById('cmpTabelaWrap');
+  const api = window.PNITE_API;
+  if (!api || !api.configurado()) { cmpAviso('A configuração da API não foi encontrada.', 'erro'); tabela.innerHTML = ''; return; }
+  const cargas = api.cargas();
+  const esc = cmpEscopo();
+  document.getElementById('cmpEscopo').textContent = esc.nome;
+  if (!cargas.length) { cmpAviso('Carregando a lista de cargas do SETE…'); tabela.innerHTML = ''; return; }
+  const sel = cmpPrepararSeletores(cargas);
+  const duas = cargas.length > 1 && sel.a && sel.b && sel.a !== sel.b;
+  if (cargas.length < 2) {
+    cmpAviso('Só há uma carga do SETE no banco (<b>' + escHtml(api.rotuloCarga(sel.a)) + '</b>). A comparação fica disponível assim que a próxima carga for enviada (ex.: novembro de 2026).');
+  } else if (!duas) {
+    cmpAviso('Escolha duas cargas diferentes para comparar.');
+  } else {
+    cmpAviso('');
+  }
+  if (esc.nivel === 'municipio' && !parseInt(esc.chave, 10)) {
+    cmpAviso('Selecione um município na barra de território.'); tabela.innerHTML = ''; return;
+  }
+  const lista = duas ? [sel.a, sel.b] : [sel.a];
+  const seq = ++cmpSeq;
+  wrap.setAttribute('aria-busy', 'true');
+  let dados;
+  try {
+    dados = await api.comparar(esc.nivel, esc.chave, lista);
+  } catch (e) {
+    if (seq !== cmpSeq) return;
+    wrap.setAttribute('aria-busy', 'false');
+    cmpAviso('Não foi possível consultar as cargas na API (' + escHtml(e && e.message ? e.message : 'erro') + ').', 'erro');
+    tabela.innerHTML = '';
+    return;
+  }
+  if (seq !== cmpSeq) return;                       // território ou carga trocados durante a consulta
+  wrap.setAttribute('aria-busy', 'false');
+  const A = dados[sel.a] || null, B = duas ? (dados[sel.b] || null) : null;
+  const rotA = escHtml(api.rotuloCarga(sel.a)), rotB = duas ? escHtml(api.rotuloCarga(sel.b)) : '';
+  const nCol = duas ? 5 : 2;
+  let html = '<caption>' + escHtml(esc.nome) + ' · ' + rotA + (duas ? ' × ' + rotB : '') + '</caption>'
+    + '<thead><tr><th scope="col">Indicador</th><th scope="col">' + rotA + '</th>'
+    + (duas ? '<th scope="col">' + rotB + '</th><th scope="col">Variação</th><th scope="col">Variação relativa</th>' : '')
+    + '</tr></thead><tbody>';
+  const linha = function(rotulo, a, b, casas, sufixo, pp) {
+    let h = '<tr><th scope="row">' + rotulo + '</th><td>' + cmpCelula(a, casas, sufixo) + '</td>';
+    if (duas) { const v = cmpVariacao(a, b, casas, sufixo, pp); h += '<td>' + cmpCelula(b, casas, sufixo) + '</td><td>' + v.abs + '</td><td>' + v.rel + '</td>'; }
+    return h + '</tr>';
+  };
+  CMP_GRUPOS.forEach(function(g) {
+    const inds = MAPA_INDS.filter(function(i) { return i.tipo === g[0]; });
+    if (!inds.length) return;
+    html += '<tr class="cmp-grupo"><th colspan="' + nCol + '" scope="colgroup">' + g[1] + '</th></tr>';
+    inds.forEach(function(ind) {
+      const nome = (INDICATOR_FULL_NAMES && INDICATOR_FULL_NAMES[ind.sigla]) || ind.nome;
+      html += linha('<span class="cmp-sigla">' + ind.sigla + '</span>' + escHtml(nome),
+        cmpValor(A && A.ind, ind.sigla), cmpValor(B && B.ind, ind.sigla), cmpCasas(ind.unit), cmpSufixo(ind.unit), ind.unit === '%');
+    });
+  });
+  html += '<tr class="cmp-grupo"><th colspan="' + nCol + '" scope="colgroup">Contadores do SETE</th></tr>';
+  CMP_CONTADORES.forEach(function(c) {
+    html += linha(escHtml(c.nome), cmpValor(A && A.raw, c.k), cmpValor(B && B.raw, c.k), c.casas || 0, '', false);
+  });
+  tabela.innerHTML = html + '</tbody>';
+}
+
+// Troca da base SETE pelo seletor das barras de território (listener único, delegado)
+document.addEventListener('change', function(ev) {
+  const el = ev.target;
+  if (el && el.matches && el.matches('select[data-acao="carga-sete"]') && window.PNITE_API) {
+    PNITE_API.definirCarga(el.value);
+  }
+});
+
 function renderAllViews() {
   const d = getD();
   if (typeof renderElyraHero === 'function') renderElyraHero(d);
@@ -19275,6 +19693,7 @@ function renderAllViews() {
   if (typeof initPniteCustomDropdowns === 'function') initPniteCustomDropdowns();
   if (typeof updateThemeUI === 'function') updateThemeUI();
   if (typeof syncVersionInfo === 'function') syncVersionInfo();
+  if (typeof renderComparativo === 'function') renderComparativo();
 }
 
 
@@ -19354,7 +19773,8 @@ function switchModulePage(secId) {
     'secDescritivos': 'page-secDescritivos',
     'secModal': 'page-secModal',
     'secMapa': 'page-secMapa',
-    'secMonitoramento': 'page-secMonitoramento'
+    'secMonitoramento': 'page-secMonitoramento',
+    'secComparativo': 'page-secComparativo'
   };
 
   const targetPageId = pageMap[secId] || ('page-' + secId);
@@ -19413,6 +19833,8 @@ function switchModulePage(secId) {
     if (typeof renderElyraHero === 'function') renderElyraHero(d);
   } else if (secId === 'secMonitoramento') {
     smIniciar();
+  } else if (secId === 'secComparativo') {
+    renderComparativo();
   }
 
   // Se for uma das subseções do módulo inicial, rola até ela com compensação de cabeçalho
@@ -20774,12 +21196,13 @@ if (document.readyState === 'loading') {
       </div>
     </div>
     <div class="pif-body">
-      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.3.6</strong></div>
+      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.3.7</strong></div>
       <div class="pif-row"><span>Data da alteração:</span><span class="pnite-date-val">19/11/2026</span></div>
-      <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">13:10</span></div>
+      <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">16:30</span></div>
       <div class="pif-row"><span>Responsável técnico:</span><span class="pnite-author-val">Equipe PNITE</span></div>
       <div class="pif-note">
         <i class="ti ti-check" style="color:var(--accent);margin-right:3px"></i>
+        <strong>Cargas do SETE e comparativo (v.3.3.7):</strong> os dados atuais do SETE passam a ser a carga <b>Maio/2026</b> (202605), e o banco aceita novas cargas no mesmo ano (ex.: Novembro/2026) sem apagar as anteriores. As barras de território ganham o seletor <b>Base SETE</b>, que troca a carga de toda a plataforma, e a nova página <b>Comparativo entre Cargas</b> mostra indicadores e contadores do território em duas cargas, com a variação. Nos níveis UF, região e Brasil, as cargas sem planilha consolidada usam valores calculados dos dados brutos (iguais aos legados nos indicadores conferidos).<br>
         <strong>PARI com a regra do PAIH (v.3.3.6):</strong> o PARI passa a contar os alunos transportados com impedância marcada na rota ou no próprio cadastro, sobre o total de alunos transportados (nacional: de 2,88% para 18,27%), a mesma regra do PAIH; dashboard, memória de cálculo e mapa municipal usam o mesmo valor. Fórmulas do PRPM (rotas com monitor ÷ total de rotas) e do IPE (÷ alunos transportados) padronizadas; catálogo da Administração atualizado com a revisão.<br>
         <strong>Indicadores PAIH, PAFI, TVA e MQT (v.3.3.5):</strong> passam a ser calculados no banco (migração 0020) e exibidos no painel, no mapa (estados e municípios) e na memória de cálculo. PAIH: alunos de rotas aquaviárias com impedância marcada na rota ou no cadastro do aluno; PAFI: veículos com até 15 anos (limite provisório); TVA: tempo médio das rotas aquaviárias (1 a 360 min); MQT: km médio por rota, com mediana, P5, P95, mínimo e máximo de km e tempo. O km médio passa a dividir pelas rotas com km válido (até 2.000 km), como já previa a regra: nacional de 53,0 para 53,1 km/rota.<br>
         <strong>Mapas, Rankings e Exportação de Indicadores (v.3.2.7):</strong> download dos mapas (mapa simples e composição completa com ranking), elementos cartográficos oficiais (mapa de localização auxiliar, orientação Norte, escala gráfica e projeção), divisão dos mapas e rankings por macrorregiões brasileiras, seleção territorial personalizada (árvore hierárquica por região, estado e município), download da caixa completa dos gráficos e exportação geral dos indicadores em Excel (.xlsx) com identificação territorial obrigatória.<br>
@@ -20819,7 +21242,7 @@ if (document.readyState === 'loading') {
   </div>
   <button class="pif-btn" id="pifBtn" aria-label="Informações de Versão">
     <i class="ti ti-info-circle"></i>
-    <span class="pif-btn-label pnite-version-val">v.3.3.6</span>
+    <span class="pif-btn-label pnite-version-val">v.3.3.7</span>
   </button>
 </div>
 

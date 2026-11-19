@@ -2,7 +2,8 @@
 PNITE — Aplica as migrações SQL de ``supabase/migrations`` no Supabase via API (/pg/query).
 
 Cada arquivo é executado uma única vez, em ordem alfabética, numa transação; os aplicados
-ficam registrados em ``pnite_meta.migracoes``.
+ficam registrados em ``pnite_meta.migracoes``. Migrações que passam do tempo do gateway
+(~30 s) seguem no banco: o script aguarda o término e confirma o registro antes de seguir.
 
 Uso:
     python scripts/supabase_migrar.py            # aplica as pendentes
@@ -14,7 +15,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from supabase_api import RAIZ, ErroSQL, executar_sql  # noqa: E402
+from supabase_api import RAIZ, ErroSQL, executar_sql, executar_sql_longo  # noqa: E402
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
@@ -45,9 +46,12 @@ def main():
         sql = arq.read_text(encoding="utf-8")
         registro = f"INSERT INTO pnite_meta.migracoes (arquivo) VALUES ('{arq.name}');"
         try:
-            executar_sql(f"BEGIN;\n{sql}\n{registro}\nCOMMIT;")
+            executar_sql_longo(f"BEGIN;\n{sql}\n{registro}\nCOMMIT;")
         except ErroSQL as e:
             sys.exit(f"Falha em {arq.name}: {e}")
+        if arq.name not in aplicadas():
+            sys.exit(f"Falha em {arq.name}: a transação terminou sem registrar a migração "
+                     "(erro depois do tempo do gateway; aplique de novo para ver a mensagem).")
         print(f"  aplicada: {arq.name}")
     if not args.listar:
         executar_sql("NOTIFY pgrst, 'reload schema';")

@@ -12,8 +12,13 @@ Fluxo:
      só uma UF (``--uf go``, usado na carga piloto).
 
 Regras de carga:
-- ``ano_carga`` = ``ANO_CARGA_SETE`` (2026) para o SETE e ``ANO_CARGA_CENSO`` (2025) para o Censo;
-- idempotente: antes de inserir, apaga as linhas do mesmo ano_carga (e da UF, se filtrada);
+- cada extração do SETE é uma carga: ``--carga AAAA-MM`` (ou ``CARGA_SETE`` no ``.env``) grava
+  ``carga = AAAAMM`` e ``ano_carga = AAAA`` e registra a carga em ``ref.cargas`` (rótulo, data de
+  referência e Censo pareado). Cargas existentes: 2026-05 (maio/2026). O Censo usa
+  ``ano_carga = ANO_CARGA_CENSO`` (2025);
+- ``--pasta`` indica a pasta dos CSVs do SETE (padrão: ``data/Transporte Escolar``);
+- idempotente: antes de inserir, apaga as linhas da mesma carga (e da UF, se filtrada);
+  as demais cargas não são tocadas;
 - lotes de ``--lote-mb`` MB enviados como JSON (``INSERT ... SELECT FROM json_array_elements``)
   em requisições de até ~1,9 MB (limite do postgres-meta); valores maiores sobem em partes;
   um checkpoint permite retomar com ``--retomar``;
@@ -31,8 +36,9 @@ Uso:
     python scripts/criar_banco_dados_brutos.py --gerar-ddl
     python scripts/supabase_migrar.py
     python scripts/criar_banco_dados_brutos.py --tabelas municipios referencia
-    python scripts/criar_banco_dados_brutos.py --uf go            # piloto
-    python scripts/criar_banco_dados_brutos.py                    # carga completa
+    python scripts/criar_banco_dados_brutos.py --carga 2026-11 --pasta upload/sete/2026-11 --uf go   # piloto
+    python scripts/criar_banco_dados_brutos.py --carga 2026-11 --pasta upload/sete/2026-11           # carga completa
+    python scripts/atualizar_indicadores.py                       # recalcula as views (todas as cargas)
 """
 
 import argparse
@@ -59,8 +65,32 @@ PASTA_MIGRACOES = RAIZ / "supabase" / "migrations"
 # Um checkpoint por tabela: permite cargas paralelas (ex.: rotas num processo, o resto em outro)
 PASTA_CHECKPOINT = RAIZ / "scripts" / ".checkpoint_carga"
 
-ANO_SETE = int(os.getenv("ANO_CARGA_SETE", "2026"))
 ANO_CENSO = int(os.getenv("ANO_CARGA_CENSO", "2025"))
+# Só para --gerar-ddl (estrutura inicial da 0003); a coluna carga e os índices por carga vêm das 0022/0024.
+ANO_SETE = int(os.getenv("ANO_CARGA_SETE", "2026"))
+MESES = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro",
+         "Novembro", "Dezembro"]
+
+
+def ler_carga(texto):
+    """'2026-11' -> (202611, 2026, 11). Aceita também '202611'."""
+    m = re.fullmatch(r"\s*(\d{4})-?(\d{2})\s*", texto or "")
+    if not m or not 1 <= int(m.group(2)) <= 12:
+        sys.exit(f"Carga inválida: {texto!r}. Use AAAA-MM (ex.: 2026-11).")
+    ano, mes = int(m.group(1)), int(m.group(2))
+    return ano * 100 + mes, ano, mes
+
+
+def registrar_carga(carga, ano, mes, rotulo=None):
+    """Cria ou atualiza a carga em ref.cargas (rótulo, data de referência e Censo pareado)."""
+    rotulo = rotulo or f"{MESES[mes - 1]}/{ano}"
+    descricao = f"SETE extraído em {MESES[mes - 1].lower()} de {ano} × Censo Escolar {ANO_CENSO}"
+    executar_sql(
+        "INSERT INTO ref.cargas (carga, ano_carga_sete, ano_carga_censo, rotulo, data_referencia, descricao)"
+        f" VALUES ({carga}, {ano}, {ANO_CENSO}, {sql_literal(rotulo)}, DATE '{ano}-{mes:02d}-01', {sql_literal(descricao)})"
+        " ON CONFLICT (carga) DO UPDATE SET ano_carga_censo = EXCLUDED.ano_carga_censo,"
+        " rotulo = EXCLUDED.rotulo, descricao = EXCLUDED.descricao;")
+    print(f"  ref.cargas: {carga} = {rotulo} (Censo {ANO_CENSO})")
 
 csv.field_size_limit(2**31 - 1)
 
@@ -458,8 +488,10 @@ def enviar_linha_grande(tabela, colunas, linha, tamanho_parte=600_000):
                  + f" DELETE FROM pnite_meta.partes_texto WHERE token = '{token}';")
 
 
-def carregar_tabela(schema, nome, cfg, ano, args):
-    caminho = PASTA_DADOS / cfg["arquivo"]
+def carregar_tabela(schema, nome, cfg, ano, args, carga=None):
+    """Carrega um CSV. SETE: grava ano_carga e carga (AAAAMM) e substitui só a mesma carga.
+    Censo: grava ano_carga (ano do Censo) e substitui o mesmo ano."""
+    caminho = (args.pasta if schema == "sete" else PASTA_DADOS) / cfg["arquivo"]
     opcoes_csv = cfg.get("csv", {"encoding": "utf-8-sig", "delimiter": ","})
     nomes_csv = [c for c, _ in cfg["colunas"]]
     conversores = [conversor(t) for _, t in cfg["colunas"]]
@@ -471,14 +503,17 @@ def carregar_tabela(schema, nome, cfg, ano, args):
     idx_rota = nomes_csv.index("id_rota") if "id_rota" in nomes_csv else None
 
     tabela = f"{schema}.{nome}"
-    colunas = [("ano_carga", "smallint")] + colunas_banco(cfg)
-    col_shape = [("ano_carga", "smallint"), ("codigo_cidade", "integer"), ("uf", "varchar(2)"),
-                 ("id_rota", "integer"), ("shape", "text")]
+    prefixo = [("ano_carga", "smallint")] + ([("carga", "integer")] if carga else [])
+    valores_prefixo = [str(ano)] + ([str(carga)] if carga else [])
+    n_pre = len(prefixo)
+    colunas = prefixo + colunas_banco(cfg)
+    col_shape = prefixo + [("codigo_cidade", "integer"), ("uf", "varchar(2)"), ("id_rota", "integer"), ("shape", "text")]
 
-    chave_ck = f"{tabela}|{ano}|{args.uf or '*'}"
+    chave_ck = f"{tabela}|{carga or ano}|{args.uf or '*'}"
     pular = ler_checkpoint(chave_ck) if args.retomar else 0
 
-    filtro = f"ano_carga = {ano}" + (f" AND lower({coluna_uf}) = {sql_literal(args.uf)}" if args.uf else "")
+    filtro = (f"carga = {carga}" if carga else f"ano_carga = {ano}") \
+        + (f" AND lower({coluna_uf}) = {sql_literal(args.uf)}" if args.uf else "")
     if not pular:
         executar_sql(f"DELETE FROM {tabela} WHERE {filtro};"
                      + (f" DELETE FROM sete.rota_shape WHERE {filtro.replace(coluna_uf, 'uf')};" if separa_shape else ""))
@@ -515,7 +550,7 @@ def carregar_tabela(schema, nome, cfg, ano, args):
             lidas += 1
             if lidas <= pular:
                 continue
-            valores = [str(ano)]
+            valores = list(valores_prefixo)
             for i, (nome_col, conv, v) in enumerate(zip(nomes_csv, conversores, registro)):
                 if i == idx_shape:
                     continue
@@ -533,8 +568,8 @@ def carregar_tabela(schema, nome, cfg, ano, args):
                 possui = tem_shape(shape)
                 valores.append("true" if possui else "false")
                 if possui:
-                    lote_shape.append([str(ano), valores[1 + idx_cidade], valores[1 + idx_uf],
-                                       valores[1 + idx_rota], shape.replace("\x00", "")])
+                    lote_shape.append(list(valores_prefixo) + [valores[n_pre + idx_cidade], valores[n_pre + idx_uf],
+                                       valores[n_pre + idx_rota], shape.replace("\x00", "")])
                     bytes_lote += int(len(shape) * 1.3)  # aspas do GeoJSON são escapadas no corpo HTTP
             lote.append(valores)
             # estimativa do corpo: valores + aspas/vírgulas/escape (o limite real é conferido no envio)
@@ -546,8 +581,8 @@ def carregar_tabela(schema, nome, cfg, ano, args):
     total = pular + enviadas
     executar_sql(f"ANALYZE {tabela};"
                  + (" ANALYZE sete.rota_shape;" if separa_shape else "")
-                 + f" INSERT INTO pnite_meta.cargas_log (tabela, ano_carga, filtro_uf, linhas, invalidos)"
-                   f" VALUES ({sql_literal(tabela)}, {ano}, {sql_literal(args.uf) if args.uf else 'NULL'},"
+                 + f" INSERT INTO pnite_meta.cargas_log (tabela, ano_carga, carga, filtro_uf, linhas, invalidos)"
+                   f" VALUES ({sql_literal(tabela)}, {ano}, {carga or 'NULL'}, {sql_literal(args.uf) if args.uf else 'NULL'},"
                    f" {total}, {len(invalidos)});")
     no_banco = executar_sql(f"SELECT count(*) AS n FROM {tabela} WHERE {filtro};")[0]["n"]
     status = "OK" if no_banco == lidas else f"DIVERGENTE (CSV {lidas:,})"
@@ -578,22 +613,24 @@ def carregar_municipios():
     print(f"  ref.municipios: {len(linhas):,} municípios")
 
 
-def carregar_referencia(ano):
-    """RAW_DATA de referência (legado do HTML + planilhas consolidado *.xlsx) e detalhes_scripts."""
+def carregar_referencia(carga, ano, pasta):
+    """RAW_DATA de referência (legado do HTML + planilhas consolidado *.xlsx) e detalhes_scripts da carga.
+    Só a carga de maio/2026 tem planilhas consolidadas; nas demais o banco calcula os equivalentes."""
     import extrair_dados_excel as ext  # scripts/ já está no sys.path; caminhos resolvidos pela raiz
 
-    tabelas = ext.carregar_planilhas(str(PASTA_DADOS))
+    tabelas = ext.carregar_planilhas(str(pasta))
     detalhes = ext.extrair_metricas_por_uf(tabelas)
     raw = ext.montar_raw_referencia(detalhes)
-    linhas_raw = [[str(ano), chave, json.dumps(dados, ensure_ascii=False)] for chave, dados in raw.items()]
-    linhas_det = [[str(ano), chave, script, json.dumps(dados, ensure_ascii=False)]
+    linhas_raw = [[str(ano), str(carga), chave, json.dumps(dados, ensure_ascii=False)] for chave, dados in raw.items()]
+    linhas_det = [[str(ano), str(carga), chave, script, json.dumps(dados, ensure_ascii=False)]
                   for chave, scripts in detalhes.items() for script, dados in scripts.items()]
+    pre = [("ano_carga", "smallint"), ("carga", "integer")]
     executar_sql(
-        f"DELETE FROM ref.raw_referencia WHERE ano_carga = {ano};"
-        f" DELETE FROM ref.detalhes_scripts WHERE ano_carga = {ano};\n"
-        + sql_insert("ref.raw_referencia", [("ano_carga", "smallint"), ("chave", "text"), ("dados", "jsonb")], linhas_raw)
-        + "\n" + sql_insert("ref.detalhes_scripts", [("ano_carga", "smallint"), ("chave", "text"),
-                                                      ("script", "text"), ("dados", "jsonb")], linhas_det))
+        f"DELETE FROM ref.raw_referencia WHERE carga = {carga};"
+        f" DELETE FROM ref.detalhes_scripts WHERE carga = {carga};\n"
+        + sql_insert("ref.raw_referencia", pre + [("chave", "text"), ("dados", "jsonb")], linhas_raw)
+        + "\n" + sql_insert("ref.detalhes_scripts", pre + [("chave", "text"), ("script", "text"), ("dados", "jsonb")],
+                            linhas_det))
     print(f"  ref.raw_referencia: {len(linhas_raw)} escopos | ref.detalhes_scripts: {len(linhas_det)} registros")
 
 
@@ -601,7 +638,13 @@ def main():
     entidades = ["municipios", "referencia", *TABELAS, "censo"]
     p = argparse.ArgumentParser(description="Estrutura e carga dos dados brutos da PNITE no Supabase (via API).")
     p.add_argument("--gerar-ddl", action="store_true", help="gera as migrações 0003/0004 e sai")
-    p.add_argument("--tabelas", nargs="*", choices=entidades, help="o que carregar (padrão: SETE + Censo)")
+    p.add_argument("--tabelas", nargs="*", choices=entidades,
+                   help="o que carregar (padrão: as tabelas do SETE; o Censo só quando pedido)")
+    p.add_argument("--carga", default=os.getenv("CARGA_SETE"),
+                   help="carga do SETE, AAAA-MM da extração (ex.: 2026-11); padrão: CARGA_SETE do .env")
+    p.add_argument("--rotulo", help="rótulo da carga na interface (padrão: Mês/AAAA, ex.: Novembro/2026)")
+    p.add_argument("--pasta", type=Path, default=PASTA_DADOS,
+                   help="pasta com os CSVs do SETE (script_01 a script_17); padrão: data/Transporte Escolar")
     p.add_argument("--uf", help="carrega apenas uma UF (sigla, ex.: go) — carga piloto")
     p.add_argument("--lote-mb", type=float, default=1.5,
                    help="tamanho aproximado de cada lote (MB); requisições acima do limite do servidor são divididas")
@@ -609,26 +652,37 @@ def main():
     args = p.parse_args()
     if args.uf:
         args.uf = args.uf.strip().lower()
+    if not args.pasta.is_absolute():
+        args.pasta = RAIZ / args.pasta
 
     if args.gerar_ddl:
         gerar_ddl()
         return
 
-    alvo = args.tabelas or [*TABELAS, "censo"]
+    alvo = args.tabelas or [*TABELAS]
+    carga = ano_sete = None
+    if any(n in TABELAS or n == "referencia" for n in alvo):
+        if not args.carga:
+            sys.exit("Informe a carga do SETE: --carga AAAA-MM (ex.: --carga 2026-11). "
+                     "A carga de maio de 2026 é 2026-05; carregar a mesma carga substitui os dados dela.")
+        carga, ano_sete, mes = ler_carga(args.carga)
+        registrar_carga(carga, ano_sete, mes, args.rotulo)
     falhas = []
     for nome in alvo:
         print(f"[{nome}]", flush=True)
         if nome == "municipios":
             carregar_municipios()
         elif nome == "referencia":
-            carregar_referencia(ANO_SETE)
+            carregar_referencia(carga, ano_sete, args.pasta)
         elif nome == "censo":
             if not carregar_tabela("censo", "matricula", config_censo(), ANO_CENSO, args):
                 falhas.append(nome)
-        elif not carregar_tabela("sete", nome, TABELAS[nome], ANO_SETE, args):
+        elif not carregar_tabela("sete", nome, TABELAS[nome], ano_sete, args, carga):
             falhas.append(nome)
     if falhas:
         sys.exit("Contagem divergente em: " + ", ".join(falhas))
+    if carga:
+        print("Carga concluída. Recalcule as views: python scripts/atualizar_indicadores.py")
 
 
 if __name__ == "__main__":

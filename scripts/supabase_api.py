@@ -5,6 +5,11 @@ O Postgres do servidor não é acessível diretamente (portas 5432/6543 fechadas
 todo SQL administrativo (migrações e carga) é enviado pelo endpoint HTTPS ``/pg/query``
 (postgres-meta), autenticado com a chave secreta do ``.env``.
 
+O gateway (Cloudflare) encerra a requisição HTTP após ~30 s, mas o comando continua no
+banco até terminar. Comandos que podem passar disso (migrações, atualização das views)
+usam ``executar_sql_longo``: envio único, sem repetição, e espera pelo término no próprio
+banco (``pg_stat_activity``).
+
 A chave secreta dá acesso total ao banco: nunca a use no front-end nem a versione.
 """
 
@@ -27,7 +32,13 @@ LIMITE_CORPO = 1_900_000
 
 
 class ErroSQL(RuntimeError):
-    pass
+    def __init__(self, mensagem, status=None):
+        super().__init__(mensagem)
+        self.status = status
+
+
+# Tempo esgotado no gateway: o comando pode continuar no banco, então não é repetido.
+STATUS_TEMPO_GATEWAY = {504, 522, 524}
 
 
 def tamanho_corpo(query):
@@ -61,8 +72,10 @@ def executar_sql(query, tentativas=4, timeout=900):
             continue
         if resp.status_code == 200:
             return resp.json()
-        # Erros de SQL (400) e corpo grande demais não são repetidos; erros de gateway (5xx/429) sim.
-        if (resp.status_code >= 500 or resp.status_code == 429) and "too large" not in resp.text:
+        # Erros de SQL (400), corpo grande demais e tempo esgotado no gateway não são repetidos
+        # (no último caso o comando pode seguir no banco); demais erros de gateway (5xx/429) sim.
+        if ((resp.status_code >= 500 or resp.status_code == 429) and "too large" not in resp.text
+                and resp.status_code not in STATUS_TEMPO_GATEWAY):
             if tentativa < tentativas:
                 print(f"    [HTTP {resp.status_code}] nova tentativa em {5 * tentativa}s", flush=True)
                 time.sleep(5 * tentativa)
@@ -71,7 +84,35 @@ def executar_sql(query, tentativas=4, timeout=900):
             msg = resp.json().get("message") or resp.text
         except ValueError:
             msg = resp.text
-        raise ErroSQL(f"HTTP {resp.status_code}: {msg[:2000]}")
+        raise ErroSQL(f"HTTP {resp.status_code}: {msg[:2000]}", resp.status_code)
+
+
+def executar_sql_longo(query, intervalo=5, limite=3600):
+    """Executa SQL que pode passar do tempo do gateway (~30 s).
+
+    Envia uma única vez. Se a resposta chega a tempo, devolve as linhas como ``executar_sql``.
+    Se o gateway desiste, aguarda no banco o fim do comando (identificado por um marcador em
+    ``pg_stat_activity``) e devolve ``None``: o chamador confere o efeito (ex.: migração
+    registrada), pois um erro ocorrido depois do corte não chega ao cliente.
+    """
+    marcador = f"pnite-longo-{secrets.token_hex(8)}"
+    try:
+        return executar_sql(f"/* {marcador} */ " + query, tentativas=1, timeout=limite)
+    except ErroSQL as e:
+        if e.status not in STATUS_TEMPO_GATEWAY:
+            raise
+    except requests.Timeout:
+        pass
+    print("    [gateway] tempo de resposta esgotado; aguardando o término no banco...", flush=True)
+    inicio = time.time()
+    while time.time() - inicio < limite:
+        time.sleep(intervalo)
+        ativos = executar_sql("SELECT count(*) AS n FROM pg_stat_activity "
+                              f"WHERE pid <> pg_backend_pid() AND query LIKE '%{marcador}%';")[0]["n"]
+        if not ativos:
+            print(f"    [banco] comando concluído em ~{time.time() - inicio + 30:.0f}s", flush=True)
+            return None
+    raise ErroSQL(f"Comando ainda em execução no banco após {limite}s (marcador {marcador}).")
 
 
 def literal_dolar(texto):
