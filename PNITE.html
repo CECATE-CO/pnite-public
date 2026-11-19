@@ -6489,6 +6489,77 @@ html.pnite-pode-baixar .gx-dl { display: inline-flex; }
 .adm-msg { font-size: 13px; margin-top: 10px; min-height: 18px; }
 .adm-msg.err { color: #b42318; }
 .adm-msg.ok { color: #11643c; }
+/* v.3.3.8 — gerenciador de indicadores: filtros, lista agrupada, etapas do fluxo e ficha em abas */
+.adm-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.adm-toolbar { align-items: flex-end; }
+.adm-filtro { display: flex; flex-direction: column; gap: 4px; font-size: 12px; font-weight: 600; color: var(--text-2); min-width: 0; }
+.adm-filtro .pab-input { min-width: 170px; max-width: 100%; }
+.adm-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 6px; }
+.adm-chip { font: inherit; font-size: 12.5px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; min-height: 32px; border-radius: 999px; border: 1px solid var(--border); background-color: var(--bg-card); color: var(--text-2); cursor: pointer; }
+.adm-chip b { color: var(--text-1); font-weight: 700; }
+.adm-chip:hover { border-color: var(--border-mid); }
+.adm-chip[aria-pressed="true"] { background-color: var(--c-blue); border-color: var(--c-blue); color: #fff; }
+.adm-chip[aria-pressed="true"] b { color: #fff; }
+html[data-theme="dark"] .adm-chip[aria-pressed="true"], html[data-theme="dark"] .adm-chip[aria-pressed="true"] b { color: var(--c-navy, #0b1220); }
+.adm-chip:focus-visible, .adm-linha:focus-visible, .adm-fila-item:focus-visible { outline: 2px solid var(--c-blue); outline-offset: 2px; }
+.adm-grupo { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--text-2); margin: 14px 2px 2px; display: flex; gap: 8px; align-items: center; }
+.adm-grupo span { font-weight: 600; color: var(--text-3); }
+.adm-linha { width: 100%; text-align: left; font: inherit; color: var(--text-1); display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; align-items: center; gap: 8px 14px; padding: 11px 14px; border: 1px solid var(--border); border-radius: 12px; background-color: var(--bg-card); cursor: pointer; }
+.adm-linha:hover { border-color: var(--border-mid); background-color: var(--bg-input); }
+.adm-linha > .ti { color: var(--text-3); font-size: 18px; }
+.adm-codigo { font-size: 11.5px; font-weight: 700; padding: 3px 8px; border-radius: 7px; background-color: rgba(37, 99, 235, .08); color: var(--c-blue); white-space: nowrap; }
+html[data-theme="dark"] .adm-codigo { background-color: rgba(59, 130, 246, .16); color: #93c5fd; }
+.adm-linha-corpo { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.adm-linha-tit { font-size: 13.5px; font-weight: 600; overflow-wrap: anywhere; }
+.adm-linha-meta { font-size: 11.5px; color: var(--text-2); }
+.adm-linha-status { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; align-items: center; }
+.adm-passo { font-size: 11.5px; color: var(--text-2); white-space: nowrap; }
+.adm-passo.alerta { color: #8a5a00; font-weight: 600; }
+html[data-theme="dark"] .adm-passo.alerta { color: #ffd27a; }
+.adm-fila { display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); margin-bottom: 4px; }
+.adm-fila-item { font: inherit; text-align: left; display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--border); background-color: var(--bg-card); color: var(--text-1); cursor: pointer; font-size: 13px; }
+.adm-fila-item:hover { border-color: var(--border-mid); background-color: var(--bg-input); }
+.adm-fila-item b { font-size: 20px; color: var(--c-blue); }
+.adm-fila-item .ti { margin-left: auto; color: var(--text-3); }
+.adm-det-sub { font-size: 12.5px; color: var(--text-2); margin: -8px 0 8px; }
+.adm-etapas { list-style: none; display: flex; gap: 6px; padding: 0; margin: 12px 0; overflow-x: auto; }
+.adm-etapa { flex: 1 1 0; min-width: 104px; display: flex; align-items: center; gap: 6px; padding: 8px 10px; border-radius: 10px; font-size: 12.5px; font-weight: 600; color: var(--text-3); background-color: var(--bg-input); border: 1px solid var(--border); white-space: nowrap; }
+.adm-etapa .ti { font-size: 16px; }
+.adm-etapa.feita { color: var(--text-2); }
+.adm-etapa.feita .ti { color: #11643c; }
+html[data-theme="dark"] .adm-etapa.feita .ti { color: #7ee2b0; }
+.adm-etapa.atual { color: var(--text-1); background-color: var(--bg-card); border-color: var(--c-blue); box-shadow: inset 0 0 0 1px var(--c-blue); }
+.adm-etapa.atual .ti { color: var(--c-blue); }
+.adm-proximo { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--border); background-color: var(--bg-input); margin: 12px 0; }
+.adm-proximo-txt { flex: 1 1 280px; min-width: 0; font-size: 13px; line-height: 1.5; color: var(--text-1); }
+.adm-proximo-txt b { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--text-2); margin-bottom: 2px; }
+.adm-confirma { padding: 12px 14px; border-radius: 12px; border: 1px solid var(--c-blue); margin-bottom: 12px; background-color: var(--bg-card); }
+.adm-confirma.perigo { border-color: #c0362c; }
+.adm-confirma-tit { font-size: 13px; line-height: 1.5; margin: 0 0 8px; color: var(--text-1); }
+.adm-btn-perigo { background-color: #b42318; border-color: #b42318; color: #fff; }
+.adm-det-abas { margin-top: 4px; }
+.adm-grupo-campos { border: 1px solid var(--border); border-radius: 12px; padding: 8px 14px 12px; margin: 0 0 12px; min-width: 0; }
+.adm-grupo-campos legend { font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--text-2); padding: 0 6px; }
+.adm-ajuda { font-size: 11.5px; color: var(--text-3); line-height: 1.45; }
+.adm-intro { font-size: 12.5px; color: var(--text-2); margin: 0 0 12px; }
+.adm-rotulo { font-size: 12px; font-weight: 600; color: var(--text-2); }
+.adm-niveis { display: flex; flex-wrap: wrap; gap: 6px 16px; padding-top: 6px; }
+.adm-niveis label { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 500; color: var(--text-1); cursor: pointer; }
+.adm-niveis input { width: 16px; height: 16px; accent-color: var(--c-blue); }
+.adm-rodape { position: sticky; bottom: -22px; z-index: 1; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; padding: 12px 0 14px; margin-top: 2px; background-color: var(--bg-card); border-top: 1px solid var(--border); }
+.adm-sujo { font-size: 12.5px; font-weight: 600; color: #8a5a00; display: inline-flex; align-items: center; gap: 4px; }
+.adm-sujo[hidden] { display: none; }
+html[data-theme="dark"] .adm-sujo { color: #ffd27a; }
+@media (max-width: 760px) {
+  .adm-linha { grid-template-columns: auto minmax(0, 1fr); }
+  .adm-linha-status { grid-column: 1 / -1; justify-content: flex-start; }
+  .adm-linha > .ti { display: none; }
+  .adm-filtro { flex: 1 1 100%; }
+  .adm-filtro .pab-input { min-width: 0; width: 100%; }
+}
+@media (pointer: coarse) {
+  .adm-chip, .adm-niveis label { min-height: 44px; }
+}
 .adm-json { font-family: ui-monospace, Consolas, monospace; font-size: 11.5px; white-space: pre-wrap; overflow-wrap: anywhere; background-color: var(--bg-input); border: 1px solid var(--border); border-radius: 10px; padding: 10px; max-height: 260px; overflow: auto; margin: 0; }
 html[data-theme="dark"] .gx-badge.ok { background-color: #12392a; color: #7ee2b0; }
 html[data-theme="dark"] .gx-badge.warn { background-color: #3d3013; color: #ffd27a; }
@@ -6527,6 +6598,7 @@ html[data-theme="dark"] .adm-msg.ok { color: #7ee2b0; }
 .elyra-arc-card { display: grid; grid-template-columns: 76px minmax(0, 1fr); grid-template-rows: 1fr auto; grid-template-areas: "arco txt" "info info"; column-gap: 14px; row-gap: 0; align-items: center; text-align: left; padding: 14px 16px 12px; }
 .elyra-arc-svg-wrap { grid-area: arco; width: 76px; height: 76px; margin: 0; position: relative; }
 .elyra-arc-svg-wrap svg { width: 76px; height: 76px; }
+.elyra-arc-val.elyra-arc-val-quebra { white-space: pre-line; line-height: 1.1; }
 .elyra-arc-val { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; margin: 0; padding: 0 9px; text-align: center;
   font-family: inherit; font-size: 15px; font-weight: 700; letter-spacing: -.01em; line-height: 1.05; overflow-wrap: anywhere; }
 .elyra-arc-txt { grid-area: txt; min-width: 0; }
@@ -6550,6 +6622,7 @@ html[data-theme="dark"] .adm-msg.ok { color: #7ee2b0; }
 .sm-dica { position: absolute; pointer-events: none; z-index: 5; background: var(--bg-card); color: var(--text-1); border: 1px solid var(--border-mid); border-radius: 10px; padding: 6px 10px; font-size: 12px; box-shadow: 0 4px 14px rgba(0,0,0,.15); white-space: nowrap; }
 
 /* ================================================================
+    v.3.3.8 — GERENCIADOR DE INDICADORES REFORMULADO (FILTROS, ETAPAS, PRÓXIMO PASSO, JUSTIFICATIVA NO DIÁLOGO) E MQT COM A UNIDADE SEMPRE NA LINHA DE BAIXO
     v.3.3.7 — CARGAS DO SETE (MAIO/2026 E PRÓXIMAS), SELETOR "BASE SETE" E COMPARATIVO ENTRE CARGAS (MIGRAÇÕES 0022 A 0024)
     v.3.3.6 — PARI COM A REGRA DO PAIH, TEXTOS DE PRPM/IPE PADRONIZADOS E CATÁLOGO ATUALIZADO (MIGRAÇÃO 0021)
     v.3.3.5 — PAIH, PAFI, TVA E MQT CALCULADOS NO BANCO E PUBLICADOS (MIGRAÇÃO 0020)
@@ -9295,7 +9368,7 @@ window.onerror = function(msg, url, line, col, err) {
     <div class="smb-sec">
       <div class="smb-sec-title" data-i18n="settings_info_title">Informações da Versão</div>
       <div style="font-size:12px;color:var(--text-2);display:flex;flex-direction:column;gap:4px;margin-top:6px">
-        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.3.7</b></div>
+        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.3.8</b></div>
         <div><span data-i18n="settings_updated">Última Atualização:</span> <b class="pnite-date-val">06/10/2026</b> às <b class="pnite-time-val">21:05</b></div>
         <div><span data-i18n="settings_author">Responsável Técnico:</span> <b class="pnite-author-val">Equipe PNITE</b></div>
       </div>
@@ -10284,9 +10357,9 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.3.7";
+const PNITE_VERSION = "v.3.3.8";
 const PNITE_LAST_UPDATE = "19/11/2026";
-const PNITE_LAST_TIME = "16:30";
+const PNITE_LAST_TIME = "18:00";
 
 // Escapa texto para inserção segura via innerHTML (entradas do usuário, nomes de arquivo)
 function escHtml(s) {
@@ -10523,7 +10596,7 @@ function buildArcCardHtml(ind, d) {
                   transform="rotate(-90 40 40)"
                   style="stroke:${isEmConstrucao ? 'var(--border)' : color}; stroke-dashoffset:${dashOffset.toFixed(1)}; transition: stroke-dashoffset 1000ms cubic-bezier(0.16, 1, 0.3, 1)" />
         </svg>
-        <div class="elyra-arc-val" id="arcVal-${sigla}">${valStr}</div>
+        <div class="elyra-arc-val${(ind.un === 'km/min' || ind.unit === 'km/min') ? ' elyra-arc-val-quebra' : ''}" id="arcVal-${sigla}">${(typeof rawVal === 'number' && !isEmConstrucao && (ind.un === 'km/min' || ind.unit === 'km/min')) ? rawVal.toFixed(1) + String.fromCharCode(10) + 'km' : valStr}</div>
       </div>
       <div class="elyra-arc-txt">
         <div class="elyra-arc-lbl"><span class="elyra-arc-sigla">${sigla}</span> <span class="elyra-arc-nome">${nomeCompleto}</span></div>
@@ -10711,7 +10784,9 @@ function getIndicatorDataInfo(ind, d) {
     }
   }
 
-  return { targetVal, pct, suffix, decimals };
+  // No anel, o MQT leva a unidade sempre na linha de baixo (o km varia de 2 a 4 dígitos e quebrava só às vezes)
+  const suffixAnel = (ind.un === 'km/min' || ind.unit === 'km/min') ? String.fromCharCode(10) + 'km' : suffix;
+  return { targetVal, pct, suffix, suffixAnel, decimals };
 }
 
 function renderDesempenhoArcs(d) {
@@ -10757,7 +10832,7 @@ function renderDesempenhoArcs(d) {
           }
           if (valEl) {
             const prevVal = (typeof valEl._currentVal === 'number') ? valEl._currentVal : (parseFloat(valEl.textContent) || 0);
-            animateNumberValue(valEl, prevVal, info.targetVal, 1000, info.suffix, info.decimals);
+            animateNumberValue(valEl, prevVal, info.targetVal, 1000, info.suffixAnel, info.decimals);
           }
         } else {
           if (circleEl) {
@@ -11119,7 +11194,7 @@ function renderDescritivosArcs(d) {
           }
           if (valEl) {
             const prevVal = (typeof valEl._currentVal === 'number') ? valEl._currentVal : (parseFloat(valEl.textContent) || 0);
-            animateNumberValue(valEl, prevVal, info.targetVal, 1000, info.suffix, info.decimals);
+            animateNumberValue(valEl, prevVal, info.targetVal, 1000, info.suffixAnel, info.decimals);
           }
         } else {
           if (circleEl) {
@@ -17505,7 +17580,8 @@ function smRenderSobre() {
 // --------------------------------------------------------------------------
 // ADMINISTRAÇÃO
 // --------------------------------------------------------------------------
-const ADM = { aba: 'visao', cat: null, cargas: null, aud: { offset: 0, dados: null }, seq: 0 };
+const ADM = { aba: 'visao', cat: null, cargas: null, aud: { offset: 0, dados: null }, seq: 0,
+  filtro: { busca: '', frente: '', estado: '', situacao: '' }, atual: null, abaDet: 'definicao', sujo: false, pendente: null };
 const ADM_ESTADOS = { rascunho: ['Rascunho', ''], em_revisao: ['Em revisão', 'info'], aprovado: ['Aprovado', 'info'], publicado: ['Publicado', 'ok'], suspenso: ['Suspenso', 'err'], arquivado: ['Arquivado', ''] };
 const ADM_SITUACAO = { validado: ['Validado', 'ok'], em_construcao: ['Em construção', 'warn'], pendente_fonte: ['Pendente de fonte', 'err'] };
 const ADM_ACOES = { rascunho: [['enviar_revisao', 'Enviar à revisão'], ['arquivar', 'Arquivar']],
@@ -17513,9 +17589,29 @@ const ADM_ACOES = { rascunho: [['enviar_revisao', 'Enviar à revisão'], ['arqui
   aprovado: [['publicar', 'Publicar'], ['voltar_rascunho', 'Voltar a rascunho'], ['arquivar', 'Arquivar']],
   publicado: [['suspender', 'Suspender']], suspenso: [['restaurar', 'Restaurar'], ['arquivar', 'Arquivar']], arquivado: [] };
 const ADM_COM_JUST = { aprovar: 1, publicar: 1, suspender: 1, restaurar: 1, arquivar: 1 };
+// v.3.3.8 — gerenciador de indicadores: rótulos legíveis, etapas do fluxo e o que cada ação faz
+const ADM_FRENTES = { transporte: 'Transporte Escolar', gestao: 'Gestão', capacitacao: 'Capacitação' };
+const ADM_ROTULOS = { indicadores: 'Indicadores', caminho_da_escola: 'Caminho da Escola', monitoramento_sete: 'Monitoramento SETE',
+  capacitacao: 'Capacitação', descritivo: 'Descritivo', desempenho: 'Desempenho', finalistico: 'Finalístico',
+  contratacoes: 'Contratações', visual: 'Visual' };
+const ADM_ETAPAS = [['rascunho', 'Rascunho'], ['em_revisao', 'Em revisão'], ['aprovado', 'Aprovado'], ['publicado', 'Publicado']];
+const ADM_ACAO_INFO = {
+  enviar_revisao: ['Enviar à revisão', 'A versão fica disponível para conferência. Ainda não aparece ao público.'],
+  voltar_rascunho: ['Voltar a rascunho', 'A versão volta para edição. Nada muda para o público.'],
+  aprovar: ['Aprovar', 'A versão fica pronta para publicação. Ainda não aparece ao público.'],
+  publicar: ['Publicar', 'A versão vai ao ar e substitui a publicação atual, se houver. Os dados ficam presos à versão de dados ativa da fonte.'],
+  suspender: ['Suspender', 'Retira o item do ar imediatamente: catálogo público, painéis e API. Cópias já baixadas não podem ser revogadas.'],
+  restaurar: ['Restaurar', 'Volta a publicar esta versão aprovada.'],
+  arquivar: ['Arquivar', 'Encerra esta versão: ela deixa de ser editável e sai das pendências.']
+};
+const ADM_NIVEIS = [['nacional', 'Brasil'], ['regiao', 'Região'], ['uf', 'UF'], ['municipio', 'Município']];
 
 function admBadge(mapa, k) { const m = mapa[k] || [k || '—', '']; return '<span class="gx-badge ' + m[1] + '">' + escHtml(m[0]) + '</span>'; }
 function admMsg(t, cls) { const el = document.getElementById('admMsg'); if (el) { el.textContent = t || ''; el.className = 'adm-msg' + (cls ? ' ' + cls : ''); } }
+function admRotulo(k) { return ADM_ROTULOS[k] || (k ? String(k).split('_').join(' ') : ''); }
+function admLocal(i) {
+  return [ADM_FRENTES[i.frente] || i.frente, admRotulo(i.modulo), admRotulo(i.categoria)].filter(Boolean).map(escHtml).join(' › ');
+}
 
 function admAbrir() {
   const lock = document.getElementById('admLock'), app = document.getElementById('admApp');
@@ -17552,48 +17648,126 @@ function admAba(nome) {
   if (!ADM.cat) return;
   const el = document.getElementById('admPainel');
   if (nome === 'visao') el.innerHTML = admHtmlVisao();
-  else if (nome === 'indicadores') el.innerHTML = admHtmlIndicadores();
+  else if (nome === 'indicadores') { el.innerHTML = admHtmlIndicadores(); admFiltrarLista(); }
   else if (nome === 'cargas') el.innerHTML = admHtmlCargas();
   else if (nome === 'publicacoes') el.innerHTML = admHtmlPublicacoes();
   else if (nome === 'qualidade') el.innerHTML = admHtmlQualidade();
   else if (nome === 'auditoria') { el.innerHTML = '<div class="gx-estado"><i class="ti ti-loader-2" aria-hidden="true"></i>Carregando auditoria…</div>'; admAuditoria(0); }
 }
 function admVersaoAtual(i) { return (i.versoes || [])[0] || {}; }
+
+// Próximo passo do fluxo editorial para a versão mais recente do item
+function admProximo(i, v) {
+  const e = v.estado_editorial;
+  if (e === 'rascunho') return { txt: 'Complete a definição e envie à revisão.', acao: 'enviar_revisao', curto: 'Próximo: enviar à revisão' };
+  if (e === 'em_revisao') {
+    return v.responsavel ? { txt: 'Confira a definição e aprove.', acao: 'aprovar', curto: 'Próximo: aprovar' }
+      : { txt: 'Defina o responsável (aba Definição) para poder aprovar.', acao: null, curto: 'Falta o responsável', alerta: true };
+  }
+  if (e === 'aprovado') {
+    return { txt: 'Publique para disponibilizar ao público.' + (v.situacao_metodologica !== 'validado'
+      ? ' Como a situação metodológica não é “Validado”, vai a público só a ficha, sem valores.' : ''), acao: 'publicar', curto: 'Próximo: publicar' };
+  }
+  if (e === 'publicado') {
+    return { txt: 'No ar' + (i.publicacao ? ' desde ' + gxDataHora(i.publicacao.inicio) : '') +
+      '. Para mudar a definição, crie uma nova versão (a publicada continua no ar); para retirar do ar, suspenda.', acao: null, curto: 'No ar' };
+  }
+  if (e === 'suspenso') return { txt: 'Fora do ar. Restaure para voltar a publicar ou arquive.', acao: v.aprovado_em ? 'restaurar' : null, curto: 'Fora do ar' };
+  return { txt: 'Versão arquivada. Crie uma nova versão para retomar o trabalho.', acao: null, curto: 'Arquivado' };
+}
+
 function admHtmlVisao() {
   const c = ADM.cat, ver = c.map(admVersaoAtual);
   const cont = function(f) { return c.filter(f).length; };
   const ativas = (ADM.cargas.versoes || []).filter(function(v) { return v.status === 'ativa'; });
   const pend = (ADM.cargas.pendencias || []).filter(function(p) { return p.situacao === 'aberta'; }).length;
+  const est = function(e) { return ver.filter(function(v) { return v.estado_editorial === e; }).length; };
+  const semResp = ver.filter(function(v) { return v.estado_editorial === 'em_revisao' && !v.responsavel; }).length;
+  const fila = [
+    ['em_revisao', est('em_revisao'), 'em revisão, aguardando aprovação' + (semResp ? ' (' + gxNum(semResp) + ' sem responsável)' : '')],
+    ['aprovado', est('aprovado'), 'aprovados, aguardando publicação'],
+    ['rascunho', est('rascunho'), 'rascunhos em edição'],
+    ['suspenso', est('suspenso'), 'suspensos (fora do ar)']].filter(function(x) { return x[1] > 0; });
   return '<div class="gx-cards">' +
     gxCard('Itens no catálogo', gxNum(c.length), gxNum(cont(function(i) { return i.tipo === 'visual'; })) + ' visuais') +
     gxCard('Publicados', gxNum(cont(function(i) { return !!i.publicacao; })), 'Visíveis ao público') +
-    gxCard('Em revisão ou aprovados', gxNum(ver.filter(function(v) { return v.estado_editorial === 'em_revisao' || v.estado_editorial === 'aprovado'; }).length), 'Aguardando decisão') +
-    gxCard('Rascunhos', gxNum(ver.filter(function(v) { return v.estado_editorial === 'rascunho'; }).length), 'Não visíveis ao público') +
+    gxCard('Em revisão ou aprovados', gxNum(est('em_revisao') + est('aprovado')), 'Aguardando decisão') +
+    gxCard('Rascunhos', gxNum(est('rascunho')), 'Não visíveis ao público') +
     gxCard('Cargas ativas', gxNum(ativas.length), ativas.map(function(v) { return escHtml(v.fonte); }).join(', ') || '—') +
     gxCard('Pendências de qualidade abertas', gxNum(pend), 'Ver “Qualidade de dados”') + '</div>' +
-    '<div class="gx-aviso"><i class="ti ti-info-circle" aria-hidden="true"></i><div>Fluxo: <b>rascunho → revisão → aprovação → publicação</b>. Publicar congela a versão do indicador e a versão de dados ativa. Editar cria nova versão sem alterar a publicada. Suspender retira imediatamente do catálogo público, dos painéis e da API; cópias já baixadas por terceiros não podem ser revogadas.</div></div>';
+    (fila.length ? '<h3 class="gx-secao-titulo">O que está pendente</h3><div class="adm-fila">' + fila.map(function(x) {
+      return '<button type="button" class="adm-fila-item" data-adm="ir" data-estado="' + x[0] + '"><b>' + gxNum(x[1]) + '</b><span>' + escHtml(x[2]) +
+        '</span><i class="ti ti-chevron-right" aria-hidden="true"></i></button>'; }).join('') + '</div>' : '') +
+    '<div class="gx-aviso" style="margin-top:14px"><i class="ti ti-info-circle" aria-hidden="true"></i><div>Fluxo de cada indicador: <b>rascunho → revisão → aprovação → publicação</b>. Publicar congela a versão do indicador e a versão de dados ativa. Para mudar algo publicado, crie uma nova versão: a publicada continua no ar até a nova ser publicada. Suspender retira imediatamente do catálogo público, dos painéis e da API.</div></div>';
 }
+function admIrPara(estado) {
+  ADM.filtro = { busca: '', frente: '', estado: estado || '', situacao: '' };
+  admAba('indicadores');
+}
+
+// ---- Lista de indicadores: busca, filtros e grupos por frente/módulo ----
 function admHtmlIndicadores() {
-  const busca = (document.getElementById('admBusca') || {}).value || '';
-  return '<div class="gx-toolbar"><div class="pu-search"><i class="ti ti-search" aria-hidden="true"></i><input class="pab-input" type="search" id="admBusca" placeholder="Buscar por código ou título" aria-label="Buscar indicador" value="' + escHtml(busca) + '" oninput="admFiltrarLista()"></div>' +
-    '<button type="button" class="pab-btn pab-btn-primary" onclick="admNovo()"><i class="ti ti-plus" aria-hidden="true"></i> Novo indicador</button></div>' +
-    '<div class="adm-lista" id="admLista">' + admItensHtml(busca) + '</div>';
+  const f = ADM.filtro;
+  const frentes = Object.keys(ADM_FRENTES).filter(function(k) { return ADM.cat.some(function(i) { return i.frente === k; }); });
+  return '<div class="gx-toolbar adm-toolbar">' +
+    '<div class="pu-search"><i class="ti ti-search" aria-hidden="true"></i><input class="pab-input" type="search" id="admBusca" placeholder="Buscar por sigla ou título" aria-label="Buscar indicador" value="' + escHtml(f.busca) + '" oninput="admFiltrarLista()"></div>' +
+    '<label class="adm-filtro" for="admFiltroFrente">Frente<select class="pab-input form-select" id="admFiltroFrente" onchange="admFiltrarLista()"><option value="">Todas</option>' +
+      frentes.map(function(k) { return '<option value="' + k + '"' + (f.frente === k ? ' selected' : '') + '>' + escHtml(ADM_FRENTES[k]) + '</option>'; }).join('') + '</select></label>' +
+    '<label class="adm-filtro" for="admFiltroSituacao">Situação metodológica<select class="pab-input form-select" id="admFiltroSituacao" onchange="admFiltrarLista()"><option value="">Todas</option>' +
+      Object.keys(ADM_SITUACAO).map(function(k) { return '<option value="' + k + '"' + (f.situacao === k ? ' selected' : '') + '>' + escHtml(ADM_SITUACAO[k][0]) + '</option>'; }).join('') + '</select></label>' +
+    '<button type="button" class="pab-btn pab-btn-primary" data-adm="novo"><i class="ti ti-plus" aria-hidden="true"></i> Novo indicador</button></div>' +
+    '<div class="adm-chips" id="admChips" role="group" aria-label="Filtrar por estado editorial"></div>' +
+    '<p class="gx-escopo" id="admContagem" aria-live="polite"></p>' +
+    '<div class="adm-lista" id="admLista"></div>';
 }
-function admFiltrarLista() { const el = document.getElementById('admLista'); if (el) el.innerHTML = admItensHtml(document.getElementById('admBusca').value); }
-function admItensHtml(busca) {
-  const b = String(busca || '').toLowerCase();
-  const itens = ADM.cat.filter(function(i) { const v = admVersaoAtual(i); return !b || i.codigo.toLowerCase().indexOf(b) >= 0 || String(v.titulo || '').toLowerCase().indexOf(b) >= 0; });
-  if (!itens.length) return '<div class="pu-empty">Nenhum item encontrado.</div>';
-  return itens.map(function(i) {
+function admFiltrarLista() {
+  const f = ADM.filtro;
+  const busca = document.getElementById('admBusca'), fr = document.getElementById('admFiltroFrente'), si = document.getElementById('admFiltroSituacao');
+  if (busca) f.busca = busca.value;
+  if (fr) f.frente = fr.value;
+  if (si) f.situacao = si.value;
+  const b = String(f.busca || '').trim().toLowerCase();
+  const base = ADM.cat.filter(function(i) {
     const v = admVersaoAtual(i);
-    const pub = i.publicacao ? (i.versoes || []).find(function(x) { return x.id === i.publicacao.versao_id; }) : null;
-    return '<div class="adm-item"><div><div class="adm-item-tit">' + escHtml(i.codigo) + ' — ' + escHtml(v.titulo || '') + '</div>' +
-      '<div class="adm-item-meta"><span>' + escHtml(i.frente) + ' › ' + escHtml(i.modulo) + (i.categoria ? ' › ' + escHtml(i.categoria) : '') + '</span>' +
-      '<span>v' + escHtml(String(v.versao)) + '</span>' + admBadge(ADM_ESTADOS, v.estado_editorial) + admBadge(ADM_SITUACAO, v.situacao_metodologica) +
-      (i.tipo === 'visual' ? '<span class="gx-badge">visual</span>' : '') +
-      (pub ? '<span class="gx-badge ok">no ar: v' + escHtml(String(pub.versao)) + (i.publicacao.somente_ficha ? ' (só ficha)' : '') + '</span>' : '') + '</div></div>' +
-      '<div class="adm-acoes"><button type="button" class="pab-btn" onclick="admDetalhe(' + i.id + ')"><i class="ti ti-adjustments" aria-hidden="true"></i> Abrir</button></div></div>';
+    return (!b || i.codigo.toLowerCase().indexOf(b) >= 0 || String(v.titulo || '').toLowerCase().indexOf(b) >= 0)
+      && (!f.frente || i.frente === f.frente) && (!f.situacao || v.situacao_metodologica === f.situacao);
+  });
+  const conta = function(e) { return base.filter(function(i) { return admVersaoAtual(i).estado_editorial === e; }).length; };
+  const chips = document.getElementById('admChips');
+  if (chips) {
+    chips.innerHTML = '<button type="button" class="adm-chip" data-adm="filtro-estado" data-estado="" aria-pressed="' + String(!f.estado) + '">Todos <b>' + gxNum(base.length) + '</b></button>' +
+      Object.keys(ADM_ESTADOS).filter(function(e) { return conta(e) > 0 || f.estado === e; }).map(function(e) {
+        return '<button type="button" class="adm-chip" data-adm="filtro-estado" data-estado="' + e + '" aria-pressed="' + String(f.estado === e) + '">' +
+          escHtml(ADM_ESTADOS[e][0]) + ' <b>' + gxNum(conta(e)) + '</b></button>'; }).join('');
+  }
+  const itens = base.filter(function(i) { return !f.estado || admVersaoAtual(i).estado_editorial === f.estado; });
+  const contagem = document.getElementById('admContagem');
+  if (contagem) contagem.textContent = gxNum(itens.length) + (itens.length === 1 ? ' item' : ' itens');
+  const el = document.getElementById('admLista');
+  if (!el) return;
+  if (!itens.length) { el.innerHTML = '<div class="pu-empty">Nenhum item com esses filtros.</div>'; return; }
+  const grupos = [];
+  itens.forEach(function(i) {
+    const chave = i.frente + '|' + i.modulo;
+    let g = grupos.find(function(x) { return x.chave === chave; });
+    if (!g) { g = { chave: chave, titulo: (ADM_FRENTES[i.frente] || i.frente) + ' · ' + admRotulo(i.modulo), itens: [] }; grupos.push(g); }
+    g.itens.push(i);
+  });
+  el.innerHTML = grupos.map(function(g) {
+    return '<h3 class="adm-grupo">' + escHtml(g.titulo) + ' <span>' + gxNum(g.itens.length) + '</span></h3>' + g.itens.map(admLinhaHtml).join('');
   }).join('');
+}
+function admLinhaHtml(i) {
+  const v = admVersaoAtual(i);
+  const p = admProximo(i, v);
+  const meta = [admRotulo(i.categoria), v.unidade, 'versão ' + v.versao, i.tipo === 'visual' ? 'visual' : ''].filter(Boolean).map(escHtml).join(' · ');
+  return '<button type="button" class="adm-linha" data-adm="abrir" data-id="' + i.id + '">' +
+    '<span class="adm-codigo">' + escHtml(i.codigo) + '</span>' +
+    '<span class="adm-linha-corpo"><span class="adm-linha-tit">' + escHtml(v.titulo || '') + '</span><span class="adm-linha-meta">' + meta + '</span></span>' +
+    '<span class="adm-linha-status">' + admBadge(ADM_ESTADOS, v.estado_editorial) + admBadge(ADM_SITUACAO, v.situacao_metodologica) +
+      (i.publicacao ? '<span class="gx-badge ok">no ar' + (i.publicacao.somente_ficha ? ' (só ficha)' : '') + '</span>' : '') +
+      '<span class="adm-passo' + (p.alerta ? ' alerta' : '') + '">' + escHtml(p.curto) + '</span></span>' +
+    '<i class="ti ti-chevron-right" aria-hidden="true"></i></button>';
 }
 
 // Diálogo (modal acessível: Esc fecha, foco no primeiro campo)
@@ -17602,13 +17776,14 @@ function admDialogo(titulo, html) {
   document.getElementById('admDialogCorpo').innerHTML = html;
   document.getElementById('admDialogMsg').textContent = '';
   const d = document.getElementById('admDialog');
-  ADM.foco = document.activeElement;
+  if (d.hidden) ADM.foco = document.activeElement;
   d.hidden = false;
-  const alvo = d.querySelector('input, select, textarea, button');
+  const alvo = d.querySelector('input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button');
   if (alvo) alvo.focus();
 }
 function admFecharDialogo() {
   document.getElementById('admDialog').hidden = true;
+  ADM.sujo = false; ADM.pendente = null;
   if (ADM.foco && ADM.foco.focus) ADM.foco.focus();
 }
 function admDlgMsg(t, cls) { const el = document.getElementById('admDialogMsg'); el.textContent = t || ''; el.className = 'adm-msg' + (cls ? ' ' + cls : ''); }
@@ -17631,113 +17806,237 @@ function admCalcObj(k) {
 function admOpcoes(lista, atual) {
   return lista.map(function(o) { return '<option value="' + escHtml(o[0]) + '"' + (o[0] === (atual || '') ? ' selected' : '') + '>' + escHtml(o[1]) + '</option>'; }).join('');
 }
+// Definição da versão, em grupos, com ajuda nos campos técnicos
 function admCamposVersaoHtml(v, editavel) {
   v = v || {};
   const dis = editavel ? '' : ' disabled';
   const fontes = [['', 'Nenhuma']].concat((ADM.cargas.fontes || []).map(function(f) { return [f.codigo, f.codigo + ' — ' + f.descricao]; }));
-  const campo = function(id, rot, val, tipo) {
-    return '<div class="pab-field"><label for="admV-' + id + '">' + rot + '</label><input class="pab-input" id="admV-' + id + '" type="' + (tipo || 'text') + '" value="' + escHtml(val == null ? '' : String(val)) + '"' + dis + '></div>'; };
-  const area = function(id, rot, val) {
-    return '<div class="pab-field adm-full"><label for="admV-' + id + '">' + rot + '</label><textarea class="pab-input" id="admV-' + id + '"' + dis + '>' + escHtml(val || '') + '</textarea></div>'; };
-  return '<div class="adm-form">' + campo('titulo', 'Título', v.titulo) + campo('unidade', 'Unidade', v.unidade) +
-    campo('casas_decimais', 'Casas decimais', v.casas_decimais == null ? 0 : v.casas_decimais, 'number') + campo('responsavel', 'Responsável', v.responsavel) +
-    '<div class="pab-field"><label for="admV-situacao">Situação metodológica</label><select class="pab-input form-select" id="admV-situacao"' + dis + '>' +
-      admOpcoes([['validado', 'Validado'], ['em_construcao', 'Em construção'], ['pendente_fonte', 'Pendente de fonte']], v.situacao_metodologica || 'em_construcao') + '</select></div>' +
-    '<div class="pab-field"><label for="admV-visual">Visual padrão</label><select class="pab-input form-select" id="admV-visual"' + dis + '>' +
-      admOpcoes([['cartao', 'Cartão'], ['barras', 'Barras'], ['colunas', 'Colunas'], ['tabela', 'Tabela'], ['mapa', 'Mapa'], ['pagina', 'Página']], v.visual || 'cartao') + '</select></div>' +
-    '<div class="pab-field"><label for="admV-sentido">Sentido interpretativo</label><select class="pab-input form-select" id="admV-sentido"' + dis + '>' +
-      admOpcoes([['neutro', 'Neutro'], ['maior_melhor', 'Maior é melhor'], ['menor_melhor', 'Menor é melhor']], v.sentido || 'neutro') + '</select></div>' +
-    '<div class="pab-field"><label for="admV-fonte">Fonte</label><select class="pab-input form-select" id="admV-fonte"' + dis + '>' + admOpcoes(fontes, v.fonte || '') + '</select></div>' +
-    '<div class="pab-field"><label for="admV-calculo">Cálculo (operação permitida)</label><select class="pab-input form-select" id="admV-calculo"' + dis + '>' + admOpcoes(ADM_CALCULOS, admCalcChave(v.calculo)) + '</select></div>' +
-    campo('periodo_referencia', 'Período de referência', v.periodo_referencia) +
-    campo('niveis', 'Níveis territoriais (separados por vírgula)', (v.niveis || ['nacional']).join(', ')) +
-    campo('dimensoes', 'Dimensões/filtros (separados por vírgula)', (v.dimensoes || []).join(', ')) +
-    area('descricao', 'Descrição', v.descricao) + area('objetivo', 'Objetivo', v.objetivo) + area('formula_texto', 'Fórmula (documentação)', v.formula_texto) +
-    area('regra_nulos', 'Regra de nulos', v.regra_nulos) + area('nota', 'Notas e requisitos de divulgação', v.nota) + '</div>';
+  const ajuda = function(id, txt) { return txt ? '<small class="adm-ajuda" id="admV-' + id + '-ajuda">' + txt + '</small>' : ''; };
+  const desc = function(id, txt) { return txt ? ' aria-describedby="admV-' + id + '-ajuda"' : ''; };
+  const campo = function(id, rot, val, tipo, txt, req) {
+    return '<div class="pab-field"><label for="admV-' + id + '">' + rot + (req ? ' <span class="pu-req" aria-hidden="true">*</span>' : '') + '</label>' +
+      '<input class="pab-input" id="admV-' + id + '" type="' + (tipo || 'text') + '" value="' + escHtml(val == null ? '' : String(val)) + '"' + dis + desc(id, txt) + (req ? ' required' : '') + '>' + ajuda(id, txt) + '</div>'; };
+  const area = function(id, rot, val, txt) {
+    return '<div class="pab-field adm-full"><label for="admV-' + id + '">' + rot + '</label><textarea class="pab-input" id="admV-' + id + '"' + dis + desc(id, txt) + '>' + escHtml(val || '') + '</textarea>' + ajuda(id, txt) + '</div>'; };
+  const sel = function(id, rot, opcoes, atual, txt) {
+    return '<div class="pab-field"><label for="admV-' + id + '">' + rot + '</label><select class="pab-input form-select" id="admV-' + id + '"' + dis + desc(id, txt) + '>' + admOpcoes(opcoes, atual) + '</select>' + ajuda(id, txt) + '</div>'; };
+  const grupo = function(titulo, corpo) { return '<fieldset class="adm-grupo-campos"><legend>' + titulo + '</legend><div class="adm-form">' + corpo + '</div></fieldset>'; };
+  const niveis = v.niveis || ['nacional'];
+  return '<div id="admDetForm">' +
+    grupo('Identificação',
+      campo('titulo', 'Título', v.titulo, 'text', '', true) +
+      campo('responsavel', 'Responsável', v.responsavel, 'text', 'Nome de quem responde pelo indicador. Obrigatório para aprovar.') +
+      campo('unidade', 'Unidade', v.unidade, 'text', 'Ex.: %, alunos, km, anos.') +
+      campo('casas_decimais', 'Casas decimais', v.casas_decimais == null ? 0 : v.casas_decimais, 'number')) +
+    grupo('Metodologia',
+      sel('situacao', 'Situação metodológica', [['validado', 'Validado'], ['em_construcao', 'Em construção'], ['pendente_fonte', 'Pendente de fonte']],
+        v.situacao_metodologica || 'em_construcao', 'Só indicadores validados publicam valores; os demais publicam apenas a ficha.') +
+      sel('sentido', 'Sentido interpretativo', [['neutro', 'Neutro'], ['maior_melhor', 'Maior é melhor'], ['menor_melhor', 'Menor é melhor']], v.sentido || 'neutro',
+        'Orienta cores e leituras nos painéis.') +
+      area('formula_texto', 'Fórmula', v.formula_texto, 'Como o valor é calculado, em linguagem de documentação.') +
+      area('descricao', 'Descrição', v.descricao) + area('objetivo', 'Objetivo', v.objetivo) +
+      area('regra_nulos', 'Regra de nulos', v.regra_nulos, 'O que exibir quando faltar dado (a PNITE mostra “—”, nunca zero).')) +
+    grupo('Dados e cálculo',
+      sel('fonte', 'Fonte', fontes, v.fonte || '', 'Fonte cadastrada em “Fontes e cargas”; fixa a versão de dados na publicação.') +
+      sel('calculo', 'Cálculo no catálogo', ADM_CALCULOS, admCalcChave(v.calculo), 'Operações permitidas pelo motor do catálogo. Indicadores calculados no painel usam “Sem cálculo”.') +
+      campo('periodo_referencia', 'Período de referência', v.periodo_referencia, 'text', 'Ex.: SETE maio/2026; Censo Escolar 2025.')) +
+    grupo('Exibição',
+      sel('visual', 'Visual padrão', [['cartao', 'Cartão'], ['barras', 'Barras'], ['colunas', 'Colunas'], ['tabela', 'Tabela'], ['mapa', 'Mapa'], ['pagina', 'Página']], v.visual || 'cartao') +
+      '<div class="pab-field"><span class="adm-rotulo" id="admV-niveis-rot">Níveis territoriais</span><div class="adm-niveis" role="group" aria-labelledby="admV-niveis-rot">' +
+        ADM_NIVEIS.map(function(n) { return '<label><input type="checkbox" name="admV-niveis" value="' + n[0] + '"' + (niveis.indexOf(n[0]) >= 0 ? ' checked' : '') + dis + '> ' + n[1] + '</label>'; }).join('') + '</div></div>' +
+      campo('dimensoes', 'Filtros/dimensões', (v.dimensoes || []).join(', '), 'text', 'Separados por vírgula (ex.: ano, uf, tipo_veiculo).')) +
+    grupo('Notas', area('nota', 'Notas e requisitos de divulgação', v.nota, 'Observações para quem revisa e para a ficha pública.')) +
+    '</div>';
 }
 function admLerCamposVersao() {
   const g = function(id) { const el = document.getElementById('admV-' + id); return el ? el.value : null; };
   const lista = function(id) { return String(g(id) || '').split(',').map(function(x) { return x.trim(); }).filter(Boolean); };
+  const niveis = Array.prototype.map.call(document.querySelectorAll('#admDetForm input[name="admV-niveis"]:checked'), function(c) { return c.value; });
   return { titulo: (g('titulo') || '').trim(), unidade: g('unidade') || null, casas_decimais: parseInt(g('casas_decimais'), 10) || 0,
     responsavel: (g('responsavel') || '').trim() || null, situacao_metodologica: g('situacao'), visual: g('visual'), sentido: g('sentido'),
     fonte: g('fonte') || null, calculo: admCalcObj(g('calculo')), periodo_referencia: g('periodo_referencia') || null,
-    niveis: lista('niveis'), dimensoes: lista('dimensoes'), descricao: g('descricao') || null, objetivo: g('objetivo') || null,
+    niveis: niveis.length ? niveis : ['nacional'], dimensoes: lista('dimensoes'), descricao: g('descricao') || null, objetivo: g('objetivo') || null,
     formula_texto: g('formula_texto') || null, regra_nulos: g('regra_nulos') || null, nota: g('nota') || null };
 }
+
+// ---- Novo indicador: frente primeiro, sigla e endereço (slug) sugeridos ----
+const ADM_MODULO_PADRAO = { transporte: 'indicadores', gestao: 'caminho_da_escola', capacitacao: 'capacitacao' };
 function admNovo() {
-  admDialogo('Novo indicador (rascunho)', '<div class="adm-form">' +
-    '<div class="pab-field"><label for="admN-codigo">Código (sigla)</label><input class="pab-input" id="admN-codigo" placeholder="EX_CODIGO" autocomplete="off"></div>' +
-    '<div class="pab-field"><label for="admN-slug">Slug</label><input class="pab-input" id="admN-slug" placeholder="ex-codigo" autocomplete="off"></div>' +
-    '<div class="pab-field"><label for="admN-tipo">Tipo</label><select class="pab-input form-select" id="admN-tipo">' + admOpcoes([['indicador', 'Indicador'], ['visual', 'Visual/página']], 'indicador') + '</select></div>' +
-    '<div class="pab-field"><label for="admN-frente">Frente</label><select class="pab-input form-select" id="admN-frente">' + admOpcoes([['gestao', 'Gestão'], ['transporte', 'Transporte Escolar'], ['capacitacao', 'Capacitação']], 'gestao') + '</select></div>' +
-    '<div class="pab-field"><label for="admN-modulo">Módulo</label><input class="pab-input" id="admN-modulo" value="caminho_da_escola"></div>' +
-    '<div class="pab-field"><label for="admN-categoria">Categoria</label><input class="pab-input" id="admN-categoria"></div>' +
-    '<div class="pab-field"><label for="admN-ordem">Ordem</label><input class="pab-input" id="admN-ordem" type="number" value="100"></div></div>' +
-    '<h3 class="gx-secao-titulo">Definição</h3>' + admCamposVersaoHtml({}, true) +
-    '<div class="gx-toolbar" style="margin-top:14px"><span></span><button type="button" class="pab-btn pab-btn-primary" onclick="admCriar()"><i class="ti ti-device-floppy" aria-hidden="true"></i> Criar rascunho</button></div>');
+  const lista = function(campo) {
+    return ADM.cat.map(function(i) { return i[campo]; }).filter(function(x, k, a) { return x && a.indexOf(x) === k; })
+      .map(function(x) { return '<option value="' + escHtml(x) + '">' + escHtml(admRotulo(x)) + '</option>'; }).join(''); };
+  const proxOrdem = ADM.cat.filter(function(i) { return i.frente === 'transporte'; }).reduce(function(m, i) { return Math.max(m, i.ordem || 0); }, 100) + 1;
+  admDialogo('Novo indicador',
+    '<p class="adm-ajuda adm-intro">O item nasce como <b>rascunho</b>: só aparece ao público depois de enviado à revisão, aprovado e publicado. Campos com <span class="pu-req">*</span> são obrigatórios.</p>' +
+    '<fieldset class="adm-grupo-campos"><legend>Onde fica</legend><div class="adm-form" id="admNovoForm">' +
+      '<div class="pab-field"><label for="admN-frente">Frente</label><select class="pab-input form-select" id="admN-frente" onchange="admNovoSugerir()">' +
+        admOpcoes([['transporte', 'Transporte Escolar'], ['gestao', 'Gestão'], ['capacitacao', 'Capacitação']], 'transporte') + '</select></div>' +
+      '<div class="pab-field"><label for="admN-tipo">Tipo</label><select class="pab-input form-select" id="admN-tipo">' +
+        admOpcoes([['indicador', 'Indicador (tem valor)'], ['visual', 'Visual ou página (sem valor próprio)']], 'indicador') + '</select></div>' +
+      '<div class="pab-field"><label for="admN-codigo">Sigla <span class="pu-req" aria-hidden="true">*</span></label><input class="pab-input" id="admN-codigo" placeholder="EX: PRGM" autocomplete="off" required aria-describedby="admN-codigo-ajuda" oninput="admNovoSugerir()"><small class="adm-ajuda" id="admN-codigo-ajuda">Letras maiúsculas, números e _ (começa por letra).</small></div>' +
+      '<div class="pab-field"><label for="admN-modulo">Módulo</label><input class="pab-input" id="admN-modulo" list="admN-modulos" value="indicadores" autocomplete="off"><datalist id="admN-modulos">' + lista('modulo') + '</datalist></div>' +
+      '<div class="pab-field"><label for="admN-categoria">Categoria</label><input class="pab-input" id="admN-categoria" list="admN-categorias" placeholder="ex.: desempenho" autocomplete="off"><datalist id="admN-categorias">' + lista('categoria') + '</datalist></div>' +
+      '<div class="pab-field"><label for="admN-ordem">Ordem na lista</label><input class="pab-input" id="admN-ordem" type="number" value="' + proxOrdem + '"></div>' +
+      '<div class="pab-field adm-full"><label for="admN-slug">Endereço (slug) <span class="pu-req" aria-hidden="true">*</span></label><input class="pab-input" id="admN-slug" data-auto="1" autocomplete="off" required aria-describedby="admN-slug-ajuda" oninput="delete this.dataset.auto"><small class="adm-ajuda" id="admN-slug-ajuda">Gerado da sigla; letras minúsculas, números e hífen. Identifica o item na API pública.</small></div>' +
+    '</div></fieldset>' + admCamposVersaoHtml({ niveis: ['nacional', 'regiao', 'uf', 'municipio'] }, true) +
+    '<div class="adm-rodape"><span></span><div class="adm-acoes"><button type="button" class="pab-btn" onclick="admFecharDialogo()">Cancelar</button>' +
+    '<button type="button" class="pab-btn pab-btn-primary" data-adm="criar"><i class="ti ti-device-floppy" aria-hidden="true"></i> Criar rascunho</button></div></div>');
+  const frente = document.getElementById('admN-frente');
+  if (frente) frente.focus();
+}
+function admNovoSugerir() {
+  const f = document.getElementById('admN-frente').value;
+  const cod = document.getElementById('admN-codigo');
+  const limpo = String(cod.value || '').toUpperCase().split(' ').join('_');
+  if (cod.value !== limpo) cod.value = limpo;
+  const slug = document.getElementById('admN-slug');
+  if (slug.dataset.auto) slug.value = limpo ? (f === 'transporte' ? 'transporte-' : '') + limpo.toLowerCase().split('_').join('-') : '';
+  const mod = document.getElementById('admN-modulo');
+  if (Object.keys(ADM_MODULO_PADRAO).some(function(k) { return ADM_MODULO_PADRAO[k] === mod.value; }) || !mod.value) mod.value = ADM_MODULO_PADRAO[f] || '';
 }
 async function admCriar() {
   const g = function(id) { return (document.getElementById('admN-' + id).value || '').trim(); };
   const dados = admLerCamposVersao();
-  if (!g('codigo') || !g('slug') || !dados.titulo) { admDlgMsg('Preencha código, slug e título.', 'err'); return; }
+  const codigo = g('codigo'), slug = g('slug');
+  if (!/^[A-Z][A-Z0-9_]{1,40}$/.test(codigo)) { admDlgMsg('Sigla inválida: use letras maiúsculas, números e _ (começando por letra, ao menos 2 caracteres).', 'err'); document.getElementById('admN-codigo').focus(); return; }
+  if (!/^[a-z0-9][a-z0-9-]{1,80}$/.test(slug)) { admDlgMsg('Endereço (slug) inválido: use letras minúsculas, números e hífen.', 'err'); document.getElementById('admN-slug').focus(); return; }
+  if (!dados.titulo) { admDlgMsg('Informe o título.', 'err'); document.getElementById('admV-titulo').focus(); return; }
+  if (ADM.cat.some(function(i) { return i.codigo === codigo; })) { admDlgMsg('Já existe um item com a sigla ' + codigo + '.', 'err'); return; }
+  if (ADM.cat.some(function(i) { return i.slug === slug; })) { admDlgMsg('Já existe um item com o endereço ' + slug + '.', 'err'); return; }
   admDlgMsg('Salvando…');
   try {
-    await PNITE_AUTH.rpc('pnite_admin_cat_criar', { p_codigo: g('codigo'), p_slug: g('slug'), p_tipo: g('tipo'), p_frente: g('frente'),
+    await PNITE_AUTH.rpc('pnite_admin_cat_criar', { p_codigo: codigo, p_slug: slug, p_tipo: g('tipo'), p_frente: g('frente'),
       p_modulo: g('modulo'), p_categoria: g('categoria'), p_ordem: parseInt(g('ordem'), 10) || 100, p_dados: dados });
-    admFecharDialogo(); await admCarregar(); admMsg('Rascunho criado. Ele não aparece ao público até ser aprovado e publicado.', 'ok');
+    admFecharDialogo(); ADM.filtro = { busca: codigo, frente: '', estado: '', situacao: '' }; await admCarregar();
+    admMsg('Rascunho ' + codigo + ' criado. Ele não aparece ao público até ser aprovado e publicado.', 'ok');
   } catch (e) { admDlgMsg(e.message, 'err'); }
 }
+
+// ---- Ficha do indicador: etapas, próximo passo, ações e abas (definição, prévia, histórico) ----
 function admDetalhe(id) {
   const i = ADM.cat.find(function(x) { return x.id === id; });
   if (!i) return;
-  ADM.atual = id;
+  if (ADM.atual !== id) ADM.abaDet = 'definicao';
+  ADM.atual = id; ADM.sujo = false; ADM.pendente = null;
   const vers = i.versoes || [];
   const v = vers[0];
-  const editavel = v.estado_editorial === 'rascunho' || v.estado_editorial === 'em_revisao';
-  const acoes = (ADM_ACOES[v.estado_editorial] || []).map(function(a) {
-    return '<button type="button" class="pab-btn' + (a[0] === 'publicar' ? ' pab-btn-primary' : '') + '" onclick="admTransicao(' + v.id + ',\'' + a[0] + '\',' + v.lock_version + ')">' + escHtml(a[1]) + '</button>'; }).join('');
-  const hist = vers.map(function(x) {
-    const pode = x.id !== v.id && (x.estado_editorial === 'suspenso') && x.aprovado_em;
-    return '<tr><td>v' + x.versao + '</td><td>' + admBadge(ADM_ESTADOS, x.estado_editorial) + '</td><td>' + escHtml(x.titulo) + '</td><td>' + gxDataHora(x.atualizado_em) + '</td><td>' +
-      escHtml(x.aprovado_por || '—') + '</td><td>' + (pode ? '<button type="button" class="pab-btn" onclick="admTransicao(' + x.id + ',\'restaurar\',' + x.lock_version + ')">Restaurar</button>' : '') + '</td></tr>'; }).join('');
-  admDialogo(i.codigo + ' — v' + v.versao,
-    '<div class="adm-item-meta" style="margin-bottom:12px">' + admBadge(ADM_ESTADOS, v.estado_editorial) + admBadge(ADM_SITUACAO, v.situacao_metodologica) +
-      (i.publicacao ? '<span class="gx-badge ok">publicação ativa desde ' + gxDataHora(i.publicacao.inicio) + '</span>' : '<span class="gx-badge">sem publicação ativa</span>') + '</div>' +
-    (editavel ? '' : '<div class="gx-aviso"><i class="ti ti-lock" aria-hidden="true"></i><div>Esta versão não é editável no estado atual. Crie uma nova versão para alterar a definição; a versão publicada continua no ar até a nova ser publicada.</div></div>') +
-    admCamposVersaoHtml(v, editavel) +
-    '<div class="gx-toolbar" style="margin-top:14px"><div class="adm-acoes">' +
-      (editavel ? '<button type="button" class="pab-btn pab-btn-primary" onclick="admSalvar(' + v.id + ',' + v.lock_version + ')"><i class="ti ti-device-floppy" aria-hidden="true"></i> Salvar</button>' : '') +
-      '<button type="button" class="pab-btn" onclick="admNovaVersao(' + v.id + ')"><i class="ti ti-copy" aria-hidden="true"></i> Nova versão</button>' +
-      '<button type="button" class="pab-btn" onclick="admPrevia(' + v.id + ')"><i class="ti ti-eye" aria-hidden="true"></i> Prévia privada</button></div>' +
-      '<div class="adm-acoes">' + acoes + '</div></div>' +
-    '<div id="admPreviaOut"></div>' +
-    '<h3 class="gx-secao-titulo" style="margin-top:16px">Histórico de versões</h3><div class="gx-tabela-wrap"><table class="gx-tabela"><thead><tr><th>Versão</th><th>Estado</th><th>Título</th><th>Atualizada</th><th>Aprovada por</th><th></th></tr></thead><tbody>' + hist + '</tbody></table></div>');
+  const e = v.estado_editorial;
+  const p = admProximo(i, v);
+  const ordem = ADM_ETAPAS.map(function(x) { return x[0]; });
+  const pos = ordem.indexOf(e);
+  const etapas = '<ol class="adm-etapas" aria-label="Etapas do fluxo editorial">' + ADM_ETAPAS.map(function(x, k) {
+    const cls = k === pos ? ' atual' : (pos > k ? ' feita' : '');
+    return '<li class="adm-etapa' + cls + '"' + (k === pos ? ' aria-current="step"' : '') + '><i class="ti ' + (pos > k ? 'ti-circle-check' : (k === pos ? 'ti-point-filled' : 'ti-circle')) + '" aria-hidden="true"></i>' + x[1] + '</li>';
+  }).join('') + '</ol>';
+  const acoes = (ADM_ACOES[e] || []).map(function(a) {
+    const principal = a[0] === p.acao;
+    const bloqueada = a[0] === 'aprovar' && !v.responsavel;
+    return '<button type="button" class="pab-btn' + (principal ? ' pab-btn-primary' : '') + (a[0] === 'suspender' || a[0] === 'arquivar' ? ' pab-btn-danger' : '') + '" data-adm="acao" data-vid="' + v.id + '" data-acao="' + a[0] + '" data-lock="' + v.lock_version + '"' +
+      (bloqueada ? ' disabled title="Defina o responsável para aprovar"' : '') + ' aria-describedby="admProximoTxt">' + escHtml(a[1]) + '</button>'; }).join('');
+  admDialogo(i.codigo + ' · ' + (v.titulo || ''),
+    '<p class="adm-det-sub">' + admLocal(i) + ' · versão ' + v.versao + (i.tipo === 'visual' ? ' · visual' : '') + '</p>' +
+    '<div class="adm-item-meta">' + admBadge(ADM_ESTADOS, e) + admBadge(ADM_SITUACAO, v.situacao_metodologica) +
+      (i.publicacao ? '<span class="gx-badge ok">no ar desde ' + gxDataHora(i.publicacao.inicio) + (i.publicacao.somente_ficha ? ' (só ficha)' : '') + '</span>' : '<span class="gx-badge">fora do ar</span>') + '</div>' +
+    (e === 'suspenso' || e === 'arquivado' ? '<div class="gx-aviso warn" style="margin-top:10px"><i class="ti ti-alert-triangle" aria-hidden="true"></i><div>Esta versão está <b>' + escHtml(ADM_ESTADOS[e][0].toLowerCase()) + '</b>.</div></div>' : etapas) +
+    '<div class="adm-proximo"><div class="adm-proximo-txt" id="admProximoTxt"><b>Próximo passo</b>' + escHtml(p.txt) + '</div><div class="adm-acoes">' + acoes + '</div></div>' +
+    '<div id="admConfirma"></div>' +
+    '<div class="gx-tabs adm-det-abas" role="tablist" aria-label="Partes da ficha">' +
+      [['definicao', 'Definição', 'ti-file-description'], ['previa', 'Prévia do valor', 'ti-eye'], ['historico', 'Histórico (' + vers.length + ')', 'ti-history']].map(function(a) {
+        return '<button type="button" class="gx-tab" role="tab" id="admDetTab-' + a[0] + '" aria-controls="admDetPainel" aria-selected="' + String(ADM.abaDet === a[0]) + '" data-adm="aba-det" data-aba="' + a[0] + '"><i class="ti ' + a[2] + '" aria-hidden="true"></i> ' + escHtml(a[1]) + '</button>'; }).join('') +
+    '</div><div id="admDetPainel" role="tabpanel" aria-labelledby="admDetTab-' + ADM.abaDet + '"></div>');
+  admAbaDetalhe(ADM.abaDet);
 }
-async function admSalvar(vid, lock) {
+function admAbaDetalhe(aba) {
+  const i = ADM.cat.find(function(x) { return x.id === ADM.atual; });
+  if (!i) return;
+  if (ADM.sujo && aba !== 'definicao' && ADM.abaDet === 'definicao') { admDlgMsg('Há alterações não salvas na definição. Salve antes de trocar de aba.', 'err'); return; }
+  ADM.abaDet = aba;
+  document.querySelectorAll('.adm-det-abas .gx-tab').forEach(function(t) { t.setAttribute('aria-selected', String(t.dataset.aba === aba)); });
+  const painel = document.getElementById('admDetPainel');
+  painel.setAttribute('aria-labelledby', 'admDetTab-' + aba);
+  const vers = i.versoes || [], v = vers[0];
+  const editavel = v.estado_editorial === 'rascunho' || v.estado_editorial === 'em_revisao';
+  if (aba === 'definicao') {
+    painel.innerHTML = (editavel ? '' : '<div class="gx-aviso" style="margin-bottom:12px"><i class="ti ti-lock" aria-hidden="true"></i><div>Versão ' + escHtml(ADM_ESTADOS[v.estado_editorial][0].toLowerCase()) +
+        ': a definição não pode mais ser editada. Crie uma nova versão para alterar; a versão publicada continua no ar até a nova ser publicada.' +
+        '<div style="margin-top:8px"><button type="button" class="pab-btn pab-btn-primary" data-adm="nova-versao" data-vid="' + v.id + '"><i class="ti ti-copy" aria-hidden="true"></i> Criar nova versão</button></div></div></div>') +
+      admCamposVersaoHtml(v, editavel) +
+      (editavel ? '<div class="adm-rodape"><span class="adm-sujo" id="admSujo" hidden><i class="ti ti-point-filled" aria-hidden="true"></i> Alterações não salvas</span><div class="adm-acoes">' +
+        (v.estado_editorial === 'em_revisao' ? '<button type="button" class="pab-btn" data-adm="salvar">Salvar como rascunho</button><button type="button" class="pab-btn pab-btn-primary" data-adm="salvar-revisao"><i class="ti ti-device-floppy" aria-hidden="true"></i> Salvar e manter em revisão</button>'
+          : '<button type="button" class="pab-btn pab-btn-primary" data-adm="salvar"><i class="ti ti-device-floppy" aria-hidden="true"></i> Salvar</button>') +
+        '</div></div>' + (v.estado_editorial === 'em_revisao' ? '<p class="adm-ajuda">Salvar uma versão em revisão a devolve a rascunho; “Salvar e manter em revisão” salva e reenvia à revisão em seguida.</p>' : '') : '');
+  } else if (aba === 'previa') {
+    painel.innerHTML = '<p class="adm-ajuda adm-intro">Calcula o valor desta versão com a versão de dados ativa da fonte e compara com a publicação atual. Vale para itens com cálculo no catálogo; indicadores calculados no painel mostram “—”.</p>' +
+      '<button type="button" class="pab-btn" data-adm="previa" data-vid="' + v.id + '"><i class="ti ti-calculator" aria-hidden="true"></i> Calcular prévia</button><div id="admPreviaOut"></div>';
+  } else {
+    painel.innerHTML = '<div class="gx-tabela-wrap"><table class="gx-tabela"><thead><tr><th>Versão</th><th>Estado</th><th>Título</th><th>Atualizada</th><th>Aprovada por</th><th><span class="adm-sr">Ações</span></th></tr></thead><tbody>' +
+      vers.map(function(x) {
+        const pode = x.id !== v.id && x.estado_editorial === 'suspenso' && x.aprovado_em;
+        return '<tr><td>v' + x.versao + '</td><td>' + admBadge(ADM_ESTADOS, x.estado_editorial) + '</td><td>' + escHtml(x.titulo) + '</td><td>' + gxDataHora(x.atualizado_em) + '</td><td>' +
+          escHtml(x.aprovado_por || '—') + '</td><td>' + (pode ? '<button type="button" class="pab-btn" data-adm="acao" data-vid="' + x.id + '" data-acao="restaurar" data-lock="' + x.lock_version + '">Restaurar</button>' : '') + '</td></tr>'; }).join('') +
+      '</tbody></table></div>';
+  }
+}
+function admMarcarSujo() {
+  ADM.sujo = true;
+  const s = document.getElementById('admSujo');
+  if (s) s.hidden = false;
+}
+async function admSalvar(reenviar) {
+  const i = ADM.cat.find(function(x) { return x.id === ADM.atual; });
+  if (!i) return;
+  const v = (i.versoes || [])[0];
   const d = admLerCamposVersao();
-  if (!d.titulo) { admDlgMsg('O título é obrigatório.', 'err'); return; }
+  if (!d.titulo) { admDlgMsg('O título é obrigatório.', 'err'); document.getElementById('admV-titulo').focus(); return; }
   admDlgMsg('Salvando…');
-  try { await PNITE_AUTH.rpc('pnite_admin_cat_editar', { p_versao_id: vid, p_lock: lock, p_dados: d }); await admCarregar(); admDetalhe(ADM.atual); admDlgMsg('Salvo (a versão volta a rascunho).', 'ok'); }
-  catch (e) { admDlgMsg(e.message, 'err'); }
+  try {
+    const r = await PNITE_AUTH.rpc('pnite_admin_cat_editar', { p_versao_id: v.id, p_lock: v.lock_version, p_dados: d });
+    if (reenviar) await PNITE_AUTH.rpc('pnite_admin_cat_transicao', { p_versao_id: v.id, p_acao: 'enviar_revisao', p_lock: r.lock_version, p_justificativa: null });
+    ADM.sujo = false;
+    await admCarregar(); admDetalhe(ADM.atual);
+    admDlgMsg(reenviar ? 'Salvo e reenviado à revisão.' : 'Salvo. A versão está em rascunho: envie à revisão quando terminar.', 'ok');
+  } catch (e) { admDlgMsg(e.message, 'err'); }
 }
 async function admNovaVersao(vid) {
   admDlgMsg('Criando nova versão…');
-  try { await PNITE_AUTH.rpc('pnite_admin_cat_nova_versao', { p_versao_base: vid }); await admCarregar(); admDetalhe(ADM.atual); admDlgMsg('Nova versão criada em rascunho. A publicação atual não mudou.', 'ok'); }
-  catch (e) { admDlgMsg(e.message, 'err'); }
+  try {
+    await PNITE_AUTH.rpc('pnite_admin_cat_nova_versao', { p_versao_base: vid });
+    ADM.abaDet = 'definicao'; await admCarregar(); admDetalhe(ADM.atual);
+    admDlgMsg('Nova versão criada em rascunho, com a mesma definição. A publicação atual não mudou.', 'ok');
+  } catch (e) { admDlgMsg(e.message, 'err'); }
 }
-async function admTransicao(vid, acao, lock) {
+// Ação do fluxo: explica a consequência e, quando exigido, pede a justificativa no próprio diálogo
+function admPedirAcao(vid, acao, lock) {
+  const info = ADM_ACAO_INFO[acao] || [acao, ''];
+  if (ADM.sujo) { admDlgMsg('Há alterações não salvas na definição. Salve antes de “' + info[0].toLowerCase() + '”.', 'err'); return; }
+  if (!ADM_COM_JUST[acao]) { ADM.pendente = { vid: vid, acao: acao, lock: lock }; admConfirmarAcao(); return; }
+  ADM.pendente = { vid: vid, acao: acao, lock: lock };
+  const perigo = acao === 'suspender' || acao === 'arquivar';
+  const el = document.getElementById('admConfirma');
+  el.innerHTML = '<div class="adm-confirma' + (perigo ? ' perigo' : '') + '" role="group" aria-labelledby="admConfirmaTit">' +
+    '<p class="adm-confirma-tit" id="admConfirmaTit"><b>' + escHtml(info[0]) + '?</b> ' + escHtml(info[1]) + '</p>' +
+    '<div class="pab-field"><label for="admJust">Justificativa <span class="pu-req" aria-hidden="true">*</span></label><textarea class="pab-input" id="admJust" rows="2" required aria-describedby="admJustAjuda"></textarea>' +
+    '<small class="adm-ajuda" id="admJustAjuda">Fica registrada na trilha de auditoria.</small></div>' +
+    '<div class="adm-acoes"><button type="button" class="pab-btn" data-adm="cancelar">Cancelar</button><button type="button" class="pab-btn ' + (perigo ? 'adm-btn-perigo' : 'pab-btn-primary') + '" data-adm="confirmar">Confirmar: ' + escHtml(info[0].toLowerCase()) + '</button></div></div>';
+  document.getElementById('admJust').focus();
+}
+function admCancelarAcao() { ADM.pendente = null; const el = document.getElementById('admConfirma'); if (el) el.innerHTML = ''; }
+async function admConfirmarAcao() {
+  const p = ADM.pendente;
+  if (!p) return;
   let just = null;
-  if (ADM_COM_JUST[acao]) {
-    just = window.prompt('Justificativa para "' + acao.replace('_', ' ') + '" (fica registrada na auditoria):', '');
-    if (just == null) return;
-    if (!just.trim()) { admDlgMsg('A justificativa é obrigatória.', 'err'); return; }
+  if (ADM_COM_JUST[p.acao]) {
+    just = (document.getElementById('admJust').value || '').trim();
+    if (!just) { admDlgMsg('A justificativa é obrigatória.', 'err'); document.getElementById('admJust').focus(); return; }
   }
   admDlgMsg('Aplicando…');
   try {
-    const r = await PNITE_AUTH.rpc('pnite_admin_cat_transicao', { p_versao_id: vid, p_acao: acao, p_lock: lock, p_justificativa: just });
+    const r = await PNITE_AUTH.rpc('pnite_admin_cat_transicao', { p_versao_id: p.vid, p_acao: p.acao, p_lock: p.lock, p_justificativa: just });
     GX.painel = null; GX.rep = null; SM.snap = null; SM.carregando = null; SM.agg = null; // força releitura das áreas públicas
+    ADM.pendente = null;
     await admCarregar(); admDetalhe(ADM.atual);
-    admDlgMsg('Concluído: ' + (r && r.estado ? r.estado : acao) + (r && r.somente_ficha ? ' (somente ficha: indicador não validado não exibe valores)' : '') + (r && r.idempotente ? ' (já estava publicado)' : '') + '.', 'ok');
+    admDlgMsg('Feito: ' + (ADM_ACAO_INFO[p.acao] || [p.acao])[0].toLowerCase() + (r && r.estado ? ' (agora: ' + (ADM_ESTADOS[r.estado] || [r.estado])[0].toLowerCase() + ')' : '') +
+      (r && r.somente_ficha ? '. Como não está validado, foi publicada só a ficha, sem valores' : '') + (r && r.idempotente ? '. Já estava publicado' : '') + '.', 'ok');
   } catch (e) { admDlgMsg(e.message, 'err'); }
 }
 async function admPrevia(vid) {
@@ -17748,7 +18047,7 @@ async function admPrevia(vid) {
     const res = r.resultado, pub = r.resultado_publicado;
     const dif = r.diferencas || {};
     out.innerHTML = '<div class="gx-cards" style="margin-top:12px">' +
-      gxCard('Resultado desta versão', res ? gxNum(res.valor, 2) : '—', res ? 'Estado: ' + escHtml(res.estado) + ' · ' + gxNum(res.n) + ' itens' : 'Sem cálculo ou sem dados ativos') +
+      gxCard('Resultado desta versão', res ? gxNum(res.valor, 2) : '—', res ? 'Estado: ' + escHtml(res.estado) + ' · ' + gxNum(res.n) + ' itens' : 'Sem cálculo no catálogo ou sem dados ativos') +
       gxCard('Resultado publicado', pub ? gxNum(pub.valor, 2) : '—', pub ? 'Versão de dados congelada na publicação' : 'Sem publicação com valor') + '</div>' +
       (Object.keys(dif).length ? '<h3 class="gx-secao-titulo">Diferenças em relação à versão publicada</h3><div class="gx-tabela-wrap">' +
         gxTabelaHtml([{ t: 'Campo', k: 'k' }, { t: 'Publicada', f: function(l) { return escHtml(JSON.stringify(l.a)); } }, { t: 'Esta versão', f: function(l) { return escHtml(JSON.stringify(l.b)); } }],
@@ -17769,28 +18068,37 @@ function admHtmlCargas() {
       { t: 'Período', f: function(l) { return gxData(l.periodo_inicio) + ' a ' + gxData(l.periodo_fim); } },
       { t: 'SHA-256', f: function(l) { return '<code title="' + escHtml(l.sha256) + '">' + escHtml(String(l.sha256).slice(0, 12)) + '…</code>'; } },
       { t: 'Recebida', f: function(l) { return gxDataHora(l.recebido_em); } },
-      { t: '', f: function(l) { return l.status === 'validada' || l.status === 'inativa' ? '<button type="button" class="pab-btn" onclick="admAtivarCarga(' + l.id + ')">Ativar</button>' : ''; } }],
+      { t: '', f: function(l) { return l.status === 'validada' || l.status === 'inativa' ? '<button type="button" class="pab-btn" data-adm="ativar-carga" data-id="' + l.id + '">Ativar</button>' : ''; } }],
       c.versoes || []) + '</div>' +
     '<h3 class="gx-secao-titulo" style="margin-top:16px">Fontes cadastradas</h3><div class="gx-tabela-wrap">' + gxTabelaHtml([
       { t: 'Código', k: 'codigo' }, { t: 'Descrição', k: 'descricao' }, { t: 'Dono', k: 'dono' }, { t: 'Classificação', k: 'classificacao' }, { t: 'Observação', k: 'observacao' }], c.fontes || []) + '</div>';
 }
+function admAtivarCargaDialogo(id) {
+  const v = (ADM.cargas.versoes || []).find(function(x) { return x.id === id; }) || {};
+  admDialogo('Ativar versão de dados #' + id,
+    '<p class="adm-ajuda adm-intro">Fonte <b>' + escHtml(v.fonte || '—') + '</b>, arquivo ' + escHtml(v.arquivo || '—') + '. A versão ativa passa a ser usada nas próximas publicações; nenhum indicador é publicado automaticamente e as publicações atuais continuam com a versão com que foram publicadas.</p>' +
+    '<div class="pab-field"><label for="admJust">Justificativa <span class="pu-req" aria-hidden="true">*</span></label><textarea class="pab-input" id="admJust" rows="3" required aria-describedby="admJustAjuda"></textarea><small class="adm-ajuda" id="admJustAjuda">Fica registrada na trilha de auditoria.</small></div>' +
+    '<div class="adm-rodape"><span></span><div class="adm-acoes"><button type="button" class="pab-btn" onclick="admFecharDialogo()">Cancelar</button><button type="button" class="pab-btn pab-btn-primary" data-adm="confirmar-carga" data-id="' + id + '">Ativar</button></div></div>');
+}
 async function admAtivarCarga(id) {
-  const just = window.prompt('Justificativa para ativar a versão de dados #' + id + ':', '');
-  if (just == null) return;
-  if (!just.trim()) { admMsg('A justificativa é obrigatória.', 'err'); return; }
-  try { await PNITE_AUTH.rpc('pnite_admin_carga_ativar', { p_dataset: id, p_justificativa: just }); await admCarregar(); admMsg('Versão de dados ativada. Nenhum indicador foi publicado automaticamente.', 'ok'); }
-  catch (e) { admMsg(e.message, 'err'); }
+  const just = (document.getElementById('admJust').value || '').trim();
+  if (!just) { admDlgMsg('A justificativa é obrigatória.', 'err'); document.getElementById('admJust').focus(); return; }
+  admDlgMsg('Ativando…');
+  try { await PNITE_AUTH.rpc('pnite_admin_carga_ativar', { p_dataset: id, p_justificativa: just }); admFecharDialogo(); await admCarregar(); admMsg('Versão de dados ativada. Nenhum indicador foi publicado automaticamente.', 'ok'); }
+  catch (e) { admDlgMsg(e.message, 'err'); }
 }
 function admHtmlPublicacoes() {
   const pubs = ADM.cat.filter(function(i) { return i.publicacao; });
   return '<div class="gx-aviso"><i class="ti ti-world" aria-hidden="true"></i><div>Itens visíveis ao público. Para retirar, abra o item e use “Suspender”; para voltar a uma versão aprovada anterior, use “Restaurar” no histórico.</div></div>' +
-    '<div class="gx-tabela-wrap">' + gxTabelaHtml([{ t: 'Código', k: 'codigo' }, { t: 'Título', f: function(i) { const v = (i.versoes || []).find(function(x) { return x.id === i.publicacao.versao_id; }) || {}; return escHtml(v.titulo || ''); } },
+    (pubs.length ? '' : '<div class="pu-empty">Nenhum item publicado ainda. Itens aprovados aparecem em “Indicadores” com o próximo passo “publicar”.</div>') +
+    '<div class="gx-tabela-wrap">' + gxTabelaHtml([{ t: 'Sigla', k: 'codigo' }, { t: 'Título', f: function(i) { const v = (i.versoes || []).find(function(x) { return x.id === i.publicacao.versao_id; }) || {}; return escHtml(v.titulo || ''); } },
       { t: 'Versão', f: function(i) { const v = (i.versoes || []).find(function(x) { return x.id === i.publicacao.versao_id; }) || {}; return 'v' + escHtml(String(v.versao)); } },
       { t: 'Dados', f: function(i) { return i.publicacao.dataset_versao_id ? '#' + i.publicacao.dataset_versao_id : '—'; } },
       { t: 'Modo', f: function(i) { return i.publicacao.somente_ficha ? '<span class="gx-badge warn">só ficha</span>' : '<span class="gx-badge ok">com valores</span>'; } },
       { t: 'Desde', f: function(i) { return gxDataHora(i.publicacao.inicio); } }, { t: 'Por', f: function(i) { return escHtml(i.publicacao.publicado_por); } },
-      { t: '', f: function(i) { return '<button type="button" class="pab-btn" onclick="admDetalhe(' + i.id + ')">Abrir</button>'; } }], pubs) + '</div>';
+      { t: '', f: function(i) { return '<button type="button" class="pab-btn" data-adm="abrir" data-id="' + i.id + '">Abrir</button>'; } }], pubs) + '</div>';
 }
+const ADM_PEND_SITUACAO = [['aberta', 'Aberta (ainda a tratar)'], ['aceita', 'Aceita (divergência conhecida e aceita)'], ['resolvida', 'Resolvida (corrigida na fonte ou na carga)']];
 function admHtmlQualidade() {
   const c = ADM.cargas;
   return '<h3 class="gx-secao-titulo">Reconciliações</h3><div class="gx-tabela-wrap">' + gxTabelaHtml([{ t: 'Medida', k: 'medida' },
@@ -17800,16 +18108,52 @@ function admHtmlQualidade() {
       { t: 'Painel', k: 'painel' }, { t: 'Verificação', k: 'verificacao' }, { t: 'Valor', num: true, f: function(l) { return gxNum(l.valor, Number(l.valor) % 1 ? 2 : 0); } },
       { t: 'Origem', k: 'origem' }, { t: 'Situação', f: function(l) { return '<span class="gx-badge ' + (l.situacao === 'aberta' ? 'warn' : 'ok') + '">' + escHtml(l.situacao) + '</span>'; } },
       { t: 'Decisão', f: function(l) { return escHtml(l.decisao || '—') + (l.decidido_por ? '<br><small>' + escHtml(l.decidido_por) + ' · ' + gxDataHora(l.decidido_em) + '</small>' : ''); } },
-      { t: '', f: function(l) { return '<button type="button" class="pab-btn" onclick="admDecidir(' + l.id + ')">Registrar decisão</button>'; } }], c.pendencias || []) + '</div>';
+      { t: '', f: function(l) { return '<button type="button" class="pab-btn" data-adm="decidir" data-id="' + l.id + '">Registrar decisão</button>'; } }], c.pendencias || []) + '</div>';
+}
+function admDecidirDialogo(id) {
+  const p = (ADM.cargas.pendencias || []).find(function(x) { return x.id === id; }) || {};
+  admDialogo('Decisão sobre a pendência #' + id,
+    '<p class="adm-ajuda adm-intro"><b>' + escHtml(p.verificacao || '') + '</b>' + (p.painel ? ' · painel ' + escHtml(p.painel) : '') + (p.valor != null ? ' · valor ' + gxNum(p.valor, Number(p.valor) % 1 ? 2 : 0) : '') + '</p>' +
+    '<div class="pab-field"><label for="admPendSit">Situação</label><select class="pab-input form-select" id="admPendSit">' + admOpcoes(ADM_PEND_SITUACAO, p.situacao === 'aberta' ? 'aceita' : (p.situacao || 'aceita')) + '</select></div>' +
+    '<div class="pab-field"><label for="admPendDec">Decisão e justificativa <span class="pu-req" aria-hidden="true">*</span></label><textarea class="pab-input" id="admPendDec" rows="3" required>' + escHtml(p.decisao || '') + '</textarea></div>' +
+    '<div class="adm-rodape"><span></span><div class="adm-acoes"><button type="button" class="pab-btn" onclick="admFecharDialogo()">Cancelar</button><button type="button" class="pab-btn pab-btn-primary" data-adm="confirmar-decisao" data-id="' + id + '">Registrar decisão</button></div></div>');
 }
 async function admDecidir(id) {
-  const sit = window.prompt('Situação (aberta, aceita ou resolvida):', 'aceita');
-  if (sit == null) return;
-  const dec = window.prompt('Decisão e justificativa:', '');
-  if (dec == null) return;
-  try { await PNITE_AUTH.rpc('pnite_admin_pendencia_decidir', { p_id: id, p_situacao: sit.trim(), p_decisao: dec }); await admCarregar(); admMsg('Decisão registrada.', 'ok'); }
-  catch (e) { admMsg(e.message, 'err'); }
+  const sit = document.getElementById('admPendSit').value, dec = (document.getElementById('admPendDec').value || '').trim();
+  if (!dec) { admDlgMsg('Descreva a decisão.', 'err'); document.getElementById('admPendDec').focus(); return; }
+  admDlgMsg('Registrando…');
+  try { await PNITE_AUTH.rpc('pnite_admin_pendencia_decidir', { p_id: id, p_situacao: sit, p_decisao: dec }); admFecharDialogo(); await admCarregar(); admMsg('Decisão registrada.', 'ok'); }
+  catch (e) { admDlgMsg(e.message, 'err'); }
 }
+// Ações da administração: um único listener delegado (botões com data-adm)
+document.addEventListener('click', function(ev) {
+  const b = ev.target && ev.target.closest ? ev.target.closest('[data-adm]') : null;
+  if (!b || b.disabled) return;
+  const d = b.dataset, id = parseInt(d.id, 10), vid = parseInt(d.vid, 10);
+  if (d.adm === 'ir') admIrPara(d.estado);
+  else if (d.adm === 'abrir') admDetalhe(id);
+  else if (d.adm === 'novo') admNovo();
+  else if (d.adm === 'criar') admCriar();
+  else if (d.adm === 'filtro-estado') { ADM.filtro.estado = d.estado; admFiltrarLista(); }
+  else if (d.adm === 'aba-det') admAbaDetalhe(d.aba);
+  else if (d.adm === 'acao') admPedirAcao(vid, d.acao, parseInt(d.lock, 10));
+  else if (d.adm === 'confirmar') admConfirmarAcao();
+  else if (d.adm === 'cancelar') admCancelarAcao();
+  else if (d.adm === 'salvar') admSalvar(false);
+  else if (d.adm === 'salvar-revisao') admSalvar(true);
+  else if (d.adm === 'nova-versao') admNovaVersao(vid);
+  else if (d.adm === 'previa') admPrevia(vid);
+  else if (d.adm === 'ativar-carga') admAtivarCargaDialogo(id);
+  else if (d.adm === 'confirmar-carga') admAtivarCarga(id);
+  else if (d.adm === 'decidir') admDecidirDialogo(id);
+  else if (d.adm === 'confirmar-decisao') admDecidir(id);
+});
+// Alterações não salvas na definição (listener único, delegado)
+['input', 'change'].forEach(function(tipo) {
+  document.addEventListener(tipo, function(ev) {
+    if (ev.target && ev.target.closest && ev.target.closest('#admDetPainel #admDetForm')) admMarcarSujo();
+  });
+});
 async function admAuditoria(offset) {
   ADM.aud.offset = Math.max(0, offset || 0);
   try {
@@ -21196,12 +21540,13 @@ if (document.readyState === 'loading') {
       </div>
     </div>
     <div class="pif-body">
-      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.3.7</strong></div>
+      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.3.8</strong></div>
       <div class="pif-row"><span>Data da alteração:</span><span class="pnite-date-val">19/11/2026</span></div>
-      <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">16:30</span></div>
+      <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">18:00</span></div>
       <div class="pif-row"><span>Responsável técnico:</span><span class="pnite-author-val">Equipe PNITE</span></div>
       <div class="pif-note">
         <i class="ti ti-check" style="color:var(--accent);margin-right:3px"></i>
+        <strong>Gerenciador de indicadores (v.3.3.8):</strong> a lista ganha filtros por frente, situação e estado (com contagens), grupos por frente e módulo e o próximo passo de cada item; a ficha mostra as etapas do fluxo (rascunho → revisão → aprovação → publicação), o que fazer em seguida e o que cada ação causa, com a justificativa no próprio diálogo (sem janelas de prompt), a definição em grupos com ajuda nos campos técnicos, aviso de alterações não salvas e “Salvar e manter em revisão”. A visão geral lista o que está pendente. No anel do MQT, a unidade “km” fica sempre na linha de baixo.<br>
         <strong>Cargas do SETE e comparativo (v.3.3.7):</strong> os dados atuais do SETE passam a ser a carga <b>Maio/2026</b> (202605), e o banco aceita novas cargas no mesmo ano (ex.: Novembro/2026) sem apagar as anteriores. As barras de território ganham o seletor <b>Base SETE</b>, que troca a carga de toda a plataforma, e a nova página <b>Comparativo entre Cargas</b> mostra indicadores e contadores do território em duas cargas, com a variação. Nos níveis UF, região e Brasil, as cargas sem planilha consolidada usam valores calculados dos dados brutos (iguais aos legados nos indicadores conferidos).<br>
         <strong>PARI com a regra do PAIH (v.3.3.6):</strong> o PARI passa a contar os alunos transportados com impedância marcada na rota ou no próprio cadastro, sobre o total de alunos transportados (nacional: de 2,88% para 18,27%), a mesma regra do PAIH; dashboard, memória de cálculo e mapa municipal usam o mesmo valor. Fórmulas do PRPM (rotas com monitor ÷ total de rotas) e do IPE (÷ alunos transportados) padronizadas; catálogo da Administração atualizado com a revisão.<br>
         <strong>Indicadores PAIH, PAFI, TVA e MQT (v.3.3.5):</strong> passam a ser calculados no banco (migração 0020) e exibidos no painel, no mapa (estados e municípios) e na memória de cálculo. PAIH: alunos de rotas aquaviárias com impedância marcada na rota ou no cadastro do aluno; PAFI: veículos com até 15 anos (limite provisório); TVA: tempo médio das rotas aquaviárias (1 a 360 min); MQT: km médio por rota, com mediana, P5, P95, mínimo e máximo de km e tempo. O km médio passa a dividir pelas rotas com km válido (até 2.000 km), como já previa a regra: nacional de 53,0 para 53,1 km/rota.<br>
@@ -21242,7 +21587,7 @@ if (document.readyState === 'loading') {
   </div>
   <button class="pif-btn" id="pifBtn" aria-label="Informações de Versão">
     <i class="ti ti-info-circle"></i>
-    <span class="pif-btn-label pnite-version-val">v.3.3.7</span>
+    <span class="pif-btn-label pnite-version-val">v.3.3.8</span>
   </button>
 </div>
 
