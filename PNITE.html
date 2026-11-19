@@ -6622,6 +6622,7 @@ html[data-theme="dark"] .adm-msg.ok { color: #7ee2b0; }
 .sm-dica { position: absolute; pointer-events: none; z-index: 5; background: var(--bg-card); color: var(--text-1); border: 1px solid var(--border-mid); border-radius: 10px; padding: 6px 10px; font-size: 12px; box-shadow: 0 4px 14px rgba(0,0,0,.15); white-space: nowrap; }
 
 /* ================================================================
+    v.3.3.9 — UNIDADE SEMPRE NA LINHA DE BAIXO EM TODOS OS ANÉIS QUE NÃO SÃO PERCENTUAIS (ANOS, ALUNOS, KM, MIN)
     v.3.3.8 — GERENCIADOR DE INDICADORES REFORMULADO (FILTROS, ETAPAS, PRÓXIMO PASSO, JUSTIFICATIVA NO DIÁLOGO) E MQT COM A UNIDADE SEMPRE NA LINHA DE BAIXO
     v.3.3.7 — CARGAS DO SETE (MAIO/2026 E PRÓXIMAS), SELETOR "BASE SETE" E COMPARATIVO ENTRE CARGAS (MIGRAÇÕES 0022 A 0024)
     v.3.3.6 — PARI COM A REGRA DO PAIH, TEXTOS DE PRPM/IPE PADRONIZADOS E CATÁLOGO ATUALIZADO (MIGRAÇÃO 0021)
@@ -9368,7 +9369,7 @@ window.onerror = function(msg, url, line, col, err) {
     <div class="smb-sec">
       <div class="smb-sec-title" data-i18n="settings_info_title">Informações da Versão</div>
       <div style="font-size:12px;color:var(--text-2);display:flex;flex-direction:column;gap:4px;margin-top:6px">
-        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.3.8</b></div>
+        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.3.9</b></div>
         <div><span data-i18n="settings_updated">Última Atualização:</span> <b class="pnite-date-val">06/10/2026</b> às <b class="pnite-time-val">21:05</b></div>
         <div><span data-i18n="settings_author">Responsável Técnico:</span> <b class="pnite-author-val">Equipe PNITE</b></div>
       </div>
@@ -10357,9 +10358,9 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.3.8";
+const PNITE_VERSION = "v.3.3.9";
 const PNITE_LAST_UPDATE = "19/11/2026";
-const PNITE_LAST_TIME = "18:00";
+const PNITE_LAST_TIME = "18:30";
 
 // Escapa texto para inserção segura via innerHTML (entradas do usuário, nomes de arquivo)
 function escHtml(s) {
@@ -10386,6 +10387,17 @@ function getNationalAverage(sigla) {
   let v = nac[sigla];
   if ((v === null || v === undefined) && NATIONAL_AVG_ALIASES[sigla]) v = nac[NATIONAL_AVG_ALIASES[sigla]];
   return (typeof v === 'number' && isFinite(v)) ? v : null;
+}
+
+// Anéis dos cartões: indicadores com unidade que não é percentual (anos, alunos, km, min) levam a unidade
+// sempre na linha de baixo, para não quebrar só quando o número é maior (v.3.3.9)
+function arcUnidadeEmLinha(ind) {
+  const un = ind ? (ind.un || ind.unit) : null;
+  return un === 'anos' || un === 'alunos' || un === 'km/min' || un === 'minutos';
+}
+// Valor do anel: "53.1 km" vira "53.1" + quebra de linha + "km" (mostrado com white-space: pre-line)
+function arcValorEmLinhas(ind, texto) {
+  return arcUnidadeEmLinha(ind) ? String(texto).replace(' ', String.fromCharCode(10)) : texto;
 }
 
 // Formata o valor de um indicador conforme sua unidade (mesma regra dos cards)
@@ -10596,7 +10608,7 @@ function buildArcCardHtml(ind, d) {
                   transform="rotate(-90 40 40)"
                   style="stroke:${isEmConstrucao ? 'var(--border)' : color}; stroke-dashoffset:${dashOffset.toFixed(1)}; transition: stroke-dashoffset 1000ms cubic-bezier(0.16, 1, 0.3, 1)" />
         </svg>
-        <div class="elyra-arc-val${(ind.un === 'km/min' || ind.unit === 'km/min') ? ' elyra-arc-val-quebra' : ''}" id="arcVal-${sigla}">${(typeof rawVal === 'number' && !isEmConstrucao && (ind.un === 'km/min' || ind.unit === 'km/min')) ? rawVal.toFixed(1) + String.fromCharCode(10) + 'km' : valStr}</div>
+        <div class="elyra-arc-val${arcUnidadeEmLinha(ind) ? ' elyra-arc-val-quebra' : ''}" id="arcVal-${sigla}">${arcValorEmLinhas(ind, valStr)}</div>
       </div>
       <div class="elyra-arc-txt">
         <div class="elyra-arc-lbl"><span class="elyra-arc-sigla">${sigla}</span> <span class="elyra-arc-nome">${nomeCompleto}</span></div>
@@ -10784,8 +10796,8 @@ function getIndicatorDataInfo(ind, d) {
     }
   }
 
-  // No anel, o MQT leva a unidade sempre na linha de baixo (o km varia de 2 a 4 dígitos e quebrava só às vezes)
-  const suffixAnel = (ind.un === 'km/min' || ind.unit === 'km/min') ? String.fromCharCode(10) + 'km' : suffix;
+  // No anel, a unidade que não é percentual fica sempre na linha de baixo (arcUnidadeEmLinha)
+  const suffixAnel = arcUnidadeEmLinha(ind) ? String.fromCharCode(10) + suffix.trim() : suffix;
   return { targetVal, pct, suffix, suffixAnel, decimals };
 }
 
@@ -21540,12 +21552,13 @@ if (document.readyState === 'loading') {
       </div>
     </div>
     <div class="pif-body">
-      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.3.8</strong></div>
+      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.3.9</strong></div>
       <div class="pif-row"><span>Data da alteração:</span><span class="pnite-date-val">19/11/2026</span></div>
-      <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">18:00</span></div>
+      <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">18:30</span></div>
       <div class="pif-row"><span>Responsável técnico:</span><span class="pnite-author-val">Equipe PNITE</span></div>
       <div class="pif-note">
         <i class="ti ti-check" style="color:var(--accent);margin-right:3px"></i>
+        <strong>Unidades nos anéis (v.3.3.9):</strong> todos os indicadores que não são percentuais (MQT, TVA, ATE, MEDATE, IMFP, IMFT e MIFCE) mostram o valor numa linha e a unidade (km, min, alunos, anos) sempre na linha de baixo.<br>
         <strong>Gerenciador de indicadores (v.3.3.8):</strong> a lista ganha filtros por frente, situação e estado (com contagens), grupos por frente e módulo e o próximo passo de cada item; a ficha mostra as etapas do fluxo (rascunho → revisão → aprovação → publicação), o que fazer em seguida e o que cada ação causa, com a justificativa no próprio diálogo (sem janelas de prompt), a definição em grupos com ajuda nos campos técnicos, aviso de alterações não salvas e “Salvar e manter em revisão”. A visão geral lista o que está pendente. No anel do MQT, a unidade “km” fica sempre na linha de baixo.<br>
         <strong>Cargas do SETE e comparativo (v.3.3.7):</strong> os dados atuais do SETE passam a ser a carga <b>Maio/2026</b> (202605), e o banco aceita novas cargas no mesmo ano (ex.: Novembro/2026) sem apagar as anteriores. As barras de território ganham o seletor <b>Base SETE</b>, que troca a carga de toda a plataforma, e a nova página <b>Comparativo entre Cargas</b> mostra indicadores e contadores do território em duas cargas, com a variação. Nos níveis UF, região e Brasil, as cargas sem planilha consolidada usam valores calculados dos dados brutos (iguais aos legados nos indicadores conferidos).<br>
         <strong>PARI com a regra do PAIH (v.3.3.6):</strong> o PARI passa a contar os alunos transportados com impedância marcada na rota ou no próprio cadastro, sobre o total de alunos transportados (nacional: de 2,88% para 18,27%), a mesma regra do PAIH; dashboard, memória de cálculo e mapa municipal usam o mesmo valor. Fórmulas do PRPM (rotas com monitor ÷ total de rotas) e do IPE (÷ alunos transportados) padronizadas; catálogo da Administração atualizado com a revisão.<br>
@@ -21587,7 +21600,7 @@ if (document.readyState === 'loading') {
   </div>
   <button class="pif-btn" id="pifBtn" aria-label="Informações de Versão">
     <i class="ti ti-info-circle"></i>
-    <span class="pif-btn-label pnite-version-val">v.3.3.8</span>
+    <span class="pif-btn-label pnite-version-val">v.3.3.9</span>
   </button>
 </div>
 
