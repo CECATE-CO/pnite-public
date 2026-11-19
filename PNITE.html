@@ -6622,6 +6622,7 @@ html[data-theme="dark"] .adm-msg.ok { color: #7ee2b0; }
 .sm-dica { position: absolute; pointer-events: none; z-index: 5; background: var(--bg-card); color: var(--text-1); border: 1px solid var(--border-mid); border-radius: 10px; padding: 6px 10px; font-size: 12px; box-shadow: 0 4px 14px rgba(0,0,0,.15); white-space: nowrap; }
 
 /* ================================================================
+    v.3.4.3 — CARGA DE NOVEMBRO/2026 (202611) NO BANCO; CARREGADOR CASA AS COLUNAS DOS CSVs PELO NOME
     v.3.4.2 — DOCUMENTAÇÃO DA CARGA DE NOVEMBRO/2026: PASTA upload/sete/2026-11 E 14 CSVs DO SETE
     v.3.4.1 — EXCLUSÃO DO VISUAL SETE_PAINEL_SNAPSHOT DO CATÁLOGO (MIGRAÇÃO 0026)
     v.3.4.0 — EXCLUSÃO DOS ITENS DO CATÁLOGO GESTÃO › CAMINHO DA ESCOLA (MIGRAÇÃO 0025)
@@ -9372,7 +9373,7 @@ window.onerror = function(msg, url, line, col, err) {
     <div class="smb-sec">
       <div class="smb-sec-title" data-i18n="settings_info_title">Informações da Versão</div>
       <div style="font-size:12px;color:var(--text-2);display:flex;flex-direction:column;gap:4px;margin-top:6px">
-        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.4.2</b></div>
+        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.4.3</b></div>
         <div><span data-i18n="settings_updated">Última Atualização:</span> <b class="pnite-date-val">06/10/2026</b> às <b class="pnite-time-val">21:05</b></div>
         <div><span data-i18n="settings_author">Responsável Técnico:</span> <b class="pnite-author-val">Equipe PNITE</b></div>
       </div>
@@ -10361,7 +10362,7 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.4.2";
+const PNITE_VERSION = "v.3.4.3";
 const PNITE_LAST_UPDATE = "19/11/2026";
 const PNITE_LAST_TIME = "19:30";
 
@@ -21555,12 +21556,13 @@ if (document.readyState === 'loading') {
       </div>
     </div>
     <div class="pif-body">
-      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.4.2</strong></div>
+      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.4.3</strong></div>
       <div class="pif-row"><span>Data da alteração:</span><span class="pnite-date-val">19/11/2026</span></div>
       <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">19:30</span></div>
       <div class="pif-row"><span>Responsável técnico:</span><span class="pnite-author-val">Equipe PNITE</span></div>
       <div class="pif-note">
         <i class="ti ti-check" style="color:var(--accent);margin-right:3px"></i>
+        <strong>Carga de novembro/2026 no banco (v.3.4.3):</strong> os 14 CSVs da extração de novembro foram carregados como carga <code>202611</code> (Novembro/2026), ao lado de maio; o carregador passa a casar as colunas pelo nome do cabeçalho (ausentes ficam vazias, extras são ignoradas). A carga aparece no seletor “Base SETE” e no “Comparativo entre Cargas”.<br>
         <strong>Carga de novembro/2026 (v.3.4.2):</strong> pasta <code>upload/sete/2026-11/</code> preparada para os 14 CSVs da extração do SETE (fora do Git); a documentação passa a citar 14 arquivos (o traçado das rotas vem no <code>script_03</code>).<br>
         <strong>Catálogo (v.3.4.1):</strong> excluído também o visual “Acompanhamento SETE — fotografia do painel FNDE” (Transporte › Monitoramento SETE), em rascunho, com registro na auditoria; o catálogo fica só com os 31 indicadores do transporte.<br>
         <strong>Catálogo (v.3.4.0):</strong> excluídos do gerenciador de indicadores os 9 itens de Gestão › Caminho da Escola (6 indicadores e 3 visuais, em rascunho), com registro na auditoria. Os painéis do Caminho da Escola seguem “não publicados” até que os visuais sejam recriados e publicados.<br>
@@ -21606,7 +21608,7 @@ if (document.readyState === 'loading') {
   </div>
   <button class="pif-btn" id="pifBtn" aria-label="Informações de Versão">
     <i class="ti ti-info-circle"></i>
-    <span class="pif-btn-label pnite-version-val">v.3.4.2</span>
+    <span class="pif-btn-label pnite-version-val">v.3.4.3</span>
   </button>
 </div>
 

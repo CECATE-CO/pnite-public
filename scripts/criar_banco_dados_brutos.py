@@ -540,11 +540,23 @@ def carregar_tabela(schema, nome, cfg, ano, args, carga=None):
 
     with open(caminho, encoding=opcoes_csv["encoding"], newline="") as fh:
         leitor = csv.reader(fh, delimiter=opcoes_csv["delimiter"])
-        cabecalho = next(leitor)
-        if [c.lower() for c in cabecalho] != nomes_csv:
-            raise RuntimeError(f"Cabeçalho de {cfg['arquivo']} difere da estrutura esperada:\n"
-                               f"  CSV:      {cabecalho}\n  esperado: {nomes_csv}")
+        cabecalho = [c.strip().lower() for c in next(leitor)]
+        # Colunas casadas pelo nome: extrações do SETE podem mudar a ordem, omitir ou acrescentar
+        # colunas. Ausente -> NULL; extra -> ignorada (com aviso); sem as chaves, a carga para.
+        posicoes = [cabecalho.index(n) if n in cabecalho else None for n in nomes_csv]
+        ausentes = [n for n, p in zip(nomes_csv, posicoes) if p is None]
+        extras = [c for c in cabecalho if c not in nomes_csv]
+        chaves = {"codigo_cidade", coluna_uf} | {n for n in nomes_csv if n.startswith("id_")}
+        if chaves & set(ausentes):
+            raise RuntimeError(f"{cfg['arquivo']} não tem colunas-chave: {sorted(chaves & set(ausentes))}")
+        if ausentes:
+            print(f"  [aviso] colunas ausentes no CSV (gravadas como NULL): {', '.join(ausentes)}")
+        if extras:
+            print(f"  [aviso] colunas do CSV sem correspondência no banco (ignoradas): {', '.join(extras)}")
+        reordenar = posicoes != list(range(len(nomes_csv)))
         for registro in leitor:
+            if reordenar:
+                registro = [registro[p] if p is not None and p < len(registro) else "" for p in posicoes]
             if args.uf and registro[idx_uf].strip().lower() != args.uf:
                 continue
             lidas += 1

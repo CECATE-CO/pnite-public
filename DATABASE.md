@@ -299,12 +299,12 @@ python scripts/validar_paridade.py
 
 ### Nova carga do SETE (ex.: novembro de 2026)
 
-1. Colocar os 14 CSVs da extração (`script_01_alunos_consolidado.csv` … `script_17_rota_dirigida_por_motorista_consolidado.csv`, com os mesmos cabeçalhos) numa pasta fora do Git, por exemplo `upload/sete/2026-11/`.
+1. Colocar os 14 CSVs da extração (`script_01_alunos_consolidado.csv` … `script_17_rota_dirigida_por_motorista_consolidado.csv`) numa pasta fora do Git, por exemplo `upload/sete/2026-11/`. O carregador casa as colunas pelo nome do cabeçalho: coluna do banco ausente no CSV é gravada como NULL e coluna do CSV sem correspondência no banco é ignorada (ambas com aviso); a falta de `codigo_cidade`, da UF ou de um `id_*` interrompe a carga. Na carga de novembro/2026, o `script_02` veio sem 9 colunas de contato e cadastro e o `script_11` trouxe 6 colunas de auditoria a mais.
 2. Publicar antes a interface v.3.3.7 ou posterior: versões anteriores filtram só pelo ano e misturariam as duas cargas.
 3. Opcional: piloto de uma UF, `python scripts/criar_banco_dados_brutos.py --carga 2026-11 --pasta upload/sete/2026-11 --uf go`.
 4. Carga completa: `python scripts/criar_banco_dados_brutos.py --carga 2026-11 --pasta upload/sete/2026-11`. O script registra a carga em `ref.cargas` (rótulo `Novembro/2026`, Censo pareado `ANO_CARGA_CENSO`) e substitui só as linhas da mesma carga; as demais cargas não são tocadas. Ocupa cerca de 1,9 GB a mais no banco.
 5. `python scripts/atualizar_indicadores.py`. A nova carga aparece em `public.cargas_sete`, vira a padrão da interface (a mais recente) e entra no seletor **Base SETE** e no **Comparativo entre Cargas**.
-6. Nos níveis UF, região e Brasil, a nova carga não tem planilha consolidada: PVPCE, IMFP, IMFT, MIFCE, MEDATE, PATM e PATE vêm de `analise.referencia_calculada` (iguais aos legados na carga de maio). O ATE de UF usa as escolas atendidas pelo SETE (`esc_at_sete`), e o legado de maio usa outra contagem (27.751 × 29.525 no Brasil): a diferença aparece no comparativo.
+6. Nos níveis UF, região e Brasil, a nova carga não tem planilha consolidada (não carregar `--tabelas referencia` com as planilhas "Consolidação NN" da extração: elas não trazem IMFP, IMFT, MIFCE, MEDATE, os dados do Censo nem as regiões, e a linha incompleta anularia a referência calculada daquele escopo): PVPCE, IMFP, IMFT, MIFCE, MEDATE, PATM e PATE vêm de `analise.referencia_calculada` (iguais aos legados na carga de maio). O ATE de UF usa as escolas atendidas pelo SETE (`esc_at_sete`), e o legado de maio usa outra contagem (27.751 × 29.525 no Brasil): a diferença aparece no comparativo.
 
 ---
 
