@@ -20,7 +20,7 @@ As tabelas ficam no schema privado `importacao`, sem acesso pela API pública.
 
 ## Nova extração do SETE (`upload/sete/`)
 
-Os 15 CSVs de uma nova extração do SETE (`script_01_alunos_consolidado.csv` … `script_17_rota_dirigida_por_motorista_consolidado.csv`)
+Os 14 CSVs de uma nova extração do SETE (`script_01_alunos_consolidado.csv` … `script_17_rota_dirigida_por_motorista_consolidado.csv`)
 ficam numa subpasta por carga, com o ano e o mês da extração (ex.: `upload/sete/2026-11/`). Essa subpasta **não** é lida pelo
 `importar_planilha.py`; o envio é feito por:
 

@@ -299,7 +299,7 @@ python scripts/validar_paridade.py
 
 ### Nova carga do SETE (ex.: novembro de 2026)
 
-1. Colocar os 15 CSVs da extração (`script_01_alunos_consolidado.csv` … `script_17_rota_dirigida_por_motorista_consolidado.csv`, com os mesmos cabeçalhos) numa pasta fora do Git, por exemplo `upload/sete/2026-11/`.
+1. Colocar os 14 CSVs da extração (`script_01_alunos_consolidado.csv` … `script_17_rota_dirigida_por_motorista_consolidado.csv`, com os mesmos cabeçalhos) numa pasta fora do Git, por exemplo `upload/sete/2026-11/`.
 2. Publicar antes a interface v.3.3.7 ou posterior: versões anteriores filtram só pelo ano e misturariam as duas cargas.
 3. Opcional: piloto de uma UF, `python scripts/criar_banco_dados_brutos.py --carga 2026-11 --pasta upload/sete/2026-11 --uf go`.
 4. Carga completa: `python scripts/criar_banco_dados_brutos.py --carga 2026-11 --pasta upload/sete/2026-11`. O script registra a carga em `ref.cargas` (rótulo `Novembro/2026`, Censo pareado `ANO_CARGA_CENSO`) e substitui só as linhas da mesma carga; as demais cargas não são tocadas. Ocupa cerca de 1,9 GB a mais no banco.
