@@ -6508,6 +6508,7 @@ html[data-theme="dark"] .adm-msg.ok { color: #7ee2b0; }
 .sm-dica { position: absolute; pointer-events: none; z-index: 5; background: var(--bg-card); color: var(--text-1); border: 1px solid var(--border-mid); border-radius: 10px; padding: 6px 10px; font-size: 12px; box-shadow: 0 4px 14px rgba(0,0,0,.15); white-space: nowrap; }
 
 /* ================================================================
+    v.3.3.5 — PAIH, PAFI, TVA E MQT CALCULADOS NO BANCO E PUBLICADOS (MIGRAÇÃO 0020)
     v.3.3.4 — EXPORTAÇÃO EXCEL COMPLETA COM TODOS OS 5.569 MUNICÍPIOS DO BRASIL
     v.3.3.3 — INTEGRAÇÃO AUTOMÁTICA DAS CHAVES DO .ENV VIA CONFIG.LOCAL.JS COM FALLBACK ROBUSTO
     v.3.3.2 — LINHAS DIVISÓRIAS ESPESSAS ENTRE MACRORREGIÕES NO MAPA DE SUBDIVISÕES
@@ -9156,7 +9157,7 @@ window.onerror = function(msg, url, line, col, err) {
     <div class="smb-sec">
       <div class="smb-sec-title" data-i18n="settings_info_title">Informações da Versão</div>
       <div style="font-size:12px;color:var(--text-2);display:flex;flex-direction:column;gap:4px;margin-top:6px">
-        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.3.4</b></div>
+        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.3.5</b></div>
         <div><span data-i18n="settings_updated">Última Atualização:</span> <b class="pnite-date-val">06/10/2026</b> às <b class="pnite-time-val">21:05</b></div>
         <div><span data-i18n="settings_author">Responsável Técnico:</span> <b class="pnite-author-val">Equipe PNITE</b></div>
       </div>
@@ -10145,9 +10146,9 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.3.4";
-const PNITE_LAST_UPDATE = "06/11/2026";
-const PNITE_LAST_TIME = "12:00";
+const PNITE_VERSION = "v.3.3.5";
+const PNITE_LAST_UPDATE = "19/11/2026";
+const PNITE_LAST_TIME = "12:40";
 
 // Escapa texto para inserção segura via innerHTML (entradas do usuário, nomes de arquivo)
 function escHtml(s) {
@@ -10236,7 +10237,7 @@ function getIndicatorScale(sigla) {
     max = Math.max(max, 250);
   } else if (sigla === 'MEDATE') {
     max = Math.max(max, 150);
-  } else if (['PVP', 'PVPCE', 'PMVE', 'PMNVE', 'PRGM', 'PRRM', 'PRIO', 'PARI', 'PRMM', 'PRHM'].includes(sigla)) {
+  } else if (['PVP', 'PVPCE', 'PMVE', 'PMNVE', 'PRGM', 'PRRM', 'PRIO', 'PARI', 'PRMM', 'PRHM', 'PAIH', 'PAFI'].includes(sigla)) {
     max = 100;
   } else if (sigla === 'IMFP' || sigla === 'MIFCE') {
     max = Math.max(max, 20);
@@ -10291,11 +10292,14 @@ var INDICATOR_FULL_NAMES = {
   'MIFCE': 'Mediana de Idades do Caminho da Escola'
 };
 
+// Indicadores ainda em construção metodológica (sem dado no banco): exibidos com "—" e selo próprio.
+// Lista única usada pelos cartões; deve acompanhar status 'em_construcao' em ALL_INDICATORS.
+const INDICADORES_EM_CONSTRUCAO = ['PRPNP', 'PRPM', 'TETI', 'DMC', 'IPE', 'PVRO', 'PVCED'];
+
 function buildArcCardHtml(ind, d) {
   const sigla = ind.sigla;
   const isPct = (ind.un === '%' || ind.unit === '%');
-  const emConstrucaoList = ['PRPNP', 'PAIH', 'PRPM', 'TETI', 'DMC', 'IPE', 'PAFI', 'PVCED', 'MQT', 'PVRO', 'TVA'];
-  const isEmConstrucao = emConstrucaoList.includes(sigla);
+  const isEmConstrucao = INDICADORES_EM_CONSTRUCAO.includes(sigla);
   let rawVal = (d && d[sigla] !== undefined && d[sigla] !== null) ? d[sigla] : null;
 
   if (isEmConstrucao) {
@@ -10506,13 +10510,13 @@ function getIndicatorDataInfo(ind, d) {
   let rawVal = (d && d[sigla] !== undefined && d[sigla] !== null) ? d[sigla] : null;
 
   if (rawVal === null && d) {
-    if (['PRPNP', 'PAIH', 'PRPM', 'TETI', 'DMC', 'IPE', 'PAFI', 'PVCED', 'MQT', 'PVRO', 'TVA'].includes(sigla)) rawVal = null;
+    if (INDICADORES_EM_CONSTRUCAO.includes(sigla)) rawVal = null;
     else if (sigla === 'TETI') rawVal = null;
     else if (sigla === 'IPE') rawVal = null;
     else if (sigla === 'PCSC') rawVal = null;
     else if (sigla === 'PAD') rawVal = null;
     else if (sigla === 'PRGM') rawVal = (d.PRGM !== null && d.PRGM !== undefined) ? d.PRGM : null;
-    else if (sigla === 'PRPM') rawVal = (d.MON_CVE !== null && d.MON_CVE !== undefined) ? d.MON_CVE : null;
+    else if (sigla === 'PRPM') rawVal = null;
     else if (sigla === 'IUC') rawVal = (d.IUC !== null && d.IUC !== undefined) ? d.IUC : null;
     else if (sigla === 'PMVE') rawVal = (d.PMVE !== null && d.PMVE !== undefined) ? d.PMVE : (d.MOT_CVE !== null && d.MOT_CVE !== undefined ? d.MOT_CVE : null);
     else if (sigla === 'PMNVE') rawVal = (d.PMNVE !== null && d.PMNVE !== undefined) ? d.PMNVE : (d.MON_CVE !== null && d.MON_CVE !== undefined ? d.MON_CVE : null);
@@ -10594,8 +10598,7 @@ function renderDesempenhoArcs(d) {
         if (medNacEl) medNacEl.textContent = formatIndicatorValue(ind, getNationalAverage(sigla));
         const valEl = document.getElementById('arcVal-' + sigla);
         const circleEl = document.getElementById('arcCircle-' + sigla);
-        const emConstrucaoList = ['PRPNP', 'PAIH', 'PRPM', 'TETI', 'DMC', 'IPE', 'PAFI', 'PVRO', 'PVCED', 'MQT', 'TVA'];
-        const isEmConstrucao = emConstrucaoList.includes(sigla);
+        const isEmConstrucao = INDICADORES_EM_CONSTRUCAO.includes(sigla);
         const info = getIndicatorDataInfo(ind, d);
         const nomeCompleto = (typeof INDICATOR_FULL_NAMES !== 'undefined' && INDICATOR_FULL_NAMES[sigla]) ? INDICATOR_FULL_NAMES[sigla] : ind.nome;
 
@@ -10957,8 +10960,7 @@ function renderDescritivosArcs(d) {
         if (medNacEl) medNacEl.textContent = formatIndicatorValue(ind, getNationalAverage(sigla));
         const valEl = document.getElementById('arcVal-' + sigla);
         const circleEl = document.getElementById('arcCircle-' + sigla);
-        const emConstrucaoList = ['PRPNP', 'PAIH', 'PRPM', 'TETI', 'DMC', 'IPE', 'PAFI', 'PVRO', 'PVCED', 'MQT', 'TVA'];
-        const isEmConstrucao = emConstrucaoList.includes(sigla);
+        const isEmConstrucao = INDICADORES_EM_CONSTRUCAO.includes(sigla);
         const info = getIndicatorDataInfo(ind, d);
         const nomeCompleto = (typeof INDICATOR_FULL_NAMES !== 'undefined' && INDICATOR_FULL_NAMES[sigla]) ? INDICATOR_FULL_NAMES[sigla] : ind.nome;
 
@@ -11029,7 +11031,7 @@ const PNITE_API_REGIOES = { norte:'Norte', nordeste:'Nordeste', sudeste:'Sudeste
 // Chaves de DATA produzidas por analise.calcular_indicadores() no banco
 const PNITE_API_INDICADORES = ['PRGM','PRDAM','PRIO','PRRM','PRHM','PRMM','PVP','PVT','PVPCE','PECS','IUC','PMVE',
   'PMNVE','MON_CVE','MOT_CVE','PRPM','ATE','TETI','IPE','TEDC','PATM','PATE','IPTE','MEDATE','ICA','IMFP','IMFT',
-  'MIFCE','PAFI','PAD','PARI','PCSC','PAIH','PRPNP','DMC','PVCED','TVA'];
+  'MIFCE','PAFI','PAD','PARI','PCSC','PAIH','PRPNP','DMC','PVCED','TVA','MQT'];
 
 // Escopo sem dados: todos os indicadores nulos ("—" na interface), nunca um falso 0%
 function pniteEscopoVazio(label) {
@@ -11476,13 +11478,13 @@ const ALL_INDICATORS = [
     sigla: 'PAIH',
     nome: 'Alunos c/ Dificuldade de Acesso em Rotas Hidroviárias',
     tipo: 'D',
-    badge: 'construcao',
-    formula: '(Alunos em rotas hidroviárias c/ impedância ÷ Total de alunos hidroviários) × 100',
+    badge: null,
+    formula: '(Alunos em rotas hidroviárias com impedância marcada na rota ou no cadastro do aluno ÷ Total de alunos em rotas hidroviárias) × 100',
     fonte: 'SETE/PDDE',
-    status: 'em_construcao',
+    status: 'ok',
     valNac: null,
     unit: '%',
-    obj: 'Evidenciar a vulnerabilidade específica do transporte aquaviário. [Em construção: alunos em rotas com tipo == 2 (aquaviário) que possuem impedâncias operacionais].'
+    obj: 'Evidenciar a dificuldade de acesso dos alunos atendidos por rotas aquaviárias (tipo 2). As impedâncias do SETE são terrestres (porteira, mata-burro, colchete, atoleiro, ponte rústica): o indicador mede o acesso por terra desses alunos.'
   },
   {
     sigla: 'PRMM',
@@ -11670,13 +11672,13 @@ const ALL_INDICATORS = [
     sigla: 'PAFI',
     nome: 'Percentual de Adequação da Frota por Idade',
     tipo: 'P',
-    badge: 'construcao',
-    formula: '(Veículos dentro da vida útil adotada ÷ Total da frota) × 100',
+    badge: null,
+    formula: '(Veículos com até 15 anos de fabricação ÷ Veículos com ano de fabricação válido) × 100',
     fonte: 'SETE/PDDE',
-    status: 'em_construcao',
+    status: 'ok',
     valNac: null,
     unit: '%',
-    obj: 'Traduzir a idade da frota em critério objetivo de adequação, complementando os indicadores de propriedade e origem. [Em construção: definição de limite de vida útil regulamentar e cálculo por território].'
+    obj: 'Traduzir a idade da frota em critério objetivo de adequação, complementando os indicadores de propriedade e origem. Limite provisório de 15 anos de vida útil, até a definição da referência normativa.'
   },
   {
     sigla: 'PVRO',
@@ -11706,25 +11708,25 @@ const ALL_INDICATORS = [
     sigla: 'MQT',
     nome: 'Quilometragem e Tempo de Rota (Médias e Extremos)',
     tipo: 'P',
-    badge: 'construcao',
-    formula: 'Média, mediana, máximo e mínimo da quilometragem e tempo de rota',
+    badge: null,
+    formula: 'Km médio por rota = Km total ÷ Rotas com km válido (até 2.000 km); memória de cálculo com média, mediana, P5, P95, mínimo e máximo do km e do tempo (1 a 360 min)',
     fonte: 'SETE/PDDE',
-    status: 'em_construcao',
+    status: 'ok',
     valNac: null,
     unit: 'km / min',
-    obj: 'Caracterizar o esforço de deslocamento imposto ao estudante e identificar as rotas críticas quanto a tempo e distância. [Em construção: processamento de tempos e distâncias extremas de rotas].'
+    obj: 'Caracterizar o esforço de deslocamento imposto ao estudante e identificar as rotas críticas quanto a tempo e distância.'
   },
   {
     sigla: 'TVA',
     nome: 'Tempo de Viagem do Transporte Aquaviário',
     tipo: 'P',
-    badge: 'construcao',
-    formula: 'Σ(tempo de viagem rotas hidroviárias) ÷ número de rotas hidroviárias',
+    badge: null,
+    formula: 'Σ(tempo das rotas hidroviárias com tempo de 1 a 360 min) ÷ número dessas rotas',
     fonte: 'SETE/PDDE',
-    status: 'em_construcao',
+    status: 'ok',
     valNac: null,
     unit: 'minutos',
-    obj: 'Dimensionar a duração do deslocamento no modo aquaviário, cuja velocidade e padrões diferem substancialmente do rodoviário. [Em construção: tempo de viagem e métricas operacionais aquaviárias em consolidação].'
+    obj: 'Dimensionar a duração do deslocamento no modo aquaviário, cuja velocidade e padrões diferem substancialmente do rodoviário.'
   },
 
   // ── FINALÍSTICOS (FNL) — 5 INDICADORES ──
@@ -11815,9 +11817,9 @@ const INDICATORS = {
     {sigla:'IMFP', nome:'Idade Média Frota Própria', unit:'anos', key:'IMFP', badge:'novo'},
     {sigla:'IMFT', nome:'Idade Média Terceirizada', unit:'anos', key:'IMFT', badge:'novo'},
     {sigla:'MIFCE', nome:'Mediana Idade Caminho Escola', unit:'anos', key:'MIFCE', badge:'novo'},
-    // Indicadores em Construção (2) (posicionados no fim)
-    {sigla:'PRPNP', nome:'Rotas Pavimentadas/Não Pav.', unit:'%', key:'PRPNP', badge:'construcao'},
-    {sigla:'PAIH', nome:'Dificuldade Acesso Hidro.', unit:'%', key:'PAIH', badge:'construcao'}
+    {sigla:'PAIH', nome:'Dificuldade Acesso Hidro.', unit:'%', key:'PAIH'},
+    // Indicador em Construção (posicionado no fim)
+    {sigla:'PRPNP', nome:'Rotas Pavimentadas/Não Pav.', unit:'%', key:'PRPNP', badge:'construcao'}
   ],
   P: [
     // Indicadores Calculados
@@ -11825,13 +11827,13 @@ const INDICATORS = {
     {sigla:'IUC', nome:'Índice Utiliz. Capacidade', unit:'índice', key:'IUC'},
     {sigla:'PMVE', nome:'Motoristas c/ Vínculo Formal', unit:'%', key:'PMVE', badge:'rev'},
     {sigla:'PMNVE', nome:'Monitores c/ Vínculo Formal', unit:'%', key:'PMNVE', badge:'rev'},
+    {sigla:'PAFI', nome:'Adequação Frota por Idade', unit:'%', key:'PAFI'},
+    {sigla:'MQT', nome:'Km Médio e Tempo de Rota', unit:'km/min', key:'MQT'},
+    {sigla:'TVA', nome:'Tempo de Viagem Aquaviário', unit:'minutos', key:'TVA'},
     // Indicadores em Construção (posicionados no fim)
     {sigla:'PRPM', nome:'Rotas c/ Monitores', unit:'%', key:'PRPM', badge:'construcao'},
-    {sigla:'PAFI', nome:'Adequação Frota por Idade', unit:'%', key:'PAFI', badge:'construcao'},
     {sigla:'PVRO', nome:'Veículos Recebidos em Operação', unit:'%', key:'PVRO', badge:'construcao'},
-    {sigla:'PVCED', nome:'Veículos CE Descontinuados', unit:'%', key:'PVCED', badge:'construcao'},
-    {sigla:'MQT', nome:'Extremos Km e Tempo Rota', unit:'km/min', key:'MQT', badge:'construcao'},
-    {sigla:'TVA', nome:'Tempo de Viagem Aquaviário', unit:'minutos', key:'TVA', badge:'construcao'}
+    {sigla:'PVCED', nome:'Veículos CE Descontinuados', unit:'%', key:'PVCED', badge:'construcao'}
   ],
   FNL: [
     // Indicadores Calculados
@@ -11882,7 +11884,7 @@ const CALC_DEFS = {
   PRRM: { fields: ['Rotas rodoviárias', 'Total de rotas'], formula: '(A ÷ B) × 100', fn: v => (v[0]/v[1]*100).toFixed(1)+'%' },
   PRPNP: { fields: ['Extensão em via pavimentada (km)', 'Extensão total das rotas (km)'], formula: '(A ÷ B) × 100', fn: v => (v[0]/v[1]*100).toFixed(1)+'%' },
   PRHM: { fields: ['Rotas hidroviárias', 'Total de rotas'], formula: '(A ÷ B) × 100', fn: v => (v[0]/v[1]*100).toFixed(1)+'%' },
-  PAIH: { fields: ['Alunos em rotas hidroviárias c/ impedância', 'Total de alunos em rotas hidroviárias'], formula: '(A ÷ B) × 100', fn: v => (v[0]/v[1]*100).toFixed(1)+'%' },
+  PAIH: { fields: ['Alunos em rotas hidroviárias com impedância (na rota ou no cadastro do aluno)', 'Total de alunos em rotas hidroviárias'], formula: '(A ÷ B) × 100', fn: v => (v[0]/v[1]*100).toFixed(1)+'%' },
   PRMM: { fields: ['Rotas multimodais', 'Total de rotas'], formula: '(A ÷ B) × 100', fn: v => (v[0]/v[1]*100).toFixed(1)+'%' },
   PATM: { fields: ['Alunos sob responsabilidade municipal (QT_TRANSP_RESP_MUN)', 'Total de alunos atendidos pelo poder público (MUN + EST)'], formula: '(A ÷ B) × 100', fn: v => (v[0]/v[1]*100).toFixed(2)+'%' },
   ATE: { fields: ['Total de alunos transportados', 'Total de escolas atendidas'], formula: 'A ÷ B', fn: v => (v[0]/v[1]).toFixed(1)+' alunos/escola' },
@@ -11898,11 +11900,11 @@ const CALC_DEFS = {
   IUC: { fields: ['Total de alunos transportados', 'Capacidade teórica total (Veículos × Cap. Média)'], formula: 'A ÷ B', fn: v => (v[0]/v[1]).toFixed(2)+' (ideal ≤ 1,0)' },
   PMVE: { fields: ['Motoristas sem vínculo formal', 'Total de motoristas cadastrados'], formula: '[1 − (A ÷ B)] × 100', fn: v => ((1 - v[0]/v[1])*100).toFixed(1)+'%' },
   PMNVE: { fields: ['Monitores sem vínculo formal', 'Total de monitores cadastrados'], formula: '[1 − (A ÷ B)] × 100', fn: v => ((1 - v[0]/v[1])*100).toFixed(1)+'%' },
-  PAFI: { fields: ['Veículos com idade dentro do limite adotado', 'Total de veículos em operação'], formula: '(A ÷ B) × 100', fn: v => (v[0]/v[1]*100).toFixed(1)+'%' },
+  PAFI: { fields: ['Veículos com até 15 anos de fabricação', 'Veículos com ano de fabricação válido'], formula: '(A ÷ B) × 100', fn: v => (v[0]/v[1]*100).toFixed(1)+'%' },
   PVRO: { fields: ['Veículos recebidos do CE e em operação', 'Total de veículos CE recebidos'], formula: '(A ÷ B) × 100', fn: v => (v[0]/v[1]*100).toFixed(1)+'%' },
   PVCED: { fields: ['Veículos do CE baixados ou sucateados', 'Total de veículos CE recebidos'], formula: '(A ÷ B) × 100', fn: v => (v[0]/v[1]*100).toFixed(1)+'%' },
-  MQT: { fields: ['Quilometragem média da rota (km)', 'Tempo médio de viagem (min)'], formula: 'Estatísticas de rota', fn: v => v[0].toFixed(1)+' km · '+v[1].toFixed(0)+' min' },
-  TVA: { fields: ['Soma do tempo das rotas hidroviárias (min)', 'Número de rotas hidroviárias'], formula: 'A ÷ B', fn: v => (v[0]/v[1]).toFixed(1)+' minutos' },
+  MQT: { fields: ['Km total das rotas (até 2.000 km por rota)', 'Rotas com km válido'], formula: 'A ÷ B', fn: v => (v[0]/v[1]).toFixed(1)+' km/rota' },
+  TVA: { fields: ['Soma do tempo das rotas hidroviárias com tempo de 1 a 360 min', 'Rotas hidroviárias com tempo válido'], formula: 'A ÷ B', fn: v => (v[0]/v[1]).toFixed(1)+' minutos' },
   TETI: { fields: ['Alunos em veículos adequados (ônibus/micro/van)', 'Total de alunos transportados'], formula: '(A ÷ B) × 100', fn: v => (v[0]/v[1]*100).toFixed(1)+'%' },
   IPE: { fields: ['Alunos em rotas com monitor escolar embarcado', 'Total de alunos transportados'], formula: '(A ÷ B) × 100', fn: v => (v[0]/v[1]*100).toFixed(1)+'%' },
   PCSC: { fields: ['Alunos transportados no SETE', 'Alunos que necessitam de transporte (Censo)'], formula: '(A ÷ B) × 100', fn: v => (v[0]/v[1]*100).toFixed(1)+'%' },
@@ -12400,6 +12402,9 @@ function renderMemoria(){
       scopeLabel = munName + (apiMun === null ? ' (sem dados na API)' : ' (carregando…)');
     }
   }
+  // Número no padrão brasileiro (até 1 casa decimal, salvo indicação); ausência de dado → "—"
+  const numMem = (v, casas = 1) => (v !== null && v !== undefined && v !== '' && isFinite(Number(v)))
+    ? Number(v).toLocaleString('pt-BR', { maximumFractionDigits: casas }) : '—';
   let html='<div style="font-size:11px;color:var(--text-3);margin-bottom:14px">Escopo atual: <b style="color:var(--text-1)">'+scopeLabel+'</b> — todos os valores disponíveis são calculados a partir dos microdados do SETE e Censo Escolar para este território. Indicadores calculados são apresentados inicialmente, com a relação de indicadores em construção consolidada ao final.</div>';
 
   // ═════════════════════════════════════════════════════════════════════════
@@ -12448,6 +12453,34 @@ function renderMemoria(){
     'Campo tipo = 3 (combinação de rodoviário e aquaviário na mesma rota)',
     'Retrata a complexidade operacional e pontos de baldeação entre modos.',null,null);
 
+  html+=card('PAIH','Alunos c/ Dificuldade de Acesso em Rotas Hidroviárias','D',
+    [['Alunos em rotas hidroviárias com impedância (na rota ou no cadastro do aluno)',fmt(r.al_hidro_imp)],['Total de alunos em rotas hidroviárias (tipo 2)',fmt(r.al_hidro)]],
+    `(${fmt(r.al_hidro_imp)} ÷ ${fmt(r.al_hidro)}) × 100`,
+    calcVal(r.al_hidro_imp,r.al_hidro,true),
+    'script_03_rotas (tipo = 2) cruzado com script_13_rota_atende_aluno e script_01_alunos',
+    'O aluno conta quando a impedância está marcada na rota ou no próprio cadastro. As impedâncias do SETE são terrestres (porteira, mata-burro, colchete, atoleiro, ponte rústica).',null,null);
+
+  const mqtKm = (r.km_medio !== null && r.km_medio !== undefined) ? numMem(r.km_medio) + ' km/rota' : null;
+  html+=card('MQT','Quilometragem e Tempo de Rota (Médias e Extremos)','P',
+    [['Km total (rotas até 2.000 km)',numMem(r.km_total)],['Rotas com km válido',fmt(r.rotas_com_km)],
+     ['Km: mediana · P5 · P95',numMem(r.km_mediana)+' · '+numMem(r.km_p5)+' · '+numMem(r.km_p95)],
+     ['Km: mínimo · máximo',numMem(r.km_min, 2)+' · '+numMem(r.km_max, 2)],
+     ['Tempo (min): média · mediana',numMem(r.tempo_medio)+' · '+numMem(r.tempo_mediano)],
+     ['Tempo (min): P5 · P95',numMem(r.tempo_p5)+' · '+numMem(r.tempo_p95)],
+     ['Tempo (min): mínimo · máximo',numMem(r.tempo_min)+' · '+numMem(r.tempo_max)]],
+    `Km médio = ${numMem(r.km_total)} ÷ ${fmt(r.rotas_com_km)}`,
+    mqtKm,
+    'script_03_rotas: km de 0 a 2.000 por rota (acima disso é erro de cadastro) e tempo de 1 a 360 min',
+    'Valor principal: km médio por rota. Mínimo e máximo refletem os limites de cadastro; P5 e P95 mostram a faixa típica sem os extremos.',null,null);
+
+  const tvaVal = (r.t2_tempo_n > 0 && r.t2_tempo_soma !== null && r.t2_tempo_soma !== undefined) ? numMem(r.t2_tempo_soma / r.t2_tempo_n) + ' min' : null;
+  html+=card('TVA','Tempo de Viagem do Transporte Aquaviário','P',
+    [['Soma do tempo das rotas hidroviárias (min)',fmt(r.t2_tempo_soma)],['Rotas hidroviárias com tempo de 1 a 360 min',fmt(r.t2_tempo_n)],['Rotas hidroviárias cadastradas (tipo 2)',fmt(r.t2)]],
+    `(${fmt(r.t2_tempo_soma)} ÷ ${fmt(r.t2_tempo_n)})`,
+    tvaVal,
+    'script_03_rotas (tipo = 2 / aquaviário) com tempo de rota de 1 a 360 min',
+    'Considera só as rotas exclusivamente aquaviárias; as rotas mistas (tipo 3) ficam fora.',null,null);
+
   // ═════════════════════════════════════════════════════════════════════════
   // 2. FROTA E VEÍCULOS (INDICADORES CALCULADOS)
   // ═════════════════════════════════════════════════════════════════════════
@@ -12487,6 +12520,13 @@ function renderMemoria(){
     r.mifce!==null&&r.mifce!==undefined?r.mifce+' anos':null,
     'Veículos cadastrados com modelo padronizado FNDE (modelo != 0 em script_04_veiculos)',
     'A mediana da idade reflete o tempo de uso típico dos veículos federais no território.',null,'rev');
+
+  html+=card('PAFI','Percentual de Adequação da Frota por Idade','P',
+    [['Veículos com até 15 anos de fabricação',fmt(r.veic_vida_util)],['Veículos com ano de fabricação válido',fmt(r.veic_ano_valido)]],
+    `(${fmt(r.veic_vida_util)} ÷ ${fmt(r.veic_ano_valido)}) × 100`,
+    calcVal(r.veic_vida_util,r.veic_ano_valido,true),
+    'script_04_veiculos: idade = ano de carga − ano de fabricação (1930 até o ano de carga)',
+    'Limite provisório de 15 anos de vida útil, adotado até a definição da referência normativa.',null,null);
 
   // ═════════════════════════════════════════════════════════════════════════
   // 3. PROFISSIONAIS E RECURSOS HUMANOS (INDICADORES CALCULADOS)
@@ -12586,26 +12626,12 @@ function renderMemoria(){
     'Requer qualificação do tipo de pavimento ao longo do traçado georreferenciado das rotas.',
     null, 'Em construção: classificação da malha viária percorrida por tipo de superfície (asfalto, terra, cascalho).','construcao');
 
-  html+=card('PAIH','Alunos c/ Dificuldade de Acesso em Rotas Hidroviárias','D',
-    [['Alunos em rotas hidroviárias c/ impedância','—'],['Total alunos em rotas hidroviárias',fmt(r.al_hidro)]],
-    '(Alunos hidroviários c/ impedância ÷ Total de alunos hidroviários) × 100',
-    null,
-    'Rotas aquaviárias tipo 2 com impedâncias registradas cruzadas com alunos atendidos',
-    null, 'Em construção: alunos em rotas com tipo == 2 que possuem impedâncias operacionais.','construcao');
-
   html+=card('PRPM','Rotas com Presença de Monitores','P',
     [['Rotas com monitor cadastrado e embarcado','—'],['Total de monitores no sistema',fmt(r.tot_mon)]],
     '(Monitores vinculados a rotas ÷ Total de monitores) × 100',
     null,
-    'script_05_monitores.csv cruzado com script_03_rotas.csv',
-    null, 'Em construção: identificação de rotas com monitor formalmente alocado e embarcado.','construcao');
-
-  html+=card('PAFI','Percentual de Adequação da Frota por Idade','P',
-    [['Veículos dentro da vida útil (≤ 15 anos)','—'],['Total de veículos com ano válido',fmt(r.tot_veic)]],
-    '(Veículos dentro da vida útil ÷ Total da frota) × 100',
-    null,
-    'script_04_veiculos com idade calculada ≤ 15 anos (parâmetro regulatório FNDE/CONTRAN)',
-    null, 'Em construção: definição do corte regulamentar de vida útil e cálculo territorial.','construcao');
+    'Requer vínculo entre rota e monitor no SETE (script_05_monitores não traz identificador do monitor nem a rota atendida)',
+    null, 'Em construção: o SETE ainda não informa em qual rota cada monitor atua.','construcao');
 
   html+=card('PVRO','Percentual de Veículos Recebidos em Operação','P',
     [['Veículos CE recebidos em operação ativa','—'],['Total de veículos entregues pelo programa','—']],
@@ -12621,20 +12647,6 @@ function renderMemoria(){
     'Registro de baixa patrimonial e sucateamento no SETE/FNDE',
     null, 'Em construção: conciliação de baixa patrimonial e veículos sucateados.','construcao');
 
-  html+=card('MQT','Média e Extremos de Quilometragem e Tempo de Rota','P',
-    [['Estatísticas de extensão de trajeto (km)','—'],['Estatísticas de tempo de percurso (min)','—']],
-    'min, méd, med, máx (quilometragem e tempo por rota)',
-    null,
-    'script_03_rotas.csv com georreferenciamento completo',
-    null, 'Em construção: processamento de tempos e distâncias extremas de rotas.','construcao');
-
-  html+=card('TVA','Tempo de Viagem do Transporte Aquaviário','P',
-    [['Tempo médio hidroviário apurado','—'],['Rotas hidroviárias cadastradas',fmt(r.t2)]],
-    'Σ(tempo das rotas hidroviárias em minutos) ÷ total de rotas hidroviárias válidas',
-    null,
-    'script_03_rotas (tipo = 2 / aquaviário) com tempo de rota registrado',
-    null, 'Em construção: tempo de viagem e métricas operacionais aquaviárias em consolidação.','construcao');
-
   html+=card('TETI','Taxa de Erradicação de Transporte Inadequado','FNL',
     [['Alunos em veículos adequados homologados','—'],['Total de alunos transportados',fmt(r.al_transp)]],
     '(Alunos em veículos adequados ÷ Total de alunos transportados) × 100',
@@ -12646,8 +12658,8 @@ function renderMemoria(){
     [['Alunos transportados com presença de monitor','—'],['Total de alunos transportados',fmt(r.al_transp)]],
     '(Alunos com monitor ÷ Total de alunos transportados) × 100',
     null,
-    'script_05_monitores cruzado com script_13_rota_atende_aluno',
-    null, 'Em construção: vinculação nominal do monitor às rotas e alunos atendidos.','construcao');
+    'Requer vínculo entre rota e monitor no SETE, cruzado com script_13_rota_atende_aluno',
+    null, 'Em construção: o SETE ainda não informa em qual rota cada monitor atua.','construcao');
 
   html+=card('DMC','Distância Média de Caminhada de Acesso ao Transporte','FNL',
     [['Distância média residência-embarque calculada','—'],['Total de alunos com georreferenciamento',fmt(r.al_transp)]],
@@ -12663,7 +12675,7 @@ function renderMemoria(){
 // Tabela por município e resumo por UF vêm da API do Supabase (public.sete_municipios), carregada por
 // PNITE_API.iniciar(); até a resposta a estrutura fica vazia, com as mesmas colunas.
 // Indicadores municipais do Censo e da frota: public.indicadores_municipio_complemento (PNITE_API.municipio).
-let SETE_MUN = { cols: ["cod", "mun", "uf", "alunos", "al_transp", "escolas", "rotas", "km_total", "rotas_com_km", "rotas_t1", "rotas_t2", "rotas_t3", "veiculos", "veic_origem1", "veic_origem2", "cap_media", "monitores", "motoristas", "fornecedores", "ordens_servico", "normas", "vinc_escola_aluno", "vinc_rota_escola", "vinc_rota_veiculo", "vinc_rota_motorista", "PRGM", "PRDAM", "PRRM", "PRHM", "PRMM", "PVP", "PVT", "MON_CVE", "MOT_CVE", "ATE", "MEDATE", "IUC", "TEDC", "TETI", "PATE", "PATM", "PVPCE", "IMFP", "IMFT", "MIFCE"], municipios: [], ufs: {} };
+let SETE_MUN = { cols: ["cod", "mun", "uf", "alunos", "al_transp", "escolas", "rotas", "km_total", "rotas_com_km", "rotas_t1", "rotas_t2", "rotas_t3", "veiculos", "veic_origem1", "veic_origem2", "cap_media", "monitores", "motoristas", "fornecedores", "ordens_servico", "normas", "vinc_escola_aluno", "vinc_rota_escola", "vinc_rota_veiculo", "vinc_rota_motorista", "PRGM", "PRDAM", "PRRM", "PRHM", "PRMM", "PVP", "PVT", "MON_CVE", "MOT_CVE", "ATE", "MEDATE", "IUC", "TEDC", "TETI", "PATE", "PATM", "PVPCE", "IMFP", "IMFT", "MIFCE", "PAIH", "PAFI", "TVA", "MQT"], municipios: [], ufs: {} };
 let seteMunPage = 0, seteMunSortCol = 3, seteMunSortAsc = false, seteUfSortCol = 0, seteUfSortAsc = true, seteInit = false, seteView = 'reg';
 const SETE_COLS_REG = [
   {k:'cod', l:'Cód. IBGE'}, {k:'mun', l:'Município'}, {k:'uf', l:'UF'},
@@ -13308,10 +13320,7 @@ function getMunVal(cod, sigla) {
       const idx = SETE_MUN.cols.indexOf('PRDAM');
       return idx !== -1 ? row[idx] : null;
     }
-    if (sigla === 'IPE' || sigla === 'PRPM') {
-      const idx = SETE_MUN.cols.indexOf('MON_CVE');
-      return idx !== -1 ? row[idx] : null;
-    }
+    // IPE e PRPM não têm dado municipal (sem vínculo rota × monitor no SETE): "—", nunca outro indicador
     if (sigla === 'PMVE') {
       const idx = SETE_MUN.cols.indexOf('MOT_CVE');
       return idx !== -1 ? row[idx] : null;
@@ -13694,11 +13703,11 @@ function mapaProject(bounds){
 
 function getMapaTheme(sigla){
   const s = (sigla || '').toUpperCase();
-  if (['TETI', 'PVP', 'PMVE', 'MOT_CVE', 'IPE', 'MON_CVE'].includes(s)) {
+  if (['TETI', 'PVP', 'PMVE', 'MOT_CVE', 'IPE', 'MON_CVE', 'PAFI'].includes(s)) {
     return 'green';
   } else if (['PRGM', 'PRRM', 'PRHM', 'ATE', 'MEDATE', 'PCSC', 'PRDAM', 'PECS'].includes(s)) {
     return 'blue';
-  } else if (['PRIO', 'PARI', 'TEDC', 'PAD', 'PVCED'].includes(s)) {
+  } else if (['PRIO', 'PARI', 'TEDC', 'PAD', 'PVCED', 'PAIH'].includes(s)) {
     return 'red';
   } else {
     return 'amber';
@@ -20166,7 +20175,7 @@ async function exportarMapaPnite(modo) {
       ctx.fillStyle = '#64748b';
       ctx.font = '12px Inter, system-ui, sans-serif';
       ctx.fillText('Base cartográfica: IBGE, malha simplificada; regiões geográficas: IBGE. Projeção de Mercator / SIRGAS 2000.', 60, 1145);
-      ctx.fillText('Fonte: SETE, FNDE, INEP, Censo Escolar 2026. Plataforma PNITE (v.3.3.4).', 60, 1168);
+      ctx.fillText('Fonte: SETE, FNDE, INEP, Censo Escolar 2026. Plataforma PNITE (' + PNITE_VERSION + ').', 60, 1168);
 
     } else {
       canvas.width = 2400 * scale;
@@ -20267,7 +20276,7 @@ async function exportarMapaPnite(modo) {
       ctx.fillStyle = '#64748b';
       ctx.font = '12px Inter, system-ui, sans-serif';
       ctx.fillText('Base cartográfica: IBGE, malha simplificada; regiões geográficas: IBGE. Projeção de Mercator / SIRGAS 2000.', 60, 1340);
-      ctx.fillText('Fonte: SETE, FNDE, INEP, Censo Escolar 2026. Plataforma PNITE (v.3.3.4).', 60, 1362);
+      ctx.fillText('Fonte: SETE, FNDE, INEP, Censo Escolar 2026. Plataforma PNITE (' + PNITE_VERSION + ').', 60, 1362);
     }
 
     URL.revokeObjectURL(svgUrl);
@@ -20398,7 +20407,7 @@ function pniteBaixarGraficoCard(btnOrEl) {
 
   ctx.fillStyle = '#94a3b8';
   ctx.font = '12px Inter, sans-serif';
-  ctx.fillText('Fonte: SETE; Censo Escolar (INEP), 2026. Plataforma PNITE (v.3.3.4).', 50, outH - 30);
+  ctx.fillText('Fonte: SETE; Censo Escolar (INEP), 2026. Plataforma PNITE (' + PNITE_VERSION + ').', 50, outH - 30);
 
   outCanvas.toBlob(function(blob) {
     if (!blob) return;
@@ -20764,12 +20773,13 @@ if (document.readyState === 'loading') {
       </div>
     </div>
     <div class="pif-body">
-      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.3.4</strong></div>
-      <div class="pif-row"><span>Data da alteração:</span><span class="pnite-date-val">22/10/2026</span></div>
-      <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">14:00</span></div>
+      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.3.5</strong></div>
+      <div class="pif-row"><span>Data da alteração:</span><span class="pnite-date-val">19/11/2026</span></div>
+      <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">12:40</span></div>
       <div class="pif-row"><span>Responsável técnico:</span><span class="pnite-author-val">Equipe PNITE</span></div>
       <div class="pif-note">
         <i class="ti ti-check" style="color:var(--accent);margin-right:3px"></i>
+        <strong>Indicadores PAIH, PAFI, TVA e MQT (v.3.3.5):</strong> passam a ser calculados no banco (migração 0020) e exibidos no painel, no mapa (estados e municípios) e na memória de cálculo. PAIH: alunos de rotas aquaviárias com impedância marcada na rota ou no cadastro do aluno; PAFI: veículos com até 15 anos (limite provisório); TVA: tempo médio das rotas aquaviárias (1 a 360 min); MQT: km médio por rota, com mediana, P5, P95, mínimo e máximo de km e tempo. O km médio passa a dividir pelas rotas com km válido (até 2.000 km), como já previa a regra: nacional de 53,0 para 53,1 km/rota.<br>
         <strong>Mapas, Rankings e Exportação de Indicadores (v.3.2.7):</strong> download dos mapas (mapa simples e composição completa com ranking), elementos cartográficos oficiais (mapa de localização auxiliar, orientação Norte, escala gráfica e projeção), divisão dos mapas e rankings por macrorregiões brasileiras, seleção territorial personalizada (árvore hierárquica por região, estado e município), download da caixa completa dos gráficos e exportação geral dos indicadores em Excel (.xlsx) com identificação territorial obrigatória.<br>
         <strong>Mapa de calor municipal (v.3.2.6):</strong> no Monitoramento SETE, com uma UF selecionada, os gráficos por município passam a ser mapas de calor (malha do IBGE, 5 faixas por quantil, legenda, valor ao passar o mouse e clique para selecionar o município).<br>
         <strong>Painéis FNDE e administração (v.3.2.5):</strong> Gestão › Caminho da Escola (contratações, detalhamento, fotografia dos repasses e ficha), Transporte › Monitoramento SETE, área de Administração (catálogo com versões, rascunho/revisão/aprovação/publicação, suspensão e restauração, fontes e cargas, qualidade e auditoria imutável); conteúdo público somente quando publicado (migrações <code>0018</code> e <code>0019</code>).<br>
@@ -20807,7 +20817,7 @@ if (document.readyState === 'loading') {
   </div>
   <button class="pif-btn" id="pifBtn" aria-label="Informações de Versão">
     <i class="ti ti-info-circle"></i>
-    <span class="pif-btn-label pnite-version-val">v.3.3.4</span>
+    <span class="pif-btn-label pnite-version-val">v.3.3.5</span>
   </button>
 </div>
 

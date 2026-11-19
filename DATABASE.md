@@ -3,6 +3,7 @@
 Estrutura do banco que alimenta a **PNITE**: o que existe em cada schema, como os dados fluem dos arquivos brutos até a interface, quais regras de cálculo ficam no banco e como atualizar.
 
 > Retrato de 23/10/2026 (migração `0014`), carga do SETE `ano_carga = 2026` e Censo Escolar 2025. Banco com cerca de 2,2 GB.
+> Indicadores e views da cascata atualizados até a migração `0020` (19/11/2026): PAIH, PAFI, TVA e MQT calculados.
 > A fonte da verdade da estrutura são as migrações em [`supabase/migrations/`](supabase/migrations/); este documento as resume.
 > **As colunas de cada tabela e view estão na [seção 10 — Dicionário de dados](#10-dicionário-de-dados--uma-seção-por-tabela)**, uma subseção por tabela.
 
@@ -169,6 +170,7 @@ As views de alunos, rotas, veículos, motoristas e monitores aceitam **apenas c�
 |---|---:|---|
 | `mv_base_municipio` | 5.571 | Contagens e somas **aditivas** por município (SETE + Censo pareado). Somar municípios reproduz UF, região e Brasil |
 | `mv_tempo_rotas` | 2.908 | Mediana e média do tempo das rotas por escopo (não aditivas) |
+| `mv_rotas_estatisticas` | 2.918 | MQT: mediana, P5, P95, mínimo e máximo do km e P5, P95, mínimo e máximo do tempo das rotas por escopo (não aditivas) |
 | `mv_complemento_municipio` | 5.571 | Indicadores municipais do Censo (ATE, MEDATE, PATM, PATE) e da frota (PVPCE, IMFP, IMFT, MIFCE) |
 | `mv_sete_municipio` | 3.990 | Tabela "Dados SETE" por município (45 colunas) |
 
@@ -213,6 +215,7 @@ Nas views `indicadores_*`, cada linha traz:
 flowchart LR
     B["analise.mv_base_municipio"] --> M["indicadores_municipio"]
     T["analise.mv_tempo_rotas"] --> M & E & R & N
+    RE["analise.mv_rotas_estatisticas"] --> M & E & R & N
     M --> E["indicadores_estado"] --> R["indicadores_regiao"] --> N["indicadores_nacional"]
     RR["ref.raw_referencia<br/>ref.detalhes_scripts"] --> E & R & N
     M --> S["analise.mv_sete_municipio"] --> SM["sete_municipios"]
@@ -235,7 +238,12 @@ Cada nível soma o anterior. Os percentuais são sempre recalculados a partir do
 | PATM / PATE | Censo: rede municipal (ou estadual) ÷ (municipal + estadual) |
 | IMFP / IMFT / MIFCE | Idade = ano de carga − ano de fabricação (1930 até o ano de carga); IMFP/IMFT são médias, MIFCE é mediana |
 | PVPCE | Veículos do Caminho da Escola (`modelo ≠ 0`) ÷ frota |
-| TETI | Alunos em rotas com veículo adequado (ônibus, micro-ônibus, van) ÷ transportados |
+| TETI | Alunos em rotas com veículo adequado (ônibus, micro-ônibus, van) ÷ transportados (só na tabela Dados SETE; no painel segue em construção) |
+| Km médio (MQT) | Km total ÷ rotas com km válido (0 < km ≤ 2.000), desde a 0020; antes dividia por todas as rotas. Nacional: 53,1 km/rota |
+| PAIH | Alunos transportados em rotas aquaviárias (tipo 2) com impedância marcada na rota **ou** no cadastro do aluno ÷ alunos transportados em rotas aquaviárias |
+| PAFI | Veículos com até 15 anos (ano de carga − ano de fabricação) ÷ veículos com ano de fabricação válido (1930 até o ano de carga). Limite provisório em `analise.vida_util_frota_anos()` |
+| TVA | Média do tempo das rotas aquaviárias (tipo 2) com tempo válido (1 a 360 min) |
+| MQT | Valor principal: km médio por rota. No `raw`: mediana, P5, P95, mínimo e máximo do km; P5, P95, mínimo e máximo do tempo (média e mediana do tempo em `tempo_medio`/`tempo_mediano`) |
 | Municípios | Código IBGE de 7 dígitos |
 | Censo × SETE | Pareados por `ref.cargas` (Censo 2025 ↔ SETE 2026) |
 | Arredondamento | `analise.pct` (2 casas) no painel; `analise.round_par`/`pct_par` (empate para o par) no complemento e na tabela SETE |
@@ -260,7 +268,7 @@ Cada nível soma o anterior. Os percentuais são sempre recalculados a partir do
 
 `pnite_meta.atualizar_indicadores()` atualiza as views materializadas nesta ordem (≈ 20 s), usando `CONCURRENTLY` quando há índice único:
 
-1. `analise.mv_base_municipio`, `analise.mv_tempo_rotas`
+1. `analise.mv_base_municipio`, `analise.mv_tempo_rotas`, `analise.mv_rotas_estatisticas`
 2. `public.indicadores_municipio` → `indicadores_estado` → `indicadores_regiao` → `indicadores_nacional`
 3. `public.rotas_tracado`
 4. `analise.mv_complemento_municipio`, `analise.mv_sete_municipio`
@@ -313,6 +321,7 @@ python scripts/validar_paridade.py
 | `0017_perfil_foto` | Foto do usuário e edição do próprio perfil |
 | `0018_catalogo_caminho_escola` | Schemas privados `gestao` (fontes, versões de dados com SHA-256, itens de contratação do Caminho da Escola, snapshots dos painéis FNDE, pendências de qualidade, reconciliações) e `catalogo` (indicadores, versões imutáveis, publicações, auditoria somente de inclusão); motor de cálculo por allowlist; RPCs públicas que só devolvem o que está publicado; RPCs `pnite_admin_*` de catálogo, cargas, qualidade e auditoria; proteção do último administrador |
 | `0019_catalogo_cadastro_inicial` | Cadastro inicial: 6 indicadores e 4 visuais do Caminho da Escola/SETE em rascunho e os 31 indicadores observados da PNITE em revisão (nada publicado); reconciliação 44.172 × 44.926 |
+| `0020_indicadores_paih_pafi_tva_mqt` | PAIH, PAFI (15 anos, provisório), TVA e MQT calculados; `analise.mv_rotas_estatisticas`; km médio ÷ rotas com km válido; tabela Dados SETE com PAIH, PAFI, TVA e MQT; cascata recriada com os novos contadores |
 
 ---
 
@@ -324,6 +333,9 @@ Problemas de cadastro identificados na carga 2026. O banco já os trata; vale re
 - **291 escolas** com código de 8 dígitos no campo de município (provavelmente o código INEP da escola).
 - **1 aluno** com o código de município `520140500`, a mesma linha duplicada e inválida de Aparecida de Goiânia que existe na `Lista de Municipios IBGE.csv` (o correto é 5201405).
 - **Capacidade acima de 100 lugares:** 191 veículos.
+- **Km da rota com unidade aparentemente errada:** em alguns municípios quase todas as rotas passam de 2.000 km e as restantes também são implausíveis (ex.: Goianinha/RN, 10 de 14 rotas acima de 2.000 km e média de 1.371 km nas outras 4; Agudos do Sul/PR, 11 de 16 e média de 1.012 km). Provável km mensal ou anual cadastrado como km da rota; a regra dos 2.000 km não basta nesses casos.
+- **Vínculo rota × veículo incompleto:** só 37.583 das 82.887 rotas (45%) têm veículo vinculado, o que impede o TETI no painel.
+- **Sem vínculo rota × monitor:** `sete.monitores` não tem identificador nem rota; PRPM e IPE ficam sem base.
 
 ---
 
@@ -1343,7 +1355,7 @@ Censo agregado por município. A UF vazia no Censo é preenchida pelo cadastro I
 
 Contadores **aditivos** por município (SETE + Censo pareado). Somar municípios reproduz UF, região e Brasil. Base de toda a cascata de indicadores.
 
-**Tipo:** view materializada · **Linhas:** 5.571 · **Colunas:** 39
+**Tipo:** view materializada · **Linhas:** 5.571 · **Colunas:** 46
 
 **Chaves e índices:** `índice único (ano_carga, codigo_cidade, uf)`
 
@@ -1388,6 +1400,13 @@ Contadores **aditivos** por município (SETE + Censo pareado). Somar municípios
 | `al_transp_sete` | bigint | Alunos transportados: ids distintos em `sete.rota_atende_aluno`. |
 | `esc_at_sete` | bigint | Escolas atendidas: ids distintos em `sete.rota_passa_por_escolas`. |
 | `demanda_censo` | bigint | Demanda declarada de transporte público no Censo pareado (`qt_transp_publico`). |
+| `rotas_com_km` | bigint | Rotas com km válido (0 < km ≤ 2.000): denominador do km médio. |
+| `t2_tempo_n` | bigint | Rotas aquaviárias (`tipo = 2`) com tempo válido (1 a 360 min) — TVA. |
+| `t2_tempo_soma` | numeric | Soma do tempo dessas rotas, em minutos — TVA. |
+| `veic_ano_valido` | bigint | Veículos com ano de fabricação de 1930 até o ano de carga — PAFI. |
+| `veic_vida_util` | bigint | Desses, veículos com até `analise.vida_util_frota_anos()` anos (15) — PAFI. |
+| `al_hidro` | bigint | Alunos transportados (ids distintos) em rotas aquaviárias — PAIH. |
+| `al_hidro_imp` | bigint | Desses, alunos com impedância marcada na rota ou no próprio cadastro — PAIH. |
 
 #### 10.6.9. `analise.mv_tempo_rotas`
 
@@ -1404,6 +1423,21 @@ Mediana e média do tempo das rotas válidas (1 a 360 min) por escopo. Não é a
 | `chave` | text | Código IBGE (município), sigla minúscula (UF), chave da região ou `nacional`. |
 | `tempo_mediano` | numeric | Mediana do tempo das rotas com 1 a 360 min. |
 | `tempo_medio` | numeric | Média do tempo das rotas com 1 a 360 min. |
+
+#### 10.6.9-A. `analise.mv_rotas_estatisticas`
+
+Estatísticas não aditivas das rotas por escopo para o MQT (migração `0020`). Entra no `raw` dos quatro níveis.
+
+**Tipo:** view materializada · **Linhas:** 2.918 · **Colunas:** 4
+
+**Chaves e índices:** `índice único (ano_carga, nivel, chave)`
+
+| Coluna | Tipo | Descrição |
+|---|---|---|
+| `ano_carga` | smallint | Ano da carga do SETE. |
+| `nivel` | text | `municipio`, `estado`, `regiao` ou `nacional`. |
+| `chave` | text | Código IBGE (município), sigla minúscula (UF), chave da região ou `nacional`. |
+| `estat` | jsonb | `km_mediana`, `km_p5`, `km_p95` (1 casa), `km_min`, `km_max` (km válido: 0 < km ≤ 2.000); `tempo_p5`, `tempo_p95`, `tempo_min`, `tempo_max` (1 a 360 min). Chaves sem dado são omitidas. |
 
 #### 10.6.10. `analise.mv_complemento_municipio`
 
@@ -1423,9 +1457,9 @@ Indicadores municipais do Censo (ATE, MEDATE, PATM, PATE) e da frota (PVPCE, IMF
 
 #### 10.6.11. `analise.mv_sete_municipio`
 
-Tabela "Dados SETE" por município (só municípios com algum registro no SETE). km_total, cap_media, IUC, MON_CVE e MOT_CVE vêm de `public.indicadores_municipio`.
+Tabela "Dados SETE" por município (só municípios com algum registro no SETE). km_total, cap_media, IUC, MON_CVE, MOT_CVE, PAIH, PAFI, TVA e MQT vêm de `public.indicadores_municipio`.
 
-**Tipo:** view materializada · **Linhas:** 3.990 · **Colunas:** 41
+**Tipo:** view materializada · **Linhas:** 3.990 · **Colunas:** 45
 
 **Chaves e índices:** `índice único (ano_carga, codigo_cidade)`
 
@@ -1472,6 +1506,10 @@ Tabela "Dados SETE" por município (só municípios com algum registro no SETE).
 | `iuc` | numeric | IUC do painel. |
 | `tedc` | float8 | TEDC: `al_transp_sete ÷ al_cad` (%). |
 | `teti` | float8 | TETI: alunos em rotas com ônibus, micro-ônibus ou van ÷ `al_transp_sete` (%). |
+| `paih` | numeric | PAIH do painel. |
+| `pafi` | numeric | PAFI do painel. |
+| `tva` | numeric | TVA do painel (min). |
+| `mqt` | numeric | MQT do painel (km médio por rota). |
 
 ---
 
@@ -1481,7 +1519,7 @@ Tabela "Dados SETE" por município (só municípios com algum registro no SETE).
 
 Indicadores por município: contadores de `analise.mv_base_municipio` + `raw` + `indicadores`. Filtrar por `codigo_cidade` ou `uf`.
 
-**Tipo:** view materializada · **Linhas:** 5.571 · **Colunas:** 47
+**Tipo:** view materializada · **Linhas:** 5.571 · **Colunas:** 54
 
 **Chaves e índices:** `índice único (ano_carga, codigo_cidade, uf)`; `índice (ano_carga, uf)`
 
@@ -1526,6 +1564,13 @@ Indicadores por município: contadores de `analise.mv_base_municipio` + `raw` + 
 | `al_transp_sete` | bigint | Alunos transportados: ids distintos em `sete.rota_atende_aluno`. |
 | `esc_at_sete` | bigint | Escolas atendidas: ids distintos em `sete.rota_passa_por_escolas`. |
 | `demanda_censo` | bigint | Demanda declarada de transporte público no Censo pareado (`qt_transp_publico`). |
+| `rotas_com_km` | bigint | Rotas com km válido (0 < km ≤ 2.000): denominador do km médio. |
+| `t2_tempo_n` | bigint | Rotas aquaviárias (`tipo = 2`) com tempo válido (1 a 360 min) — TVA. |
+| `t2_tempo_soma` | numeric | Soma do tempo dessas rotas, em minutos — TVA. |
+| `veic_ano_valido` | bigint | Veículos com ano de fabricação de 1930 até o ano de carga — PAFI. |
+| `veic_vida_util` | bigint | Desses, veículos com até `analise.vida_util_frota_anos()` anos (15) — PAFI. |
+| `al_hidro` | bigint | Alunos transportados (ids distintos) em rotas aquaviárias — PAIH. |
+| `al_hidro_imp` | bigint | Desses, alunos com impedância marcada na rota ou no próprio cadastro — PAIH. |
 | `nome` | text | Nome do município (ou da UF, no nível estadual). |
 | `regiao` | text | Chave da região: `norte`, `nordeste`, `sudeste`, `sul`, `centro-oeste`. |
 | `label` | text | Nome exibido do escopo (município com a UF entre parênteses). |
@@ -1539,7 +1584,7 @@ Indicadores por município: contadores de `analise.mv_base_municipio` + `raw` + 
 
 Indicadores por UF: soma dos municípios, sobreposta a `ref.raw_referencia`; inclui `detalhes` (`ref.detalhes_scripts`).
 
-**Tipo:** view materializada · **Linhas:** 27 · **Colunas:** 47
+**Tipo:** view materializada · **Linhas:** 27 · **Colunas:** 54
 
 **Chaves e índices:** `índice único (ano_carga, uf)`
 
@@ -1583,6 +1628,13 @@ Indicadores por UF: soma dos municípios, sobreposta a `ref.raw_referencia`; inc
 | `al_transp_sete` | numeric | Alunos transportados: ids distintos em `sete.rota_atende_aluno`. |
 | `esc_at_sete` | numeric | Escolas atendidas: ids distintos em `sete.rota_passa_por_escolas`. |
 | `demanda_censo` | numeric | Demanda declarada de transporte público no Censo pareado (`qt_transp_publico`). |
+| `rotas_com_km` | numeric | Rotas com km válido (0 < km ≤ 2.000): denominador do km médio. |
+| `t2_tempo_n` | numeric | Rotas aquaviárias (`tipo = 2`) com tempo válido (1 a 360 min) — TVA. |
+| `t2_tempo_soma` | numeric | Soma do tempo dessas rotas, em minutos — TVA. |
+| `veic_ano_valido` | numeric | Veículos com ano de fabricação de 1930 até o ano de carga — PAFI. |
+| `veic_vida_util` | numeric | Desses, veículos com até 15 anos — PAFI. |
+| `al_hidro` | numeric | Alunos transportados em rotas aquaviárias — PAIH. |
+| `al_hidro_imp` | numeric | Desses, alunos com impedância marcada na rota ou no próprio cadastro — PAIH. |
 | `nome` | text | Nome do município (ou da UF, no nível estadual). |
 | `regiao` | text | Chave da região: `norte`, `nordeste`, `sudeste`, `sul`, `centro-oeste`. |
 | `label` | text | Nome exibido do escopo (município com a UF entre parênteses). |
@@ -1597,7 +1649,7 @@ Indicadores por UF: soma dos municípios, sobreposta a `ref.raw_referencia`; inc
 
 Indicadores por região: soma das UFs.
 
-**Tipo:** view materializada · **Linhas:** 5 · **Colunas:** 44
+**Tipo:** view materializada · **Linhas:** 5 · **Colunas:** 51
 
 **Chaves e índices:** `índice único (ano_carga, regiao)`
 
@@ -1641,6 +1693,13 @@ Indicadores por região: soma das UFs.
 | `al_transp_sete` | numeric | Alunos transportados: ids distintos em `sete.rota_atende_aluno`. |
 | `esc_at_sete` | numeric | Escolas atendidas: ids distintos em `sete.rota_passa_por_escolas`. |
 | `demanda_censo` | numeric | Demanda declarada de transporte público no Censo pareado (`qt_transp_publico`). |
+| `rotas_com_km` | numeric | Rotas com km válido (0 < km ≤ 2.000): denominador do km médio. |
+| `t2_tempo_n` | numeric | Rotas aquaviárias (`tipo = 2`) com tempo válido (1 a 360 min) — TVA. |
+| `t2_tempo_soma` | numeric | Soma do tempo dessas rotas, em minutos — TVA. |
+| `veic_ano_valido` | numeric | Veículos com ano de fabricação de 1930 até o ano de carga — PAFI. |
+| `veic_vida_util` | numeric | Desses, veículos com até 15 anos — PAFI. |
+| `al_hidro` | numeric | Alunos transportados em rotas aquaviárias — PAIH. |
+| `al_hidro_imp` | numeric | Desses, alunos com impedância marcada na rota ou no próprio cadastro — PAIH. |
 | `label` | text | Nome exibido do escopo (município com a UF entre parênteses). |
 | `tempo_mediano` | numeric | Mediana do tempo das rotas válidas, em minutos (`analise.mv_tempo_rotas`). |
 | `tempo_medio` | numeric | Média do tempo das rotas válidas, em minutos. |
@@ -1652,7 +1711,7 @@ Indicadores por região: soma das UFs.
 
 Indicadores do Brasil: soma das regiões; inclui `detalhes`.
 
-**Tipo:** view materializada · **Linhas:** 1 · **Colunas:** 44
+**Tipo:** view materializada · **Linhas:** 1 · **Colunas:** 51
 
 **Chaves e índices:** `índice único (ano_carga)`
 
@@ -1695,6 +1754,13 @@ Indicadores do Brasil: soma das regiões; inclui `detalhes`.
 | `al_transp_sete` | numeric | Alunos transportados: ids distintos em `sete.rota_atende_aluno`. |
 | `esc_at_sete` | numeric | Escolas atendidas: ids distintos em `sete.rota_passa_por_escolas`. |
 | `demanda_censo` | numeric | Demanda declarada de transporte público no Censo pareado (`qt_transp_publico`). |
+| `rotas_com_km` | numeric | Rotas com km válido (0 < km ≤ 2.000): denominador do km médio. |
+| `t2_tempo_n` | numeric | Rotas aquaviárias (`tipo = 2`) com tempo válido (1 a 360 min) — TVA. |
+| `t2_tempo_soma` | numeric | Soma do tempo dessas rotas, em minutos — TVA. |
+| `veic_ano_valido` | numeric | Veículos com ano de fabricação de 1930 até o ano de carga — PAFI. |
+| `veic_vida_util` | numeric | Desses, veículos com até 15 anos — PAFI. |
+| `al_hidro` | numeric | Alunos transportados em rotas aquaviárias — PAIH. |
+| `al_hidro_imp` | numeric | Desses, alunos com impedância marcada na rota ou no próprio cadastro — PAIH. |
 | `label` | text | Nome exibido do escopo (município com a UF entre parênteses). |
 | `tempo_mediano` | numeric | Mediana do tempo das rotas válidas, em minutos (`analise.mv_tempo_rotas`). |
 | `tempo_medio` | numeric | Média do tempo das rotas válidas, em minutos. |
@@ -1787,11 +1853,12 @@ Todas as tabelas de `capacitacao` num único JSON (`{tabela: {colunas, linhas}}`
 ### 10.8. Campos JSON da API
 
 **`raw`** (`indicadores_*`): contadores do escopo, no formato `RAW_DATA` da interface.
-- Contadores de `analise.mv_base_municipio` (somados no nível): `al_*`, `tot_rotas`, `georref`, `dif`, `t1`–`t3`, `rot_*`, `tot_veic`, `vp`, `vt`, `n_veic_validos`, `cap_sum`, `ce_veic_sete`, `tot_mot_info`, `mot_*`, `tot_mon`, `mon_*`, `al_transp_sete`, `esc_at_sete`, `demanda_censo`.
-- Acrescentados por `analise.montar_raw`: `km_total` e `km_geo` (1 casa), `km_medio` (`km_total ÷ tot_rotas`), `cap_media` (`cap_sum ÷ n_veic_validos`; 0,0 sem veículos válidos), `al_transp` (= `al_transp_sete`), `tempo_mediano`, `tempo_medio`.
+- Contadores de `analise.mv_base_municipio` (somados no nível): `al_*`, `tot_rotas`, `georref`, `dif`, `t1`–`t3`, `rot_*`, `tot_veic`, `vp`, `vt`, `n_veic_validos`, `cap_sum`, `ce_veic_sete`, `tot_mot_info`, `mot_*`, `tot_mon`, `mon_*`, `al_transp_sete`, `esc_at_sete`, `demanda_censo`, `rotas_com_km`, `t2_tempo_n`, `t2_tempo_soma`, `veic_ano_valido`, `veic_vida_util`, `al_hidro`, `al_hidro_imp`.
+- Acrescentados por `analise.montar_raw`: `km_total` e `km_geo` (1 casa), `km_medio` (`km_total ÷ rotas_com_km`, desde a 0020), `cap_media` (`cap_sum ÷ n_veic_validos`; 0,0 sem veículos válidos), `al_transp` (= `al_transp_sete`), `tempo_mediano`, `tempo_medio`.
+- Vindos de `analise.mv_rotas_estatisticas` (MQT): `km_mediana`, `km_p5`, `km_p95`, `km_min`, `km_max`, `tempo_p5`, `tempo_p95`, `tempo_min`, `tempo_max`.
 - Só em UF, região e Brasil, vindos de `ref.raw_referencia` (sem cálculo no banco): `ce_veic`, `esc_at`, `cs_transp`, `cs_tmun`, `cs_test`, `cs_escolas_atendidas`, `medate_val`, `medate_n`, `imfp`, `imft`, `mifce`.
 
-**`indicadores`** (`indicadores_*`): `label` e as siglas `ATE`, `DMC`, `ICA`, `IMFP`, `IMFT`, `IPE`, `IPTE`, `IUC`, `MEDATE`, `MIFCE`, `MON_CVE`, `MOT_CVE`, `PAD`, `PAFI`, `PAIH`, `PARI`, `PATE`, `PATM`, `PCSC`, `PECS`, `PMNVE`, `PMVE`, `PRDAM`, `PRGM`, `PRHM`, `PRIO`, `PRMM`, `PRPM`, `PRPNP`, `PRRM`, `PVCED`, `PVP`, `PVPCE`, `PVT`, `TEDC`, `TETI`, `TVA`. Indicador sem base de cálculo vem `null` (a interface mostra "—"). `PRIO` = `PRDAM`, `MOT_CVE` = `PMVE` e `MON_CVE` = `PMNVE` (aliases).
+**`indicadores`** (`indicadores_*`): `label` e as siglas `ATE`, `DMC`, `ICA`, `IMFP`, `IMFT`, `IPE`, `IPTE`, `IUC`, `MEDATE`, `MIFCE`, `MON_CVE`, `MOT_CVE`, `PAD`, `PAFI`, `PAIH`, `PARI`, `PATE`, `PATM`, `PCSC`, `PECS`, `PMNVE`, `PMVE`, `PRDAM`, `PRGM`, `PRHM`, `PRIO`, `PRMM`, `PRPM`, `PRPNP`, `PRRM`, `PVCED`, `PVP`, `PVPCE`, `PVT`, `TEDC`, `TETI`, `TVA`, `MQT`. PAIH, PAFI, TVA e MQT são calculados desde a 0020 (MQT = `km_medio`). Indicador sem base de cálculo vem `null` (a interface mostra "—"). `PRIO` = `PRDAM`, `MOT_CVE` = `PMVE` e `MON_CVE` = `PMNVE` (aliases).
 
 **`detalhes`** (`indicadores_estado`, `indicadores_nacional`): `{"script_01_alunos": {...}, …, "script_17_rota_dirigida_por_motorista": {...}}`, um objeto por script do SETE com os totais das planilhas consolidadas (ex.: `script_03_rotas` → `total_rotas`, `rodoviaria`, `aquaviaria`, `mista`, `rota_ativa`, `turno_matutino`…).
 
@@ -1801,8 +1868,8 @@ Todas as tabelas de `capacitacao` num único JSON (`{tabela: {colunas, linhas}}`
  "frota": {"PVPCE": 0, "IMFP": null, "IMFT": 9.1, "MIFCE": null, "ce_veic": 0, "tot_veic": 49, "vp": 0, "vt": 49}}
 ```
 
-**`dados`** (`sete_municipios`): `{"cols": [...45 nomes...], "municipios": [[...], ...], "ufs": {"GO": {...}, ...}}`.
-- `cols`: `cod`, `mun`, `uf`, `alunos`, `al_transp`, `escolas`, `rotas`, `km_total`, `rotas_com_km`, `rotas_t1`–`rotas_t3`, `veiculos`, `veic_origem1`, `veic_origem2`, `cap_media`, `monitores`, `motoristas`, `fornecedores`, `ordens_servico`, `normas`, `vinc_escola_aluno`, `vinc_rota_escola`, `vinc_rota_veiculo`, `vinc_rota_motorista`, `PRGM`, `PRDAM`, `PRRM`, `PRHM`, `PRMM`, `PVP`, `PVT`, `MON_CVE`, `MOT_CVE`, `ATE`, `MEDATE`, `IUC`, `TEDC`, `TETI`, `PATE`, `PATM`, `PVPCE`, `IMFP`, `IMFT`, `MIFCE`.
+**`dados`** (`sete_municipios`): `{"cols": [...49 nomes...], "municipios": [[...], ...], "ufs": {"GO": {...}, ...}}`.
+- `cols`: `cod`, `mun`, `uf`, `alunos`, `al_transp`, `escolas`, `rotas`, `km_total`, `rotas_com_km`, `rotas_t1`–`rotas_t3`, `veiculos`, `veic_origem1`, `veic_origem2`, `cap_media`, `monitores`, `motoristas`, `fornecedores`, `ordens_servico`, `normas`, `vinc_escola_aluno`, `vinc_rota_escola`, `vinc_rota_veiculo`, `vinc_rota_motorista`, `PRGM`, `PRDAM`, `PRRM`, `PRHM`, `PRMM`, `PVP`, `PVT`, `MON_CVE`, `MOT_CVE`, `ATE`, `MEDATE`, `IUC`, `TEDC`, `TETI`, `PATE`, `PATM`, `PVPCE`, `IMFP`, `IMFT`, `MIFCE`, `PAIH`, `PAFI`, `TVA`, `MQT`.
 - `municipios`: uma lista por município, na ordem de `cols` (só municípios com registro no SETE).
 - `ufs`: resumo por UF (sigla maiúscula) com `nome`, `mun`, `alunos`, `at`, `escolas`, `rotas`, `km`, `km_n`, `rt1`–`rt3`, `veiculos`, `vp`, `vt`, `cap`, `monitores`, `motoristas`, `fornecedores`, `ordens`, `normas`, `v_eta`, `v_rpe`, `v_rpv`, `v_rdm`.
 
