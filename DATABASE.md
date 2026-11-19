@@ -336,6 +336,7 @@ python scripts/validar_paridade.py
 | `0022_cargas_do_sete` | Várias cargas do SETE: coluna `carga` (AAAAMM) nas tabelas do SETE, `ref.raw_referencia`, `ref.detalhes_scripts` e `pnite_meta.cargas_log` (existente = `202605`, Maio/2026); `ref.cargas` com rótulo e data; views de análise e da API chaveadas por carga; `public.cargas_sete`; `analise.mv_medianas_nivel` e `analise.referencia_calculada` para cargas sem planilha |
 | `0023_referencia_calculada_so_sem_planilha` | A referência calculada só vale onde a carga não tem linha em `ref.raw_referencia` (a carga de maio fica idêntica, inclusive o ATE regional "—") |
 | `0024_indices_sete_por_carga` | Índices das tabelas do SETE passam de `(ano_carga, …)` para `(carga, …)` |
+| `0025_exclui_catalogo_caminho_escola` | Exclui do catálogo os 9 itens de Gestão › Caminho da Escola (6 indicadores e 3 visuais, em rascunho e sem publicação), com a definição completa registrada na auditoria; os painéis do Caminho da Escola ficam sem visual a publicar até serem recriados |
 
 ---
 
