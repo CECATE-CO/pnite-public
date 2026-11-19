@@ -337,6 +337,7 @@ python scripts/validar_paridade.py
 | `0023_referencia_calculada_so_sem_planilha` | A referência calculada só vale onde a carga não tem linha em `ref.raw_referencia` (a carga de maio fica idêntica, inclusive o ATE regional "—") |
 | `0024_indices_sete_por_carga` | Índices das tabelas do SETE passam de `(ano_carga, …)` para `(carga, …)` |
 | `0025_exclui_catalogo_caminho_escola` | Exclui do catálogo os 9 itens de Gestão › Caminho da Escola (6 indicadores e 3 visuais, em rascunho e sem publicação), com a definição completa registrada na auditoria; os painéis do Caminho da Escola ficam sem visual a publicar até serem recriados |
+| `0026_exclui_visual_monitoramento_sete` | Exclui do catálogo o visual `SETE_PAINEL_SNAPSHOT` (em rascunho, sem publicação), com a definição registrada na auditoria; o catálogo fica com os 31 indicadores do transporte |
 
 ---
 
