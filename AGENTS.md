@@ -497,6 +497,7 @@ Regras consolidadas a partir da revisão geral da v.2.9.6. Cada item corresponde
 ### 44.2. Codificação e formato de arquivo
 - Salvar sempre em UTF-8 e preservar as quebras de linha existentes do arquivo (o HTML principal usa CRLF).
 - Após edições por script, procurar caracteres corrompidos (ex.: `s?o`, `Intelig?ncia`, `(A ? B) ? 100`) e restaurar os acentos e símbolos (`÷`, `×`, `—`).
+- Após edições por script, conferir também as quebras de linha: nenhum `\n` sem `\r` antes e nenhum `\r` isolado. Um único CR solto (gerado, por exemplo, ao converter `\n` em `\r\n` num texto que já trazia `\r\n`) faz o Git tratar o arquivo inteiro como alterado.
 - O console do Windows pode exibir `�` para caracteres válidos: confirmar no próprio arquivo (bytes/UTF-8) antes de "corrigir".
 
 ### 44.3. JavaScript
@@ -565,6 +566,7 @@ Regras consolidadas a partir da revisão geral da v.2.9.6. Cada item corresponde
    - navegação entre módulos e botão Voltar;
    - `document.documentElement.scrollWidth <= clientWidth` em 375px, 768px e 1280px, nos dois temas;
    - capturas de tela claro/escuro em desktop e celular para inspeção visual.
+   - gráficos em `<canvas>` (Chart.js) devem ser fotografados com o elemento na área visível (`captureBeyondViewport: false`, após `scrollIntoView`): na captura além da área visível o Chrome headless pode devolver um quadro antigo do canvas; na dúvida, conferir os pixels com `getImageData`.
 4. **Linha de base:** quando houver dúvida se um problema é novo ou pré-existente, executar o mesmo teste na versão anterior em `old/`.
 5. Scripts de teste e arquivos temporários ficam fora do repositório (pasta temporária), salvo pedido explícito.
 

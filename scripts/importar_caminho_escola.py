@@ -103,8 +103,18 @@ def data_iso(v):
 
 
 def versao_existente(fonte, hash_):
+    """Versão já registrada para o mesmo arquivo (pelo hash), ou None.
+
+    Uma versão ``rejeitada`` ou ``carregando`` é uma carga que falhou no meio: as linhas parciais continuam no
+    banco e o arquivo não pode ser tratado como "já carregado" (antes a nova execução dizia "nada a fazer" e
+    saía com sucesso). O UNIQUE (fonte, sha256) impede registrar o mesmo arquivo de novo, então o erro é explícito.
+    """
     r = executar_sql(f"SELECT id, status FROM gestao.dataset_versoes WHERE fonte = {sql_literal(fonte)} "
                      f"AND sha256 = {sql_literal(hash_)};")
+    if r and r[0]["status"] in ("rejeitada", "carregando"):
+        raise ErroCarga(f"este arquivo tem uma carga anterior incompleta (versão {r[0]['id']}, {r[0]['status']})."
+                        " Ela não foi concluída e não pode ser reaproveitada: é preciso remover essa versão e as"
+                        " linhas dela no banco antes de carregar o mesmo arquivo de novo.")
     return r[0] if r else None
 
 

@@ -50,7 +50,7 @@ def buscar(params, pagina=1000):
     chave = os.environ["SUPABASE_PUBLISHABLE_KEY"]
     linhas = []
     while True:
-        resp = requests.get(url, params={**params, "order": "nivel,chave", "limit": pagina, "offset": len(linhas)},
+        resp = requests.get(url, params={**params, "order": "carga,nivel,chave", "limit": pagina, "offset": len(linhas)},
                             headers={"apikey": chave}, timeout=60)
         resp.raise_for_status()
         lote = resp.json()
@@ -70,12 +70,14 @@ def igual(a, b):
 def main():
     p = argparse.ArgumentParser(description="Paridade API × pacote compilado.")
     p.add_argument("--uf", help="restringe a uma UF (ex.: go)")
-    p.add_argument("--ano-carga", default=os.getenv("ANO_CARGA_SETE", "2026"))
+    p.add_argument("--carga", type=int, default=202605,
+                   help="carga do SETE (AAAAMM) a comparar; padrão 202605, a única que tem pacote compilado")
     p.add_argument("--exemplos", type=int, default=5)
     args = p.parse_args()
 
     pacote = json.loads(PACOTE.read_text(encoding="utf-8"))
-    filtro = {"ano_carga": f"eq.{args.ano_carga}"}
+    # Desde a migração 0022 há uma linha por carga: filtrar só pelo ano misturaria maio e novembro de 2026
+    filtro = {"carga": f"eq.{args.carga}"}
     if args.uf:
         filtro["uf"] = f"eq.{args.uf.lower()}"
     linhas = buscar({**filtro, "select": "nivel,chave,uf,label,raw,indicadores"})

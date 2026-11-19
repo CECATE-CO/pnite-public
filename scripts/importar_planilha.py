@@ -83,10 +83,22 @@ def nome_sql(texto, padrao="coluna"):
     return texto[:63]
 
 
+# Palavras reservadas do Postgres que não podem ser nome de coluna sem aspas (ex.: cabeçalhos "End.", "Desc.",
+# "Order"): recebem um "_" no fim, para o CREATE TABLE não falhar por sintaxe
+RESERVADAS = frozenset("""all analyse analyze and any array as asc asymmetric both case cast check collate column
+    constraint create current_catalog current_date current_role current_time current_timestamp current_user default
+    deferrable desc distinct do else end except false fetch for foreign from grant group having in initially intersect
+    into lateral leading limit localtime localtimestamp not null offset on only or order placing primary references
+    returning select session_user some symmetric table then to trailing true union unique user using variadic when
+    where window with""".split())
+
+
 def nomes_colunas(cabecalho):
     nomes, usados = [], set()
     for i, c in enumerate(cabecalho):
         base = nome_sql(c, f"coluna_{i + 1}") if str(c).strip() else f"coluna_{i + 1}"
+        if base in RESERVADAS:
+            base += "_"
         nome, n = base, 1
         while nome in usados:
             n += 1
@@ -374,10 +386,19 @@ def arquivos_upload(pasta):
                   and a.relative_to(pasta).parts[0].lower() != "sete")
 
 
+def destino_arquivo(caminho, args):
+    """Destino (schema, tabela) de um arquivo. O schema só pode vir de ``--tabela``: um ponto no nome do
+    arquivo ("inscricoes 12.11.2026.xlsx", "ref.municipios.csv") não cria nem escolhe schema — antes criava
+    um schema sem o REVOKE do padrão, ou apontava ``--modo substituir`` para tabelas de outro schema."""
+    if args.tabela:
+        return separar_destino(args.tabela)
+    return nome_sql(SCHEMA_PADRAO, "importacao"), nome_sql(caminho.stem, "tabela")
+
+
 def importar_arquivo(caminho, args):
     """Importa um arquivo (todas as abas pedidas); devolve True se as contagens conferem."""
     ext = caminho.suffix.lower()
-    schema, nome = separar_destino(args.tabela or caminho.stem)
+    schema, nome = destino_arquivo(caminho, args)
     if ext in EXT_CSV:
         fontes = [(caminho.name, FonteCSV(caminho, args.sep, args.encoding))]
         destinos = [(schema, nome)]
@@ -417,6 +438,17 @@ def main():
     if args.tabela and len(arquivos) > 1:
         sys.exit("--tabela só pode ser usado com um único arquivo.")
 
+    # Dois arquivos com o mesmo destino (mesmo nome em subpastas, .csv e .xlsx, nomes que normalizam igual):
+    # com --modo substituir o segundo apagaria a tabela do primeiro e ambos sairiam "OK"
+    por_destino = {}
+    for caminho in arquivos:
+        por_destino.setdefault(".".join(destino_arquivo(caminho, args)), []).append(caminho)
+    repetidos = {d: cs for d, cs in por_destino.items() if len(cs) > 1}
+    if repetidos:
+        linhas = "".join(f"\n  {d}: " + ", ".join(str(c.relative_to(alvo) if alvo.is_dir() else c.name) for c in cs)
+                         for d, cs in sorted(repetidos.items()))
+        sys.exit("Arquivos diferentes iriam para a mesma tabela; renomeie-os ou envie um por vez com --tabela." + linhas)
+
     falhas = []
     for caminho in arquivos:
         try:
@@ -425,6 +457,9 @@ def main():
         except ErroImportacao as e:
             print(f"  [ERRO] {caminho.name}: {e}")
             falhas.append((caminho.name, str(e)))
+        except Exception as e:      # erro de SQL, de leitura ou de codificação: registra e segue para os demais
+            print(f"  [ERRO] {caminho.name}: {e.__class__.__name__}: {e}")
+            falhas.append((caminho.name, f"{e.__class__.__name__}: {e}"))
     if len(arquivos) > 1:
         print(f"\n{len(arquivos) - len(falhas)} de {len(arquivos)} arquivo(s) importado(s).")
         for nome, motivo in falhas:

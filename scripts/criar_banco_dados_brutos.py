@@ -70,6 +70,7 @@ ANO_CENSO = int(os.getenv("ANO_CARGA_CENSO", "2025"))
 ANO_SETE = int(os.getenv("ANO_CARGA_SETE", "2026"))
 MESES = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro",
          "Novembro", "Dezembro"]
+CARGA_PASTA_PADRAO = 202605   # a pasta padrão (PASTA_DADOS) guarda a extração de maio/2026
 
 
 def ler_carga(texto):
@@ -82,15 +83,24 @@ def ler_carga(texto):
 
 
 def registrar_carga(carga, ano, mes, rotulo=None):
-    """Cria ou atualiza a carga em ref.cargas (rótulo, data de referência e Censo pareado)."""
-    rotulo = rotulo or f"{MESES[mes - 1]}/{ano}"
+    """Registra a carga em ref.cargas (rótulo, data de referência e Censo pareado).
+
+    Uma carga já registrada não é alterada: recarregar uma tabela não pode trocar em silêncio o Censo
+    pareado (ANO_CARGA_CENSO do .env pode ter mudado desde a carga original) nem o rótulo. Só o
+    ``--rotulo`` informado explicitamente atualiza o rótulo de uma carga existente.
+    """
+    padrao = f"{MESES[mes - 1]}/{ano}"
     descricao = f"SETE extraído em {MESES[mes - 1].lower()} de {ano} × Censo Escolar {ANO_CENSO}"
+    conflito = "DO UPDATE SET rotulo = EXCLUDED.rotulo" if rotulo else "DO NOTHING"
     executar_sql(
         "INSERT INTO ref.cargas (carga, ano_carga_sete, ano_carga_censo, rotulo, data_referencia, descricao)"
-        f" VALUES ({carga}, {ano}, {ANO_CENSO}, {sql_literal(rotulo)}, DATE '{ano}-{mes:02d}-01', {sql_literal(descricao)})"
-        " ON CONFLICT (carga) DO UPDATE SET ano_carga_censo = EXCLUDED.ano_carga_censo,"
-        " rotulo = EXCLUDED.rotulo, descricao = EXCLUDED.descricao;")
-    print(f"  ref.cargas: {carga} = {rotulo} (Censo {ANO_CENSO})")
+        f" VALUES ({carga}, {ano}, {ANO_CENSO}, {sql_literal(rotulo or padrao)}, DATE '{ano}-{mes:02d}-01',"
+        f" {sql_literal(descricao)}) ON CONFLICT (carga) {conflito};")
+    atual = executar_sql(f"SELECT rotulo, ano_carga_censo FROM ref.cargas WHERE carga = {carga};")[0]
+    print(f"  ref.cargas: {carga} = {atual['rotulo']} (Censo {atual['ano_carga_censo']})")
+    if atual["ano_carga_censo"] != ANO_CENSO:
+        print(f"  [aviso] a carga {carga} está pareada com o Censo {atual['ano_carga_censo']}, e o .env traz"
+              f" ANO_CARGA_CENSO={ANO_CENSO}; o pareamento da carga não foi alterado.")
 
 csv.field_size_limit(2**31 - 1)
 
@@ -514,15 +524,29 @@ def carregar_tabela(schema, nome, cfg, ano, args, carga=None):
 
     filtro = (f"carga = {carga}" if carga else f"ano_carga = {ano}") \
         + (f" AND lower({coluna_uf}) = {sql_literal(args.uf)}" if args.uf else "")
+    filtro_shape = filtro.replace(coluna_uf, "uf")
+
+    # Antes de apagar a carga no banco: o arquivo existe e traz as colunas-chave? (um nome de arquivo ou
+    # de pasta errado apagava a tabela inteira da carga e só então falhava)
+    if not caminho.is_file():
+        raise FileNotFoundError(f"{caminho} não encontrado; nada foi apagado no banco.")
+    with open(caminho, encoding=opcoes_csv["encoding"], newline="") as fh:
+        previa = [c.strip().lower() for c in next(csv.reader(fh, delimiter=opcoes_csv["delimiter"]), [])]
+    chaves = {"codigo_cidade", coluna_uf} | {n for n in nomes_csv if n.startswith("id_")}
+    faltam = sorted(c for c in chaves if c in nomes_csv and c not in previa)
+    if faltam:
+        raise RuntimeError(f"{cfg['arquivo']} não tem colunas-chave: {faltam}; nada foi apagado no banco.")
+
     if not pular:
         executar_sql(f"DELETE FROM {tabela} WHERE {filtro};"
-                     + (f" DELETE FROM sete.rota_shape WHERE {filtro.replace(coluna_uf, 'uf')};" if separa_shape else ""))
+                     + (f" DELETE FROM sete.rota_shape WHERE {filtro_shape};" if separa_shape else ""))
     else:
         print(f"  retomando {tabela} após {pular:,} linhas já enviadas")
 
     lote, lote_shape, bytes_lote = [], [], 0
     limite = args.lote_mb * 2**20
     lidas = enviadas = 0
+    com_shape = desalinhadas = 0
     invalidos = []
     inicio = time.time()
 
@@ -554,12 +578,21 @@ def carregar_tabela(schema, nome, cfg, ano, args, carga=None):
         if extras:
             print(f"  [aviso] colunas do CSV sem correspondência no banco (ignoradas): {', '.join(extras)}")
         reordenar = posicoes != list(range(len(nomes_csv)))
+        n_cab = len(cabecalho)
         for registro in leitor:
+            if not registro:                    # linha em branco não é registro
+                continue
+            if len(registro) != n_cab:          # linha truncada ou com colunas a mais: avisada no fim
+                desalinhadas += 1
+                if len(registro) < n_cab:
+                    registro = registro + [""] * (n_cab - len(registro))
             if reordenar:
                 registro = [registro[p] if p is not None and p < len(registro) else "" for p in posicoes]
             if args.uf and registro[idx_uf].strip().lower() != args.uf:
                 continue
             lidas += 1
+            if separa_shape and tem_shape(registro[idx_shape]):
+                com_shape += 1                  # conta também as linhas puladas no --retomar (conferência final)
             if lidas <= pular:
                 continue
             valores = list(valores_prefixo)
@@ -597,14 +630,25 @@ def carregar_tabela(schema, nome, cfg, ano, args, carga=None):
                    f" VALUES ({sql_literal(tabela)}, {ano}, {carga or 'NULL'}, {sql_literal(args.uf) if args.uf else 'NULL'},"
                    f" {total}, {len(invalidos)});")
     no_banco = executar_sql(f"SELECT count(*) AS n FROM {tabela} WHERE {filtro};")[0]["n"]
-    status = "OK" if no_banco == lidas else f"DIVERGENTE (CSV {lidas:,})"
+    confere = no_banco == lidas
+    status = "OK" if confere else f"DIVERGENTE (CSV {lidas:,})"
     print(f"  {tabela}: {no_banco:,} linhas no banco em {time.time() - inicio:.0f}s — {status}")
+    if separa_shape:
+        # Os traçados vão em outra tabela e em outra requisição: um lote repetido (rede, --retomar) só
+        # aparece aqui, e sairia duplicado em public.rotas_tracado
+        shapes = executar_sql(f"SELECT count(*) AS n FROM sete.rota_shape WHERE {filtro_shape};")[0]["n"]
+        if shapes != com_shape:
+            confere = False
+            print(f"  sete.rota_shape: {shapes:,} traçados no banco — DIVERGENTE (CSV {com_shape:,})")
+    if desalinhadas:
+        print(f"  [aviso] {desalinhadas:,} linhas com número de colunas diferente do cabeçalho"
+              " (campos que faltam foram gravados como NULL)")
     for linha, coluna, valor in invalidos[:20]:
         print(f"    [NULL] linha {linha}, {coluna} = {valor!r} (valor inválido para o tipo)")
     if len(invalidos) > 20:
         print(f"    ... e mais {len(invalidos) - 20} valores inválidos convertidos em NULL")
     limpar_checkpoint(chave_ck)
-    return no_banco == lidas
+    return confere
 
 
 def carregar_municipios():
@@ -621,18 +665,50 @@ def carregar_municipios():
                            r[6].strip() or None, r[7].strip() or None, r[8].strip() or None])
     colunas = [("codigo_ibge", "integer"), ("nome", "text"), ("uf", "text"), ("codigo_rgi", "integer"),
                ("nome_rgi", "text"), ("codigo_rgim", "integer"), ("nome_rgim", "text")]
+    # A lista do IBGE tem 5.571 municípios: um arquivo em outro formato (separador, colunas) não pode
+    # esvaziar ref.municipios, de que dependem as views da tabela Dados SETE e dos complementos
+    if len(linhas) < 5500:
+        sys.exit(f"Lista de municípios com só {len(linhas):,} linhas válidas em {ARQ_MUNICIPIOS} (esperadas ~5.571,"
+                 " separadas por ';'). Nada foi alterado em ref.municipios.")
     executar_sql("DELETE FROM ref.municipios;\n" + sql_insert("ref.municipios", colunas, linhas))
     print(f"  ref.municipios: {len(linhas):,} municípios")
 
 
-def carregar_referencia(carga, ano, pasta):
+def carregar_referencia(carga, ano, pasta, forcar=False):
     """RAW_DATA de referência (legado do HTML + planilhas consolidado *.xlsx) e detalhes_scripts da carga.
-    Só a carga de maio/2026 tem planilhas consolidadas; nas demais o banco calcula os equivalentes."""
+    Só a carga de maio/2026 tem planilhas consolidadas; nas demais o banco calcula os equivalentes.
+
+    A regravação é recusada (sem ``--forcar-referencia``) quando pioraria o que está no banco:
+    - a carga não tem referência gravada: os níveis UF, região e Brasil usam a referência calculada
+      (migração 0023), e uma linha de planilha incompleta a substituiria por campos vazios;
+    - a nova referência perderia campos que hoje existem (ex.: os valores legados do Censo e da frota,
+      cuja fonte — o HTML antigo com ``_FALLBACK_RAW_DATA`` — não está mais no repositório).
+    """
     import extrair_dados_excel as ext  # scripts/ já está no sys.path; caminhos resolvidos pela raiz
 
+    atuais = [] if forcar else executar_sql(f"SELECT chave, dados FROM ref.raw_referencia WHERE carga = {carga};")
+    if not forcar and not atuais:
+        sys.exit(f"A carga {carga} não tem referência gravada: UF, região e Brasil usam a referência calculada"
+                 " pelo banco. Gravar a planilha consolidada substituiria esse cálculo pelos campos da planilha"
+                 " (que não traz Censo, IMFP, IMFT, MIFCE nem regiões). Nada foi alterado."
+                 " Se for mesmo a intenção, repita com --forcar-referencia.")
     tabelas = ext.carregar_planilhas(str(pasta))
+    if not tabelas:
+        sys.exit(f"Nenhuma planilha consolidada lida em {pasta}. Nada foi alterado na referência.")
     detalhes = ext.extrair_metricas_por_uf(tabelas)
     raw = ext.montar_raw_referencia(detalhes)
+    if not forcar:
+        perdas = {}
+        for linha in atuais:
+            novo = raw.get(linha["chave"]) or {}
+            sumiram = sorted(k for k, v in (linha["dados"] or {}).items() if v is not None and novo.get(k) is None)
+            if sumiram:
+                perdas[linha["chave"]] = sumiram
+        if perdas:
+            exemplo = next(iter(perdas))
+            sys.exit(f"A nova referência da carga {carga} apagaria campos que hoje existem no banco em"
+                     f" {len(perdas)} escopo(s) (ex.: {exemplo}: {', '.join(perdas[exemplo][:8])}). Nada foi alterado."
+                     " Se for mesmo a intenção, repita com --forcar-referencia.")
     linhas_raw = [[str(ano), str(carga), chave, json.dumps(dados, ensure_ascii=False)] for chave, dados in raw.items()]
     linhas_det = [[str(ano), str(carga), chave, script, json.dumps(dados, ensure_ascii=False)]
                   for chave, scripts in detalhes.items() for script, dados in scripts.items()]
@@ -655,8 +731,12 @@ def main():
     p.add_argument("--carga", default=os.getenv("CARGA_SETE"),
                    help="carga do SETE, AAAA-MM da extração (ex.: 2026-11); padrão: CARGA_SETE do .env")
     p.add_argument("--rotulo", help="rótulo da carga na interface (padrão: Mês/AAAA, ex.: Novembro/2026)")
-    p.add_argument("--pasta", type=Path, default=PASTA_DADOS,
-                   help="pasta com os CSVs do SETE (script_01 a script_17); padrão: data/Transporte Escolar")
+    p.add_argument("--pasta", type=Path,
+                   help="pasta com os CSVs do SETE (script_01 a script_17). Obrigatória fora da carga 2026-05,"
+                        " cuja pasta padrão é data/Transporte Escolar")
+    p.add_argument("--forcar-referencia", action="store_true",
+                   help="com --tabelas referencia: regrava a referência mesmo que isso apague campos existentes"
+                        " ou substitua a referência calculada de uma carga sem planilha")
     p.add_argument("--uf", help="carrega apenas uma UF (sigla, ex.: go) — carga piloto")
     p.add_argument("--lote-mb", type=float, default=1.5,
                    help="tamanho aproximado de cada lote (MB); requisições acima do limite do servidor são divididas")
@@ -664,8 +744,6 @@ def main():
     args = p.parse_args()
     if args.uf:
         args.uf = args.uf.strip().lower()
-    if not args.pasta.is_absolute():
-        args.pasta = RAIZ / args.pasta
 
     if args.gerar_ddl:
         gerar_ddl()
@@ -678,6 +756,18 @@ def main():
             sys.exit("Informe a carga do SETE: --carga AAAA-MM (ex.: --carga 2026-11). "
                      "A carga de maio de 2026 é 2026-05; carregar a mesma carga substitui os dados dela.")
         carga, ano_sete, mes = ler_carga(args.carga)
+        # A pasta padrão (data/Transporte Escolar) guarda a extração de maio/2026: usá-la por omissão em
+        # outra carga gravaria os dados de maio sob o rótulo da outra, com a conferência "OK"
+        if args.pasta is None and carga != CARGA_PASTA_PADRAO:
+            sys.exit(f"Informe a pasta da extração: --pasta upload/sete/{ano_sete}-{mes:02d} (a pasta padrão,"
+                     f" {PASTA_DADOS.relative_to(RAIZ)}, é a da carga 2026-05). Nada foi alterado.")
+    if args.pasta is None:
+        args.pasta = PASTA_DADOS
+    if not args.pasta.is_absolute():
+        args.pasta = RAIZ / args.pasta
+    if carga and not args.pasta.is_dir():
+        sys.exit(f"Pasta não encontrada: {args.pasta}. Nada foi alterado.")
+    if carga:
         registrar_carga(carga, ano_sete, mes, args.rotulo)
     falhas = []
     for nome in alvo:
@@ -685,7 +775,7 @@ def main():
         if nome == "municipios":
             carregar_municipios()
         elif nome == "referencia":
-            carregar_referencia(carga, ano_sete, args.pasta)
+            carregar_referencia(carga, ano_sete, args.pasta, args.forcar_referencia)
         elif nome == "censo":
             if not carregar_tabela("censo", "matricula", config_censo(), ANO_CENSO, args):
                 falhas.append(nome)

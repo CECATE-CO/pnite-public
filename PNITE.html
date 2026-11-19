@@ -5884,6 +5884,67 @@ html {
   .mtb-select-carga { min-height: 44px; }
 }
 
+/* v.3.4.5 — Paginação da tabela municipal do SETE */
+.pagination-acoes { display: inline-flex; gap: 8px; flex-wrap: wrap; }
+.pagination-acoes .btn { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; padding: 6px 12px; border-radius: 14px; }
+.pagination-acoes .btn:disabled { opacity: .45; cursor: default; }
+@media (pointer: coarse) { .pagination-acoes .btn { min-height: 44px; } }
+
+/* v.3.4.5 — Evolução dos Indicadores (série por carga do SETE) */
+.evo-controles { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px 20px; margin: 4px 0 16px; }
+.evo-campo-ind { flex: 1 1 360px; max-width: 560px; }
+.evo-check { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-1); padding-bottom: 11px; cursor: pointer; min-width: 0; }
+.evo-check input { width: 16px; height: 16px; flex: none; accent-color: var(--c-blue); cursor: pointer; }
+.evo-check.desativado { color: var(--text-3); cursor: default; }
+.evo-check.desativado input { cursor: default; }
+.evo-corpo[hidden] { display: none; }
+.evo-corpo[aria-busy="true"] { opacity: .55; transition: opacity .2s ease; }
+.evo-resumo { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 12px; margin-bottom: 16px; }
+.evo-tile { border: 1px solid var(--border); border-radius: 12px; background-color: var(--bg-card); padding: 14px 16px; min-width: 0; }
+.evo-tile-lbl { font-size: 12px; font-weight: 600; color: var(--text-2); }
+.evo-tile-val { font-size: 24px; font-weight: 700; color: var(--text-1); line-height: 1.2; margin-top: 6px; overflow-wrap: anywhere; }
+.evo-tile-val .cmp-var { font-variant-numeric: normal; gap: 4px; }
+.evo-tile-val .cmp-var .ti { font-size: 20px; }
+.evo-tile-sub { font-size: 12px; color: var(--text-2); margin-top: 4px; line-height: 1.4; }
+.evo-grafico-card { border: 1px solid var(--border); border-radius: 12px; background-color: var(--bg-card); padding: 16px 16px 10px; margin: 0 0 16px; min-width: 0; scroll-margin-top: 96px; }
+.evo-grafico-titulo { font-size: 14px; font-weight: 700; color: var(--text-1); line-height: 1.35; }
+.evo-grafico-sub { font-size: 12px; color: var(--text-2); margin-top: 2px; }
+.evo-legenda { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 10px; font-size: 12px; color: var(--text-2); }
+.evo-legenda[hidden] { display: none; }
+.evo-leg { display: inline-flex; align-items: center; gap: 6px; }
+.evo-leg-linha { display: inline-block; width: 18px; height: 2px; border-radius: 1px; background-color: var(--c-blue); }
+.evo-leg-linha.ref { background-color: var(--text-3); }
+.evo-grafico-wrap { position: relative; height: 320px; margin-top: 10px; min-width: 0; }
+.evo-tabela { min-width: 480px; }
+.evo-subtitulo { font-size: 15px; font-weight: 700; color: var(--text-1); margin: 24px 0 4px; }
+.evo-dica { font-size: 12.5px; color: var(--text-2); line-height: 1.5; }
+.evo-grupo { font-size: 11.5px; text-transform: uppercase; letter-spacing: .04em; color: var(--text-2); font-weight: 700; margin: 16px 0 8px; }
+.evo-grade { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(240px, 100%), 1fr)); gap: 10px; }
+.evo-card { display: flex; flex-direction: column; justify-content: space-between; gap: 10px; text-align: left; min-width: 0; min-height: 44px; padding: 12px 14px; border-width: 1px; border-style: solid; border-color: var(--border); border-radius: 12px; background-color: var(--bg-card); color: var(--text-1); font-family: inherit; font-size: 13px; cursor: pointer; }
+.evo-card:hover { border-color: var(--c-blue); }
+.evo-card:focus-visible { outline: 2px solid var(--c-blue); outline-offset: 2px; }
+.evo-card.ativo { border-color: var(--c-blue); box-shadow: inset 0 0 0 1px var(--c-blue); }
+.evo-card-nome { display: block; font-size: 12.5px; color: var(--text-2); line-height: 1.4; }
+.evo-card-nome .cmp-sigla { margin-bottom: 2px; }
+.evo-card-base { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; min-width: 0; }
+.evo-card-nums { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.evo-card-val { font-size: 18px; font-weight: 700; color: var(--text-1); line-height: 1.2; overflow-wrap: anywhere; }
+.evo-card-var { font-size: 12px; color: var(--text-2); }
+.evo-card-var .cmp-var .ti { font-size: 13px; }
+.evo-spark { flex: none; display: block; width: 104px; height: 30px; }
+.evo-spark-linha { fill: none; stroke: var(--text-3); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.evo-spark-ponto { fill: var(--c-blue); stroke: var(--bg-card); stroke-width: 2; }
+@media (max-width: 760px) {
+  .evo-campo-ind { flex: 1 1 100%; max-width: 100%; }
+  .evo-check { padding-bottom: 0; }
+  .evo-grafico-card { padding: 14px 10px 8px; }
+  .evo-grafico-wrap { height: 260px; }
+  .evo-tile-val { font-size: 21px; }
+}
+@media (pointer: coarse) {
+  .evo-check { min-height: 44px; }
+}
+
 /* Barra Integrada de Localidade / Território nos Módulos */
 .module-territory-bar {
   display: block;
@@ -6622,6 +6683,7 @@ html[data-theme="dark"] .adm-msg.ok { color: #7ee2b0; }
 .sm-dica { position: absolute; pointer-events: none; z-index: 5; background: var(--bg-card); color: var(--text-1); border: 1px solid var(--border-mid); border-radius: 10px; padding: 6px 10px; font-size: 12px; box-shadow: 0 4px 14px rgba(0,0,0,.15); white-space: nowrap; }
 
 /* ================================================================
+    v.3.4.5 — ABA "EVOLUÇÃO DOS INDICADORES" (SÉRIE POR CARGA DO SETE) E REVISÃO GERAL DO CÓDIGO (CORREÇÕES NA API, CARTÕES, MAPA, MONITORAMENTO, GERENCIADOR, EXPORTAÇÕES; MIGRAÇÃO 0027)
     v.3.4.4 — ALUNOS DE NOVEMBRO/2026 RECARREGADOS (4.430.187) A PARTIR DO script_01 COMPLETO
     v.3.4.3 — CARGA DE NOVEMBRO/2026 (202611) NO BANCO; CARREGADOR CASA AS COLUNAS DOS CSVs PELO NOME
     v.3.4.2 — DOCUMENTAÇÃO DA CARGA DE NOVEMBRO/2026: PASTA upload/sete/2026-11 E 14 CSVs DO SETE
@@ -7300,13 +7362,13 @@ window.onerror = function(msg, url, line, col, err) {
 
       <!-- CÁPSULA FLUTUANTE DE NAVEGAÇÃO DAS FRENTES (MODELO ANEXO 1) -->
       <nav class="header-capsule-nav" aria-label="Frentes da Plataforma">
-        <button class="hcn-tab active" id="frontTabTransporte" onclick="switchFront('transporte', this)">
+        <button type="button" class="hcn-tab active" id="frontTabTransporte" onclick="switchFront('transporte', this)">
           <i class="ti ti-route"></i> <span data-i18n="front_transporte">Indicadores do Transporte Escolar</span>
         </button>
-        <button class="hcn-tab" id="frontTabCapacitacao" onclick="switchFront('capacitacao', this)">
+        <button type="button" class="hcn-tab" id="frontTabCapacitacao" onclick="switchFront('capacitacao', this)">
           <i class="ti ti-certificate"></i> <span data-i18n="front_capacitacao">Indicadores da Capacitação</span>
         </button>
-        <button class="hcn-tab" id="frontTabGestao" onclick="switchFront('gestao', this)">
+        <button type="button" class="hcn-tab" id="frontTabGestao" onclick="switchFront('gestao', this)">
           <i class="ti ti-chart-arrows"></i> <span data-i18n="front_gestao">Indicadores da Gestão</span>
         </button>
         <button class="hcn-tab pu-tab-admin" id="frontTabUsuarios" type="button" onclick="switchFront('usuarios', this)">
@@ -8179,6 +8241,10 @@ window.onerror = function(msg, url, line, col, err) {
         <i class="ti ti-git-compare" aria-hidden="true"></i>
         <span>Comparativo entre Cargas</span>
       </a>
+      <a href="#secEvolucao" class="sidebar-item" data-sec="secEvolucao" onclick="navToSection(event, 'secEvolucao')">
+        <i class="ti ti-chart-line" aria-hidden="true"></i>
+        <span>Evolução dos Indicadores</span>
+      </a>
     </nav>
   </aside>
 <div class="editorial-container">
@@ -8360,9 +8426,9 @@ window.onerror = function(msg, url, line, col, err) {
         </div>
         <div class="sec-exp-content">
           <div class="exp-inner-tabs">
-            <button class="eit-btn active" onclick="switchInnerTab('secMetodologia', 'tabSubInd', this)" data-i18n="subtab_ind">A. Indicadores (31)</button>
-            <button class="eit-btn" onclick="switchInnerTab('secMetodologia', 'tabSubMem', this)" data-i18n="subtab_mem">B. Memória de Cálculo</button>
-            <button class="eit-btn" onclick="switchInnerTab('secMetodologia', 'tabSubCalc', this)" data-i18n="subtab_calc">C. Calculadora de Indicadores</button>
+            <button type="button" class="eit-btn active" onclick="switchInnerTab('secMetodologia', 'tabSubInd', this)" data-i18n="subtab_ind">A. Indicadores (31)</button>
+            <button type="button" class="eit-btn" onclick="switchInnerTab('secMetodologia', 'tabSubMem', this)" data-i18n="subtab_mem">B. Memória de Cálculo</button>
+            <button type="button" class="eit-btn" onclick="switchInnerTab('secMetodologia', 'tabSubCalc', this)" data-i18n="subtab_calc">C. Calculadora de Indicadores</button>
           </div>
 
           <!-- SUB-BLOCO A: TABELA DOS 31 INDICADORES REORGANIZADA (ANEXO 1 E 2) -->
@@ -8419,7 +8485,7 @@ window.onerror = function(msg, url, line, col, err) {
                 <div id="calcFormula" style="font-size:12px;font-family:ui-monospace,monospace;font-weight:600;color:var(--c-blue);background:var(--bg-active);border:1px solid var(--border);padding:10px 14px;border-radius:10px;margin-bottom:16px;display:none"></div>
                 <div id="calcInputs"></div>
                 <div style="display:flex;gap:10px;margin-top:16px">
-                  <button class="btn btn-primary" id="calcBtn" onclick="calcular()" style="padding:10px 22px;border-radius:20px;display:none;font-weight:600;box-shadow:0 2px 8px rgba(37,137,244,0.3)" data-i18n="calc_btn">Calcular Indicador</button>
+                  <button type="button" class="btn btn-primary" id="calcBtn" onclick="calcular()" style="padding:10px 22px;border-radius:20px;display:none;font-weight:600;box-shadow:0 2px 8px rgba(37,137,244,0.3)" data-i18n="calc_btn">Calcular Indicador</button>
                 </div>
               </div>
               <div>
@@ -8453,8 +8519,8 @@ window.onerror = function(msg, url, line, col, err) {
         </div>
         <div class="sec-exp-content">
           <div class="exp-inner-tabs">
-            <button class="eit-btn active" onclick="switchInnerTab('secDadosSete', 'tabSeteUf', this)">Agregado por UF</button>
-            <button class="eit-btn" onclick="switchInnerTab('secDadosSete', 'tabSeteMun', this)">Detalhamento Municipal (SETE)</button>
+            <button type="button" class="eit-btn active" onclick="switchInnerTab('secDadosSete', 'tabSeteUf', this)">Agregado por UF</button>
+            <button type="button" class="eit-btn" onclick="switchInnerTab('secDadosSete', 'tabSeteMun', this)">Detalhamento Municipal (SETE)</button>
           </div>
 
           <!-- TABELA 2: UF AGREGADA COM DESIGN SYSTEM PADRONIZADO E CABEÇALHOS AGRUPADOS -->
@@ -8479,13 +8545,13 @@ window.onerror = function(msg, url, line, col, err) {
                   <i class="ti ti-search"></i>
                 </button>
               </div>
-                <select id="seteUfSel" class="form-select" aria-label="Filtrar por UF" onchange="seteMunPage=0;renderSeteMun()">
+                <select id="seteUfSel" class="form-select" aria-label="Filtrar por UF" onchange="seteUfEscolhida(this.value)">
                   <option value="" data-i18n="filter_uf_all">Todas as UFs</option>
                 </select>
               </div>
               <div class="pill-group">
-                <button class="pill-opt active" id="seteViewBtnReg" onclick="setSeteView('reg')" data-i18n="sete_toggle_reg">Registros Operacionais</button>
-                <button class="pill-opt" id="seteViewBtnInd" onclick="setSeteView('ind')" data-i18n="sete_toggle_ind">Indicadores Calculados</button>
+                <button type="button" class="pill-opt active" id="seteViewBtnReg" onclick="setSeteView('reg')" data-i18n="sete_toggle_reg">Registros Operacionais</button>
+                <button type="button" class="pill-opt" id="seteViewBtnInd" onclick="setSeteView('ind')" data-i18n="sete_toggle_ind">Indicadores Calculados</button>
               </div>
             </div>
             <div id="seteMunSub" style="font-size:11px;color:var(--text-3);margin-bottom:8px"></div>
@@ -8523,16 +8589,16 @@ window.onerror = function(msg, url, line, col, err) {
 
         <!-- PÍLULAS DE NÍVEL TERRITORIAL -->
         <div class="territory-level-pills">
-          <button class="tl-pill active" id="tlPillNacional" onclick="setTerritoryLevel('nacional')">
+          <button type="button" class="tl-pill active" id="tlPillNacional" onclick="setTerritoryLevel('nacional')">
             <i class="ti ti-world"></i> <span data-i18n="territory_nacional">Nacional</span>
           </button>
-          <button class="tl-pill" id="tlPillRegiao" onclick="setTerritoryLevel('regiao')">
+          <button type="button" class="tl-pill" id="tlPillRegiao" onclick="setTerritoryLevel('regiao')">
             <i class="ti ti-layout-grid"></i> <span data-i18n="territory_regiao">Região</span>
           </button>
-          <button class="tl-pill" id="tlPillEstado" onclick="setTerritoryLevel('estado')">
+          <button type="button" class="tl-pill" id="tlPillEstado" onclick="setTerritoryLevel('estado')">
             <i class="ti ti-map"></i> <span data-i18n="territory_estado">Estado</span>
           </button>
-          <button class="tl-pill" id="tlPillMunicipio" onclick="setTerritoryLevel('municipio')">
+          <button type="button" class="tl-pill" id="tlPillMunicipio" onclick="setTerritoryLevel('municipio')">
             <i class="ti ti-building-community"></i> <span data-i18n="territory_municipio">Município</span>
           </button>
         </div>
@@ -8839,11 +8905,7 @@ window.onerror = function(msg, url, line, col, err) {
           <div>
             <div class="sec-title" data-i18n="sec7_title">Distribuição Modal</div>
             <div class="sec-sub" data-i18n="sec7_sub">Divisão da malha de transporte escolar entre os modais rodoviário, hidroviário e multimodal.</div>
-          
-          <div class="sec-panel-actions">
-            <button type="button" class="btn-panel-action" onclick="pniteBaixarPainelCompleto(this)" title="Baixar imagem completa deste painel em PNG (Anexo 3)"><i class="ti ti-camera"></i> <span>Baixar Painel</span></button>
-            <button type="button" class="btn-panel-action" onclick="pniteBaixarPainelExcel(this)" title="Baixar dados deste painel em Excel (.xlsx)"><i class="ti ti-file-spreadsheet"></i> <span>Baixar Dados</span></button>
-          </div></div>
+          </div>
         </div>
 
         <!-- BARRA INTEGRADA DE SELEÇÃO TERRITORIAL (MODAL) -->
@@ -9184,7 +9246,7 @@ window.onerror = function(msg, url, line, col, err) {
         </div>
 
         <!-- BARRA INTEGRADA DE SELEÇÃO TERRITORIAL (COMPARATIVO ENTRE CARGAS) -->
-        <div class="module-territory-bar" data-mod="comparativo">
+        <div class="module-territory-bar" data-mod="comparativo" data-sem-carga>
           <div class="mtb-header">
             <div class="mtb-label-wrap">
               <i class="ti ti-map-pin" style="color:var(--c-blue);font-size:16px"></i>
@@ -9261,6 +9323,115 @@ window.onerror = function(msg, url, line, col, err) {
         <p class="cmp-nota"><i class="ti ti-info-circle" aria-hidden="true"></i> Indicadores em % variam em pontos percentuais (p.p.); a variação relativa é a diferença dividida pelo valor da carga de referência. Ausência de dado aparece como “—”. As duas cargas usam o mesmo Censo Escolar pareado, por isso os indicadores do Censo (ATE, MEDATE, PATM, PATE) só mudam se o pareamento mudar.</p>
       </section>
 </div><!-- /#page-secComparativo -->
+      <!-- SEÇÃO 11: EVOLUÇÃO DOS INDICADORES AO LONGO DAS CARGAS DO SETE (v.3.4.5) -->
+      <div class="pnite-module-page" id="page-secEvolucao">
+<section class="sec-card-standard" id="secEvolucao" aria-labelledby="evoTitulo">
+        <div class="sec-header-standard">
+          <div class="sec-badge">11</div>
+          <div>
+            <div class="sec-title" id="evoTitulo">Evolução dos Indicadores</div>
+            <div class="sec-sub">Série de cada indicador no território selecionado, com um ponto por carga do SETE (ex.: maio e novembro de 2026). Todas as cargas são calculadas com as mesmas regras.</div>
+          </div>
+        </div>
+
+        <!-- BARRA INTEGRADA DE SELEÇÃO TERRITORIAL (EVOLUÇÃO DOS INDICADORES) -->
+        <div class="module-territory-bar" data-mod="evolucao" data-sem-carga>
+          <div class="mtb-header">
+            <div class="mtb-label-wrap">
+              <i class="ti ti-map-pin" style="color:var(--c-blue);font-size:16px" aria-hidden="true"></i>
+              <span class="mtb-label" data-i18n="territorio_escopo_label">Localidade / Território:</span>
+              <span class="mtb-badge territory-active-badge-val">Brasil (Nacional)</span>
+            </div>
+            <div class="mtb-level-pills">
+              <button type="button" class="mtb-pill active" data-level="nacional" onclick="setTerritoryLevel('nacional')">
+                <i class="ti ti-world" aria-hidden="true"></i> <span data-i18n="territory_nacional">Nacional</span>
+              </button>
+              <button type="button" class="mtb-pill" data-level="regiao" onclick="setTerritoryLevel('regiao')">
+                <i class="ti ti-layout-grid" aria-hidden="true"></i> <span data-i18n="territory_regiao">Região</span>
+              </button>
+              <button type="button" class="mtb-pill" data-level="estado" onclick="setTerritoryLevel('estado')">
+                <i class="ti ti-map" aria-hidden="true"></i> <span data-i18n="territory_estado">Estado</span>
+              </button>
+              <button type="button" class="mtb-pill" data-level="municipio" onclick="setTerritoryLevel('municipio')">
+                <i class="ti ti-building-community" aria-hidden="true"></i> <span data-i18n="territory_municipio">Município</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="mtb-subselects">
+            <div class="mtb-group mtb-group-nacional">
+              <span style="font-size:12.5px;color:var(--text-2);display:inline-flex;align-items:center;gap:6px">
+                <i class="ti ti-check" style="color:var(--c-mint)" aria-hidden="true"></i> <span data-i18n="scope_nac_desc">Escopo Nacional — Brasil (Dados consolidados de todos os municípios e estados)</span>
+              </span>
+            </div>
+            <div class="mtb-group mtb-group-regiao" style="display:none">
+              <label data-i18n="sel_regiao_lbl" style="font-size:12px;font-weight:600;color:var(--text-2);display:block;margin-bottom:6px">Selecione a Região:</label>
+              <select class="form-select mtb-select-regiao" aria-label="Região" onchange="syncTerritoryRegiao(this.value)" style="width:100%;max-width:380px">
+                <option value="centro-oeste" selected data-i18n="regiao_centro_oeste">Centro-Oeste</option>
+                <option value="norte" data-i18n="regiao_norte">Norte</option>
+                <option value="nordeste" data-i18n="regiao_nordeste">Nordeste</option>
+                <option value="sudeste" data-i18n="regiao_sudeste">Sudeste</option>
+                <option value="sul" data-i18n="regiao_sul">Sul</option>
+              </select>
+            </div>
+            <div class="mtb-group mtb-group-estado" style="display:none">
+              <label data-i18n="sel_estado_lbl" style="font-size:12px;font-weight:600;color:var(--text-2);display:block;margin-bottom:6px">Selecione a UF / Estado:</label>
+              <select class="form-select mtb-select-estado" aria-label="Estado" onchange="syncTerritoryEstado(this.value)" style="width:100%;max-width:380px"></select>
+            </div>
+            <div class="mtb-group mtb-group-municipio" style="display:none">
+              <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-end;width:100%">
+                <div style="flex:1;min-width:180px">
+                  <label data-i18n="sel_mun_uf_lbl" style="font-size:12px;font-weight:600;color:var(--text-2);display:block;margin-bottom:6px">UF do Município:</label>
+                  <select class="form-select mtb-select-mun-uf" aria-label="UF do município" onchange="syncTerritoryMunUf(this.value)" style="width:100%"></select>
+                </div>
+                <div style="flex:2;min-width:260px">
+                  <label data-i18n="sel_mun_lbl" style="font-size:12px;font-weight:600;color:var(--text-2);display:block;margin-bottom:6px">2. Município:</label>
+                  <select class="form-select mtb-select-mun-city" aria-label="Município" onchange="syncTerritoryMunCity(this.value)" style="width:100%"></select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="evo-controles">
+          <div class="cmp-campo evo-campo-ind">
+            <label for="evoIndicador">Indicador</label>
+            <select id="evoIndicador" class="form-select" onchange="evoSelecionar(this.value)"></select>
+          </div>
+          <label class="evo-check" id="evoRefRotulo" for="evoRefBrasil">
+            <input type="checkbox" id="evoRefBrasil" checked onchange="renderEvolucao()">
+            <span>Mostrar o Brasil como referência</span>
+          </label>
+          <div class="cmp-escopo"><i class="ti ti-map-pin" aria-hidden="true"></i> <span id="evoEscopo">Brasil</span></div>
+        </div>
+        <div id="evoAviso" class="cmp-aviso" role="status" hidden></div>
+
+        <div class="evo-corpo" id="evoCorpo" hidden>
+          <div class="evo-resumo" id="evoResumo"></div>
+
+          <figure class="evo-grafico-card" id="evoGraficoCard">
+            <figcaption>
+              <div class="evo-grafico-titulo" id="evoGraficoTitulo"></div>
+              <div class="evo-grafico-sub" id="evoGraficoSub"></div>
+            </figcaption>
+            <div class="evo-legenda" id="evoLegenda" hidden></div>
+            <div class="evo-grafico-wrap">
+              <canvas id="evoGrafico" role="img" aria-label="Gráfico de linha da evolução do indicador por carga do SETE"></canvas>
+            </div>
+          </figure>
+
+          <div class="cmp-tabela-wrap" id="evoTabelaWrap" role="region" aria-label="Tabela da série do indicador por carga" tabindex="0">
+            <table class="cmp-tabela evo-tabela" id="evoTabela"></table>
+          </div>
+
+          <h3 class="evo-subtitulo" id="evoGradeTitulo">Todos os indicadores</h3>
+          <p class="evo-dica">Cada cartão traz o valor da carga mais recente, a variação desde a carga anterior com dado e a série completa. Selecione um cartão para abrir o indicador no gráfico.</p>
+          <div id="evoGrade" role="group" aria-labelledby="evoGradeTitulo"></div>
+        </div>
+
+        <p class="cmp-nota"><i class="ti ti-info-circle" aria-hidden="true"></i> Cada ponto é uma carga do SETE; a posição no eixo horizontal segue a data da extração. Indicadores em % variam em pontos percentuais (p.p.). Ausência de dado aparece como “—” e interrompe a linha. As cargas usam o mesmo Censo Escolar pareado, por isso os indicadores do Censo (ATE, MEDATE, PATM, PATE) só mudam se o pareamento mudar. Com poucas cargas, a série mostra a variação entre elas, e não uma tendência.</p>
+      </section>
+</div><!-- /#page-secEvolucao -->
 
 
 
@@ -9299,16 +9470,16 @@ window.onerror = function(msg, url, line, col, err) {
       <div class="smb-sec-title" data-i18n="settings_lang_title">Idioma da Plataforma</div>
       <div class="smb-sec-desc" data-i18n="settings_lang_desc">Selecione o idioma desejado para a interface completa da PNITE.</div>
       <div class="lang-selector-grid">
-        <button class="lang-btn active" id="langBtn_pt" onclick="setLanguage('pt')">
+        <button type="button" class="lang-btn active" id="langBtn_pt" onclick="setLanguage('pt')">
           <span class="lang-flag">🇧🇷</span> <span>Português</span>
         </button>
-        <button class="lang-btn" id="langBtn_es" onclick="setLanguage('es')">
+        <button type="button" class="lang-btn" id="langBtn_es" onclick="setLanguage('es')">
           <span class="lang-flag">🇪🇸</span> <span>Español</span>
         </button>
-        <button class="lang-btn" id="langBtn_en" onclick="setLanguage('en')">
+        <button type="button" class="lang-btn" id="langBtn_en" onclick="setLanguage('en')">
           <span class="lang-flag">🇺🇸</span> <span>English</span>
         </button>
-        <button class="lang-btn" id="langBtn_it" onclick="setLanguage('it')">
+        <button type="button" class="lang-btn" id="langBtn_it" onclick="setLanguage('it')">
           <span class="lang-flag">🇮🇹</span> <span>Italiano</span>
         </button>
       </div>
@@ -9319,7 +9490,7 @@ window.onerror = function(msg, url, line, col, err) {
       <div class="smb-sec-title" data-i18n="settings_theme_title">Aparência e Tema</div>
       <div class="smb-sec-desc" data-i18n="settings_theme_desc">Alterne entre os modos de cor disponíveis: Modo Claro e Modo Escuro.</div>
       <div style="display:flex;align-items:center;gap:12px;margin-top:12px;flex-wrap:wrap">
-        <button class="btn btn-outline" id="settingsThemeBtn" onclick="cycleTheme()" style="display:inline-flex;align-items:center;gap:8px;padding:9px 20px;border-radius:20px;font-weight:600">
+        <button type="button" class="btn btn-outline" id="settingsThemeBtn" onclick="cycleTheme()" style="display:inline-flex;align-items:center;gap:8px;padding:9px 20px;border-radius:20px;font-weight:600">
           <i class="ti ti-palette"></i> <span data-i18n="theme_toggle">Mudar modo</span>
         </button>
         <div class="theme-active-indicator" id="themeActiveIndicator">
@@ -9342,7 +9513,7 @@ window.onerror = function(msg, url, line, col, err) {
             <span style="font-size:12px;font-weight:600;color:var(--text-1)">Origem Ativa:</span>
             <span style="font-size:12px;color:var(--text-2)" id="pniteDataSourceStatus" aria-live="polite">Conectando à API do Supabase…</span>
           </div>
-          <button class="btn btn-outline" onclick="recarregarDadosExternos()" style="font-size:11px;padding:4px 12px;border-radius:14px;display:inline-flex;align-items:center;gap:5px">
+          <button type="button" class="btn btn-outline" onclick="recarregarDadosExternos()" style="font-size:11px;padding:4px 12px;border-radius:14px;display:inline-flex;align-items:center;gap:5px">
             <i class="ti ti-refresh"></i> <span>Sincronizar</span>
           </button>
         </div>
@@ -9374,14 +9545,14 @@ window.onerror = function(msg, url, line, col, err) {
     <div class="smb-sec">
       <div class="smb-sec-title" data-i18n="settings_info_title">Informações da Versão</div>
       <div style="font-size:12px;color:var(--text-2);display:flex;flex-direction:column;gap:4px;margin-top:6px">
-        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.4.4</b></div>
+        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.4.5</b></div>
         <div><span data-i18n="settings_updated">Última Atualização:</span> <b class="pnite-date-val">06/10/2026</b> às <b class="pnite-time-val">21:05</b></div>
         <div><span data-i18n="settings_author">Responsável Técnico:</span> <b class="pnite-author-val">Equipe PNITE</b></div>
       </div>
     </div>
 
     <div style="text-align:right;margin-top:20px">
-      <button class="btn btn-primary" onclick="closeSettingsModal()" style="padding:8px 24px;border-radius:20px" data-i18n="btn_close">Fechar</button>
+      <button type="button" class="btn btn-primary" onclick="closeSettingsModal()" style="padding:8px 24px;border-radius:20px" data-i18n="btn_close">Fechar</button>
     </div>
   </div>
 </div>
@@ -9887,7 +10058,9 @@ const PNITE_AUTH = (function() {
 // Funções globais usadas pelos handlers inline
 // Foto do perfil (data URL) ou iniciais do nome/e-mail
 function pniteAvatarHtml(nome, email, foto) {
-  if (foto && /^data:image\/(jpeg|png|webp);base64,/.test(foto)) return '<img src="' + foto + '" alt="">';
+  // A foto vem do banco e é gravada pelo próprio usuário: só entra se for inteira um data URI de imagem em base64
+  // (sem aspas nem outros caracteres que escapem do atributo) e, mesmo assim, escapada (§44.3)
+  if (foto && /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+\/]+={0,2}$/.test(foto)) return '<img src="' + escHtml(foto) + '" alt="">';
   const base = String(nome || String(email || '?').replace(/@.*/, '')).split(/[\s._-]+/).filter(Boolean);
   const ini = ((base[0] || '?')[0] + (base.length > 1 ? base[base.length - 1][0] : '')).toUpperCase();
   return escHtml(ini);
@@ -10214,6 +10387,21 @@ function pniteFolhaSobre(wb, extra) {
   XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(linhas), 'Sobre');
 }
 
+// Território dos cartões (o escopo da barra de território, não o recorte do mapa) e base SETE em uso:
+// é o que identifica os arquivos exportados dos painéis
+function pniteRotuloExportacao() {
+  const carga = (window.PNITE_API && PNITE_API.cargaAtiva()) ? PNITE_API.rotuloCarga(PNITE_API.cargaAtiva()) : '';
+  return pniteEscopoAtual().nome + (carga ? ' · base SETE ' + carga : '');
+}
+
+// Cor do anel pronta para o canvas: ctx.strokeStyle ignora "var(--c-…)" e mantinha a cor do trilho
+function pniteCorCanvas(card, cor) {
+  if (cor && cor.indexOf('var(') !== 0) return cor;
+  const arco = card ? card.querySelector('.arc-circle-progress') : null;
+  const resolvida = arco ? getComputedStyle(arco).stroke : '';
+  return (resolvida && resolvida !== 'none') ? resolvida : '#2589F4';
+}
+
 function pniteEscopoAtual() {
   const escopo = (typeof currentScope !== 'undefined') ? currentScope : 'nacional';
   const chave = (typeof currentScopeKey !== 'undefined' && currentScopeKey) ? String(currentScopeKey) : '';
@@ -10363,7 +10551,7 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.4.4";
+const PNITE_VERSION = "v.3.4.5";
 const PNITE_LAST_UPDATE = "19/11/2026";
 const PNITE_LAST_TIME = "19:30";
 
@@ -10524,6 +10712,25 @@ var INDICATOR_FULL_NAMES = {
 // Lista única usada pelos cartões; deve acompanhar status 'em_construcao' em ALL_INDICATORS.
 const INDICADORES_EM_CONSTRUCAO = ['PRPNP', 'PRPM', 'TETI', 'DMC', 'IPE', 'PVRO', 'PVCED'];
 
+// Fonte exibida no cartão: a do catálogo (ALL_INDICATORS) quando o dado não vem só do SETE
+// (Censo Escolar, FNDE); os indicadores do SETE seguem com "SETE, 2026"
+function arcFonte(ind) {
+  if (ind && ind.fonte) return ind.fonte;
+  const cat = (typeof ALL_INDICATORS !== 'undefined' && ind) ? ALL_INDICATORS.find(function(i) { return i.sigla === ind.sigla; }) : null;
+  const f = cat ? cat.fonte : null;
+  return (!f || f === 'SETE/PDDE') ? 'SETE, 2026' : f;
+}
+
+// Mantém nos atributos do cartão o que está na tela: é deles que os downloads (PNG e Excel) leem.
+// Antes eram gravados só na criação do cartão, quando a API ainda não tinha respondido.
+function arcSincronizarDados(cardEl, valor, mediaNacional, pct, titulo) {
+  if (!cardEl) return;
+  cardEl.dataset.val = valor;
+  if (mediaNacional != null) cardEl.dataset.mednac = mediaNacional;
+  cardEl.dataset.pct = String(pct);
+  cardEl.title = titulo + ': ' + valor;
+}
+
 function buildArcCardHtml(ind, d) {
   const sigla = ind.sigla;
   const isPct = (ind.un === '%' || ind.unit === '%');
@@ -10578,6 +10785,7 @@ function buildArcCardHtml(ind, d) {
   const medNac = formatIndicatorValue(ind, getNationalAverage(sigla));
   const color = INDICATOR_COLORS[sigla] || 'var(--c-yellow)';
   const nomeCompleto = (typeof INDICATOR_FULL_NAMES !== 'undefined' && INDICATOR_FULL_NAMES[sigla]) ? INDICATOR_FULL_NAMES[sigla] : ind.nome;
+  const fonte = arcFonte(ind);
 
   const circumference = 2 * Math.PI * 34; // r = 34 => 213.6
   const dashOffset = isEmConstrucao ? circumference : (circumference * (1 - pct / 100));
@@ -10589,14 +10797,14 @@ function buildArcCardHtml(ind, d) {
     : (subText ? `<div class="elyra-arc-sub">${subText}</div>` : '');
 
   const infobarHtml = isEmConstrucao
-    ? `<div class="elyra-arc-infobar"><span class="badge-construcao elyra-arc-selo"><i class="ti ti-tool" aria-hidden="true"></i> Em construção</span><span>${ind.fonte || 'SETE, 2026'}</span></div>`
+    ? `<div class="elyra-arc-infobar"><span class="badge-construcao elyra-arc-selo"><i class="ti ti-tool" aria-hidden="true"></i> Em construção</span><span>${fonte}</span></div>`
     : `<div class="elyra-arc-infobar">
         <span>Média Nacional: <b>${medNac}</b></span>
-        <span>${ind.fonte || 'SETE, 2026'}</span>
+        <span>${fonte}</span>
       </div>`;
 
   return `
-        <div class="elyra-arc-card" id="arcCard-${sigla}" data-sigla="${sigla}" data-nome="${nomeCompleto}" data-val="${valStr}" data-mednac="${medNac}" data-fonte="${ind.fonte || 'SETE, 2026'}" data-color="${color}" data-pct="${pct}" title="${nomeCompleto} (${sigla}): ${valStr}">
+        <div class="elyra-arc-card" id="arcCard-${sigla}" data-sigla="${sigla}" data-nome="${nomeCompleto}" data-val="${valStr}" data-mednac="${medNac}" data-fonte="${fonte}" data-color="${color}" data-pct="${pct}" title="${nomeCompleto} (${sigla}): ${valStr}">
       <button type="button" class="btn-card-ind-download" onclick="event.stopPropagation(); pniteBaixarCardIndicador(this)" title="Baixar este indicador em PNG (Anexo 4)" aria-label="Baixar indicador">
         <i class="ti ti-download"></i>
       </button>
@@ -10658,7 +10866,7 @@ function renderElyraPerformanceArcs(d) {
           </div>`;
 
       return `
-        <div class="elyra-arc-card" id="elyraCard-${g.sigla}" data-sigla="${g.sigla}" data-nome="${g.nome}" data-val="${vStr}" data-mednac="${g.medNac}" data-fonte="${g.fonte || 'SETE, 2026'}" data-color="${g.color}" data-pct="${g.pct}" title="${g.nome} (${g.sigla}): ${vStr}">
+        <div class="elyra-arc-card" id="elyraCard-${g.sigla}" data-sigla="${g.sigla}" data-nome="${g.nome}" data-val="${vStr}" data-mednac="${g.medNac}" data-fonte="${g.fonte || 'SETE, 2026'}" data-color="${g.color}" data-pct="${pct}" title="${g.nome} (${g.sigla}): ${vStr}">
       <button type="button" class="btn-card-ind-download" onclick="event.stopPropagation(); pniteBaixarCardIndicador(this)" title="Baixar este indicador em PNG (Anexo 4)" aria-label="Baixar indicador">
         <i class="ti ti-download"></i>
       </button>
@@ -10706,7 +10914,7 @@ function renderElyraPerformanceArcs(d) {
         } else if (targetVal !== null) {
           const pct = Math.min(100, Math.max(0, targetVal));
           const dashOffset = +(circumference * (1 - pct / 100)).toFixed(1);
-          if (cardEl) cardEl.title = `${g.nome} (${g.sigla}): ${targetVal.toFixed(1)}%`;
+          arcSincronizarDados(cardEl, targetVal.toFixed(1) + '%', g.medNac, pct, `${g.nome} (${g.sigla})`);
           if (circleEl) {
             circleEl.style.strokeDashoffset = dashOffset + 'px';
           }
@@ -10715,11 +10923,9 @@ function renderElyraPerformanceArcs(d) {
             animateNumberValue(valEl, prevVal, targetVal, 1000, '%', 1);
           }
         } else {
+          arcSincronizarDados(cardEl, '—', g.medNac, 0, `${g.nome} (${g.sigla})`);
           if (circleEl) circleEl.style.strokeDashoffset = circumference + 'px';
-          if (valEl) {
-            valEl.textContent = '—';
-            valEl._currentVal = 0;
-          }
+          animateNumberValue(valEl, 0, null);
         }
       });
 
@@ -10836,7 +11042,7 @@ function renderDesempenhoArcs(d) {
           const dashOffset = +(circumference * (1 - info.pct / 100)).toFixed(1);
           if (cardEl) {
             const formatted = (info.decimals === 0) ? Math.round(info.targetVal) : info.targetVal.toFixed(info.decimals);
-            cardEl.title = `${nomeCompleto} (${sigla}): ${formatted}${info.suffix}`;
+            arcSincronizarDados(cardEl, formatted + info.suffix, formatIndicatorValue(ind, getNationalAverage(sigla)), info.pct, `${nomeCompleto} (${sigla})`);
             const nomeEl = cardEl.querySelector('.elyra-arc-nome');
             if (nomeEl) nomeEl.textContent = nomeCompleto;
           }
@@ -10852,15 +11058,13 @@ function renderDesempenhoArcs(d) {
             animateNumberValue(valEl, prevVal, info.targetVal, 1000, info.suffixAnel, info.decimals);
           }
         } else {
+          arcSincronizarDados(cardEl, '—', formatIndicatorValue(ind, getNationalAverage(sigla)), 0, `${nomeCompleto} (${sigla})`);
           if (circleEl) {
             circleEl.setAttribute('stroke', 'var(--border)');
             circleEl.style.stroke = 'var(--border)';
             circleEl.style.strokeDashoffset = circumference + 'px';
           }
-          if (valEl) {
-            valEl.textContent = '—';
-            valEl._currentVal = 0;
-          }
+          animateNumberValue(valEl, 0, null);
         }
       });
     });
@@ -10869,6 +11073,12 @@ function renderDesempenhoArcs(d) {
 
 function animateNumberValue(el, startVal, endVal, duration = 1000, suffix = '%', decimals = 1) {
   if (!el) return;
+  // Cancela a animação em curso antes de tudo: sem isso, o quadro pendente do escopo anterior
+  // regravava o número por cima do "—" de um território sem dado
+  if (el._animId) {
+    cancelAnimationFrame(el._animId);
+    el._animId = null;
+  }
   if (endVal === null || endVal === undefined || isNaN(endVal)) {
     el.textContent = '—';
     el._currentVal = 0;
@@ -10876,11 +11086,6 @@ function animateNumberValue(el, startVal, endVal, duration = 1000, suffix = '%',
   }
   const start = (typeof startVal === 'number' && !isNaN(startVal)) ? startVal : 0;
   const end = Number(endVal);
-
-  if (el._animId) {
-    cancelAnimationFrame(el._animId);
-    el._animId = null;
-  }
 
   function formatVal(v) {
     if (decimals === 0) return Math.round(v);
@@ -11031,7 +11236,7 @@ function renderModalWafflesAndDonut(d) {
               tooltip: {
                 callbacks: {
                   label: c => {
-                    if (!hasData) return 'Sem rotas cadastradas no SETE para esta localidade';
+                    if (c.chart.data.labels[0] === 'Sem registros') return 'Sem rotas cadastradas no SETE para esta localidade';
                     return c.label + ': ' + (c.parsed !== null ? c.parsed.toFixed(1) + '%' : '—');
                   }
                 }
@@ -11048,9 +11253,9 @@ function renderModalWafflesAndDonut(d) {
     const legendEl = document.getElementById('donutLegend');
     if (legendEl) {
       const legendItems = [
-        { id: 'donut-legend-prrm', label: 'Rodoviário', val: prrm, color: roseClr },
-        { id: 'donut-legend-prhm', label: 'Hidroviário', val: prhm, color: blueClr },
-        { id: 'donut-legend-prmm', label: 'Multimodal', val: prmm, color: yellowClr }
+        { id: 'donut-legend-prrm', label: 'Rodoviário', val: hasData && stats.PRRM != null ? prrm : null, color: roseClr },
+        { id: 'donut-legend-prhm', label: 'Hidroviário', val: hasData && stats.PRHM != null ? prhm : null, color: blueClr },
+        { id: 'donut-legend-prmm', label: 'Multimodal', val: hasData && stats.PRMM != null ? prmm : null, color: yellowClr }
       ];
 
       if (!legendEl.querySelector('.donut-legend-item')) {
@@ -11058,7 +11263,7 @@ function renderModalWafflesAndDonut(d) {
           <span class="donut-legend-item" style="display:inline-flex;align-items:center;gap:6px;font-weight:600">
             <span style="width:8px;height:8px;border-radius:50%;background:${item.color}"></span>
             <span>${item.label}</span>
-            <strong class="donut-legend-val" id="${item.id}">0.0%</strong>
+            <strong class="donut-legend-val" id="${item.id}">—</strong>
           </span>
         `).join('');
       }
@@ -11122,7 +11327,7 @@ function renderModalWafflesAndDonut(d) {
               tooltip: {
                 callbacks: {
                   label: c => {
-                    if (!hasFrotaData) return 'Sem veículos cadastrados no SETE para esta localidade';
+                    if (c.chart.data.labels[0] === 'Sem registros') return 'Sem veículos cadastrados no SETE para esta localidade';
                     return c.label + ': ' + (c.parsed !== null ? c.parsed.toFixed(1) + '%' : '—');
                   }
                 }
@@ -11139,8 +11344,8 @@ function renderModalWafflesAndDonut(d) {
     const legendFrotaEl = document.getElementById('donutFrotaLegend');
     if (legendFrotaEl) {
       const legendFrotaItems = [
-        { id: 'donut-legend-pvp', label: 'Frota Própria', val: pvp, color: greenClr },
-        { id: 'donut-legend-pvt', label: 'Frota Terceirizada', val: pvt, color: purpleClr }
+        { id: 'donut-legend-pvp', label: 'Frota Própria', val: hasFrotaData && stats.PVP != null ? pvp : null, color: greenClr },
+        { id: 'donut-legend-pvt', label: 'Frota Terceirizada', val: hasFrotaData && stats.PVT != null ? pvt : null, color: purpleClr }
       ];
 
       if (!legendFrotaEl.querySelector('.donut-legend-item')) {
@@ -11148,7 +11353,7 @@ function renderModalWafflesAndDonut(d) {
           <span class="donut-legend-item" style="display:inline-flex;align-items:center;gap:6px;font-weight:600">
             <span style="width:8px;height:8px;border-radius:50%;background:${item.color}"></span>
             <span>${item.label}</span>
-            <strong class="donut-legend-val" id="${item.id}">0.0%</strong>
+            <strong class="donut-legend-val" id="${item.id}">—</strong>
           </span>
         `).join('');
       }
@@ -11198,7 +11403,7 @@ function renderDescritivosArcs(d) {
           const dashOffset = +(circumference * (1 - info.pct / 100)).toFixed(1);
           if (cardEl) {
             const formatted = (info.decimals === 0) ? Math.round(info.targetVal) : info.targetVal.toFixed(info.decimals);
-            cardEl.title = `${nomeCompleto} (${sigla}): ${formatted}${info.suffix}`;
+            arcSincronizarDados(cardEl, formatted + info.suffix, formatIndicatorValue(ind, getNationalAverage(sigla)), info.pct, `${nomeCompleto} (${sigla})`);
             const nomeEl = cardEl.querySelector('.elyra-arc-nome');
             if (nomeEl) nomeEl.textContent = nomeCompleto;
           }
@@ -11214,15 +11419,13 @@ function renderDescritivosArcs(d) {
             animateNumberValue(valEl, prevVal, info.targetVal, 1000, info.suffixAnel, info.decimals);
           }
         } else {
+          arcSincronizarDados(cardEl, '—', formatIndicatorValue(ind, getNationalAverage(sigla)), 0, `${nomeCompleto} (${sigla})`);
           if (circleEl) {
             circleEl.setAttribute('stroke', 'var(--border)');
             circleEl.style.stroke = 'var(--border)';
             circleEl.style.strokeDashoffset = circumference + 'px';
           }
-          if (valEl) {
-            valEl.textContent = '—';
-            valEl._currentVal = 0;
-          }
+          animateNumberValue(valEl, 0, null);
         }
       });
     });
@@ -11315,7 +11518,9 @@ window.PNITE_API = (function() {
   // Cargas do SETE (public.cargas_sete): cada extração é uma carga AAAAMM (ex.: 202605 = Maio/2026)
   let cargas = [];
   let cargaAtiva = null;
+  let cargasStatus = 'pendente';     // pendente | ok | erro (a lista de cargas não pôde ser lida)
   const CHAVE_PREF_CARGA = 'pnite_carga_sete';
+  const ultimoAplicado = new Map();  // 'nivel|chave' -> JSON do que a API devolveu (antes do ajuste local)
 
   function cfg() { return window.PNITE_CONFIG || null; }
   function configurado() { const c = cfg(); return !!(c && c.supabaseUrl && c.publishableKey); }
@@ -11369,8 +11574,11 @@ window.PNITE_API = (function() {
     const label = rotulo(nivel, chave, linha);
     const ind = Object.assign(pniteEscopoVazio(label), linha ? linha.indicadores : null, { label: label });
     const raw = (linha && linha.raw) || {};
-    const antes = nivel === 'nacional' ? alvo.DATA.nacional : alvo.DATA[nivel][chave];
-    const mudou = JSON.stringify(antes) !== JSON.stringify(ind) || JSON.stringify(alvo.RAW_DATA[chave]) !== JSON.stringify(raw);
+    // Compara com a última resposta da API para o escopo, e não com DATA: patchPniteDataScopes() acrescenta
+    // chaves ao objeto aplicado (PVRO etc.), o que fazia toda resposta parecer mudança e redesenhava tudo em dobro
+    const assinatura = JSON.stringify([ind, raw]);
+    const mudou = ultimoAplicado.get(nivel + '|' + chave) !== assinatura;
+    ultimoAplicado.set(nivel + '|' + chave, assinatura);
     if (nivel === 'nacional') alvo.DATA.nacional = ind; else alvo.DATA[nivel][chave] = ind;
     alvo.RAW_DATA[chave] = raw;
     return mudou;
@@ -11406,13 +11614,16 @@ window.PNITE_API = (function() {
     const carga = cargaAtiva;
     try {
       const linhas = await consultar('sete_municipios', { select: 'dados' });
-      if (carga !== cargaAtiva) { seteStatus = 'pendente'; return; }   // carga trocada durante a consulta
+      // Carga trocada durante a consulta: a resposta é descartada e a tabela da carga atual é pedida em seguida
+      // (antes o estado ficava "pendente" para sempre, ou com a tabela de outra carga)
+      if (carga !== cargaAtiva) { seteStatus = 'pendente'; return carregarSete(); }
       if (!linhas.length || !linhas[0].dados) throw new Error('tabela Dados SETE vazia na API');
       aplicarSeteMun(linhas[0].dados);
       seteStatus = 'ok';
       const aviso = document.getElementById('pniteApiAviso');
       if (aviso && aviso.dataset.origem === 'sete') aviso.hidden = true;
     } catch (e) {
+      if (carga !== cargaAtiva) { seteStatus = 'pendente'; return carregarSete(); }
       seteStatus = 'erro';
       console.error('PNITE API — falha ao carregar a tabela Dados SETE', e);
       mostrarAviso('erro', '<b>Não foi possível carregar a tabela Dados SETE.</b> Verifique a conexão com a API do Supabase.', true, 'sete');
@@ -11483,11 +11694,17 @@ window.PNITE_API = (function() {
       const linhas = await consultar('cargas_sete', { carga: null, ano_carga: null,
         select: 'carga,rotulo,data_referencia,ano_carga,atual', order: 'carga' });
       cargas = Array.isArray(linhas) ? linhas : [];
+      cargasStatus = 'ok';
     } catch (e) {
-      cargas = [];
-      console.warn('PNITE API — lista de cargas indisponível; usando o ano de carga da configuração', e);
+      // Sem a lista, as consultas filtrariam só pelo ano de carga, que reúne mais de uma carga (maio e
+      // novembro de 2026) e misturaria as duas. Mantém a lista já conhecida; sem nenhuma, é erro de carga.
+      console.warn('PNITE API — lista de cargas indisponível', e);
+      if (cargas.length) return;
+      cargasStatus = 'erro';
+      throw e;
     }
-    const pref = preferenciaCarga();
+    // A carga em uso tem prioridade sobre a preferência gravada (que pode não existir: armazenamento bloqueado)
+    const pref = cargaAtiva || preferenciaCarga();
     const escolhida = cargas.find(function(c) { return c.carga === pref; })
       || cargas.find(function(c) { return c.atual; }) || cargas[cargas.length - 1] || null;
     cargaAtiva = escolhida ? escolhida.carga : null;
@@ -11503,6 +11720,9 @@ window.PNITE_API = (function() {
   // Seletor "Base SETE" nas barras de território (uma opção por carga; com uma só, apenas o rótulo)
   function renderSeletoresCarga() {
     document.querySelectorAll('.module-territory-bar').forEach(function(bar) {
+      // Páginas que mostram várias cargas ao mesmo tempo (comparativo e evolução) não levam o seletor:
+      // ali ele não mudaria nada do que está na tela
+      if (bar.hasAttribute('data-sem-carga')) return;
       const wrap = bar.querySelector('.mtb-label-wrap');
       if (!wrap) return;
       let el = wrap.querySelector('.mtb-carga');
@@ -11533,6 +11753,10 @@ window.PNITE_API = (function() {
     cargaAtiva = nova;
     preferenciaCarga(nova);
     renderSeletoresCarga();
+    // Nada da carga anterior fica na tela sob o rótulo da nova: painéis e tabela voltam a "—"/"carregando"
+    // até a resposta chegar (ou ficam assim, com o aviso de erro, se a consulta falhar)
+    aplicarSeteMun({ cols: SETE_MUN.cols, municipios: [], ufs: {} });
+    window.PNITE_DATA_ENGINE.recarregarDados(pniteDadosVazios());
     document.dispatchEvent(new CustomEvent('pnite:carga', { detail: { carga: nova } }));
     return recarregar();
   }
@@ -11574,7 +11798,15 @@ window.PNITE_API = (function() {
     }
     definirCarregando(true);
     definirStatus('carregando');
-    await carregarCargas();
+    try {
+      await carregarCargas();
+    } catch (e) {
+      console.error('PNITE API — falha ao carregar a lista de cargas do SETE', e);
+      definirStatus('erro', e);
+      definirCarregando(false);
+      if (typeof renderAllViews === 'function') renderAllViews();   // comparativo e evolução mostram o erro
+      return;
+    }
     if (seteStatus !== 'ok' && seteStatus !== 'carregando') carregarSete();
     try {
       await carregarResumo();
@@ -11594,6 +11826,7 @@ window.PNITE_API = (function() {
   function recarregar() {
     cache.clear();
     municipios.clear();
+    ultimoAplicado.clear();
     resumoCarregado = false;
     if (seteStatus !== 'carregando') seteStatus = 'pendente';
     return iniciar();
@@ -11681,6 +11914,7 @@ window.PNITE_API = (function() {
     seteStatus: function() { return configurado() ? seteStatus : 'sem-config'; },
     municipio: function(cod) { return municipios.get(parseInt(cod, 10)); },
     cargas: function() { return cargas.slice(); },
+    cargasStatus: function() { return cargasStatus; },
     cargaAtiva: function() { return cargaAtiva; },
     rotuloCarga: rotuloCarga,
     definirCarga: definirCarga,
@@ -12290,38 +12524,7 @@ function getD(){
   return (k && DATA.estado[k]) ? DATA.estado[k] : DATA.estado['go'];
 }
 
-function refreshActiveTab(){
-  var at=document.querySelector('.tab-content.active');
-  if(!at) return;
-  if(at.id==='tab-rotas'){renderRotasGrid(getD());setTimeout(renderPRGMChart,60);}
-  if(at.id==='tab-frota'){renderFrotaGrid(getD());setTimeout(renderFrotaEstadoChart,60);}
-  if(at.id==='tab-memoria') renderMemoria();
-  if(at.id==='tab-indicadores') renderGiTable();
-  if(at.id==='tab-calculo') renderMissingTable();
-  if(at.id==='tab-mapa') renderMapa();
-  if(at.id==='tab-sete') renderSete();
-}
 
-function setScope(btn,scope){
-  document.querySelectorAll('.fb').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  currentScope=scope;
-  const sel=document.getElementById('regionSelect');
-  if(scope==='nacional'){
-    sel.style.display='none';
-    sel.value='';
-    render(); refreshActiveTab();
-  } else {
-    sel.style.display='';
-    const opts=scope==='regiao'
-      ?[['norte','Norte'],['nordeste','Nordeste'],['sudeste','Sudeste'],['sul','Sul'],['centro-oeste','Centro-Oeste']]
-      :[['ac','Acre'],['al','Alagoas'],['am','Amazonas'],['ap','Amapá'],['ba','Bahia'],['ce','Ceará'],['df','Distrito Federal'],['es','Espírito Santo'],['go','Goiás'],['ma','Maranhão'],['mg','Minas Gerais'],['ms','Mato Grosso do Sul'],['mt','Mato Grosso'],['pa','Pará'],['pb','Paraíba'],['pe','Pernambuco'],['pi','Piauí'],['pr','Paraná'],['rj','Rio de Janeiro'],['rn','Rio Grande do Norte'],['ro','Rondônia'],['rr','Roraima'],['rs','Rio Grande do Sul'],['sc','Santa Catarina'],['se','Sergipe'],['sp','São Paulo'],['to','Tocantins']];
-    sel.innerHTML=opts.map(([v,l])=>`<option value="${v}">${l}</option>`).join('');
-    sel.value=opts[0][0];
-    render(); refreshActiveTab();
-  }
-  if (window.PNITE_API) PNITE_API.atualizarEscopo(scope, sel.value);
-}
 
 function st(val,unit){
   if(val===null||val===undefined) return 'nd';
@@ -12330,248 +12533,18 @@ function st(val,unit){
 }
 
 
-function renderElyraHero(d) {
-  // Atualiza Badge do Escopo
-  const scopeEl = document.getElementById('dashboardScopeBadge');
-  if (scopeEl) {
-    let scopeText = 'Nacional';
-    if (currentScope === 'regiao') {
-      const regSel = document.querySelector('.mtb-select-regiao') || document.getElementById('regionSelect');
-      scopeText = 'Região ' + (regSel && regSel.options && regSel.selectedIndex >= 0 && regSel.options[regSel.selectedIndex] ? regSel.options[regSel.selectedIndex].text : 'Centro-Oeste');
-    } else if (currentScope === 'estado') {
-      const estSel = document.querySelector('.mtb-select-estado') || document.getElementById('regionSelect');
-      scopeText = 'Estado: ' + (estSel && estSel.options && estSel.selectedIndex >= 0 && estSel.options[estSel.selectedIndex] ? estSel.options[estSel.selectedIndex].text : 'Goiás');
-    } else if (currentScope === 'municipio') {
-      const munCitySel = document.querySelector('.mtb-select-mun-city') || document.getElementById('selMunCity');
-      scopeText = 'Município: ' + (munCitySel && munCitySel.options && munCitySel.selectedIndex >= 0 && munCitySel.options[munCitySel.selectedIndex] ? munCitySel.options[munCitySel.selectedIndex].text.split(' (')[0] : 'Município');
-    }
-    scopeEl.innerHTML = `<i class="ti ti-map-pin"></i> ${scopeText}`;
-  }
 
-  // Grandes KPIs da esquerda com ênfase nos FINALÍSTICOS (TETI, IPE)
-  const kpisEl = document.getElementById('heroKpis');
-  if (kpisEl) {
-    const tetiVal = (d.TETI !== null && d.TETI !== undefined) ? d.TETI.toFixed(1) + '%' : '—';
-    const ipeVal = (d.IPE !== null && d.IPE !== undefined) ? d.IPE.toFixed(1) + '%' : '—';
-    const prgmVal = d.PRGM !== null && d.PRGM !== undefined ? d.PRGM.toFixed(1) + '%' : '—';
 
-    kpisEl.innerHTML = `
-      <div class="ehk-item">
-        <div class="ehk-top">
-          <span class="ehk-val" style="font-size:22px">${tetiVal}</span>
-          <span class="ehk-pill badge-construcao" style="background:rgba(139,92,246,0.18);color:#8b5cf6;border:none"><i class="ti ti-tool" style="font-size:10px"></i> Em construção</span>
-        </div>
-        <div class="ehk-label">Transporte Escolar Adequado (TETI)</div>
-        <div class="ehk-sub">Proporção de veículos homologados vs rústicos</div>
-      </div>
-      <div class="ehk-item">
-        <div class="ehk-top">
-          <span class="ehk-val" style="font-size:22px">${ipeVal}</span>
-          <span class="ehk-pill badge-construcao" style="background:rgba(139,92,246,0.18);color:#8b5cf6;border:none"><i class="ti ti-tool" style="font-size:10px"></i> Em construção</span>
-        </div>
-        <div class="ehk-label">Proteção Embarcada (IPE)</div>
-        <div class="ehk-sub">Alunos com monitor escolar em rota</div>
-      </div>
-      <div class="ehk-item">
-        <div class="ehk-top">
-          <span class="ehk-val">${prgmVal}</span>
-          <span class="ehk-pill" style="background:rgba(223,109,124,0.15);color:var(--c-rose)">PRGM</span>
-        </div>
-        <div class="ehk-label">Rotas Georreferenciadas</div>
-        <div class="ehk-sub">Mapeamento digital da rede SETE</div>
-      </div>
-    `;
-  }
 
-  // Capsule Bars (Anexo 5) — Hidroviário Azul (--c-blue), Rodoviário Vermelho (--c-rose)
-  const barsEl = document.getElementById('elyraCapsuleBars');
-  if (barsEl) {
-    const barsData = [
-      { key: 'PRRM', lbl: 'ROD', name: 'Rotas Rodoviárias', val: d.PRRM, color: 'var(--c-rose)' },
-      { key: 'PRHM', lbl: 'HID', name: 'Rotas Hidroviárias', val: d.PRHM, color: 'var(--c-blue)' },
-      { key: 'PRMM', lbl: 'MULT', name: 'Rotas Multimodais', val: d.PRMM, color: 'var(--c-yellow)' },
-      { key: 'TETI', lbl: 'ADEQ', name: 'Transporte Adequado (Em construção)', val: null, color: '#8b5cf6' },
-      { key: 'IPE',  lbl: 'PROT', name: 'Proteção Embarcada (Em construção)', val: null, color: '#8b5cf6' },
-      { key: 'PVP',  lbl: 'PRÓP', name: 'Frota Própria Municipal', val: d.PVP, color: 'var(--c-mint)' }
-    ];
 
-    barsEl.innerHTML = barsData.map(b => {
-      const isConstrucao = ['TETI', 'IPE'].includes(b.key);
-      const v = (!isConstrucao && b.val !== null && b.val !== undefined) ? b.val : 0;
-      const vStr = isConstrucao ? '—' : (b.val !== null && b.val !== undefined ? b.val.toFixed(0) + '%' : '—');
-      const fillHeight = isConstrucao ? 6 : Math.min(100, Math.max(8, v));
-      return `
-        <div class="elyra-bar-col" title="${b.name}: ${isConstrucao ? 'Em construção' : (b.val != null ? b.val.toFixed(1)+'%' : 'Pendente')}">
-          <span class="elyra-bar-val" style="${isConstrucao ? 'font-size:8px;white-space:nowrap' : ''}">${vStr}</span>
-          <div class="elyra-bar-track">
-            <div class="elyra-bar-fill" style="height:${fillHeight}%;background:${b.color}"></div>
-          </div>
-          <span class="elyra-bar-lbl">${b.lbl}</span>
-        </div>
-      `;
-    }).join('');
-  }
-}
 
-function renderElyraWaffleGrids(d) {
-  // 3-Column Metric Cards com Waffle Grid (Anexo 4)
-  function buildWaffleGrid(dotsCount, filledCount, color) {
-    let html = '';
-    for (let i = 0; i < dotsCount; i++) {
-      const isFilled = i < filledCount;
-      html += `<span class="egc-waffle-dot" style="${isFilled ? 'background:' + color : ''}"></span>`;
-    }
-    return html;
-  }
 
-  const wgD = document.getElementById('waffleGridD');
-  if (wgD) wgD.innerHTML = buildWaffleGrid(32, 16, 'var(--c-rose)');
 
-  const wgP = document.getElementById('waffleGridP');
-  if (wgP) wgP.innerHTML = buildWaffleGrid(32, 10, 'var(--c-mint)');
 
-  const wgFNL = document.getElementById('waffleGridFNL');
-  if (wgFNL) wgFNL.innerHTML = buildWaffleGrid(32, 5, 'var(--c-yellow)');
-}
 
-function render(){
-  const d=getD();
-  renderElyraHero(d);
-  renderAllIndicators(d);
-  renderElyraWaffleGrids(d);
-  renderTableInd(d);
-  renderCensoTable(d);
-  renderRotasGrid(d);
-  renderFrotaGrid(d);
-}
 
-function renderMetrics(d){
-  const g=document.getElementById('metricGrid'); if(!g) return;
-  g.innerHTML='';
-  const items=[{sigla:'PRGM',nome:'Rotas Georreferenciadas',key:'PRGM',unit:'%',tipo:'P',c:'fb2'},{sigla:'PVP',nome:'Veículos Próprios',key:'PVP',unit:'%',tipo:'D',c:'fg'},{sigla:'TETI',nome:'Transporte Adequado',key:'TETI',unit:'%',tipo:'FNL',c:'fo'},{sigla:'ATE',nome:'Alunos por Escola',key:'ATE',unit:'alunos',tipo:'D',c:'fg'}];
-  items.forEach(m=>{
-    const val=d[m.key];
-    const disp=val===null?'—':(m.unit==='%'?val.toFixed(1)+'%':val.toFixed(1));
-    const pct=val===null?0:Math.min(100,m.unit==='%'?val:val/80*100);
-    const bc=m.tipo==='D'?'bd':m.tipo==='P'?'bp':'bf';
-    g.innerHTML+=`<div class="mc"><div class="mc-top"><span class="mc-label">${m.sigla}</span><span class="badge ${bc}">${m.tipo}</span></div><div class="mc-val">${disp}</div><div class="mc-unit">${m.nome}</div><div class="mc-bar"><div class="mc-fill ${m.c}" style="width:${pct.toFixed(0)}%"></div></div></div>`;
-  });
-}
 
-function setIndTab(el,tab){document.querySelectorAll('#indTabRow .tab-btn').forEach(t=>t.classList.remove('active'));el.classList.add('active');currentIndTab=tab;renderTableInd(getD());}
 
-function renderTableInd(d){
-  const tb=document.getElementById('indTableBody'); if(!tb) return;
-  tb.innerHTML='';
-  INDICATORS[currentIndTab].forEach(ind=>{
-    const val = d[ind.key];
-    const s = st(val, ind.unit);
-    const dc = s==='ok'?'dok':s==='warn'?'dwn':s==='nd'?'':'dal';
-    const disp = (val===null || val===undefined)
-      ? '<span class="no-data" title="Dado pendente">—</span>'
-      : (ind.unit==='%' ? val.toFixed(1)+'%' : ind.unit==='índice' ? val.toFixed(2) : val.toFixed(1) + (ind.unit ? ' ' + ind.unit : ''));
-    let badgeTag = '';
-    if(ind.badge === 'novo') badgeTag = '<span class="badge-novo">Novo</span>';
-    else if(ind.badge === 'rev') badgeTag = '<span class="badge-rev">Revisado</span>';
-    else if(ind.badge === 'construcao') badgeTag = '<span class="badge-construcao"><i class="ti ti-tool" style="font-size:9px"></i>Em constr.</span>';
-    
-    let stHtml = (val !== null && val !== undefined)
-      ? `<span class="sd ${dc}"></span>${s==='ok'?'OK':s==='warn'?'Atenção':'Crítico'}`
-      : (ind.badge === 'construcao'
-        ? `<span class="badge-construcao" title="Indicador em fase de construção"><i class="ti ti-tool" style="font-size:10px"></i>Em constr.</span>`
-        : `<span class="badge-pendente"><i class="ti ti-clock" style="font-size:10px"></i>Pendente</span>`);
-
-    tb.innerHTML+=`<tr>
-      <td><span class="sp">${ind.sigla}</span>${badgeTag}</td>
-      <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${ind.nome}">${ind.nome}</td>
-      <td style="text-align:right;font-weight:600">${disp}</td>
-      <td>${stHtml}</td>
-    </tr>`;
-  });
-}
-
-function renderCensoTable(d){
-  const items=[{nome:'Alunos Transp. por Escola (ATE)',key:'ATE',unit:'alunos'},{nome:'Percentual Transp. por Município (PATM)',key:'PATM',unit:'%'},{nome:'Percentual Transp. por Estado (PATE)',key:'PATE',unit:'%'}];
-  const tb=document.getElementById('censoBody'); tb.innerHTML='';
-  items.forEach(c=>{
-    const val=d[c.key];
-    const disp=val===null?'<span class="no-data">—</span>':(c.unit==='%'?val.toFixed(1)+'%':val.toFixed(1));
-    tb.innerHTML+=`<tr><td>${c.nome}</td><td style="text-align:right;font-weight:600">${disp}</td><td style="font-size:10px;color:var(--text-3)">Censo 2024</td></tr>`;
-  });
-}
-
-function renderRotasGrid(d){
-  const g=document.getElementById('rotasGrid'); if(!g) return; g.innerHTML='';
-  [{k:'PRGM',n:'Rotas Georreferenciadas',c:'fb2'},{k:'PRRM',n:'Rotas Rodoviárias',c:'fg'},{k:'PRHM',n:'Rotas Hidroviárias',c:'fb2'},{k:'PRMM',n:'Rotas Multimodais',c:'fo'}].forEach(m=>{
-    const val=d[m.k]; const disp=val===null?'—':val.toFixed(1)+'%';
-    g.innerHTML+=`<div class="mc"><div class="mc-top"><span class="mc-label">${m.k}</span><span class="badge bd">D</span></div><div class="mc-val">${disp}</div><div class="mc-unit">${m.n}</div><div class="mc-bar"><div class="mc-fill ${m.c}" style="width:${val===null?0:Math.min(100,val).toFixed(0)}%"></div></div></div>`;
-  });
-}
-
-function renderFrotaGrid(d){
-  const g=document.getElementById('frotaGrid'); if(!g) return; g.innerHTML='';
-  [{k:'PVP',n:'Veículos Próprios',c:'fg'}].forEach(m=>{
-    const val=d[m.k]; const disp=val===null?'—':val.toFixed(1)+'%';
-    g.innerHTML+=`<div class="mc"><div class="mc-top"><span class="mc-label">${m.k}</span><span class="badge bd">D</span></div><div class="mc-val">${disp}</div><div class="mc-unit">${m.n}</div><div class="mc-bar"><div class="mc-fill ${m.c}" style="width:${val===null?0:Math.min(100,val).toFixed(0)}%"></div></div></div>`;
-  });
-}
-
-function renderPRGMChart(){
-  const el=document.getElementById('chartPRGM'); if(!el) return;
-  const clr=getChartColors();
-  if(chartPRGM) chartPRGM.destroy();
-  const ufs=Object.keys(DATA.estado);
-  const pairs=ufs.map(u=>({uf:u.toUpperCase(),v:DATA.estado[u].PRGM})).filter(p=>p.v!==null).sort((a,b)=>a.v-b.v);
-  const estados=pairs.map(p=>p.uf);
-  const vals=pairs.map(p=>p.v);
-  const dark=document.documentElement.getAttribute('data-theme')==='dark';
-  const colors=vals.map(v=>v>=50?(dark?'#22c47e':'#1D9E75'):v>=30?(dark?'#f5a623':'#e8990a'):(dark?'#e05555':'#d94040'));
-  chartPRGM=new Chart(el,{type:'bar',data:{labels:estados,datasets:[{label:'PRGM (%)',data:vals,backgroundColor:colors,borderRadius:3,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed.x.toFixed(1)+'%'}}},scales:{x:{grid:{color:clr.gridColor},ticks:{callback:v=>v+'%',font:{size:9},color:clr.tickColor},max:100},y:{grid:{display:false},ticks:{font:{size:8},color:clr.tickColor}}}}});
-}
-
-function renderFrotaEstadoChart(){
-  const el=document.getElementById('chartFrotaEstado'); if(!el) return;
-  const clr=getChartColors();
-  if(chartFrotaEstado) chartFrotaEstado.destroy();
-  const ufs=Object.keys(DATA.estado).filter(u=>DATA.estado[u].PVP!==null);
-  const estados=ufs.map(u=>u.toUpperCase());
-  const pvp=ufs.map(u=>DATA.estado[u].PVP);
-  const pvt=ufs.map(u=>DATA.estado[u].PVT);
-  chartFrotaEstado=new Chart(el,{type:'bar',data:{labels:estados,datasets:[
-    {label:'Própria',data:pvp,backgroundColor:clr.accent,borderRadius:2,stack:'s'},
-    {label:'Terceirizada',data:pvt,backgroundColor:clr.blue,borderRadius:2,stack:'s'}
-  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.parsed.y.toFixed(1)+'%'}}},scales:{x:{stacked:true,grid:{display:false},ticks:{font:{size:8},color:clr.tickColor}},y:{stacked:true,grid:{color:clr.gridColor},ticks:{callback:v=>v+'%',font:{size:9},color:clr.tickColor},max:100}}}});
-  document.getElementById('frotaEstadoLegend').innerHTML=[['Própria',clr.accent],['Terceirizada',clr.blue]].map(([l,c])=>`<span style="display:flex;align-items:center;gap:3px"><span style="width:8px;height:8px;border-radius:2px;background:${c}"></span>${l}</span>`).join('');
-}
-
-function objTipShow(ev,sigla){
-  const ind=ALL_INDICATORS.find(i=>i.sigla===sigla);
-  if(!ind||!ind.obj) return;
-  let tip=document.getElementById('objTip');
-  if(!tip){tip=document.createElement('div');tip.id='objTip';document.body.appendChild(tip);}
-  tip.innerHTML='<div class="ot-h">Objetivo metodológico — '+ind.sigla+'</div><div class="ot-b">'+ind.obj+'</div>';
-  tip.style.display='block';
-  const pad=14, vw=window.innerWidth, vh=window.innerHeight;
-  let x=ev.clientX+pad, y=ev.clientY+pad;
-  const r=tip.getBoundingClientRect();
-  if(x+r.width>vw-8) x=ev.clientX-r.width-pad;
-  if(y+r.height>vh-8) y=ev.clientY-r.height-pad;
-  tip.style.left=x+'px'; tip.style.top=y+'px';
-}
-function objTipHide(){const t=document.getElementById('objTip'); if(t) t.style.display='none';}
-
-function renderMissingTable(){
-  const tb=document.getElementById('missingTable'); if(!tb) return;
-  tb.innerHTML='';
-  MISSING_TABLE.forEach(m=>{
-    tb.innerHTML+=`<tr>
-      <td><span class="sp" style="text-decoration:line-through;color:var(--red)">${m.sigla}</span></td>
-      <td style="font-weight:600">${m.nome}</td>
-      <td><span class="badge ${m.grupo==='Descritivo'?'bd':m.grupo==='Desempenho'?'bp':'bf'}">${m.grupo}</span></td>
-      <td style="font-size:11px;color:var(--text-2);line-height:1.45">${m.motivo}</td>
-    </tr>`;
-  });
-}
 
 function buildCalcForm(){
   const sel = document.getElementById('calcSelect');
@@ -12623,7 +12596,7 @@ function calcular(){
   if (fallback) fallback.style.display = 'none';
 
   const isRatio = def.fields.length > 1 && def.formula.includes('÷');
-  if (vals.some(v => Number.isNaN(v)) || (isRatio && vals[1] === 0)) {
+  if (vals.some(v => Number.isNaN(v) || v < 0) || (isRatio && vals[1] === 0)) {
     res.style.background = 'var(--bg-input)';
     res.style.color = 'var(--c-rose)';
     res.style.border = '1px solid var(--c-rose)';
@@ -12636,10 +12609,6 @@ function calcular(){
   res.textContent = `${key} = ${def.fn(vals)}`;
 }
 
-function onRegionChange(){
-  render();
-  refreshActiveTab();
-}
 
 // MEMÓRIA DE CÁLCULO — dinâmica por escopo
 function getRawKey(){
@@ -12749,7 +12718,7 @@ function renderMemoria(){
   // Número no padrão brasileiro (até 1 casa decimal, salvo indicação); ausência de dado → "—"
   const numMem = (v, casas = 1) => (v !== null && v !== undefined && v !== '' && isFinite(Number(v)))
     ? Number(v).toLocaleString('pt-BR', { maximumFractionDigits: casas }) : '—';
-  let html='<div style="font-size:11px;color:var(--text-3);margin-bottom:14px">Escopo atual: <b style="color:var(--text-1)">'+scopeLabel+'</b> — todos os valores disponíveis são calculados a partir dos microdados do SETE e Censo Escolar para este território. Indicadores calculados são apresentados inicialmente, com a relação de indicadores em construção consolidada ao final.</div>';
+  let html='<div style="font-size:11px;color:var(--text-3);margin-bottom:14px">Escopo atual: <b style="color:var(--text-1)">'+escHtml(scopeLabel)+'</b> — todos os valores disponíveis são calculados a partir dos microdados do SETE e Censo Escolar para este território. Indicadores calculados são apresentados inicialmente, com a relação de indicadores em construção consolidada ao final.</div>';
 
   // ═════════════════════════════════════════════════════════════════════════
   // 1. ROTAS E ACESSO OPERACIONAL (INDICADORES CALCULADOS)
@@ -12877,7 +12846,7 @@ function renderMemoria(){
   // ═════════════════════════════════════════════════════════════════════════
   html+=secTitle('Profissionais e Recursos Humanos (Calculados)','script_05_monitores.csv | script_06_motoristas.csv');
 
-  const mot_outro = r.mot_sem_vinculo !== undefined ? r.mot_sem_vinculo : (r.tot_mot_info && r.mot_cv ? r.tot_mot_info - r.mot_cv : 0);
+  const mot_outro = r.mot_sem_vinculo != null ? r.mot_sem_vinculo : (r.tot_mot_info != null && r.mot_cv != null ? r.tot_mot_info - r.mot_cv : null);
   const pmve_calc = r.tot_mot_info && r.mot_cv !== undefined ? (r.mot_cv / r.tot_mot_info * 100).toFixed(2) + '%' : null;
   html+=card('PMVE','Percentual de Motoristas com Vínculo Empregatício','P',
     [['Motoristas com vínculo formal (efetivo/comissionado/terceirizado)',fmt(r.mot_cv)],['Motoristas sem vínculo formal (Outro)',fmt(mot_outro)],['Motoristas com vínculo informado',fmt(r.tot_mot_info)]],
@@ -12886,7 +12855,7 @@ function renderMemoria(){
     'Campo vinculo ∈ {1,2,3} vs vinculo = 4 (Outro) em script_06_motoristas',
     'Mede a formalização e a estabilidade da força de trabalho de condutores.',null,'rev');
 
-  const mon_outro = r.mon_sem_vinculo !== undefined ? r.mon_sem_vinculo : (r.tot_mon && r.mon_cv ? r.tot_mon - r.mon_cv : 0);
+  const mon_outro = r.mon_sem_vinculo != null ? r.mon_sem_vinculo : (r.tot_mon != null && r.mon_cv != null ? r.tot_mon - r.mon_cv : null);
   const pmnve_calc = r.tot_mon && r.mon_cv !== undefined ? (r.mon_cv / r.tot_mon * 100).toFixed(2) + '%' : null;
   html+=card('PMNVE','Percentual de Monitores com Vínculo Empregatício','P',
     [['Monitores com vínculo formal (efetivo/comissionado/terceirizado)',fmt(r.mon_cv)],['Monitores sem vínculo formal (Outro)',fmt(mon_outro)],['Total de monitores cadastrados',fmt(r.tot_mon)]],
@@ -12921,6 +12890,7 @@ function renderMemoria(){
     [['Alunos transportados',fmt(r.al_transp)],['Veículos com capacidade válida (1 a 100 lugares)',fmt(r.n_veic_validos)],['Capacidade média dos veículos',fmt(r.cap_media)]],
     `${fmt(r.al_transp)} ÷ (${fmt(r.n_veic_validos)} × ${fmt(r.cap_media)})`,
     iuc_val,
+    'script_13_rota_atende_aluno (alunos transportados) e script_04_veiculos (capacidade de 1 a 100 lugares)',
     'Relação entre demanda de alunos e capacidade teórica da frota. IUC próximo de 1 indica equilíbrio.',null,null);
 
   const pate_val = (r.PATE !== undefined && r.PATE !== null) ? (typeof r.PATE === 'number' ? r.PATE.toFixed(2) + '%' : r.PATE) : ((r.cs_test || r.cs_tmun) ? (r.cs_test / (r.cs_tmun + r.cs_test) * 100).toFixed(2) + '%' : null);
@@ -13257,14 +13227,12 @@ function getActiveSeteContext() {
   return { topScope, regionVal, ufSelVal, searchVal, targetUfs, scopeLabel };
 }
 
-function onSeteFilterChange() {
-  renderSete();
-}
 
 // Aplica a tabela recebida da API (PNITE_API) e recalcula os índices das colunas exibidas
 function aplicarSeteMun(dados) {
   SETE_MUN = dados;
   window.SETE_MUN = dados;
+  seteInit = false;                 // a lista de UFs do filtro acompanha a tabela aplicada
   SETE_COLS_REG.forEach(c => c.i = SETE_MUN.cols.indexOf(c.k));
   SETE_COLS_IND.forEach(c => c.i = SETE_MUN.cols.indexOf(c.k));
 }
@@ -13273,14 +13241,17 @@ function initSete(){
   if(seteInit || !Object.keys(SETE_MUN.ufs).length) return;
   seteInit = true;
   const sel = document.getElementById('seteUfSel');
-  if(sel && sel.options.length <= 1) {
-    Object.keys(SETE_MUN.ufs).sort().forEach(s => {
-      const o = document.createElement('option');
-      o.value = s;
-      o.textContent = s + ' — ' + SETE_MUN.ufs[s].nome;
-      sel.appendChild(o);
-    });
-  }
+  if(!sel) return;
+  // Refaz as opções (a primeira, "todas as UFs", é fixa) e mantém a UF escolhida se ela continuar na lista
+  const atual = sel.value;
+  while(sel.options.length > 1) sel.remove(1);
+  Object.keys(SETE_MUN.ufs).sort().forEach(s => {
+    const o = document.createElement('option');
+    o.value = s;
+    o.textContent = s + ' — ' + SETE_MUN.ufs[s].nome;
+    sel.appendChild(o);
+  });
+  sel.value = Array.from(sel.options).some(o => o.value === atual) ? atual : '';
 }
 
 function renderSete(){
@@ -13297,7 +13268,6 @@ function renderSete(){
   }
   initSete();
   syncSeteSelectors();
-  renderSeteGrid();
   renderSeteUf();
   renderSeteMun();
 }
@@ -13310,73 +13280,42 @@ function syncSeteSelectors(){
     const st = String(currentScopeKey || 'go').toUpperCase();
     if(sel.value !== st && !seteManualUfOverride) {
       sel.value = st;
+      sel.dataset.auto = '1';       // UF posta pelo escopo, não pelo usuário
     }
   } else if(currentScope === 'regiao') {
     const regKey = (typeof currentScopeKey !== 'undefined' && currentScopeKey)
       ? String(currentScopeKey).toLowerCase().trim()
       : (document.getElementById('regionSelect')?.value || 'centro-oeste').toLowerCase().trim();
     const allowed = REGIOES_UFS[regKey] || [];
-    // Se a UF selecionada não pertence à região, reseta
-    if(sel.value && !allowed.includes(sel.value)) {
+    // Se a UF selecionada não pertence à região (ou tinha sido posta pelo escopo Estado), reseta
+    if(sel.value && (!allowed.includes(sel.value) || (sel.dataset.auto === '1' && !seteManualUfOverride))) {
       sel.value = '';
+      delete sel.dataset.auto;
     }
-  } else if(currentScope === 'nacional' && !seteManualUfOverride) {
-    // Nacional sem override
+  } else if(currentScope === 'nacional' && !seteManualUfOverride && sel.dataset.auto === '1') {
+    // De volta ao Brasil: sai a UF que o escopo Estado tinha posto no filtro
+    sel.value = '';
+    delete sel.dataset.auto;
   }
+}
+
+// Escolha manual da UF no seletor da tabela municipal
+function seteUfEscolhida(valor) {
+  const sel = document.getElementById('seteUfSel');
+  if(sel) delete sel.dataset.auto;
+  seteManualUfOverride = !!valor;
+  seteMunPage = 0;
+  renderSeteMun();
+}
+
+// Paginação da tabela municipal (50 por página)
+function seteMunIrPagina(delta) {
+  seteMunPage += delta;
+  renderSeteMun();
 }
 
 let seteManualUfOverride = false;
 
-function renderSeteGrid(){
-  const grid = document.getElementById('seteGrid');
-  if(!grid) return;
-  const c = SETE_MUN.cols;
-  const ctx = getActiveSeteContext();
-
-  let rows = SETE_MUN.municipios.filter(r => {
-    if(ctx.targetUfs && !ctx.targetUfs.includes(r[2])) return false;
-    if(ctx.searchVal) {
-      const mName = String(r[1]).toLowerCase().includes(ctx.searchVal);
-      const mCod = String(r[0]).includes(ctx.searchVal);
-      if(!mName && !mCod) return false;
-    }
-    return true;
-  });
-
-  const tot = k => rows.reduce((s, r) => s + (r[c.indexOf(k)] || 0), 0);
-
-  let badgeScope = 'SETE · ' + ctx.scopeLabel;
-  if(ctx.searchVal && rows.length === 1) {
-    badgeScope = 'Município: ' + rows[0][1] + ' (' + rows[0][2] + ')';
-  } else if(ctx.searchVal) {
-    badgeScope = 'Filtro: ' + ctx.searchVal + ' (' + rows.length + ')';
-  }
-
-  const cards = [
-    ['Municípios', rows.length, 'bd', 'Unidades com dados no SETE'],
-    ['Alunos (registros)', tot('alunos'), 'bp', 'Total cadastrado'],
-    ['Alunos transportados', tot('al_transp'), 'bp', 'Atendidos em rotas'],
-    ['Rotas', tot('rotas'), 'bd', 'Traçados monitorados'],
-    ['Km total de rotas', Math.round(tot('km_total')), 'bc', 'Extensão somada'],
-    ['Veículos', tot('veiculos'), 'bd', 'Frota em operação'],
-    ['Monitores', tot('monitores'), 'bf', 'Equipe de apoio'],
-    ['Motoristas (registros)', tot('motoristas'), 'bf', 'Condutores cadastrados']
-  ];
-
-  grid.innerHTML = cards.map(x => `
-    <div class="mc">
-      <div class="mc-top">
-        <div class="mc-label">${x[0]}</div>
-        <span class="badge ${x[2]}">${badgeScope}</span>
-      </div>
-      <div class="mc-val">${fmtS(x[1])}</div>
-      <div class="mc-unit">${x[3]}</div>
-    </div>
-  `).join('');
-
-  const nMunEl = document.getElementById('seteNMun');
-  if(nMunEl) nMunEl.textContent = rows.length.toLocaleString('pt-BR');
-}
 
 function renderSeteUf(){
   const head = document.getElementById('seteUfHead');
@@ -13425,14 +13364,14 @@ function renderSeteUf(){
   body.innerHTML = arr.map(u => {
     const isSelected = (ctx.ufSelVal === u.sigla) || (ctx.topScope === 'estado' && ctx.targetUfs?.[0] === u.sigla);
     const trClass = isSelected ? ' class="selected"' : '';
-    return `<tr${trClass} onclick="selectSeteUf('${u.sigla}')" title="Clique para filtrar municípios de ${u.nome}">` +
+    return `<tr${trClass} onclick="selectSeteUf('${u.sigla}')" title="Clique para filtrar municípios de ${escHtml(u.nome || u.sigla)}">` +
       SETE_UF_COLS.map((cl, i) => {
         const isSticky = (i === 0);
         const stickyClass = isSticky ? ' sticky-uf' : '';
         if (i === 0) {
           return `<td class="${stickyClass}"><span class="sigla-chip">${u.sigla}</span></td>`;
         } else if (i === 1) {
-          return `<td style="font-weight:600">${u.nome || '—'}</td>`;
+          return `<td style="font-weight:600">${u.nome ? escHtml(u.nome) : '—'}</td>`;
         } else {
           const val = (cl.k === 'km' ? Math.round(u[cl.k]) : u[cl.k]);
           return `<td class="num-cell">${fmtS(val)}</td>`;
@@ -13505,7 +13444,7 @@ function renderSeteMun(){
 
   body.innerHTML = pg.map(r =>
     '<tr>' + COLS.map((cl, j) =>
-      `<td style="${j > 2 ? 'text-align:right;font-variant-numeric:tabular-nums;' : ''}${j === 1 ? 'font-weight:600' : ''}">${j < 3 ? (r[cl.i] ?? '—') : fmtS(r[cl.i])}</td>`
+      `<td style="${j > 2 ? 'text-align:right;font-variant-numeric:tabular-nums;' : ''}${j === 1 ? 'font-weight:600' : ''}">${j < 3 ? (r[cl.i] != null ? escHtml(r[cl.i]) : '—') : fmtS(r[cl.i])}</td>`
     ).join('') + '</tr>'
   ).join('') || '<tr><td colspan="' + COLS.length + '" style="text-align:center;color:var(--text-3);padding:18px">Nenhum município encontrado</td></tr>';
 
@@ -13518,43 +13457,19 @@ function renderSeteMun(){
   const subEl = document.getElementById('seteMunSub');
   if(subEl) subEl.textContent = subText;
   const pInfo = document.getElementById('seteMunPageInfo');
-  if(pInfo) pInfo.textContent = 'Página ' + (seteMunPage + 1) + ' de ' + np + ' · 50 por página';
+  if(pInfo) {
+    pInfo.innerHTML = '<span>Página ' + (seteMunPage + 1) + ' de ' + np + ' · 50 por página</span>'
+      + (np > 1 ? '<span class="pagination-acoes">'
+        + '<button type="button" class="btn btn-outline" onclick="seteMunIrPagina(-1)"' + (seteMunPage <= 0 ? ' disabled' : '') + '><i class="ti ti-chevron-left" aria-hidden="true"></i> Anterior</button>'
+        + '<button type="button" class="btn btn-outline" onclick="seteMunIrPagina(1)"' + (seteMunPage >= np - 1 ? ' disabled' : '') + '>Próxima <i class="ti ti-chevron-right" aria-hidden="true"></i></button>'
+        + '</span>' : '');
+  }
 }
 
 
-function switchTab(tab,navEl){
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  navEl.classList.add('active');
-  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
-  const el=document.getElementById('tab-'+tab); if(el) el.classList.add('active');
-  const titles={dashboard:'Dashboard Geral',indicadores:'Indicadores Gerais',mapa:'Mapa de Indicadores',sete:'Dados SETE — Municípios e UFs',rotas:'Análise de Rotas',frota:'Análise de Frota',calculo:'Calculadora de Indicadores',memoria:'Memória de Cálculo'};
-  document.getElementById('pageTitle').textContent=titles[tab]||tab;
-  if(tab==='indicadores') renderGiTable();
-  if(tab==='mapa'){initMapa();renderMapa();}
-  if(tab==='sete'){renderSete();}
-  if(tab==='rotas'){renderRotasGrid(getD());setTimeout(renderPRGMChart,60);}
-  if(tab==='frota'){renderFrotaGrid(getD());setTimeout(renderFrotaEstadoChart,60);}
-  if(tab==='calculo') renderMissingTable();
-  if(tab==='memoria') renderMemoria();
-}
 
 // SETTINGS MODAL
-function openSettings(){document.getElementById('settingsModal').classList.add('open');}
-function closeSettings(){document.getElementById('settingsModal').classList.remove('open');}
-function closeSettingsOutside(e){if(e.target===document.getElementById('settingsModal'))closeSettings();}
 
-function toggleDark(on){
-  document.documentElement.setAttribute('data-theme', on?'dark':'light');
-  localStorage.setItem('theme',on?'dark':'light');
-  // Rerender charts with new colors
-  setTimeout(()=>{
-    render();
-    const activeTab=document.querySelector('.tab-content.active');
-    if(activeTab&&activeTab.id==='tab-rotas') renderPRGMChart();
-    if(activeTab&&activeTab.id==='tab-frota') renderFrotaEstadoChart();
-    if(activeTab&&activeTab.id==='tab-mapa') renderMapa();
-  },50);
-}
 
 
 // ===================== MAPA COROPLÉTICO =====================
@@ -13707,9 +13622,6 @@ function getActiveMapUfs() {
 }
 
 function getActiveTerritoryLabel() {
-  if (mapTerritoryMode === 'subdivisoes') {
-    return 'Macrorregiões Brasileiras (Subdivisões)';
-  }
   if (isMunicipalLevel && currentMapUf) {
     const ufName = (DATA.estado[currentMapUf.toLowerCase()] ? DATA.estado[currentMapUf.toLowerCase()].label : currentMapUf);
     if (currentSelectedMunCod) {
@@ -13717,6 +13629,9 @@ function getActiveTerritoryLabel() {
       return (munName ? munName + ' (' + currentMapUf + ')' : ufName);
     }
     return ufName + ' (' + currentMapUf + ')';
+  }
+  if (mapTerritoryMode === 'subdivisoes') {
+    return 'Macrorregiões Brasileiras (Subdivisões)';
   }
   if (mapTerritoryMode === 'regiao' && currentMapRegion) {
     const regNames = {
@@ -13764,7 +13679,11 @@ function getRegionViewBox(ufs) {
 }
 
 function setMapTerritoryMode(mode, regKey) {
+  // Um voo de câmera ou uma consulta de rotas ainda em curso não pode redesenhar o recorte anterior por cima do novo
+  if (window._zoomAnimId) { cancelAnimationFrame(window._zoomAnimId); window._zoomAnimId = null; }
+  if (typeof mapaLimparRotas === 'function') mapaLimparRotas();
   mapTerritoryMode = mode;
+  currentMapTerritory = 'nacional';
   isMunicipalLevel = false;
   currentMapUf = null;
   mapaSelectedUf = null;
@@ -13775,10 +13694,11 @@ function setMapTerritoryMode(mode, regKey) {
   const menuDl = document.getElementById('mapDownloadMenu');
   if (menuDl) menuDl.style.display = 'none';
 
+  // A busca de município e o destaque das capitais só existem no nível municipal
   const searchBox = document.getElementById('mapaRankSearchBox');
-  if (searchBox && (mode === 'nacional' || mode === 'subdivisoes')) {
-    searchBox.style.display = 'none';
-  }
+  if (searchBox) searchBox.style.display = 'none';
+  const btnCapitais = document.getElementById('mapToggleCapitaisBtn');
+  if (btnCapitais) btnCapitais.style.display = 'none';
 
   const pNac = document.getElementById('pillMapNacional');
   const pSub = document.getElementById('pillMapSubdivisoes');
@@ -13810,7 +13730,7 @@ function setMapTerritoryMode(mode, regKey) {
   const bcDetail = document.getElementById('mapBreadcrumbDetail');
   if (bcDetail) {
     if (mode === 'nacional') bcDetail.textContent = 'Divisão por Estados';
-    else if (mode === 'regiao') bcDetail.textContent = getActiveTerritoryLabel();
+    else if (mode === 'regiao' || mode === 'subdivisoes') bcDetail.textContent = getActiveTerritoryLabel();
     else if (mode === 'personalizada') bcDetail.textContent = 'Seleção Personalizada';
   }
 
@@ -13820,15 +13740,9 @@ function setMapTerritoryMode(mode, regKey) {
     else mainTitle.textContent = 'Indicadores por Estado — ' + getActiveTerritoryLabel();
   }
 
-  // Sincroniza escopo global da plataforma
-  if (mode === 'regiao' && currentMapRegion) {
-    currentScope = 'regiao';
-    currentScopeKey = currentMapRegion;
-  } else if (mode === 'nacional') {
-    currentScope = 'nacional';
-    currentScopeKey = '';
-  }
-
+  // O recorte do mapa é próprio do mapa (mapTerritoryMode/currentMapRegion). O escopo dos painéis é o da barra
+  // de território: alterá-lo aqui, sem atualizar a barra, deixava os cartões com valores de um território
+  // sob o rótulo de outro.
   renderMapa();
 }
 
@@ -14089,7 +14003,7 @@ function mapaFmt(v, unit){
   if (unit === 'índice') return v.toFixed(2);
   if (unit === 'anos') return v.toFixed(1) + ' anos';
   if (unit === 'alunos') return Math.round(v) + ' alunos';
-  if (unit === 'km') return v.toFixed(1) + ' km';
+  if (unit === 'km' || unit === 'km/min') return v.toFixed(1) + ' km';
   if (unit === 'minutos') return Math.round(v) + ' min';
   return (typeof v === 'number') ? v.toFixed(1) : v;
 }
@@ -14223,6 +14137,7 @@ function showMapMunLoading(ufKey){
   const wrap = document.getElementById('mapaSvgWrap');
   if (!wrap) return;
   let el = document.getElementById('mapMunLoading');
+  if (el && el._remover) { clearTimeout(el._remover); el._remover = null; }   // cancela a remoção agendada
   if (!el) {
     el = document.createElement('div');
     el.id = 'mapMunLoading';
@@ -14239,7 +14154,7 @@ function hideMapMunLoading(){
   const el = document.getElementById('mapMunLoading');
   if (el) {
     el.style.opacity = '0';
-    setTimeout(() => { if (el && el.parentNode) el.parentNode.removeChild(el); }, 250);
+    el._remover = setTimeout(() => { if (el && el.parentNode) el.parentNode.removeChild(el); }, 250);
   }
 }
 
@@ -14344,6 +14259,11 @@ function zoomIntoState(ufKey, targetCod){
     munLayer.style.display = '';
     munLayer.style.opacity = '1';
   }
+  // No modo de subdivisões, as etiquetas e divisas das macrorregiões ficariam por cima dos municípios
+  ['mapaSubdivLabelsLayer', 'mapaMacroregionBordersLayer'].forEach(id => {
+    const camada = document.getElementById(id);
+    if (camada) camada.style.display = 'none';
+  });
 
   // 4. Inicia pré-carregamento imediato do GeoJSON para que esteja pronto
   prefetchMunicipalGeo(ufKey);
@@ -14359,7 +14279,8 @@ function zoomIntoState(ufKey, targetCod){
     animateViewBox(svgEl, currentViewBox, targetVb, null, () => {
       // Re-garante a renderização municipal caso a requisição assíncrona de rede tenha concluído durante o voo
       const ml = document.getElementById('mapaMunLayer');
-      if (!ml || !ml.innerHTML || ml.innerHTML.trim() === '') {
+      // Só se o mapa ainda estiver neste estado (o usuário pode ter trocado de recorte durante o voo)
+      if (currentMapUf === ufKey && isMunicipalLevel && (!ml || !ml.innerHTML || ml.innerHTML.trim() === '')) {
         renderMapaMunicipal(ufKey, targetCod);
       }
     });
@@ -14369,6 +14290,15 @@ function zoomIntoState(ufKey, targetCod){
 }
 
 function mapaResetToNacional(){
+  // Em região, subdivisões ou seleção: do nível municipal volta ao recorte; do recorte volta ao Brasil.
+  // Antes só título e botão mudavam, e o mapa continuava no recorte.
+  if (mapTerritoryMode !== 'nacional') {
+    const voltarAoRecorte = isMunicipalLevel;
+    hideMapMunLoading();
+    if (voltarAoRecorte) setMapTerritoryMode(mapTerritoryMode, currentMapRegion);
+    else setMapTerritoryMode('nacional');
+    return;
+  }
   if (typeof mapaLimparRotas === 'function') mapaLimparRotas();
   if (window._zoomAnimId) {
     cancelAnimationFrame(window._zoomAnimId);
@@ -14467,15 +14397,19 @@ function renderMapa(){
   });
 
   let mn = 0, mx = 100, span = 1;
+  let semValores = false;            // nenhum valor no recorte: a legenda mostra "—", não um 0–100 presumido
   if (mapTerritoryMode === 'subdivisoes') {
     const regVals = Object.keys(REGIOES_UFS).map(rk => (DATA.regiao && DATA.regiao[rk]) ? DATA.regiao[rk][sigla] : null).filter(v => v !== null && v !== undefined);
     if (regVals.length > 0) {
       mn = Math.min.apply(null, regVals);
       mx = Math.max.apply(null, regVals);
       span = (mx - mn) || 1;
+    } else {
+      semValores = true;
     }
   } else {
     const hasData = arr.length > 0;
+    semValores = !hasData;
     mn = hasData ? Math.min.apply(null, arr) : 0;
     mx = hasData ? Math.max.apply(null, arr) : 100;
     span = (mx - mn) || 1;
@@ -14574,7 +14508,7 @@ function renderMapa(){
 
   if (mapTerritoryMode === 'subdivisoes') {
     const refVal = DATA.nacional ? DATA.nacional[sigla] : null;
-    renderMapaLegend(ind, mn, mx, refVal, false);
+    renderMapaLegend(ind, semValores ? null : mn, semValores ? null : mx, refVal, false);
     renderMapaRankSubdivisoes(ind);
   } else {
     // Legenda Dinâmica Regional/Nacional
@@ -14584,7 +14518,7 @@ function renderMapa(){
     } else {
       refVal = DATA.nacional[sigla];
     }
-    renderMapaLegend(ind, mn, mx, refVal, false);
+    renderMapaLegend(ind, semValores ? null : mn, semValores ? null : mx, refVal, false);
 
     // Ranking dos Estados no recorte
     renderMapaRankNational(ind, vals);
@@ -14616,9 +14550,9 @@ async function renderMapaMunicipal(ufKey, targetCod){
     showMapMunLoading(ufKey);
   }
   const geo = await loadMunicipalGeoForUf(ufKey);
-  hideMapMunLoading();
-  // O usuário pode ter mudado de UF/nível enquanto a malha era baixada
+  // O usuário pode ter mudado de UF/nível enquanto a malha era baixada (o selo de carregamento é da UF atual)
   if (currentMapUf !== ufKey || currentMapTerritory !== 'municipal') return;
+  hideMapMunLoading();
 
   // Se por ventura a requisição falhar (offline sem cache), exibe aviso e preserva ranking
   if (!geo || !geo.features || !geo.features.length) {
@@ -14707,7 +14641,7 @@ async function renderMapaMunicipal(ufKey, targetCod){
   // 6. Legenda Dinâmica Municipal
   const ufD = DATA.estado[ufKey.toLowerCase()];
   const stateVal = ufD ? ufD[sigla] : null;
-  renderMapaLegend(ind, mn, mx, stateVal, true);
+  renderMapaLegend(ind, arrVals.length ? mn : null, arrVals.length ? mx : null, stateVal, true);   // sem valores: “—”, não 0–100
 
   // 7. Card de Comparação
   const ufCode_render = (typeof UF_IBGE_CODES !== 'undefined') ? UF_IBGE_CODES[ufKey] : null;
@@ -14751,7 +14685,9 @@ function renderMapaLegend(ind, mn, mx, avgVal, isMunicipal){
   }
 
   const ufCur = currentMapUf || 'UF';
-  const avgLabel = isMunicipal ? ('Média ' + ufCur + ': ') : 'Média Brasil: ';
+  // O rótulo acompanha o valor de referência: UF no nível municipal, a região no recorte regional, Brasil nos demais
+  const avgLabel = isMunicipal ? ('Média ' + ufCur + ': ')
+    : ((mapTerritoryMode === 'regiao' && currentMapRegion) ? ('Média da ' + getActiveTerritoryLabel() + ': ') : 'Média Brasil: ');
   const avgStr = (avgVal !== null && avgVal !== undefined) ? avgLabel + '<b>' + mapaFmt(avgVal, ind.unit) + '</b>' : '';
 
   const el = document.getElementById('mapLegend');
@@ -14802,14 +14738,19 @@ function renderMapComparisonCard(targetCod, isMunicipal){
       if (typeof SETE_MUN !== 'undefined' && SETE_MUN.municipios) {
         const ufIdx = SETE_MUN.cols.indexOf('uf');
         const stateRows = SETE_MUN.municipios.filter(m => m[ufIdx] === ufCur && m[0] !== cod);
-        const tAl = targetRow ? (targetRow[3] || 500) : 500;
-        const tVc = targetRow ? (targetRow[12] || 20) : 20;
-        stateRows.sort((a, b) => {
-          const diffA = Math.abs((a[3] || 0) - tAl) + Math.abs((a[12] || 0) - tVc) * 40;
-          const diffB = Math.abs((b[3] || 0) - tAl) + Math.abs((b[12] || 0) - tVc) * 40;
-          return diffA - diffB;
-        });
-        peerCodes = stateRows.slice(0, 4).map(m => m[0]);
+        const tAl = targetRow ? targetRow[3] : null;
+        const tVc = targetRow ? targetRow[12] : null;
+        if (tAl == null && tVc == null) {
+          // Sem registro no SETE não há porte nem frota para comparar: nada de valores presumidos
+          criteriaName = 'Sem registro no SETE: não há municípios de porte e frota semelhantes para comparar (' + ufCur + ')';
+        } else {
+          stateRows.sort((a, b) => {
+            const diffA = Math.abs((a[3] || 0) - (tAl || 0)) + Math.abs((a[12] || 0) - (tVc || 0)) * 40;
+            const diffB = Math.abs((b[3] || 0) - (tAl || 0)) + Math.abs((b[12] || 0) - (tVc || 0)) * 40;
+            return diffA - diffB;
+          });
+          peerCodes = stateRows.slice(0, 4).map(m => m[0]);
+        }
       }
     }
 
@@ -14822,7 +14763,8 @@ function renderMapComparisonCard(targetCod, isMunicipal){
 
       if (pVal !== null && targetVal !== null && pVal !== undefined && targetVal !== undefined) {
         const d = pVal - targetVal;
-        deltaStr = (d >= 0 ? '+' : '') + d.toFixed(1) + (ind.unit === '%' ? ' p.p.' : ' ' + ind.unit);
+        const unDelta = ind.unit === '%' ? ' p.p.' : (ind.unit === 'km/min' ? ' km' : (ind.unit === 'índice' ? '' : ' ' + ind.unit));
+        deltaStr = (d >= 0 ? '+' : '') + d.toFixed(ind.unit === 'índice' ? 2 : 1) + unDelta;
         deltaCls = (d > 0.05) ? 'delta-pos' : ((d < -0.05) ? 'delta-neg' : 'delta-neu');
       }
 
@@ -15109,9 +15051,9 @@ function selectMunFromMap(cod){
       p.classList.add('selected');
     } else {
       p.classList.remove('selected');
-  if (typeof updateMapCartographicElements === "function") updateMapCartographicElements();
     }
   });
+  if (typeof updateMapCartographicElements === "function") updateMapCartographicElements();
 
   // Destaca no ranking lateral
   document.querySelectorAll('#mapaRankList .rank-item').forEach(item => {
@@ -15301,8 +15243,11 @@ function mapaHover(ev, el){
   let v = null;
   let rankInfo = '';
   let subInfo = '';
+  // Município ou estado: decide pelo elemento sob o ponteiro. No nível municipal os estados vizinhos
+  // continuam desenhados, e tratá-los como município mostrava "Mato Grosso (GO) — Sem dados".
+  const ehMunicipio = el.classList.contains('mun-path');
 
-  if (currentMapTerritory === 'municipal' && isMunicipalLevel) {
+  if (ehMunicipio) {
     v = getMunVal(k, sigla);
     const row = getMunRow(k);
     const rankPos = (window._currentMunRankMap && window._currentMunRankMap[k]) ? window._currentMunRankMap[k] : null;
@@ -15374,16 +15319,16 @@ function mapaHover(ev, el){
     v = d ? d[sigla] : null;
     const rankPos = (window._currentStateRankMap && window._currentStateRankMap[k]) ? window._currentStateRankMap[k] : null;
     rankInfo = rankPos 
-      ? '<div style="font-size:11px;font-weight:700;color:var(--c-blue);margin-top:4px"><i class="ti ti-trophy"></i> <b>Ranking:</b> ' + rankPos + 'º de 27 estados</div>'
+      ? '<div style="font-size:11px;font-weight:700;color:var(--c-blue);margin-top:4px"><i class="ti ti-trophy"></i> <b>Ranking:</b> ' + rankPos + 'º de ' + Object.keys(window._currentStateRankMap).length + ' estados</div>'
       : '';
   }
 
   const tt = document.getElementById('mapTooltip');
   if (!tt) return;
 
-  const isCapMun = (currentMapTerritory === 'municipal' && typeof BRAZIL_CAPITAIS !== 'undefined' && currentMapUf && BRAZIL_CAPITAIS[currentMapUf] && parseInt(k, 10) === parseInt(BRAZIL_CAPITAIS[currentMapUf].cod, 10));
+  const isCapMun = (ehMunicipio && typeof BRAZIL_CAPITAIS !== 'undefined' && currentMapUf && BRAZIL_CAPITAIS[currentMapUf] && parseInt(k, 10) === parseInt(BRAZIL_CAPITAIS[currentMapUf].cod, 10));
   const capBadge = isCapMun ? ' <span style="display:inline-flex;align-items:center;gap:3px;font-size:10.5px;font-weight:700;color:#dc2626;background:rgba(220,38,38,0.12);padding:1px 6px;border-radius:4px">Capital</span>' : '';
-  const header = (currentMapTerritory === 'municipal') ? nm + ' (' + (currentMapUf || 'UF') + ')' + capBadge : nm + ' (' + k + ')';
+  const header = ehMunicipio ? nm + ' (' + (currentMapUf || 'UF') + ')' + capBadge : nm + ' (' + k + ')';
   const valStr = (v !== null && v !== undefined) ? mapaFmt(v, ind.unit) : '<span style="color:var(--orange)">Sem dados informados</span>';
 
   tt.innerHTML = '<div class="tt-uf">' + header + '</div>' +
@@ -15405,11 +15350,6 @@ function mapaOut(){
   if (tt) tt.style.display = 'none';
 }
 
-function mapaClick(k){
-  if (currentMapTerritory === 'nacional') {
-    zoomIntoState(k);
-  }
-}
 
 function toggleCapitaisHighlight(){
   window.showCapitais = !window.showCapitais;
@@ -15430,52 +15370,6 @@ function toggleCapitaisHighlight(){
   renderMapActiveView();
 }
 
-function mapaHoverCapital(ev, uf, isMun){
-  const cap = (typeof BRAZIL_CAPITAIS !== 'undefined') ? BRAZIL_CAPITAIS[uf] : null;
-  if (!cap) return;
-  const tt = document.getElementById('mapTooltip');
-  if (!tt) return;
-
-  const sigla = (document.getElementById('mapaIndSelect') ? document.getElementById('mapaIndSelect').value : null) || activeSystemIndicator || 'PRGM';
-  const ind = MAPA_INDS.find(i => i.sigla === sigla) || { sigla: sigla, unit: '%', nome: '' };
-
-  let title = '';
-  let valHtml = '';
-  let subHtml = '';
-
-  if (isMun) {
-    title = '<i class="ti ti-circle-dot" style="color:var(--c-blue);font-size:13px"></i> ' + cap.nome + ' (Capital de ' + (DATA.estado[uf.toLowerCase()] ? DATA.estado[uf.toLowerCase()].label : uf) + ')';
-    const v = getMunVal(cap.cod, sigla);
-    const row = getMunRow(cap.cod);
-    const rankPos = (window._currentMunRankMap && window._currentMunRankMap[cap.cod]) ? window._currentMunRankMap[cap.cod] : null;
-    const totalRank = window._currentMunRankTotal || '';
-    valHtml = '<div class="tt-val">' + ((v !== null && v !== undefined) ? mapaFmt(v, ind.unit) : '<span style="color:var(--orange)">Sem dados informados</span>') + '</div>';
-    subHtml = '<div class="tt-sub"><b>Indicador:</b> ' + ind.sigla + ' — ' + ind.nome + '</div>' +
-      (rankPos ? '<div style="font-size:11px;font-weight:700;color:var(--c-blue);margin-top:4px"><i class="ti ti-trophy"></i> <b>Ranking Estadual:</b> ' + rankPos + 'º de ' + totalRank + ' municípios</div>' : '') +
-      (row && row[3] ? '<div style="font-size:10px;color:var(--text-3);margin-top:2px"><i class="ti ti-users"></i> ' + row[3] + ' alunos transportados</div>' : '') +
-      '<div style="font-size:10.5px;color:var(--c-blue);font-weight:600;margin-top:6px"><i class="ti ti-hand-click"></i> Clique para focar esta capital</div>';
-  } else {
-    const isFed = !!cap.federal;
-    title = '<i class="ti ti-circle-dot" style="color:var(--c-blue);font-size:13px"></i> ' + cap.nome + (isFed ? ' (Capital Federal)' : ' (Capital de ' + (DATA.estado[uf.toLowerCase()] ? DATA.estado[uf.toLowerCase()].label : uf) + ')');
-    const d = DATA.estado[uf.toLowerCase()];
-    const v = d ? d[sigla] : null;
-    const rankPos = (window._currentStateRankMap && window._currentStateRankMap[uf]) ? window._currentStateRankMap[uf] : null;
-    valHtml = '<div class="tt-val">' + ((v !== null && v !== undefined) ? mapaFmt(v, ind.unit) : '<span style="color:var(--orange)">Sem dados</span>') + '</div>';
-    subHtml = '<div class="tt-sub"><b>Indicador no Estado:</b> ' + ind.sigla + ' — ' + ind.nome + '</div>' +
-      (rankPos ? '<div style="font-size:11px;font-weight:700;color:var(--c-blue);margin-top:4px"><i class="ti ti-trophy"></i> <b>Ranking UF:</b> ' + rankPos + 'º de 27 estados</div>' : '') +
-      '<div style="font-size:10.5px;color:var(--c-blue);font-weight:600;margin-top:6px"><i class="ti ti-zoom-in"></i> Clique para abrir detalhamento do estado</div>';
-  }
-
-  tt.innerHTML = '<div class="tt-uf" style="display:flex;align-items:center;gap:6px">' + title + '</div>' +
-    valHtml + subHtml;
-
-  const r = document.getElementById('mapaSvgWrap').getBoundingClientRect();
-  let x = ev.clientX - r.left + 14, y = ev.clientY - r.top + 10;
-  if (x > r.width - 220) x -= 230;
-  tt.style.left = x + 'px';
-  tt.style.top = y + 'px';
-  tt.style.display = 'block';
-}
 
 
 function syncVersionInfo(){
@@ -16163,7 +16057,7 @@ const I18N = {
     "settings_lang_title": "Idioma da Plataforma",
     "settings_lang_desc": "Selecione o idioma desejado para a interface completa da PNITE.",
     "settings_theme_title": "Modo de Aparência",
-    "settings_theme_desc": "Escolha entre as três opções de modo de cor para toda a plataforma.",
+    "settings_theme_desc": "Alterne entre os modos de cor disponíveis: Modo Claro e Modo Escuro.",
     "settings_info_title": "Informações da Versão",
     "settings_version": "Versão:",
     "settings_updated": "Última Atualização:",
@@ -16183,8 +16077,6 @@ const I18N = {
     "status_pendente": "Pendente",
     "badge_novo": "Novo",
     "badge_revisado": "Revisado",
-    "badge_construcao": "En construcción",
-    "status_construcao": "En construcción",
     "badge_construcao": "Em construção",
     "status_construcao": "Em construção",
     "tipo_descritivo": "Descritivo",
@@ -16398,7 +16290,7 @@ const I18N = {
     "settings_lang_title": "Platform Language",
     "settings_lang_desc": "Select the desired language for the complete PNITE user interface.",
     "settings_theme_title": "Appearance Mode",
-    "settings_theme_desc": "Choose between the three color theme modes across the entire platform.",
+    "settings_theme_desc": "Switch between the available color modes: Light and Dark.",
     "settings_info_title": "Version Metadata",
     "settings_version": "Version:",
     "settings_updated": "Last Update:",
@@ -16631,7 +16523,9 @@ const I18N = {
     "settings_lang_title": "Idioma de la Plataforma",
     "settings_lang_desc": "Seleccione el idioma deseado para toda la interfaz de PNITE.",
     "settings_theme_title": "Modo de Apariencia",
-    "settings_theme_desc": "Elija entre las tres opciones de color para toda la plataforma.",
+    "settings_theme_desc": "Alterne entre los modos de color disponibles: Claro y Oscuro.",
+    "badge_construcao": "En construcción",
+    "status_construcao": "En construcción",
     "settings_info_title": "Información de la Versión",
     "settings_version": "Versión:",
     "settings_updated": "Última Actualización:",
@@ -16862,7 +16756,7 @@ const I18N = {
     "settings_lang_title": "Lingua della Piattaforma",
     "settings_lang_desc": "Seleziona la lingua desiderata per l'intera interfaccia PNITE.",
     "settings_theme_title": "Modalità di Aspetto",
-    "settings_theme_desc": "Scegli tra le tre modalità di colore per l'intera piattaforma.",
+    "settings_theme_desc": "Passa tra le modalità di colore disponibili: Chiara e Scura.",
     "settings_info_title": "Informazioni sulla Versione",
     "settings_version": "Versione:",
     "settings_updated": "Ultimo Aggiornamento:",
@@ -17223,23 +17117,32 @@ function gxCsvCampo(v, numerico) {
 async function gxDetExportar() {
   if (!PNITE_AUTH.podeBaixar()) { pniteAuthBotao(); return; }
   const msg = document.getElementById('gxDetMsg');
-  const total = GX.det.total;
-  if (!total) { msg.textContent = 'Nada a exportar no recorte.'; return; }
-  if (total > 20000) { msg.textContent = 'Recorte grande demais para exportar (' + gxNum(total) + ' itens). Aplique filtros.'; return; }
+  // O recorte é fixado aqui: filtros, busca e ordem eram relidos a cada página, e o total vinha da última grade
+  // desenhada (que podia ser de outro recorte), o que cortava ou misturava as linhas do arquivo
+  const filtros = JSON.parse(JSON.stringify(GX.filtros || {}));
+  const busca = (document.getElementById('gxDetBusca') || {}).value || null;
+  const ordem = (document.getElementById('gxDetOrdem') || {}).value || 'data_desc';
+  const descricaoFiltros = gxDescreverFiltros();
   msg.textContent = 'Preparando arquivo…';
   const linhas = [];
+  let total = null;
   try {
-    for (let p = 1; (p - 1) * 100 < total; p++) {
-      const d = await pniteApiRpc('pnite_ce_detalhe', { p_filtros: GX.filtros, p_busca: (document.getElementById('gxDetBusca') || {}).value || null,
-        p_pagina: p, p_tamanho: 100, p_ordem: (document.getElementById('gxDetOrdem') || {}).value || 'data_desc' });
+    for (let p = 1; total === null || (p - 1) * 100 < total; p++) {
+      const d = await pniteApiRpc('pnite_ce_detalhe', { p_filtros: filtros, p_busca: busca, p_pagina: p, p_tamanho: 100, p_ordem: ordem });
       if (!d || !d.publicado) throw new Error('detalhamento não publicado');
-      Array.prototype.push.apply(linhas, d.linhas || []);
+      if (total === null) {
+        total = Number(d.total) || 0;
+        if (!total) { msg.textContent = 'Nada a exportar no recorte.'; return; }
+        if (total > 20000) { msg.textContent = 'Recorte grande demais para exportar (' + gxNum(total) + ' itens). Aplique filtros.'; return; }
+      }
+      if (!d.linhas || !d.linhas.length) break;
+      Array.prototype.push.apply(linhas, d.linhas);
     }
   } catch (e) { msg.textContent = 'Falha na exportação: ' + e.message; return; }
   const numericos = { ano: 1, quantidade: 1, valor_unitario: 1, valor_total: 1 };
   const meta = ['# PNITE — Caminho da Escola: detalhamento das contratações',
     '# Fonte: base de contratações do painel FNDE (versão de dados ' + ((GX.painel && GX.painel.dados && GX.painel.dados.id) || '—') + ')',
-    '# ' + gxDescreverFiltros().replace(/;/g, ','), '# Gerado em ' + new Date().toLocaleString('pt-BR') + ' · PNITE ' + PNITE_VERSION];
+    '# ' + descricaoFiltros.replace(/;/g, ','), '# Gerado em ' + new Date().toLocaleString('pt-BR') + ' · PNITE ' + PNITE_VERSION];
   const csv = meta.concat([GX_DET_COLS.map(function(c) { return c.t; }).join(';')],
     linhas.map(function(l) { return GX_DET_COLS.map(function(c) {
       const v = l[c.k];
@@ -17308,6 +17211,7 @@ function smRotuloCarga() {
 }
 // Troca da base SETE: descarta os dados do monitoramento e recarrega se o módulo estiver aberto
 document.addEventListener('pnite:carga', function() {
+  SM.seq++;                           // invalida a leitura em curso da carga anterior
   SM.carregando = null; SM.agg = null; SM.mun = null;
   const pm = document.getElementById('page-secMonitoramento');
   if (pm && pm.classList.contains('active-page')) smIniciar();
@@ -17343,19 +17247,25 @@ function smCarregarBase() {
   // Carga ativa do SETE (seletor "Base SETE"); sem lista de cargas, o ano de carga da configuração
   const carga = (window.PNITE_API && PNITE_API.cargaAtiva) ? PNITE_API.cargaAtiva() : null;
   const ano = (window.PNITE_CONFIG || {}).anoCarga;
+  // Sem a lista de cargas o filtro cairia no ano de carga, que reúne mais de uma carga: melhor falhar
+  if (!carga && window.PNITE_API && PNITE_API.cargasStatus && PNITE_API.cargasStatus() === 'erro') {
+    return Promise.reject(new Error('A lista de cargas do SETE não pôde ser lida.'));
+  }
   const filtroAno = carga ? { carga: 'eq.' + carga } : (ano ? { ano_carga: 'eq.' + ano } : {});
+  const seq = ++SM.seq;
   SM.carregando = Promise.all([
     smConsulta(Object.assign({ select: smSelect(), nivel: 'in.(nacional,regiao,estado)' }, filtroAno)),
     smConsultaTudo(Object.assign({ select: smSelect(), nivel: 'eq.municipio', order: 'chave' }, filtroAno)),
     pniteApiRpc('pnite_snapshot_painel', { p_painel: 'sete' }).catch(function() { return null; })
   ]).then(function(r) {
+    if (seq !== SM.seq) return SM.carregando;       // carga trocada durante a leitura: vale a leitura mais recente
     SM.agg = r[0]; SM.mun = r[1]; SM.snap = r[2];
     const selR = document.getElementById('smF-regiao'), selU = document.getElementById('smF-uf');
     selR.innerHTML = '<option value="">Todas</option>' + (Object.keys(SM_REGIOES).map(function(k) { return '<option value="' + k + '">' + SM_REGIOES[k] + '</option>'; }).join(''));
     selR.value = SM.f.regiao;
     smOpcoesUf();
     void selU;
-  }).catch(function(e) { SM.carregando = null; throw e; });
+  }).catch(function(e) { if (seq === SM.seq) SM.carregando = null; throw e; });
   return SM.carregando;
 }
 function smOpcoesUf() {
@@ -17375,6 +17285,7 @@ function smOpcoesMun() {
   sel.disabled = false; sel.value = SM.f.mun;
 }
 function smFiltro(k, v) {
+  if (!SM.agg || !SM.mun) return;     // base ainda não carregada
   SM.f[k] = v || '';
   if (k === 'regiao') { SM.f.uf = ''; SM.f.mun = ''; smOpcoesUf(); }
   if (k === 'uf') { SM.f.mun = ''; if (v) { const e = SM.agg.find(function(x) { return x.nivel === 'estado' && x.uf === v; }); if (e) SM.f.regiao = e.regiao; document.getElementById('smF-regiao').value = SM.f.regiao; smOpcoesUf(); } }
@@ -17382,6 +17293,7 @@ function smFiltro(k, v) {
   smRender();
 }
 function smLimpar() {
+  if (!SM.agg || !SM.mun) return;     // base ainda não carregada
   SM.f = { regiao: '', uf: '', mun: '' };
   document.getElementById('smF-regiao').value = ''; smOpcoesUf(); smOpcoesMun(); smRender();
 }
@@ -17409,7 +17321,9 @@ function smMunicipiosEscopo() {
 function smTemDados(m) { return Number(m.al_cad) > 0 || Number(m.tot_rotas) > 0 || Number(m.tot_veic) > 0; }
 // Grupos do gráfico: regiões (nacional), UFs (região) ou municípios (UF)
 function smGrupos() {
-  if (SM.f.uf) return { tit: 'município', itens: smMunicipiosEscopo().map(function(m) { return { nome: String(m.label).replace(/ \([A-Z]{2}\)$/, ''), l: m }; }) };
+  // Todos os municípios da UF, mesmo com um deles selecionado: o filtro por município vale para cartões e
+  // tabela; no mapa de calor ele só destaca o selecionado (antes os demais viravam "sem dado")
+  if (SM.f.uf) return { tit: 'município', itens: SM.mun.filter(function(m) { return m.uf === SM.f.uf; }).map(function(m) { return { nome: String(m.label).replace(/ \([A-Z]{2}\)$/, ''), l: m }; }) };
   if (SM.f.regiao) return { tit: 'UF', itens: SM.agg.filter(function(x) { return x.nivel === 'estado' && x.regiao === SM.f.regiao; }).map(function(x) { return { nome: x.uf.toUpperCase(), l: x, uf: x.uf }; }) };
   return { tit: 'região', itens: SM.agg.filter(function(x) { return x.nivel === 'regiao'; }).map(function(x) { return { nome: SM_REGIOES[x.chave] || x.label, l: x, reg: x.chave }; }) };
 }
@@ -17689,7 +17603,11 @@ function admProximo(i, v) {
     return { txt: 'No ar' + (i.publicacao ? ' desde ' + gxDataHora(i.publicacao.inicio) : '') +
       '. Para mudar a definição, crie uma nova versão (a publicada continua no ar); para retirar do ar, suspenda.', acao: null, curto: 'No ar' };
   }
-  if (e === 'suspenso') return { txt: 'Fora do ar. Restaure para voltar a publicar ou arquive.', acao: v.aprovado_em ? 'restaurar' : null, curto: 'Fora do ar' };
+  if (e === 'suspenso') {
+    // Outra versão do mesmo item pode estar no ar (uma versão antiga restaurada)
+    return i.publicacao ? { txt: 'Esta versão está suspensa; outra versão do item está no ar. Restaure esta para publicá-la no lugar, ou arquive.', acao: v.aprovado_em ? 'restaurar' : null, curto: 'Versão suspensa' }
+      : { txt: 'Fora do ar. Restaure para voltar a publicar ou arquive.', acao: v.aprovado_em ? 'restaurar' : null, curto: 'Fora do ar' };
+  }
   return { txt: 'Versão arquivada. Crie uma nova versão para retomar o trabalho.', acao: null, curto: 'Arquivado' };
 }
 
@@ -17798,10 +17716,20 @@ function admDialogo(titulo, html) {
   const alvo = d.querySelector('input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button');
   if (alvo) alvo.focus();
 }
-function admFecharDialogo() {
+function admFecharDialogo(forcar) {
+  // Esc ou "X" com a definição alterada: avisa e só descarta no segundo fechamento
+  if (ADM.sujo && forcar !== true && !ADM.fecharAvisado) {
+    ADM.fecharAvisado = true;
+    admDlgMsg('Há alterações não salvas. Salve, ou feche de novo para descartá-las.', 'err');
+    return;
+  }
   document.getElementById('admDialog').hidden = true;
-  ADM.sujo = false; ADM.pendente = null;
-  if (ADM.foco && ADM.foco.focus) ADM.foco.focus();
+  ADM.sujo = false; ADM.pendente = null; ADM.fecharAvisado = false;
+  // A lista é redesenhada a cada gravação, então o botão que abriu o diálogo pode não existir mais:
+  // o foco volta ao mesmo item na lista atual
+  let alvo = ADM.foco;
+  if (!alvo || !alvo.isConnected) alvo = ADM.atual != null ? document.querySelector('[data-adm="abrir"][data-id="' + ADM.atual + '"]') : null;
+  if (alvo && alvo.focus) alvo.focus();
 }
 function admDlgMsg(t, cls) { const el = document.getElementById('admDialogMsg'); el.textContent = t || ''; el.className = 'adm-msg' + (cls ? ' ' + cls : ''); }
 
@@ -17855,7 +17783,8 @@ function admCamposVersaoHtml(v, editavel) {
       area('regra_nulos', 'Regra de nulos', v.regra_nulos, 'O que exibir quando faltar dado (a PNITE mostra “—”, nunca zero).')) +
     grupo('Dados e cálculo',
       sel('fonte', 'Fonte', fontes, v.fonte || '', 'Fonte cadastrada em “Fontes e cargas”; fixa a versão de dados na publicação.') +
-      sel('calculo', 'Cálculo no catálogo', ADM_CALCULOS, admCalcChave(v.calculo), 'Operações permitidas pelo motor do catálogo. Indicadores calculados no painel usam “Sem cálculo”.') +
+      sel('calculo', 'Cálculo no catálogo', ADM_CALCULOS.some(function(o) { return o[0] === admCalcChave(v.calculo); }) ? ADM_CALCULOS
+        : ADM_CALCULOS.concat([[admCalcChave(v.calculo), 'Cálculo atual: ' + admCalcChave(v.calculo)]]), admCalcChave(v.calculo), 'Operações permitidas pelo motor do catálogo. Indicadores calculados no painel usam “Sem cálculo”.') +
       campo('periodo_referencia', 'Período de referência', v.periodo_referencia, 'text', 'Ex.: SETE maio/2026; Censo Escolar 2025.')) +
     grupo('Exibição',
       sel('visual', 'Visual padrão', [['cartao', 'Cartão'], ['barras', 'Barras'], ['colunas', 'Colunas'], ['tabela', 'Tabela'], ['mapa', 'Mapa'], ['pagina', 'Página']], v.visual || 'cartao') +
@@ -17920,13 +17849,16 @@ async function admCriar() {
   if (!dados.titulo) { admDlgMsg('Informe o título.', 'err'); document.getElementById('admV-titulo').focus(); return; }
   if (ADM.cat.some(function(i) { return i.codigo === codigo; })) { admDlgMsg('Já existe um item com a sigla ' + codigo + '.', 'err'); return; }
   if (ADM.cat.some(function(i) { return i.slug === slug; })) { admDlgMsg('Já existe um item com o endereço ' + slug + '.', 'err'); return; }
+  if (ADM.ocupado) return;
+  ADM.ocupado = true;
   admDlgMsg('Salvando…');
   try {
     await PNITE_AUTH.rpc('pnite_admin_cat_criar', { p_codigo: codigo, p_slug: slug, p_tipo: g('tipo'), p_frente: g('frente'),
       p_modulo: g('modulo'), p_categoria: g('categoria'), p_ordem: parseInt(g('ordem'), 10) || 100, p_dados: dados });
-    admFecharDialogo(); ADM.filtro = { busca: codigo, frente: '', estado: '', situacao: '' }; await admCarregar();
+    admFecharDialogo(true); ADM.filtro = { busca: codigo, frente: '', estado: '', situacao: '' }; await admCarregar();
     admMsg('Rascunho ' + codigo + ' criado. Ele não aparece ao público até ser aprovado e publicado.', 'ok');
   } catch (e) { admDlgMsg(e.message, 'err'); }
+  finally { ADM.ocupado = false; }
 }
 
 // ---- Ficha do indicador: etapas, próximo passo, ações e abas (definição, prévia, histórico) ----
@@ -17950,12 +17882,17 @@ function admDetalhe(id) {
     const bloqueada = a[0] === 'aprovar' && !v.responsavel;
     return '<button type="button" class="pab-btn' + (principal ? ' pab-btn-primary' : '') + (a[0] === 'suspender' || a[0] === 'arquivar' ? ' pab-btn-danger' : '') + '" data-adm="acao" data-vid="' + v.id + '" data-acao="' + a[0] + '" data-lock="' + v.lock_version + '"' +
       (bloqueada ? ' disabled title="Defina o responsável para aprovar"' : '') + ' aria-describedby="admProximoTxt">' + escHtml(a[1]) + '</button>'; }).join('');
+  // As ações acima agem sobre a versão mais recente. Se a versão no ar é outra (há uma nova em rascunho ou
+  // revisão, ou uma antiga foi restaurada), a retirada do ar precisa agir sobre a publicada.
+  const publicada = i.publicacao ? vers.find(function(x) { return x.id === i.publicacao.versao_id; }) : null;
+  const acaoPublicada = (publicada && publicada.id !== v.id && publicada.estado_editorial === 'publicado')
+    ? '<button type="button" class="pab-btn pab-btn-danger" data-adm="acao" data-vid="' + publicada.id + '" data-acao="suspender" data-lock="' + publicada.lock_version + '">Suspender a versão no ar (v' + publicada.versao + ')</button>' : '';
   admDialogo(i.codigo + ' · ' + (v.titulo || ''),
     '<p class="adm-det-sub">' + admLocal(i) + ' · versão ' + v.versao + (i.tipo === 'visual' ? ' · visual' : '') + '</p>' +
     '<div class="adm-item-meta">' + admBadge(ADM_ESTADOS, e) + admBadge(ADM_SITUACAO, v.situacao_metodologica) +
       (i.publicacao ? '<span class="gx-badge ok">no ar desde ' + gxDataHora(i.publicacao.inicio) + (i.publicacao.somente_ficha ? ' (só ficha)' : '') + '</span>' : '<span class="gx-badge">fora do ar</span>') + '</div>' +
     (e === 'suspenso' || e === 'arquivado' ? '<div class="gx-aviso warn" style="margin-top:10px"><i class="ti ti-alert-triangle" aria-hidden="true"></i><div>Esta versão está <b>' + escHtml(ADM_ESTADOS[e][0].toLowerCase()) + '</b>.</div></div>' : etapas) +
-    '<div class="adm-proximo"><div class="adm-proximo-txt" id="admProximoTxt"><b>Próximo passo</b>' + escHtml(p.txt) + '</div><div class="adm-acoes">' + acoes + '</div></div>' +
+    '<div class="adm-proximo"><div class="adm-proximo-txt" id="admProximoTxt"><b>Próximo passo</b>' + escHtml(p.txt) + '</div><div class="adm-acoes">' + acoes + acaoPublicada + '</div></div>' +
     '<div id="admConfirma"></div>' +
     '<div class="gx-tabs adm-det-abas" role="tablist" aria-label="Partes da ficha">' +
       [['definicao', 'Definição', 'ti-file-description'], ['previa', 'Prévia do valor', 'ti-eye'], ['historico', 'Histórico (' + vers.length + ')', 'ti-history']].map(function(a) {
@@ -17995,7 +17932,7 @@ function admAbaDetalhe(aba) {
   }
 }
 function admMarcarSujo() {
-  ADM.sujo = true;
+  ADM.sujo = true; ADM.fecharAvisado = false;
   const s = document.getElementById('admSujo');
   if (s) s.hidden = false;
 }
@@ -18005,22 +17942,49 @@ async function admSalvar(reenviar) {
   const v = (i.versoes || [])[0];
   const d = admLerCamposVersao();
   if (!d.titulo) { admDlgMsg('O título é obrigatório.', 'err'); document.getElementById('admV-titulo').focus(); return; }
+  if (ADM.ocupado) return;             // um segundo clique enquanto a gravação anterior não terminou é ignorado
+  ADM.ocupado = true;
+  const id = ADM.atual;
+  let editou = false;
   admDlgMsg('Salvando…');
   try {
     const r = await PNITE_AUTH.rpc('pnite_admin_cat_editar', { p_versao_id: v.id, p_lock: v.lock_version, p_dados: d });
+    editou = true;
     if (reenviar) await PNITE_AUTH.rpc('pnite_admin_cat_transicao', { p_versao_id: v.id, p_acao: 'enviar_revisao', p_lock: r.lock_version, p_justificativa: null });
     ADM.sujo = false;
-    await admCarregar(); admDetalhe(ADM.atual);
-    admDlgMsg(reenviar ? 'Salvo e reenviado à revisão.' : 'Salvo. A versão está em rascunho: envie à revisão quando terminar.', 'ok');
-  } catch (e) { admDlgMsg(e.message, 'err'); }
+    await admCarregar();
+    if (admDialogoNoItem(id)) {
+      admDetalhe(id);
+      admDlgMsg(reenviar ? 'Salvo e reenviado à revisão.' : 'Salvo. A versão está em rascunho: envie à revisão quando terminar.', 'ok');
+    }
+  } catch (e) {
+    // A edição pode já ter sido gravada (falha no reenvio) ou a versão mudou no servidor: recarrega para não ficar
+    // com estado e trava antigos, que fariam toda nova tentativa falhar
+    if (editou || /alterad[ao] por outra pessoa/i.test(e.message || '')) {
+      if (editou) ADM.sujo = false;
+      try { await admCarregar(); if (admDialogoNoItem(id)) admDetalhe(id); } catch (x) { /* mantém a mensagem do erro original */ }
+    }
+    admDlgMsg((e.message || 'Falha ao salvar.') + (editou ? ' A definição foi salva como rascunho, mas o reenvio à revisão não foi concluído.' : ''), 'err');
+  } finally { ADM.ocupado = false; }
+}
+// O diálogo continua aberto no mesmo item? (o usuário pode tê-lo fechado ou aberto outro durante a gravação)
+function admDialogoNoItem(id) {
+  return !document.getElementById('admDialog').hidden && ADM.atual === id;
 }
 async function admNovaVersao(vid) {
+  if (ADM.ocupado) return;             // duplo clique criava duas versões
+  ADM.ocupado = true;
+  const id = ADM.atual;
   admDlgMsg('Criando nova versão…');
   try {
     await PNITE_AUTH.rpc('pnite_admin_cat_nova_versao', { p_versao_base: vid });
-    ADM.abaDet = 'definicao'; await admCarregar(); admDetalhe(ADM.atual);
-    admDlgMsg('Nova versão criada em rascunho, com a mesma definição. A publicação atual não mudou.', 'ok');
+    await admCarregar();
+    if (admDialogoNoItem(id)) {
+      ADM.abaDet = 'definicao'; admDetalhe(id);
+      admDlgMsg('Nova versão criada em rascunho, com a mesma definição. A publicação atual não mudou.', 'ok');
+    }
   } catch (e) { admDlgMsg(e.message, 'err'); }
+  finally { ADM.ocupado = false; }
 }
 // Ação do fluxo: explica a consequência e, quando exigido, pede a justificativa no próprio diálogo
 function admPedirAcao(vid, acao, lock) {
@@ -18040,21 +18004,30 @@ function admPedirAcao(vid, acao, lock) {
 function admCancelarAcao() { ADM.pendente = null; const el = document.getElementById('admConfirma'); if (el) el.innerHTML = ''; }
 async function admConfirmarAcao() {
   const p = ADM.pendente;
-  if (!p) return;
+  if (!p || ADM.ocupado) return;
+  // A definição pode ter sido alterada com o painel de confirmação já aberto: a ação valeria para o que está
+  // gravado e a edição se perderia sem aviso
+  if (ADM.sujo) { admDlgMsg('Há alterações não salvas na definição. Salve antes de confirmar.', 'err'); return; }
   let just = null;
   if (ADM_COM_JUST[p.acao]) {
     just = (document.getElementById('admJust').value || '').trim();
     if (!just) { admDlgMsg('A justificativa é obrigatória.', 'err'); document.getElementById('admJust').focus(); return; }
   }
+  ADM.ocupado = true;
+  const id = ADM.atual;
   admDlgMsg('Aplicando…');
   try {
     const r = await PNITE_AUTH.rpc('pnite_admin_cat_transicao', { p_versao_id: p.vid, p_acao: p.acao, p_lock: p.lock, p_justificativa: just });
-    GX.painel = null; GX.rep = null; SM.snap = null; SM.carregando = null; SM.agg = null; // força releitura das áreas públicas
+    GX.painel = null; GX.rep = null; SM.snap = null; SM.seq++; SM.carregando = null; SM.agg = null; // força releitura das áreas públicas
     ADM.pendente = null;
-    await admCarregar(); admDetalhe(ADM.atual);
-    admDlgMsg('Feito: ' + (ADM_ACAO_INFO[p.acao] || [p.acao])[0].toLowerCase() + (r && r.estado ? ' (agora: ' + (ADM_ESTADOS[r.estado] || [r.estado])[0].toLowerCase() + ')' : '') +
-      (r && r.somente_ficha ? '. Como não está validado, foi publicada só a ficha, sem valores' : '') + (r && r.idempotente ? '. Já estava publicado' : '') + '.', 'ok');
+    await admCarregar();
+    if (admDialogoNoItem(id)) {
+      admDetalhe(id);
+      admDlgMsg('Feito: ' + (ADM_ACAO_INFO[p.acao] || [p.acao])[0].toLowerCase() + (r && r.estado ? ' (agora: ' + (ADM_ESTADOS[r.estado] || [r.estado])[0].toLowerCase() + ')' : '') +
+        (r && r.somente_ficha ? '. Como não está validado, foi publicada só a ficha, sem valores' : '') + (r && r.idempotente ? '. Já estava publicado' : '') + '.', 'ok');
+    }
   } catch (e) { admDlgMsg(e.message, 'err'); }
+  finally { ADM.ocupado = false; }
 }
 async function admPrevia(vid) {
   const out = document.getElementById('admPreviaOut');
@@ -18067,7 +18040,7 @@ async function admPrevia(vid) {
       gxCard('Resultado desta versão', res ? gxNum(res.valor, 2) : '—', res ? 'Estado: ' + escHtml(res.estado) + ' · ' + gxNum(res.n) + ' itens' : 'Sem cálculo no catálogo ou sem dados ativos') +
       gxCard('Resultado publicado', pub ? gxNum(pub.valor, 2) : '—', pub ? 'Versão de dados congelada na publicação' : 'Sem publicação com valor') + '</div>' +
       (Object.keys(dif).length ? '<h3 class="gx-secao-titulo">Diferenças em relação à versão publicada</h3><div class="gx-tabela-wrap">' +
-        gxTabelaHtml([{ t: 'Campo', k: 'k' }, { t: 'Publicada', f: function(l) { return escHtml(JSON.stringify(l.a)); } }, { t: 'Esta versão', f: function(l) { return escHtml(JSON.stringify(l.b)); } }],
+        gxTabelaHtml([{ t: 'Campo', k: 'k' }, { t: 'Publicada', f: function(l) { return l.a == null ? '—' : escHtml(JSON.stringify(l.a)); } }, { t: 'Esta versão', f: function(l) { return l.b == null ? '—' : escHtml(JSON.stringify(l.b)); } }],
           Object.keys(dif).map(function(k) { return { k: k, a: dif[k].publicada, b: dif[k].nova }; })) + '</div>' : '');
   } catch (e) { out.innerHTML = '<p class="adm-msg err">' + escHtml(e.message) + '</p>'; }
 }
@@ -18138,9 +18111,12 @@ function admDecidirDialogo(id) {
 async function admDecidir(id) {
   const sit = document.getElementById('admPendSit').value, dec = (document.getElementById('admPendDec').value || '').trim();
   if (!dec) { admDlgMsg('Descreva a decisão.', 'err'); document.getElementById('admPendDec').focus(); return; }
+  if (ADM.ocupado) return;
+  ADM.ocupado = true;
   admDlgMsg('Registrando…');
-  try { await PNITE_AUTH.rpc('pnite_admin_pendencia_decidir', { p_id: id, p_situacao: sit, p_decisao: dec }); admFecharDialogo(); await admCarregar(); admMsg('Decisão registrada.', 'ok'); }
+  try { await PNITE_AUTH.rpc('pnite_admin_pendencia_decidir', { p_id: id, p_situacao: sit, p_decisao: dec }); admFecharDialogo(true); await admCarregar(); admMsg('Decisão registrada.', 'ok'); }
   catch (e) { admDlgMsg(e.message, 'err'); }
+  finally { ADM.ocupado = false; }
 }
 // Ações da administração: um único listener delegado (botões com data-adm)
 document.addEventListener('click', function(ev) {
@@ -18173,16 +18149,21 @@ document.addEventListener('click', function(ev) {
 });
 async function admAuditoria(offset) {
   ADM.aud.offset = Math.max(0, offset || 0);
+  const pedido = ADM.aud.seq = (ADM.aud.seq || 0) + 1;
   try {
     const r = await PNITE_AUTH.rpc('pnite_admin_auditoria', { p_limite: 50, p_offset: ADM.aud.offset, p_entidade: null });
-    if (ADM.aba !== 'auditoria') return;
+    if (ADM.aba !== 'auditoria' || pedido !== ADM.aud.seq) return;   // aba ou página trocada durante a consulta
     const el = document.getElementById('admPainel');
     el.innerHTML = '<p class="gx-escopo">' + gxNum(r.total) + ' eventos (somente inclusão; não podem ser alterados nem apagados).</p><div class="gx-tabela-wrap alta">' + gxTabelaHtml([
       { t: 'Quando', f: function(l) { return gxDataHora(l.em); } }, { t: 'Ator', k: 'ator' }, { t: 'Operação', k: 'operacao' }, { t: 'Entidade', f: function(l) { return escHtml(l.entidade + ' #' + (l.entidade_id || '')); } },
       { t: 'Justificativa', k: 'justificativa' }, { t: 'Depois', f: function(l) { return l.depois ? '<pre class="adm-json">' + escHtml(JSON.stringify(l.depois, null, 1)) + '</pre>' : '—'; } }], r.linhas || []) + '</div>' +
       '<div class="gx-pager"><button type="button" class="pab-btn" onclick="admAuditoria(' + (ADM.aud.offset - 50) + ')"' + (ADM.aud.offset ? '' : ' disabled') + ' aria-label="Eventos mais recentes"><i class="ti ti-chevron-left" aria-hidden="true"></i></button>' +
       '<button type="button" class="pab-btn" onclick="admAuditoria(' + (ADM.aud.offset + 50) + ')"' + (ADM.aud.offset + 50 < r.total ? '' : ' disabled') + ' aria-label="Eventos mais antigos"><i class="ti ti-chevron-right" aria-hidden="true"></i></button></div>';
-  } catch (e) { admMsg(e.message, 'err'); }
+  } catch (e) {
+    if (ADM.aba !== 'auditoria' || pedido !== ADM.aud.seq) return;
+    admMsg(e.message, 'err');
+    document.getElementById('admPainel').innerHTML = '<p class="adm-msg err">Não foi possível carregar a auditoria.</p>';
+  }
 }
 // Troca de tema: redesenha os gráficos visíveis com as cores do novo tema (uma única observação)
 new MutationObserver(function() {
@@ -19225,7 +19206,7 @@ function renderGiTable() {
           <i class="ti ti-search-off" style="font-size:28px;color:var(--text-3);display:block;margin-bottom:8px"></i>
           <div style="font-weight:600;font-size:14px;color:var(--text-1)">${t('nenhum_ind_encontrado', 'Nenhum indicador encontrado')}</div>
           <div style="font-size:12px;margin-top:4px">${t('nenhum_ind_desc', 'Tente buscar por outra sigla, termo ou limpe o filtro atual.')}</div>
-          <button class="btn btn-outline" onclick="document.getElementById('giSearch').value='';setGiFilter('todos',document.querySelector('.cat-pill'));" style="margin-top:12px;padding:6px 16px;font-size:11.5px;border-radius:16px">
+          <button type="button" class="btn btn-outline" onclick="document.getElementById('giSearch').value='';setGiFilter('todos',document.querySelector('.cat-pill'));" style="margin-top:12px;padding:6px 16px;font-size:11.5px;border-radius:16px">
             ${t('limpar_busca', 'Limpar busca')}
           </button>
         </td>
@@ -19594,66 +19575,10 @@ function onTerritoryChange() {
 // --------------------------------------------------------------------------
 // 4. ANÁLISE DE ROTAS REDESENHADA (SEÇÃO 07)
 // --------------------------------------------------------------------------
-function renderRotasRanking() {
-  const container = document.getElementById('rotasRankingGrid');
-  if (!container) return;
-  const dataObj = (typeof DATA !== 'undefined') ? DATA : (window.DATA || null);
-  if (!dataObj || !dataObj.estado) return;
-
-  const list = Object.keys(dataObj.estado).map(ufKey => {
-    const d = dataObj.estado[ufKey];
-    return {
-      uf: ufKey.toUpperCase(),
-      nome: d.label || ufKey.toUpperCase(),
-      prgm: (d.PRGM !== null && d.PRGM !== undefined) ? d.PRGM : 0
-    };
-  });
-
-  list.sort((a, b) => b.prgm - a.prgm);
-
-  const maxVal = Math.max(...list.map(x => x.prgm), 50);
-
-  container.innerHTML = list.map((item, idx) => {
-    const pct = ((item.prgm / maxVal) * 100).toFixed(0);
-    let barColor = 'var(--c-blue)';
-    if (item.prgm >= 60) barColor = 'var(--c-mint)';
-    else if (item.prgm < 25) barColor = 'var(--c-rose)';
-
-    return `
-      <div class="rotas-rank-row" title="${item.nome}: ${item.prgm.toFixed(1)}%">
-        <span class="rrr-uf">${item.uf}</span>
-        <div class="rrr-bar-wrap">
-          <div class="rrr-bar" style="width:${pct}%;background:${barColor}"></div>
-        </div>
-        <span class="rrr-val">${item.prgm.toFixed(1)}%</span>
-      </div>
-    `;
-  }).join('');
-
-  // Atualiza faixa resumo
-  const d = getD();
-  const sumPrgm = document.getElementById('rotasSumPrgm');
-  const sumGeorref = document.getElementById('rotasSumGeorref');
-  const sumTotal = document.getElementById('rotasSumTotal');
-  const sumKm = document.getElementById('rotasSumKm');
-
-  if (sumPrgm) sumPrgm.textContent = (d.PRGM !== null && d.PRGM !== undefined) ? d.PRGM.toFixed(1) + '%' : '38.2%';
-  if (sumGeorref) sumGeorref.textContent = (d.tot_rotas_georref) ? Number(d.tot_rotas_georref).toLocaleString('pt-BR') : '31.626';
-  if (sumTotal) sumTotal.textContent = (d.tot_rotas) ? Number(d.tot_rotas).toLocaleString('pt-BR') : '82.887';
-  if (sumKm) sumKm.textContent = (d.MEDATE) ? d.MEDATE.toFixed(1) + ' km' : '46.5 km';
-}
 
 // --------------------------------------------------------------------------
 // 5. MAPA COMPACTO: CONTROLE DE NÍVEL
 // --------------------------------------------------------------------------
-function setMapLevel(lvl, btn) {
-  currentMapLevel = lvl;
-  if (btn) {
-    document.querySelectorAll('#mapaLvlPills .pill-opt').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-  }
-  renderMapa();
-}
 
 // --------------------------------------------------------------------------
 // 6. SISTEMA COMPLETO DE INTERNACIONALIZAÇÃO (I18N EM 5 IDIOMAS)
@@ -19734,10 +19659,6 @@ function cycleTheme() {
   setTheme(nextTheme);
 }
 
-function toggleTheme() {
-  const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
-  setTheme(nextTheme);
-}
 
 function updateThemeUI() {
   const icon = document.getElementById('themeIcon');
@@ -19919,12 +19840,17 @@ function cmpValor(d, sigla) {
 function cmpCelula(v, casas, sufixo) { return v === null ? '—' : cmpNumero(v, casas) + sufixo; }
 function cmpVariacao(a, b, casas, sufixo, pp) {
   if (a === null || b === null) return { abs: '—', rel: '—' };
-  const dif = b - a;
+  // Sinal e ícone seguem o valor já arredondado: uma diferença de −0,04 aparece como "0,0", e não "−0,0"
+  const dif = Number((b - a).toFixed(casas));
   const sinal = dif > 0 ? '+' : (dif < 0 ? '−' : '');
   const icone = dif > 0 ? 'ti-arrow-up-right' : (dif < 0 ? 'ti-arrow-down-right' : 'ti-equal');
   const abs = '<span class="cmp-var"><i class="ti ' + icone + '" aria-hidden="true"></i>' + sinal
     + cmpNumero(Math.abs(dif), casas) + (pp ? ' p.p.' : sufixo) + '</span>';
-  const rel = a !== 0 ? sinal + cmpNumero(Math.abs(dif / a * 100), 1) + '%' : '—';
+  let rel = '—';
+  if (a !== 0) {
+    const pct = Number(((b - a) / Math.abs(a) * 100).toFixed(1));
+    rel = (pct > 0 ? '+' : (pct < 0 ? '−' : '')) + cmpNumero(Math.abs(pct), 1) + '%';
+  }
   return { abs: abs, rel: rel };
 }
 
@@ -19938,8 +19864,8 @@ function cmpEscopo() {
   return { nivel: nivel, chave: chave, nome: nome };
 }
 
-function cmpAviso(texto, tipo) {
-  const el = document.getElementById('cmpAviso');
+function cmpAviso(texto, tipo, id) {
+  const el = document.getElementById(id || 'cmpAviso');
   if (!el) return;
   if (!texto) { el.hidden = true; el.innerHTML = ''; return; }
   el.className = 'cmp-aviso' + (tipo === 'erro' ? ' erro' : '');
@@ -19971,7 +19897,12 @@ async function renderComparativo() {
   const cargas = api.cargas();
   const esc = cmpEscopo();
   document.getElementById('cmpEscopo').textContent = esc.nome;
-  if (!cargas.length) { cmpAviso('Carregando a lista de cargas do SETE…'); tabela.innerHTML = ''; return; }
+  if (!cargas.length) {
+    if (api.cargasStatus() === 'erro') cmpAviso('Não foi possível carregar a lista de cargas do SETE. Use “Tentar novamente” no aviso de erro.', 'erro');
+    else cmpAviso('Carregando a lista de cargas do SETE…');
+    tabela.innerHTML = '';
+    return;
+  }
   const sel = cmpPrepararSeletores(cargas);
   const duas = cargas.length > 1 && sel.a && sel.b && sel.a !== sel.b;
   if (cargas.length < 2) {
@@ -20028,6 +19959,381 @@ async function renderComparativo() {
   tabela.innerHTML = html + '</tbody>';
 }
 
+// ==========================================================================
+// v.3.4.5 — EVOLUÇÃO DOS INDICADORES AO LONGO DAS CARGAS DO SETE
+// Série por carga (um ponto por extração) do território da barra, com o Brasil como referência
+// opcional. Reaproveita a leitura por carga (PNITE_API.comparar) e os formatadores do comparativo.
+// ==========================================================================
+const EVO = { item: 'PRGM', seq: 0, chart: null, chaveGrade: '', chaveGrafico: '' };
+
+// Itens com série: indicadores publicados (os mesmos do comparativo) e contadores do SETE
+function evoItens() {
+  const itens = [];
+  CMP_GRUPOS.forEach(function(g) {
+    MAPA_INDS.filter(function(i) { return i.tipo === g[0]; }).forEach(function(ind) {
+      itens.push({ id: ind.sigla, sigla: ind.sigla, chave: ind.sigla, origem: 'ind', grupo: g[1],
+        nome: (INDICATOR_FULL_NAMES && INDICATOR_FULL_NAMES[ind.sigla]) || ind.nome,
+        casas: cmpCasas(ind.unit), sufixo: cmpSufixo(ind.unit), pp: ind.unit === '%' });
+    });
+  });
+  CMP_CONTADORES.forEach(function(c) {
+    itens.push({ id: 'raw:' + c.k, sigla: '', chave: c.k, origem: 'raw', grupo: 'Contadores do SETE',
+      nome: c.nome, casas: c.casas || 0, sufixo: '', pp: false });
+  });
+  return itens;
+}
+
+// Valor do item numa carga ({ ind, raw } vindo de PNITE_API.comparar); ausência de dado → null
+function evoValor(item, reg) {
+  if (!reg) return null;
+  return cmpValor(item.origem === 'raw' ? reg.raw : reg.ind, item.chave);
+}
+
+// Posição da carga AAAAMM no eixo do tempo (meses corridos)
+function evoMes(carga) { return Math.floor(carga / 100) * 12 + (carga % 100) - 1; }
+
+// Diferença b − a em texto simples ("+1,2 p.p.", "−3 km"); o sinal segue o valor arredondado
+function evoDiferenca(a, b, item) {
+  if (a === null || b === null) return '—';
+  const dif = Number((b - a).toFixed(item.casas));
+  return (dif > 0 ? '+' : (dif < 0 ? '−' : '')) + cmpNumero(Math.abs(dif), item.casas) + (item.pp ? ' p.p.' : item.sufixo);
+}
+
+// Faixa vertical da série: nunca menor que 20% da ordem de grandeza (ou 5 p.p.), para que uma
+// variação pequena não pareça um salto. Vale para o gráfico e para os minigráficos dos cartões.
+function evoFaixa(vals, item) {
+  let lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals);
+  const naoNegativo = lo >= 0, ate100 = item.pp && hi <= 100;
+  const minimo = Math.max(Math.max(Math.abs(lo), Math.abs(hi)) * 0.2, item.pp ? 5 : 0, item.casas === 0 ? 1 : Math.pow(10, -item.casas) * 5);
+  if (hi - lo < minimo) { const meio = (hi + lo) / 2; lo = meio - minimo / 2; hi = meio + minimo / 2; }
+  const folga = (hi - lo) * 0.15;
+  lo -= folga; hi += folga;
+  if (naoNegativo && lo < 0) { hi -= lo; lo = 0; }
+  if (ate100 && hi > 100) { lo -= hi - 100; hi = 100; if (naoNegativo && lo < 0) lo = 0; }
+  return { min: lo, max: hi };
+}
+
+// Minigráfico (SVG) da série de um item: linha discreta e o ponto mais recente em destaque
+function evoSparkline(pontos, item) {
+  const validos = pontos.filter(function(p) { return p.v !== null; });
+  if (!validos.length) return '';
+  const L = 104, A = 30, M = 5;
+  const x0 = pontos[0].x, x1 = pontos[pontos.length - 1].x;
+  const fx = evoFaixa(validos.map(function(p) { return p.v; }), item);
+  const px = function(x) { return x1 === x0 ? L - M : M + (x - x0) / (x1 - x0) * (L - 2 * M); };
+  const py = function(v) { return A - M - (v - fx.min) / (fx.max - fx.min) * (A - 2 * M); };
+  let d = '', aberto = false;
+  pontos.forEach(function(p) {
+    if (p.v === null) { aberto = false; return; }               // sem dado: a linha é interrompida
+    d += (aberto ? ' L' : ' M') + px(p.x).toFixed(1) + ' ' + py(p.v).toFixed(1);
+    aberto = true;
+  });
+  const u = validos[validos.length - 1];
+  return '<svg class="evo-spark" viewBox="0 0 ' + L + ' ' + A + '" aria-hidden="true" focusable="false">'
+    + (validos.length > 1 ? '<path class="evo-spark-linha" d="' + d.trim() + '"/>' : '')
+    + '<circle class="evo-spark-ponto" cx="' + px(u.x).toFixed(1) + '" cy="' + py(u.v).toFixed(1) + '" r="4"/></svg>';
+}
+
+function evoPrepararSeletor(itens) {
+  const sel = document.getElementById('evoIndicador');
+  let html = '', grupo = null;
+  itens.forEach(function(i) {
+    if (i.grupo !== grupo) { html += (grupo ? '</optgroup>' : '') + '<optgroup label="' + escHtml(i.grupo) + '">'; grupo = i.grupo; }
+    html += '<option value="' + escHtml(i.id) + '">' + escHtml((i.sigla ? i.sigla + ' — ' : '') + i.nome) + '</option>';
+  });
+  if (grupo) html += '</optgroup>';
+  if (sel.dataset.opcoes !== html) { sel.innerHTML = html; sel.dataset.opcoes = html; }
+  if (sel.value !== EVO.item) sel.value = EVO.item;
+}
+
+function evoTile(rotulo, valorHtml, sub) {
+  return '<div class="evo-tile"><div class="evo-tile-lbl">' + escHtml(rotulo) + '</div><div class="evo-tile-val">' + valorHtml + '</div>'
+    + (sub ? '<div class="evo-tile-sub">' + escHtml(sub) + '</div>' : '') + '</div>';
+}
+
+// Cartões-resumo do indicador selecionado (valor recente, variações e referência nacional)
+function evoRenderResumo(item, serie, comRef) {
+  const validos = serie.filter(function(p) { return p.v !== null; });
+  const ult = validos.length ? validos[validos.length - 1] : null;
+  const ant = validos.length > 1 ? validos[validos.length - 2] : null;
+  const fmt = function(v) { return cmpCelula(v, item.casas, item.sufixo); };
+  let html = evoTile('Valor mais recente', ult ? fmt(ult.v) : '—', ult ? ult.rotulo : 'Sem dado nas cargas disponíveis');
+  if (ant) {
+    const v = cmpVariacao(ant.v, ult.v, item.casas, item.sufixo, item.pp);
+    html += evoTile('Variação desde ' + ant.rotulo, v.abs, 'De ' + fmt(ant.v) + ' para ' + fmt(ult.v) + (v.rel !== '—' ? ' (' + v.rel + ')' : ''));
+  }
+  if (validos.length > 2) {
+    const v = cmpVariacao(validos[0].v, ult.v, item.casas, item.sufixo, item.pp);
+    html += evoTile('Variação no período', v.abs, 'De ' + validos[0].rotulo + ' a ' + ult.rotulo + (v.rel !== '—' ? ' (' + v.rel + ')' : ''));
+  }
+  if (comRef && ult) {
+    html += evoTile('Brasil em ' + ult.rotulo, fmt(ult.r), ult.r !== null
+      ? 'Diferença do território para o Brasil: ' + evoDiferenca(ult.r, ult.v, item) : 'Sem dado do Brasil nesta carga');
+  }
+  html += evoTile('Cargas com dado', validos.length + ' de ' + serie.length,
+    serie.length > 1 ? 'De ' + serie[0].rotulo + ' a ' + serie[serie.length - 1].rotulo : serie[0].rotulo);
+  document.getElementById('evoResumo').innerHTML = html;
+}
+
+// Complementos do gráfico: guia vertical na carga sob o ponteiro e o valor no fim de cada linha
+function evoPluginGrafico(o) {
+  return {
+    id: 'evoComplementos',
+    beforeDatasetsDraw: function(chart) {
+      const ativos = chart.getActiveElements();
+      if (!ativos.length) return;
+      const c = chart.ctx, a = chart.chartArea, x = ativos[0].element.x;
+      c.save(); c.strokeStyle = o.guia; c.lineWidth = 1;
+      c.beginPath(); c.moveTo(x, a.top); c.lineTo(x, a.bottom); c.stroke(); c.restore();
+    },
+    afterDatasetsDraw: function(chart) {
+      const rot = [];
+      chart.data.datasets.forEach(function(ds, i) {
+        const meta = chart.getDatasetMeta(i);
+        for (let j = ds.data.length - 1; j >= 0; j--) {
+          if (ds.data[j].y !== null && meta.data[j]) { rot.push({ x: meta.data[j].x, y: meta.data[j].y, txt: o.fmt(ds.data[j].y) }); break; }
+        }
+      });
+      // Rótulos que se sobrepõem não são empilhados: fica o do território (o do Brasil está no cartão e na tabela)
+      if (rot.length > 1 && Math.abs(rot[0].y - rot[1].y) < 16 && Math.abs(rot[0].x - rot[1].x) < 90) rot.length = 1;
+      const c = chart.ctx;
+      c.save(); c.font = o.fonte; c.fillStyle = o.cor; c.textBaseline = 'middle'; c.textAlign = 'left';
+      rot.forEach(function(r) { c.fillText(r.txt, r.x + 11, r.y); });
+      c.restore();
+    }
+  };
+}
+
+function evoDestruirGrafico() {
+  if (EVO.chart) { EVO.chart.destroy(); EVO.chart = null; }
+  EVO.chaveGrafico = '';
+}
+
+// Gráfico de linha da série (Chart.js): território em destaque e Brasil em cinza, no mesmo eixo
+function evoRenderGrafico(item, serie, esc, comRef, animar) {
+  const canvas = document.getElementById('evoGrafico');
+  if (!canvas || typeof Chart === 'undefined') return;
+  if (EVO.chart) { EVO.chart.destroy(); EVO.chart = null; }
+  const corSerie = gxCor('--c-blue', '#2589F4'), corRef = gxCor('--text-3', '#8e95a3');
+  const corTexto = gxCor('--text-1', '#1a1c20'), corEixo = gxCor('--text-2', '#5a5f6a');
+  const grade = gxCor('--border', '#e4e6ea'), guia = gxCor('--border-mid', '#d0d3d8'), fundo = gxCor('--bg-card', '#ffffff');
+  const familia = getComputedStyle(document.body).fontFamily || 'system-ui, sans-serif';
+  const fonteRotulo = '600 12px ' + familia;
+  const fmt = function(v) { return cmpCelula(v, item.casas, item.sufixo); };
+  const conjunto = function(nome, campo, cor) {
+    return { label: nome, data: serie.map(function(p) { return { x: p.x, y: p[campo] }; }),
+      borderColor: cor, backgroundColor: cor, borderWidth: 2, borderJoinStyle: 'round', borderCapStyle: 'round', tension: 0,
+      pointRadius: 5, pointHoverRadius: 7, pointHitRadius: 16, pointBackgroundColor: cor, pointBorderColor: fundo, pointBorderWidth: 2,
+      pointHoverBackgroundColor: cor, pointHoverBorderColor: fundo, pointHoverBorderWidth: 2 };
+  };
+  const datasets = [conjunto(esc.nome, 'v', corSerie)];
+  if (comRef) datasets.push(conjunto('Brasil', 'r', corRef));
+  const vals = [];
+  serie.forEach(function(p) { if (p.v !== null) vals.push(p.v); if (comRef && p.r !== null) vals.push(p.r); });
+  const fx = vals.length ? evoFaixa(vals, item) : { min: 0, max: 1 };
+  const xIni = serie[0].x, xFim = serie[serie.length - 1].x;
+  const folgaX = xFim > xIni ? (xFim - xIni) * 0.08 : 1;
+  // Espaço à direita para o valor escrito no fim da linha
+  const ctx = canvas.getContext('2d');
+  let largura = 0;
+  ctx.save(); ctx.font = fonteRotulo;
+  vals.forEach(function(v) { largura = Math.max(largura, ctx.measureText(fmt(v)).width); });
+  ctx.restore();
+  const semMovimento = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  EVO.chart = new Chart(canvas, {
+    type: 'line',
+    data: { datasets: datasets },
+    plugins: [evoPluginGrafico({ fmt: fmt, cor: corTexto, guia: guia, fonte: fonteRotulo })],
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      animation: animar && !semMovimento ? { duration: 300 } : false,
+      font: { family: familia },
+      layout: { padding: { top: 12, right: Math.ceil(largura) + 8 } },
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: fundo, titleColor: corTexto, bodyColor: corTexto, borderColor: guia, borderWidth: 1, padding: 10,
+          displayColors: datasets.length > 1, boxWidth: 14, boxHeight: 2, boxPadding: 6,
+          callbacks: {
+            title: function(itens) {
+              if (!itens.length) return '';
+              const p = serie.find(function(q) { return q.x === itens[0].parsed.x; });
+              return p ? p.rotulo : '';
+            },
+            label: function(c) { return fmt(c.parsed.y) + (datasets.length > 1 ? '  ' + c.dataset.label : ''); },
+            labelColor: function(c) { return { borderColor: c.dataset.borderColor, backgroundColor: c.dataset.borderColor, borderWidth: 0 }; }
+          }
+        }
+      },
+      scales: {
+        x: { type: 'linear', min: xIni - folgaX, max: xFim + folgaX,
+          afterBuildTicks: function(eixo) { eixo.ticks = serie.map(function(p) { return { value: p.x }; }); },
+          ticks: { color: corEixo, maxRotation: 0, autoSkip: true, autoSkipPadding: 12,
+            callback: function(v) { const p = serie.find(function(q) { return q.x === v; }); return p ? p.rotulo : ''; } },
+          grid: { display: false }, border: { color: grade } },
+        y: { suggestedMin: fx.min, suggestedMax: fx.max,
+          ticks: { color: corEixo, maxTicksLimit: 6, precision: item.casas,
+            callback: function(v) { return cmpNumero(v, item.casas) + (item.pp ? '%' : ''); } },
+          grid: { color: grade }, border: { display: false } }
+      }
+    }
+  });
+}
+
+// Tabela da série: a mesma informação do gráfico, legível sem ele
+function evoRenderTabela(item, serie, esc, comRef) {
+  const fmt = function(v) { return cmpCelula(v, item.casas, item.sufixo); };
+  let html = '<caption>' + escHtml((item.sigla ? item.sigla + ' — ' : '') + item.nome + ' · ' + esc.nome) + '</caption>'
+    + '<thead><tr><th scope="col">Carga</th><th scope="col">' + escHtml(esc.nome) + '</th><th scope="col">Variação desde a carga anterior com dado</th>'
+    + (comRef ? '<th scope="col">Brasil</th><th scope="col">Diferença para o Brasil</th>' : '') + '</tr></thead><tbody>';
+  let anterior = null;
+  serie.forEach(function(p) {
+    const v = anterior !== null && p.v !== null ? cmpVariacao(anterior, p.v, item.casas, item.sufixo, item.pp).abs : '—';
+    html += '<tr><th scope="row">' + escHtml(p.rotulo) + '</th><td>' + fmt(p.v) + '</td><td>' + v + '</td>'
+      + (comRef ? '<td>' + fmt(p.r) + '</td><td>' + escHtml(evoDiferenca(p.r, p.v, item)) + '</td>' : '') + '</tr>';
+    if (p.v !== null) anterior = p.v;
+  });
+  document.getElementById('evoTabela').innerHTML = html + '</tbody>';
+}
+
+// Grade com todos os itens: valor recente, variação desde a carga anterior e minigráfico
+function evoRenderGrade(itens, cargas, dados) {
+  let html = '', grupo = null;
+  itens.forEach(function(i) {
+    if (i.grupo !== grupo) { html += (grupo ? '</div>' : '') + '<div class="evo-grupo">' + escHtml(i.grupo) + '</div><div class="evo-grade">'; grupo = i.grupo; }
+    const pontos = cargas.map(function(c) { return { x: evoMes(c.carga), v: evoValor(i, dados[c.carga]) }; });
+    const validos = pontos.filter(function(p) { return p.v !== null; });
+    const ult = validos.length ? validos[validos.length - 1].v : null;
+    const ant = validos.length > 1 ? validos[validos.length - 2].v : null;
+    const variacao = ant !== null ? cmpVariacao(ant, ult, i.casas, i.sufixo, i.pp).abs : (ult !== null ? 'Uma carga com dado' : 'Sem dado');
+    html += '<button type="button" class="evo-card" data-evo-item="' + escHtml(i.id) + '" aria-pressed="false">'
+      + '<span class="evo-card-nome">' + (i.sigla ? '<span class="cmp-sigla">' + escHtml(i.sigla) + '</span>' : '') + escHtml(i.nome) + '</span>'
+      + '<span class="evo-card-base"><span class="evo-card-nums"><span class="evo-card-val">' + cmpCelula(ult, i.casas, i.sufixo) + '</span>'
+      + '<span class="evo-card-var">' + variacao + '</span></span>' + evoSparkline(pontos, i) + '</span></button>';
+  });
+  if (grupo) html += '</div>';
+  document.getElementById('evoGrade').innerHTML = html;
+}
+
+function evoMarcarCartao(id) {
+  document.querySelectorAll('#evoGrade .evo-card').forEach(function(b) {
+    const ativo = b.getAttribute('data-evo-item') === id;
+    b.classList.toggle('ativo', ativo);
+    b.setAttribute('aria-pressed', ativo ? 'true' : 'false');
+  });
+}
+
+async function renderEvolucao() {
+  const page = document.getElementById('page-secEvolucao');
+  if (!page || !page.classList.contains('active-page')) return;
+  const corpo = document.getElementById('evoCorpo');
+  const api = window.PNITE_API;
+  const parar = function(texto, tipo) {
+    cmpAviso(texto, tipo, 'evoAviso');
+    corpo.hidden = true;
+    EVO.chaveGrade = '';
+    evoDestruirGrafico();
+  };
+  if (!api || !api.configurado()) { parar('A configuração da API não foi encontrada.', 'erro'); return; }
+  const cargas = api.cargas();
+  const esc = cmpEscopo();
+  document.getElementById('evoEscopo').textContent = esc.nome;
+  if (!cargas.length) {
+    if (api.cargasStatus() === 'erro') parar('Não foi possível carregar a lista de cargas do SETE. Use “Tentar novamente” no aviso de erro.', 'erro');
+    else parar('Carregando a lista de cargas do SETE…');
+    return;
+  }
+  if (esc.nivel === 'municipio' && !parseInt(esc.chave, 10)) { parar('Selecione um município na barra de território.'); return; }
+  const itens = evoItens();
+  if (!itens.length) { parar('Nenhum indicador disponível para a série.'); return; }
+  const item = itens.find(function(i) { return i.id === EVO.item; }) || itens[0];
+  EVO.item = item.id;
+  evoPrepararSeletor(itens);
+  // Referência nacional: só para indicadores (contadores têm outra ordem de grandeza) e fora do escopo Brasil
+  const chk = document.getElementById('evoRefBrasil'), chkRotulo = document.getElementById('evoRefRotulo');
+  const refPossivel = esc.nivel !== 'nacional' && item.origem === 'ind';
+  chk.disabled = !refPossivel;
+  chkRotulo.classList.toggle('desativado', !refPossivel);
+  chkRotulo.title = refPossivel ? '' : (esc.nivel === 'nacional' ? 'O território selecionado já é o Brasil.'
+    : 'A referência nacional vale para os indicadores; os contadores do Brasil têm outra ordem de grandeza.');
+  const comRef = refPossivel && chk.checked;
+  const lista = cargas.map(function(c) { return c.carga; });
+  const seq = ++EVO.seq;
+  corpo.setAttribute('aria-busy', 'true');
+  let dados, ref;
+  try {
+    const r = await Promise.all([api.comparar(esc.nivel, esc.chave, lista),
+      esc.nivel !== 'nacional' ? api.comparar('nacional', '', lista) : null]);
+    dados = r[0]; ref = r[1];
+  } catch (e) {
+    if (seq !== EVO.seq) return;
+    corpo.setAttribute('aria-busy', 'false');
+    parar('Não foi possível consultar as cargas na API (' + escHtml(e && e.message ? e.message : 'erro') + ').', 'erro');
+    return;
+  }
+  if (seq !== EVO.seq) return;                        // território, indicador ou carga trocados durante a consulta
+  corpo.setAttribute('aria-busy', 'false');
+  if (!page.classList.contains('active-page')) return;
+  if (!lista.some(function(c) { return !!dados[c]; })) {
+    parar('<b>' + escHtml(esc.nome) + '</b> não tem registros no SETE nas cargas disponíveis.');
+    return;
+  }
+  cmpAviso(cargas.length < 2 ? 'Só há uma carga do SETE no banco (<b>' + escHtml(cargas[0].rotulo)
+    + '</b>). A série ganha um ponto a cada nova carga enviada.' : '', null, 'evoAviso');
+  const serie = cargas.map(function(c) {
+    return { carga: c.carga, rotulo: c.rotulo, x: evoMes(c.carga), v: evoValor(item, dados[c.carga]),
+      r: comRef ? evoValor(item, ref && ref[c.carga]) : null };
+  });
+  corpo.hidden = false;
+  const titulo = (item.sigla ? item.sigla + ' — ' : '') + item.nome;
+  const periodo = serie.length > 1 ? serie[0].rotulo + ' a ' + serie[serie.length - 1].rotulo : serie[0].rotulo;
+  const unidade = item.pp ? '%' : item.sufixo.trim();
+  document.getElementById('evoGraficoTitulo').textContent = titulo;
+  document.getElementById('evoGraficoSub').textContent = esc.nome + ' · ' + periodo + (unidade ? ' · valores em ' + unidade : '');
+  const legenda = document.getElementById('evoLegenda');
+  legenda.hidden = !comRef;
+  legenda.innerHTML = comRef ? '<span class="evo-leg"><i class="evo-leg-linha" aria-hidden="true"></i>' + escHtml(esc.nome) + '</span>'
+    + '<span class="evo-leg"><i class="evo-leg-linha ref" aria-hidden="true"></i>Brasil</span>' : '';
+  document.getElementById('evoGrafico').setAttribute('aria-label', 'Gráfico de linha: ' + titulo + ', ' + esc.nome + ', ' + periodo
+    + (comRef ? ', com o Brasil como referência' : '') + '. Os valores estão na tabela a seguir.');
+  evoRenderResumo(item, serie, comRef);
+  evoRenderTabela(item, serie, esc, comRef);
+  // Gráfico e grade só são refeitos quando o que mostram muda (renderAllViews chama esta função com frequência)
+  const chaveGrade = esc.nivel + '|' + esc.chave + '|' + currentLang + '|' + JSON.stringify(dados);
+  const chaveGrafico = item.id + '|' + comRef + '|' + currentTheme + '|' + chaveGrade + '|' + (comRef ? JSON.stringify(ref) : '');
+  if (chaveGrafico !== EVO.chaveGrafico || !EVO.chart) {
+    evoRenderGrafico(item, serie, esc, comRef, true);
+    EVO.chaveGrafico = chaveGrafico;
+  }
+  if (chaveGrade !== EVO.chaveGrade) {
+    evoRenderGrade(itens, cargas, dados);
+    EVO.chaveGrade = chaveGrade;
+  }
+  evoMarcarCartao(item.id);
+}
+
+// Escolha do indicador pelo seletor ou por um cartão da grade (que também leva a vista ao gráfico)
+function evoSelecionar(id, rolar) {
+  EVO.item = id;
+  const pronto = renderEvolucao();
+  if (!rolar) return;
+  pronto.then(function() {
+    const g = document.getElementById('evoGraficoCard');
+    if (!g || g.offsetParent === null) return;
+    const r = g.getBoundingClientRect();
+    if (r.top >= 80 && r.bottom <= window.innerHeight) return;
+    const semMovimento = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    g.scrollIntoView({ behavior: semMovimento ? 'auto' : 'smooth', block: 'start' });
+  });
+}
+
+// Cartões da grade de evolução (listener único, delegado)
+document.addEventListener('click', function(ev) {
+  const b = ev.target && ev.target.closest ? ev.target.closest('[data-evo-item]') : null;
+  if (b) evoSelecionar(b.getAttribute('data-evo-item'), true);
+});
+
 // Troca da base SETE pelo seletor das barras de território (listener único, delegado)
 document.addEventListener('change', function(ev) {
   const el = ev.target;
@@ -20038,13 +20344,10 @@ document.addEventListener('change', function(ev) {
 
 function renderAllViews() {
   const d = getD();
-  if (typeof renderElyraHero === 'function') renderElyraHero(d);
   if (typeof renderModalWafflesAndDonut === 'function') renderModalWafflesAndDonut(d);
   if (typeof renderElyraPerformanceArcs === 'function') renderElyraPerformanceArcs(d);
   if (typeof renderDesempenhoArcs === 'function') renderDesempenhoArcs(d);
   if (typeof renderDescritivosArcs === 'function') renderDescritivosArcs(d);
-  if (typeof renderElyraWaffleGrids === 'function') renderElyraWaffleGrids(d);
-  if (typeof renderRotasRanking === 'function') renderRotasRanking();
   if (typeof renderMapActiveView === 'function') renderMapActiveView(); else if (typeof renderMapa === 'function') renderMapa();
   if (typeof renderGiTable === 'function') renderGiTable();
   if (typeof renderMemoria === 'function') renderMemoria();
@@ -20055,6 +20358,7 @@ function renderAllViews() {
   if (typeof updateThemeUI === 'function') updateThemeUI();
   if (typeof syncVersionInfo === 'function') syncVersionInfo();
   if (typeof renderComparativo === 'function') renderComparativo();
+  if (typeof renderEvolucao === 'function') renderEvolucao();
 }
 
 
@@ -20121,7 +20425,7 @@ const UF_IBGE_CODES = {
 // ==========================================================================
 // NAVEGAÇÃO ENTRE MÓDULOS / PÁGINAS INDEPENDENTES (V.2.9.4)
 // ==========================================================================
-function switchModulePage(secId) {
+function switchModulePage(secId, origem) {
   if (!secId) secId = 'secHero';
 
   const pageMap = {
@@ -20135,9 +20439,12 @@ function switchModulePage(secId) {
     'secModal': 'page-secModal',
     'secMapa': 'page-secMapa',
     'secMonitoramento': 'page-secMonitoramento',
-    'secComparativo': 'page-secComparativo'
+    'secComparativo': 'page-secComparativo',
+    'secEvolucao': 'page-secEvolucao'
   };
 
+  // Seção desconhecida (endereço digitado ou antigo): vale o Início, com o item do menu marcado
+  if (!document.getElementById(pageMap[secId] || ('page-' + secId))) secId = 'secHero';
   const targetPageId = pageMap[secId] || ('page-' + secId);
 
   // Oculta todas as páginas de módulos e exibe somente a ativa
@@ -20189,13 +20496,12 @@ function switchModulePage(secId) {
     if (typeof renderDescritivosArcs === 'function') renderDescritivosArcs(d);
   } else if (secId === 'secModal') {
     if (typeof renderModalWafflesAndDonut === 'function') renderModalWafflesAndDonut(d);
-    if (typeof renderRotasRanking === 'function') renderRotasRanking();
-  } else if (secId === 'secHero') {
-    if (typeof renderElyraHero === 'function') renderElyraHero(d);
   } else if (secId === 'secMonitoramento') {
     smIniciar();
   } else if (secId === 'secComparativo') {
     renderComparativo();
+  } else if (secId === 'secEvolucao') {
+    renderEvolucao();
   }
 
   // Se for uma das subseções do módulo inicial, rola até ela com compensação de cabeçalho
@@ -20210,7 +20516,10 @@ function switchModulePage(secId) {
   if (secId === 'secHero') {
     try {
       if (window.location.hash) {
-        history.replaceState(null, null, window.location.pathname + window.location.search);
+        // Clique no menu: nova entrada (o Voltar retorna à página de onde se saiu). Na carga da página e no
+        // Voltar/Avançar, o endereço só é normalizado.
+        if (origem === 'clique' && history.pushState) history.pushState(null, null, window.location.pathname + window.location.search);
+        else history.replaceState(null, null, window.location.pathname + window.location.search);
       }
     } catch(e){}
   } else {
@@ -20228,7 +20537,7 @@ function switchModulePage(secId) {
 
 function navToSection(ev, secId) {
   if (ev) ev.preventDefault();
-  switchModulePage(secId);
+  switchModulePage(secId, 'clique');
 }
 
 function initSidebarScrollSpy() {
@@ -20471,9 +20780,9 @@ function pniteBaixarCardIndicador(btn) {
   const valStr = card.getAttribute('data-val') || (card.querySelector('.elyra-arc-val') ? card.querySelector('.elyra-arc-val').textContent.trim() : '—');
   const medNac = card.getAttribute('data-mednac') || '—';
   const fonte = card.getAttribute('data-fonte') || 'SETE, 2026';
-  const color = card.getAttribute('data-color') || '#10b981';
+  const color = pniteCorCanvas(card, card.getAttribute('data-color') || '#10b981');
   const pct = parseFloat(card.getAttribute('data-pct') || '0');
-  const territorio = (typeof getActiveTerritoryLabel === 'function') ? getActiveTerritoryLabel() : 'Brasil (Nacional)';
+  const territorio = pniteRotuloExportacao();
 
   const w = 580;
   const h = 280;
@@ -20601,9 +20910,7 @@ function pniteBaixarCardIndicador(btn) {
     if (!blob) return;
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    const safeSigla = sigla.replace(/[^a-zA-Z0-9_-]/g, '_');
-    const safeTerr = territorio.replace(/[^a-zA-Z0-9_-]/g, '_');
-    a.download = 'PNITE_Indicador_' + safeSigla + '_' + safeTerr + '_2026.png';
+    a.download = pniteNomeArquivo('Indicador ' + sigla + ' ' + pniteEscopoAtual().nome, 'png');
     a.href = url;
     document.body.appendChild(a);
     a.click();
@@ -20626,7 +20933,7 @@ function pniteBaixarPainelCompleto(btn) {
   const badgeNum = badgeEl ? badgeEl.textContent.trim() : '00';
   const panelTitle = titleEl ? titleEl.textContent.trim() : 'Painel de Indicadores';
   const panelSub = subEl ? subEl.textContent.trim() : '';
-  const territorio = (typeof getActiveTerritoryLabel === 'function') ? getActiveTerritoryLabel() : 'Brasil (Nacional)';
+  const territorio = pniteRotuloExportacao();
 
   const cards = Array.from(sec.querySelectorAll('.elyra-arc-card'));
   if (!cards.length) {
@@ -20708,7 +21015,7 @@ function pniteBaixarPainelCompleto(btn) {
     const valStr = card.getAttribute('data-val') || (card.querySelector('.elyra-arc-val') ? card.querySelector('.elyra-arc-val').textContent.trim() : '—');
     const medNac = card.getAttribute('data-mednac') || '—';
     const fonte = card.getAttribute('data-fonte') || 'SETE, 2026';
-    const color = card.getAttribute('data-color') || '#10b981';
+    const color = pniteCorCanvas(card, card.getAttribute('data-color') || '#10b981');
     const pct = parseFloat(card.getAttribute('data-pct') || '0');
 
     // Fundo do card
@@ -20802,7 +21109,7 @@ function pniteBaixarPainelCompleto(btn) {
   ctx.fillStyle = '#64748b';
   ctx.font = '500 13px Inter, sans-serif';
   ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
-  ctx.fillText('PNITE — Plataforma Nacional de Inteligência em Transporte Escolar | v.3.3.0', padX, footerY);
+  ctx.fillText('PNITE — Plataforma Nacional de Inteligência em Transporte Escolar | ' + PNITE_VERSION, padX, footerY);
   ctx.textAlign = 'right';
   ctx.fillText('Fonte de dados: SETE, FNDE, INEP, Censo Escolar 2026', totalW - padX, footerY);
 
@@ -20810,9 +21117,7 @@ function pniteBaixarPainelCompleto(btn) {
     if (!blob) return;
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    const safeTitle = panelTitle.replace(/[^a-zA-Z0-9_-]/g, '_');
-    const safeTerr = territorio.replace(/[^a-zA-Z0-9_-]/g, '_');
-    a.download = 'PNITE_Painel_' + safeTitle + '_' + safeTerr + '_2026.png';
+    a.download = pniteNomeArquivo('Painel ' + panelTitle + ' ' + pniteEscopoAtual().nome, 'png');
     a.href = url;
     document.body.appendChild(a);
     a.click();
@@ -20835,7 +21140,7 @@ function pniteBaixarPainelExcel(btn) {
 
   const titleEl = sec.querySelector('.sec-title');
   const panelTitle = titleEl ? titleEl.textContent.trim() : 'Painel';
-  const territorio = (typeof getActiveTerritoryLabel === 'function') ? getActiveTerritoryLabel() : 'Brasil (Nacional)';
+  const territorio = pniteRotuloExportacao();
 
   const cards = Array.from(sec.querySelectorAll('.elyra-arc-card'));
   if (!cards.length) {
@@ -20850,7 +21155,7 @@ function pniteBaixarPainelExcel(btn) {
     ['Download Indicadores PNITE | Painel: ' + panelTitle + ' | Território: ' + territorio],
     ['Data de Geração:', new Date().toLocaleDateString('pt-BR') + ' ' + new Date().toLocaleTimeString('pt-BR')],
     ['Escopo Territorial:', territorio],
-    ['Plataforma:', 'PNITE — Plataforma Nacional de Inteligência em Transporte Escolar (v.3.3.0)'],
+    ['Plataforma:', 'PNITE — Plataforma Nacional de Inteligência em Transporte Escolar (' + PNITE_VERSION + ')'],
     [],
     ['Código / Sigla', 'Nome do Indicador', 'Valor no Território', 'Média Nacional', 'Unidade', 'Fonte dos Dados', 'Situação']
   ];
@@ -20882,9 +21187,7 @@ function pniteBaixarPainelExcel(btn) {
   const sheetName = ('Painel ' + panelTitle).slice(0, 31).replace(/[:\\/\?\*\[\]]/g, '_');
   XLSX.utils.book_append_sheet(wb, ws, sheetName);
 
-  const safeTitle = panelTitle.replace(/[^a-zA-Z0-9_-]/g, '_');
-  const safeTerr = territorio.replace(/[^a-zA-Z0-9_-]/g, '_');
-  XLSX.writeFile(wb, 'PNITE_Painel_' + safeTitle + '_' + safeTerr + '_2026.xlsx');
+  XLSX.writeFile(wb, pniteNomeArquivo('Painel ' + panelTitle + ' ' + pniteEscopoAtual().nome, 'xlsx'));
 }
 
 
@@ -21228,12 +21531,16 @@ function pniteExportarIndicadoresExcel() {
 
   const indRows = ALL_INDICATORS.map(function(ind) {
     let valTerritorio = null;
-    if (mapTerritoryMode === 'regiao' && currentMapRegion && DATA.regiao && DATA.regiao[currentMapRegion]) {
-      valTerritorio = DATA.regiao[currentMapRegion][ind.sigla];
-    } else if (isMunicipalLevel && currentSelectedMunCod) {
+    // Mesma ordem do rótulo do recorte (getActiveTerritoryLabel): município, UF, região e só então Brasil.
+    // Seleção personalizada e subdivisões não têm valor agregado: ficam "—", e não o valor de outro território.
+    if (isMunicipalLevel && currentSelectedMunCod) {
       valTerritorio = getMunVal(currentSelectedMunCod, ind.sigla);
     } else if (isMunicipalLevel && currentMapUf && DATA.estado && DATA.estado[currentMapUf.toLowerCase()]) {
       valTerritorio = DATA.estado[currentMapUf.toLowerCase()][ind.sigla];
+    } else if (mapTerritoryMode === 'regiao' && currentMapRegion && DATA.regiao && DATA.regiao[currentMapRegion]) {
+      valTerritorio = DATA.regiao[currentMapRegion][ind.sigla];
+    } else if (mapTerritoryMode === 'personalizada' || mapTerritoryMode === 'subdivisoes') {
+      valTerritorio = null;
     } else {
       valTerritorio = DATA.nacional[ind.sigla];
     }
@@ -21275,6 +21582,8 @@ function pniteExportarIndicadoresExcel() {
   // 3. Detalhamento Municipal — Todos os 5.569 Municípios Brasileiros
   const munRows = [];
   const seteMap = new Map();
+  // Tabela Dados SETE ainda carregando ou com erro: a ausência na tabela não significa "sem dados"
+  const seteCarregada = !window.PNITE_API || PNITE_API.seteStatus() === 'ok';
   const alIdx = (typeof SETE_MUN !== 'undefined' && SETE_MUN.cols) ? SETE_MUN.cols.indexOf('alunos') : 3;
   const veicIdx = (typeof SETE_MUN !== 'undefined' && SETE_MUN.cols) ? SETE_MUN.cols.indexOf('veiculos') : 12;
 
@@ -21299,7 +21608,7 @@ function pniteExportarIndicadoresExcel() {
           'Código IBGE': cod,
           'Município': m.nome,
           'UF': uf,
-          'Status no SETE': sRow ? 'Integrado' : 'Sem dados no SETE',
+          'Status no SETE': sRow ? 'Integrado' : (seteCarregada ? 'Sem dados no SETE' : 'Tabela do SETE não carregada'),
           'Alunos Atendidos': (sRow && sRow[alIdx] !== null && sRow[alIdx] !== undefined) ? sRow[alIdx] : '—',
           'Veículos': (sRow && sRow[veicIdx] !== null && sRow[veicIdx] !== undefined) ? sRow[veicIdx] : '—'
         };
@@ -21533,7 +21842,7 @@ function setupChartDownloadButtons() {
     if (card.querySelector('.btn-chart-download-box')) return;
     const box = document.createElement('div');
     box.className = 'btn-chart-download-box';
-    box.innerHTML = '<button type="button" class="btn-chart-download-btn" title="Baixar caixa completa do gráfico (PNG)" onclick="pniteBaixarGraficoCard(this)"><i class="ti ti-download" style="font-size:13px"></i></button>';
+    box.innerHTML = '<button type="button" class="btn-chart-download-btn" title="Baixar caixa completa do gráfico (PNG)" aria-label="Baixar o gráfico em PNG" onclick="pniteBaixarGraficoCard(this)"><i class="ti ti-download" style="font-size:13px"></i></button>';
     card.appendChild(box);
   });
 }
@@ -21557,12 +21866,13 @@ if (document.readyState === 'loading') {
       </div>
     </div>
     <div class="pif-body">
-      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.4.4</strong></div>
+      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.4.5</strong></div>
       <div class="pif-row"><span>Data da alteração:</span><span class="pnite-date-val">19/11/2026</span></div>
       <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">19:30</span></div>
       <div class="pif-row"><span>Responsável técnico:</span><span class="pnite-author-val">Equipe PNITE</span></div>
       <div class="pif-note">
         <i class="ti ti-check" style="color:var(--accent);margin-right:3px"></i>
+        <strong>Evolução dos Indicadores e revisão geral (v.3.4.5):</strong> nova aba com a série de cada indicador por carga do SETE (gráfico, tabela e cartões com minigráfico, por território, com o Brasil como referência). Revisão geral do código: corrigidos os downloads dos cartões (saíam com “—”), a troca de carga durante o carregamento, o tooltip de estados vizinhos e outros pontos do mapa, a paginação da tabela municipal do SETE, travas do gerenciador de indicadores e a validação da foto de perfil.<br>
         <strong>Alunos de novembro/2026 (v.3.4.4):</strong> o cadastro de alunos da carga 202611 foi recarregado a partir do arquivo completo (4.430.187 alunos; antes, 716.990); PAD, PARI, PAIH e TEDC de novembro foram recalculados.<br>
         <strong>Carga de novembro/2026 no banco (v.3.4.3):</strong> os 14 CSVs da extração de novembro foram carregados como carga <code>202611</code> (Novembro/2026), ao lado de maio; o carregador passa a casar as colunas pelo nome do cabeçalho (ausentes ficam vazias, extras são ignoradas). A carga aparece no seletor “Base SETE” e no “Comparativo entre Cargas”.<br>
         <strong>Carga de novembro/2026 (v.3.4.2):</strong> pasta <code>upload/sete/2026-11/</code> preparada para os 14 CSVs da extração do SETE (fora do Git); a documentação passa a citar 14 arquivos (o traçado das rotas vem no <code>script_03</code>).<br>
@@ -21608,9 +21918,9 @@ if (document.readyState === 'loading') {
       </div>
     </div>
   </div>
-  <button class="pif-btn" id="pifBtn" aria-label="Informações de Versão">
+  <button type="button" class="pif-btn" id="pifBtn" aria-label="Informações de Versão">
     <i class="ti ti-info-circle"></i>
-    <span class="pif-btn-label pnite-version-val">v.3.4.4</span>
+    <span class="pif-btn-label pnite-version-val">v.3.4.5</span>
   </button>
 </div>
 
@@ -21677,7 +21987,7 @@ if (document.readyState === 'loading') {
     <div class="mpb-toolbar">
       <div class="mpb-search-wrap">
         <i class="ti ti-search"></i>
-        <input type="text" class="mpb-search-input" id="buscaTerritorioPersonalizado" placeholder="Buscar estado ou município..." oninput="filtrarArvoreTerritorial(this.value)">
+        <input type="text" class="mpb-search-input" id="buscaTerritorioPersonalizado" aria-label="Buscar estado ou município" placeholder="Buscar estado ou município..." oninput="filtrarArvoreTerritorial(this.value)">
       </div>
       <div class="mpb-tools-actions">
         <button type="button" class="mpb-btn-tool" onclick="selecionarTudoPersonalizada()"><i class="ti ti-check-double"></i> Selecionar Tudo</button>

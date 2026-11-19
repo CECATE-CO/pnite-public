@@ -286,14 +286,16 @@ Cada nível soma o anterior. Os percentuais são sempre recalculados a partir do
 
 ```bash
 python scripts/supabase_migrar.py                                     # aplica migrações pendentes
-python scripts/criar_banco_dados_brutos.py --tabelas municipios referencia
+python scripts/criar_banco_dados_brutos.py --tabelas municipios      # lista de municípios do IBGE
 python scripts/criar_banco_dados_brutos.py --carga 2026-11 --pasta upload/sete/2026-11   # uma carga do SETE (--retomar se interromper)
 python scripts/criar_banco_dados_brutos.py --tabelas censo           # Censo (só quando mudar)
 python scripts/atualizar_indicadores.py                               # recalcula as views de todas as cargas
 python scripts/extrair_capacitacao.py                                 # capacitações
 python scripts/importar_planilha.py --simular                         # planilhas da pasta upload/
-python scripts/validar_paridade.py
+python scripts/validar_paridade.py                                    # carga 202605 × pacote compilado (--carga para outra)
 ```
+
+Proteções do carregador do SETE (v.3.4.5): `--pasta` obrigatória fora da carga `2026-05`; arquivo e colunas-chave conferidos antes de apagar a carga; `--tabelas referencia` recusa regravar a referência quando isso apagaria campos existentes ou substituiria a referência calculada de uma carga sem planilha (`--forcar-referencia` para insistir); a recarga não altera o Censo pareado nem o rótulo de uma carga já registrada; a contagem final inclui os traçados (`sete.rota_shape`).
 
 > Se o Python acusar `CERTIFICATE_VERIFY_FAILED` numa máquina com antivírus que inspeciona HTTPS (ex.: Avast), adicione o domínio do Supabase às exceções do antivírus.
 
@@ -338,6 +340,7 @@ python scripts/validar_paridade.py
 | `0024_indices_sete_por_carga` | Índices das tabelas do SETE passam de `(ano_carga, …)` para `(carga, …)` |
 | `0025_exclui_catalogo_caminho_escola` | Exclui do catálogo os 9 itens de Gestão › Caminho da Escola (6 indicadores e 3 visuais, em rascunho e sem publicação), com a definição completa registrada na auditoria; os painéis do Caminho da Escola ficam sem visual a publicar até serem recriados |
 | `0026_exclui_visual_monitoramento_sete` | Exclui do catálogo o visual `SETE_PAINEL_SNAPSHOT` (em rascunho, sem publicação), com a definição registrada na auditoria; o catálogo fica com os 31 indicadores do transporte |
+| `0027_foto_perfil_validacao_estrita` | A foto de perfil passa a ser validada por inteiro (data URI de imagem em base64, sem outros caracteres) no CHECK de `acesso.autorizacoes.foto` e em `public.pnite_atualizar_perfil`; antes só o prefixo era conferido, o que permitia injetar atributos no `<img>` da lista de usuários |
 
 ---
 

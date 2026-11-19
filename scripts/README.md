@@ -36,10 +36,10 @@ Conjunto de scripts Python e Node.js para processamento, extração, agregação
   Extrai e consolida os dados das capacitações a partir de `data/Capacitação/` (convocações HTML, formulários de inscrição, listas de presença e avaliações de cada `XCTE`, além do legado `legado_cte_01a04_powerbi.json` das capacitações 1 a 4). Grava as tabelas consolidadas, sem dados pessoais, no schema privado `capacitacao` do Supabase (migração `0012_capacitacao.sql`), numa única transação, e atualiza a view pública `public.capacitacao_dados` lida pelo `PNITE.html`. Uso: `pip install openpyxl requests python-dotenv` e `python scripts/extrair_capacitacao.py`.
 
 - **`scripts/pegar_dado_rota.py` / `scripts/pegar_dado_rota.js`**:
-  Utilitários para amostragem e inspeção detalhada de traçados geométricos de rotas e coordenadas geográficas do SETE.
+  Utilitários antigos de amostragem de traçados de rotas. **Fora de uso:** dependem de variáveis (`PROJECT_URL`, `USER_ID`, `USER_PASSWORD`) e de uma tabela (`dado_bruto_rotas`) que não existem mais; os traçados hoje vêm de `public.rotas_tracado`.
 
 - **`scripts/agrega_ind.py`**:
-  Rotina histórica de agregação municipal/estadual a partir das tabelas da Divisão Territorial Brasileira (DTB/IBGE) e dados operacionais de rotas, veículos e alunos.
+  Rotina histórica de agregação municipal/estadual a partir das tabelas da Divisão Territorial Brasileira (DTB/IBGE) e dados operacionais de rotas, veículos e alunos. **Fora de uso:** lê arquivos (`dtb/`, `pdde/`, `dashboard.html`) que não estão mais no repositório; a agregação é feita no banco (views de `analise` e `public`).
 
 ---
 
@@ -76,19 +76,29 @@ Atualização completa (na raiz, com o `.env` preenchido a partir de `.env.examp
 ```bash
 pip install requests python-dotenv python-docx pandas openpyxl
 python scripts/supabase_migrar.py
-python scripts/criar_banco_dados_brutos.py --tabelas municipios referencia
-python scripts/criar_banco_dados_brutos.py            # SETE + Censo (use --retomar se interromper)
-python -c "import sys; sys.path.insert(0,'scripts'); from supabase_api import executar_sql; executar_sql('SELECT pnite_meta.atualizar_indicadores();')"
-python scripts/validar_paridade.py
+python scripts/criar_banco_dados_brutos.py --tabelas municipios                           # lista de municípios do IBGE
+python scripts/criar_banco_dados_brutos.py --carga 2026-11 --pasta upload/sete/2026-11    # uma carga do SETE (--retomar se interromper)
+python scripts/criar_banco_dados_brutos.py --tabelas censo                                # Censo (só quando mudar)
+python scripts/atualizar_indicadores.py                                                   # recalcula as views (aguarda o término no banco)
+python scripts/validar_paridade.py                                                        # carga 202605 × pacote compilado
 ```
+
+Cuidados do carregador (`criar_banco_dados_brutos.py`):
+- `--pasta` é obrigatória fora da carga `2026-05` (a pasta padrão guarda a extração de maio);
+- o arquivo e as colunas-chave são conferidos **antes** de apagar a carga no banco;
+- `--tabelas referencia` só regrava a referência se isso não apagar campos existentes nem substituir a referência calculada de uma carga sem planilha (`--forcar-referencia` para insistir);
+- uma carga já registrada em `ref.cargas` não tem o Censo pareado nem o rótulo alterados por uma recarga (só `--rotulo` muda o rótulo);
+- ao final, a contagem do CSV é conferida com a do banco, inclusive a dos traçados (`sete.rota_shape`). Um lote repetido por falha de rede ou por `--retomar` aparece como `DIVERGENTE`: recarregue a tabela.
 
 Consulta pela API:
 ```
-GET {SUPABASE_URL}/rest/v1/indicadores_estado?ano_carga=eq.2026&uf=eq.go
-GET {SUPABASE_URL}/rest/v1/indicadores_municipio?ano_carga=eq.2026&uf=eq.go&select=label,georref,indicadores&order=georref.desc
-GET {SUPABASE_URL}/rest/v1/indicadores_regiao?ano_carga=eq.2026&regiao=eq.centro-oeste
-GET {SUPABASE_URL}/rest/v1/indicadores_nacional?ano_carga=eq.2026
-GET {SUPABASE_URL}/rest/v1/indicadores?ano_carga=eq.2026&nivel=eq.estado&chave=eq.go
-GET {SUPABASE_URL}/rest/v1/indicadores?ano_carga=eq.2026&nivel=eq.municipio&uf=eq.go&select=chave,label,indicadores
+GET {SUPABASE_URL}/rest/v1/cargas_sete?select=carga,rotulo,atual&order=carga
+GET {SUPABASE_URL}/rest/v1/indicadores_estado?carga=eq.202611&uf=eq.go
+GET {SUPABASE_URL}/rest/v1/indicadores_municipio?carga=eq.202611&uf=eq.go&select=label,georref,indicadores&order=georref.desc
+GET {SUPABASE_URL}/rest/v1/indicadores_regiao?carga=eq.202611&regiao=eq.centro-oeste
+GET {SUPABASE_URL}/rest/v1/indicadores_nacional?carga=in.(202605,202611)
+GET {SUPABASE_URL}/rest/v1/indicadores?carga=eq.202611&nivel=eq.estado&chave=eq.go
+GET {SUPABASE_URL}/rest/v1/indicadores?carga=eq.202611&nivel=eq.municipio&uf=eq.go&select=chave,label,indicadores
 Cabeçalho: apikey: {SUPABASE_PUBLISHABLE_KEY}
+Filtre sempre por `carga` (AAAAMM): o ano de carga (`ano_carga=eq.2026`) reúne mais de uma carga (maio e novembro de 2026).
 ```
