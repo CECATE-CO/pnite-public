@@ -379,11 +379,12 @@ def importar(fonte, schema, nome, args, origem):
 
 def arquivos_upload(pasta):
     """Planilhas de upload/, exceto upload/sete/ (extrações do SETE, enviadas por
-    criar_banco_dados_brutos.py --carga AAAA-MM --pasta upload/sete/AAAA-MM)."""
+    criar_banco_dados_brutos.py --carga AAAA-MM --pasta upload/sete/AAAA-MM) e upload/censo/
+    (microdados do Censo Escolar, enviados por criar_banco_dados_brutos.py --tabelas censo --censo-ano AAAA)."""
     extensoes = EXT_CSV | EXT_PLANILHA
     return sorted(a for a in pasta.rglob("*")
                   if a.is_file() and a.suffix.lower() in extensoes and not a.name.startswith(("~$", "."))
-                  and a.relative_to(pasta).parts[0].lower() != "sete")
+                  and a.relative_to(pasta).parts[0].lower() not in ("sete", "censo"))
 
 
 def destino_arquivo(caminho, args):

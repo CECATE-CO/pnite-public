@@ -5895,6 +5895,15 @@ html {
 .evo-campo-ind { flex: 1 1 360px; max-width: 560px; }
 .evo-check { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-1); padding-bottom: 11px; cursor: pointer; min-width: 0; }
 .evo-check input { width: 16px; height: 16px; flex: none; accent-color: var(--c-blue); cursor: pointer; }
+/* v.3.4.6 — base da série: cargas do SETE ou anos do Censo Escolar */
+.evo-campo-base { flex: 0 1 auto; }
+.evo-base-lbl { font-size: 12px; font-weight: 600; color: var(--text-2); }
+.evo-base { display: inline-flex; flex-wrap: wrap; gap: 4px; padding: 3px; border: 1px solid var(--border); border-radius: 10px; background-color: var(--bg-card); min-width: 0; max-width: 100%; }
+.evo-base-btn { min-height: 34px; padding: 6px 12px; border: 0; border-radius: 7px; background-color: transparent; color: var(--text-2); font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
+.evo-base-btn:hover { color: var(--text-1); }
+.evo-base-btn:focus-visible { outline: 2px solid var(--c-blue); outline-offset: 1px; }
+.evo-base-btn[aria-pressed="true"] { background-color: var(--c-blue); color: #fff; }
+[data-theme="dark"] .evo-base-btn[aria-pressed="true"] { color: var(--c-navy); }
 .evo-check.desativado { color: var(--text-3); cursor: default; }
 .evo-check.desativado input { cursor: default; }
 .evo-corpo[hidden] { display: none; }
@@ -5936,6 +5945,7 @@ html {
 .evo-spark-ponto { fill: var(--c-blue); stroke: var(--bg-card); stroke-width: 2; }
 @media (max-width: 760px) {
   .evo-campo-ind { flex: 1 1 100%; max-width: 100%; }
+  .evo-campo-base { flex: 1 1 100%; }
   .evo-check { padding-bottom: 0; }
   .evo-grafico-card { padding: 14px 10px 8px; }
   .evo-grafico-wrap { height: 260px; }
@@ -5943,6 +5953,7 @@ html {
 }
 @media (pointer: coarse) {
   .evo-check { min-height: 44px; }
+  .evo-base-btn { min-height: 44px; }
 }
 
 /* Barra Integrada de Localidade / Território nos Módulos */
@@ -6683,6 +6694,7 @@ html[data-theme="dark"] .adm-msg.ok { color: #7ee2b0; }
 .sm-dica { position: absolute; pointer-events: none; z-index: 5; background: var(--bg-card); color: var(--text-1); border: 1px solid var(--border-mid); border-radius: 10px; padding: 6px 10px; font-size: 12px; box-shadow: 0 4px 14px rgba(0,0,0,.15); white-space: nowrap; }
 
 /* ================================================================
+    v.3.4.6 — SÉRIE ANUAL DO CENSO ESCOLAR (2023, 2024, 2025...) NA ABA EVOLUÇÃO DOS INDICADORES (MIGRAÇÃO 0028)
     v.3.4.5 — ABA "EVOLUÇÃO DOS INDICADORES" (SÉRIE POR CARGA DO SETE) E REVISÃO GERAL DO CÓDIGO (CORREÇÕES NA API, CARTÕES, MAPA, MONITORAMENTO, GERENCIADOR, EXPORTAÇÕES; MIGRAÇÃO 0027)
     v.3.4.4 — ALUNOS DE NOVEMBRO/2026 RECARREGADOS (4.430.187) A PARTIR DO script_01 COMPLETO
     v.3.4.3 — CARGA DE NOVEMBRO/2026 (202611) NO BANCO; CARREGADOR CASA AS COLUNAS DOS CSVs PELO NOME
@@ -9330,7 +9342,7 @@ window.onerror = function(msg, url, line, col, err) {
           <div class="sec-badge">11</div>
           <div>
             <div class="sec-title" id="evoTitulo">Evolução dos Indicadores</div>
-            <div class="sec-sub">Série de cada indicador no território selecionado, com um ponto por carga do SETE (ex.: maio e novembro de 2026). Todas as cargas são calculadas com as mesmas regras.</div>
+            <div class="sec-sub">Série de cada indicador no território selecionado: um ponto por carga do SETE (ex.: maio e novembro de 2026) ou, para os indicadores do Censo Escolar, um ponto por ano do Censo (ex.: 2023 a 2025). Todos os pontos são calculados com as mesmas regras.</div>
           </div>
         </div>
 
@@ -9394,6 +9406,13 @@ window.onerror = function(msg, url, line, col, err) {
         </div>
 
         <div class="evo-controles">
+          <div class="cmp-campo evo-campo-base">
+            <span class="evo-base-lbl" id="evoBaseLbl">Base da série</span>
+            <div class="evo-base" role="group" aria-labelledby="evoBaseLbl">
+              <button type="button" class="evo-base-btn" data-evo-base="sete" aria-pressed="true">Cargas do SETE</button>
+              <button type="button" class="evo-base-btn" data-evo-base="censo" aria-pressed="false">Anos do Censo Escolar</button>
+            </div>
+          </div>
           <div class="cmp-campo evo-campo-ind">
             <label for="evoIndicador">Indicador</label>
             <select id="evoIndicador" class="form-select" onchange="evoSelecionar(this.value)"></select>
@@ -9416,20 +9435,20 @@ window.onerror = function(msg, url, line, col, err) {
             </figcaption>
             <div class="evo-legenda" id="evoLegenda" hidden></div>
             <div class="evo-grafico-wrap">
-              <canvas id="evoGrafico" role="img" aria-label="Gráfico de linha da evolução do indicador por carga do SETE"></canvas>
+              <canvas id="evoGrafico" role="img" aria-label="Gráfico de linha da evolução do indicador"></canvas>
             </div>
           </figure>
 
-          <div class="cmp-tabela-wrap" id="evoTabelaWrap" role="region" aria-label="Tabela da série do indicador por carga" tabindex="0">
+          <div class="cmp-tabela-wrap" id="evoTabelaWrap" role="region" aria-label="Tabela da série do indicador" tabindex="0">
             <table class="cmp-tabela evo-tabela" id="evoTabela"></table>
           </div>
 
           <h3 class="evo-subtitulo" id="evoGradeTitulo">Todos os indicadores</h3>
-          <p class="evo-dica">Cada cartão traz o valor da carga mais recente, a variação desde a carga anterior com dado e a série completa. Selecione um cartão para abrir o indicador no gráfico.</p>
+          <p class="evo-dica" id="evoDica">Cada cartão traz o valor da carga mais recente, a variação desde a carga anterior com dado e a série completa. Selecione um cartão para abrir o indicador no gráfico.</p>
           <div id="evoGrade" role="group" aria-labelledby="evoGradeTitulo"></div>
         </div>
 
-        <p class="cmp-nota"><i class="ti ti-info-circle" aria-hidden="true"></i> Cada ponto é uma carga do SETE; a posição no eixo horizontal segue a data da extração. Indicadores em % variam em pontos percentuais (p.p.). Ausência de dado aparece como “—” e interrompe a linha. As cargas usam o mesmo Censo Escolar pareado, por isso os indicadores do Censo (ATE, MEDATE, PATM, PATE) só mudam se o pareamento mudar. Com poucas cargas, a série mostra a variação entre elas, e não uma tendência.</p>
+        <p class="cmp-nota"><i class="ti ti-info-circle" aria-hidden="true"></i> <span id="evoNota">Cada ponto é uma carga do SETE; a posição no eixo horizontal segue a data da extração. Indicadores em % variam em pontos percentuais (p.p.). Ausência de dado aparece como “—” e interrompe a linha. As cargas usam o mesmo Censo Escolar pareado, por isso os indicadores do Censo (ATE, MEDATE, PATM, PATE) só mudam se o pareamento mudar. Com poucas cargas, a série mostra a variação entre elas, e não uma tendência.</span></p>
       </section>
 </div><!-- /#page-secEvolucao -->
 
@@ -9545,7 +9564,7 @@ window.onerror = function(msg, url, line, col, err) {
     <div class="smb-sec">
       <div class="smb-sec-title" data-i18n="settings_info_title">Informações da Versão</div>
       <div style="font-size:12px;color:var(--text-2);display:flex;flex-direction:column;gap:4px;margin-top:6px">
-        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.4.5</b></div>
+        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.4.6</b></div>
         <div><span data-i18n="settings_updated">Última Atualização:</span> <b class="pnite-date-val">06/10/2026</b> às <b class="pnite-time-val">21:05</b></div>
         <div><span data-i18n="settings_author">Responsável Técnico:</span> <b class="pnite-author-val">Equipe PNITE</b></div>
       </div>
@@ -10551,7 +10570,7 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.4.5";
+const PNITE_VERSION = "v.3.4.6";
 const PNITE_LAST_UPDATE = "19/11/2026";
 const PNITE_LAST_TIME = "19:30";
 
@@ -11919,6 +11938,18 @@ window.PNITE_API = (function() {
     rotuloCarga: rotuloCarga,
     definirCarga: definirCarga,
     comparar: comparar,
+    // v.3.4.6 — série anual do Censo Escolar (public.indicadores_censo_anual): { ano: { ind, raw } }.
+    // Independe das cargas do SETE; município pela chave = código IBGE.
+    censoAnual: function(nivel, chave) {
+      if (!configurado()) return Promise.reject(new Error('API não configurada'));
+      const k = nivel === 'nacional' ? 'nacional' : (nivel === 'municipio' ? String(parseInt(chave, 10)) : String(chave));
+      return consultar('indicadores_censo_anual', { carga: null, ano_carga: null, nivel: 'eq.' + nivel, chave: 'eq.' + k,
+        select: 'ano_censo,ind,raw', order: 'ano_censo' }).then(function(linhas) {
+        const res = {};
+        linhas.forEach(function(l) { res[l.ano_censo] = { ind: l.ind || {}, raw: l.raw || {} }; });
+        return res;
+      });
+    },
     ufsCarregadas: function() { return ufsCarregadas.slice(); },
     // Traçado simplificado das rotas do município (public.rotas_tracado, GeoJSON em EPSG:4326)
     rotasMunicipio: function(cod, sinal) {
@@ -19964,11 +19995,46 @@ async function renderComparativo() {
 // Série por carga (um ponto por extração) do território da barra, com o Brasil como referência
 // opcional. Reaproveita a leitura por carga (PNITE_API.comparar) e os formatadores do comparativo.
 // ==========================================================================
-const EVO = { item: 'PRGM', seq: 0, chart: null, chaveGrade: '', chaveGrafico: '' };
+const EVO = { base: 'sete', itemPorBase: { sete: 'PRGM', censo: 'ATE' }, seq: 0, chart: null, chaveGrade: '', chaveGrafico: '' };
 
-// Itens com série: indicadores publicados (os mesmos do comparativo) e contadores do SETE
+// v.3.4.6 — base "Anos do Censo Escolar": indicadores que dependem só do Censo e seus contadores
+const EVO_CENSO_INDS = ['ATE', 'MEDATE', 'PATM', 'PATE'];
+const EVO_CENSO_CONTADORES = [
+  { k: 'escolas', nome: 'Escolas em atividade com matrícula' },
+  { k: 'matriculas_basica', nome: 'Matrículas na educação básica' },
+  { k: 'transp', nome: 'Alunos que usam transporte escolar público' },
+  { k: 'esc_at', nome: 'Escolas com alunos em transporte público' },
+  { k: 'mun', nome: 'Alunos com transporte de responsabilidade municipal' },
+  { k: 'est', nome: 'Alunos com transporte de responsabilidade estadual' }
+];
+
+// Termos da base ativa (carga do SETE ou ano do Censo)
+function evoTermos() {
+  return EVO.base === 'censo'
+    ? { coluna: 'Ano do Censo', comDado: 'Anos com dado', nosDisp: 'nos anos disponíveis', neste: 'neste ano',
+        desde: 'o ano anterior', um: 'Um ano com dado', recente: 'do ano mais recente' }
+    : { coluna: 'Carga', comDado: 'Cargas com dado', nosDisp: 'nas cargas disponíveis', neste: 'nesta carga',
+        desde: 'a carga anterior', um: 'Uma carga com dado', recente: 'da carga mais recente' };
+}
+
+// Itens com série: indicadores publicados (os mesmos do comparativo) e contadores do SETE;
+// na base do Censo, só os indicadores e contadores do Censo Escolar
 function evoItens() {
   const itens = [];
+  if (EVO.base === 'censo') {
+    EVO_CENSO_INDS.forEach(function(sigla) {
+      const ind = MAPA_INDS.find(function(i) { return i.sigla === sigla; });
+      if (!ind) return;
+      itens.push({ id: sigla, sigla: sigla, chave: sigla, origem: 'ind', grupo: 'Indicadores do Censo Escolar',
+        nome: (INDICATOR_FULL_NAMES && INDICATOR_FULL_NAMES[sigla]) || ind.nome,
+        casas: cmpCasas(ind.unit), sufixo: cmpSufixo(ind.unit), pp: ind.unit === '%' });
+    });
+    EVO_CENSO_CONTADORES.forEach(function(c) {
+      itens.push({ id: 'raw:' + c.k, sigla: '', chave: c.k, origem: 'raw', grupo: 'Contadores do Censo Escolar',
+        nome: c.nome, casas: 0, sufixo: '', pp: false });
+    });
+    return itens;
+  }
   CMP_GRUPOS.forEach(function(g) {
     MAPA_INDS.filter(function(i) { return i.tipo === g[0]; }).forEach(function(ind) {
       itens.push({ id: ind.sigla, sigla: ind.sigla, chave: ind.sigla, origem: 'ind', grupo: g[1],
@@ -20043,7 +20109,8 @@ function evoPrepararSeletor(itens) {
   });
   if (grupo) html += '</optgroup>';
   if (sel.dataset.opcoes !== html) { sel.innerHTML = html; sel.dataset.opcoes = html; }
-  if (sel.value !== EVO.item) sel.value = EVO.item;
+  const atual = EVO.itemPorBase[EVO.base];
+  if (sel.value !== atual) sel.value = atual;
 }
 
 function evoTile(rotulo, valorHtml, sub) {
@@ -20057,7 +20124,8 @@ function evoRenderResumo(item, serie, comRef) {
   const ult = validos.length ? validos[validos.length - 1] : null;
   const ant = validos.length > 1 ? validos[validos.length - 2] : null;
   const fmt = function(v) { return cmpCelula(v, item.casas, item.sufixo); };
-  let html = evoTile('Valor mais recente', ult ? fmt(ult.v) : '—', ult ? ult.rotulo : 'Sem dado nas cargas disponíveis');
+  const T = evoTermos();
+  let html = evoTile('Valor mais recente', ult ? fmt(ult.v) : '—', ult ? ult.rotulo : 'Sem dado ' + T.nosDisp);
   if (ant) {
     const v = cmpVariacao(ant.v, ult.v, item.casas, item.sufixo, item.pp);
     html += evoTile('Variação desde ' + ant.rotulo, v.abs, 'De ' + fmt(ant.v) + ' para ' + fmt(ult.v) + (v.rel !== '—' ? ' (' + v.rel + ')' : ''));
@@ -20068,9 +20136,9 @@ function evoRenderResumo(item, serie, comRef) {
   }
   if (comRef && ult) {
     html += evoTile('Brasil em ' + ult.rotulo, fmt(ult.r), ult.r !== null
-      ? 'Diferença do território para o Brasil: ' + evoDiferenca(ult.r, ult.v, item) : 'Sem dado do Brasil nesta carga');
+      ? 'Diferença do território para o Brasil: ' + evoDiferenca(ult.r, ult.v, item) : 'Sem dado do Brasil ' + T.neste);
   }
-  html += evoTile('Cargas com dado', validos.length + ' de ' + serie.length,
+  html += evoTile(T.comDado, validos.length + ' de ' + serie.length,
     serie.length > 1 ? 'De ' + serie[0].rotulo + ' a ' + serie[serie.length - 1].rotulo : serie[0].rotulo);
   document.getElementById('evoResumo').innerHTML = html;
 }
@@ -20184,8 +20252,9 @@ function evoRenderGrafico(item, serie, esc, comRef, animar) {
 // Tabela da série: a mesma informação do gráfico, legível sem ele
 function evoRenderTabela(item, serie, esc, comRef) {
   const fmt = function(v) { return cmpCelula(v, item.casas, item.sufixo); };
+  const T = evoTermos();
   let html = '<caption>' + escHtml((item.sigla ? item.sigla + ' — ' : '') + item.nome + ' · ' + esc.nome) + '</caption>'
-    + '<thead><tr><th scope="col">Carga</th><th scope="col">' + escHtml(esc.nome) + '</th><th scope="col">Variação desde a carga anterior com dado</th>'
+    + '<thead><tr><th scope="col">' + T.coluna + '</th><th scope="col">' + escHtml(esc.nome) + '</th><th scope="col">Variação desde ' + T.desde + ' com dado</th>'
     + (comRef ? '<th scope="col">Brasil</th><th scope="col">Diferença para o Brasil</th>' : '') + '</tr></thead><tbody>';
   let anterior = null;
   serie.forEach(function(p) {
@@ -20197,16 +20266,17 @@ function evoRenderTabela(item, serie, esc, comRef) {
   document.getElementById('evoTabela').innerHTML = html + '</tbody>';
 }
 
-// Grade com todos os itens: valor recente, variação desde a carga anterior e minigráfico
-function evoRenderGrade(itens, cargas, dados) {
+// Grade com todos os itens: valor recente, variação desde o ponto anterior e minigráfico
+function evoRenderGrade(itens, periodos, dados) {
   let html = '', grupo = null;
+  const T = evoTermos();
   itens.forEach(function(i) {
     if (i.grupo !== grupo) { html += (grupo ? '</div>' : '') + '<div class="evo-grupo">' + escHtml(i.grupo) + '</div><div class="evo-grade">'; grupo = i.grupo; }
-    const pontos = cargas.map(function(c) { return { x: evoMes(c.carga), v: evoValor(i, dados[c.carga]) }; });
+    const pontos = periodos.map(function(p) { return { x: p.x, v: evoValor(i, dados[p.id]) }; });
     const validos = pontos.filter(function(p) { return p.v !== null; });
     const ult = validos.length ? validos[validos.length - 1].v : null;
     const ant = validos.length > 1 ? validos[validos.length - 2].v : null;
-    const variacao = ant !== null ? cmpVariacao(ant, ult, i.casas, i.sufixo, i.pp).abs : (ult !== null ? 'Uma carga com dado' : 'Sem dado');
+    const variacao = ant !== null ? cmpVariacao(ant, ult, i.casas, i.sufixo, i.pp).abs : (ult !== null ? T.um : 'Sem dado');
     html += '<button type="button" class="evo-card" data-evo-item="' + escHtml(i.id) + '" aria-pressed="false">'
       + '<span class="evo-card-nome">' + (i.sigla ? '<span class="cmp-sigla">' + escHtml(i.sigla) + '</span>' : '') + escHtml(i.nome) + '</span>'
       + '<span class="evo-card-base"><span class="evo-card-nums"><span class="evo-card-val">' + cmpCelula(ult, i.casas, i.sufixo) + '</span>'
@@ -20236,10 +20306,12 @@ async function renderEvolucao() {
     evoDestruirGrafico();
   };
   if (!api || !api.configurado()) { parar('A configuração da API não foi encontrada.', 'erro'); return; }
+  const censo = EVO.base === 'censo';
+  evoSincronizarBase();
   const cargas = api.cargas();
   const esc = cmpEscopo();
   document.getElementById('evoEscopo').textContent = esc.nome;
-  if (!cargas.length) {
+  if (!censo && !cargas.length) {
     if (api.cargasStatus() === 'erro') parar('Não foi possível carregar a lista de cargas do SETE. Use “Tentar novamente” no aviso de erro.', 'erro');
     else parar('Carregando a lista de cargas do SETE…');
     return;
@@ -20247,8 +20319,8 @@ async function renderEvolucao() {
   if (esc.nivel === 'municipio' && !parseInt(esc.chave, 10)) { parar('Selecione um município na barra de território.'); return; }
   const itens = evoItens();
   if (!itens.length) { parar('Nenhum indicador disponível para a série.'); return; }
-  const item = itens.find(function(i) { return i.id === EVO.item; }) || itens[0];
-  EVO.item = item.id;
+  const item = itens.find(function(i) { return i.id === EVO.itemPorBase[EVO.base]; }) || itens[0];
+  EVO.itemPorBase[EVO.base] = item.id;
   evoPrepararSeletor(itens);
   // Referência nacional: só para indicadores (contadores têm outra ordem de grandeza) e fora do escopo Brasil
   const chk = document.getElementById('evoRefBrasil'), chkRotulo = document.getElementById('evoRefRotulo');
@@ -20258,32 +20330,53 @@ async function renderEvolucao() {
   chkRotulo.title = refPossivel ? '' : (esc.nivel === 'nacional' ? 'O território selecionado já é o Brasil.'
     : 'A referência nacional vale para os indicadores; os contadores do Brasil têm outra ordem de grandeza.');
   const comRef = refPossivel && chk.checked;
-  const lista = cargas.map(function(c) { return c.carga; });
   const seq = ++EVO.seq;
   corpo.setAttribute('aria-busy', 'true');
-  let dados, ref;
+  let dados, ref, periodos;
   try {
-    const r = await Promise.all([api.comparar(esc.nivel, esc.chave, lista),
-      esc.nivel !== 'nacional' ? api.comparar('nacional', '', lista) : null]);
-    dados = r[0]; ref = r[1];
+    if (censo) {
+      const r = await Promise.all([api.censoAnual(esc.nivel, esc.chave),
+        esc.nivel !== 'nacional' ? api.censoAnual('nacional', 'nacional') : null]);
+      dados = r[0]; ref = r[1];
+      // Anos do território e do Brasil (a referência continua visível num ano sem dado do território)
+      const anos = Object.keys(dados).concat(Object.keys(ref || {})).map(Number)
+        .filter(function(a, i, l) { return a > 0 && l.indexOf(a) === i; }).sort(function(a, b) { return a - b; });
+      periodos = anos.map(function(a) { return { id: a, rotulo: 'Censo ' + a, x: a * 12 }; });
+    } else {
+      const lista = cargas.map(function(c) { return c.carga; });
+      const r = await Promise.all([api.comparar(esc.nivel, esc.chave, lista),
+        esc.nivel !== 'nacional' ? api.comparar('nacional', '', lista) : null]);
+      dados = r[0]; ref = r[1];
+      periodos = cargas.map(function(c) { return { id: c.carga, rotulo: c.rotulo, x: evoMes(c.carga) }; });
+    }
   } catch (e) {
     if (seq !== EVO.seq) return;
     corpo.setAttribute('aria-busy', 'false');
-    parar('Não foi possível consultar as cargas na API (' + escHtml(e && e.message ? e.message : 'erro') + ').', 'erro');
+    parar('Não foi possível consultar ' + (censo ? 'os anos do Censo Escolar' : 'as cargas') + ' na API ('
+      + escHtml(e && e.message ? e.message : 'erro') + ').', 'erro');
     return;
   }
-  if (seq !== EVO.seq) return;                        // território, indicador ou carga trocados durante a consulta
+  if (seq !== EVO.seq) return;                        // base, território, indicador ou carga trocados durante a consulta
   corpo.setAttribute('aria-busy', 'false');
   if (!page.classList.contains('active-page')) return;
-  if (!lista.some(function(c) { return !!dados[c]; })) {
-    parar('<b>' + escHtml(esc.nome) + '</b> não tem registros no SETE nas cargas disponíveis.');
+  if (!periodos.some(function(p) { return !!dados[p.id]; })) {
+    parar('<b>' + escHtml(esc.nome) + '</b> não tem registros ' + (censo ? 'no Censo Escolar nos anos disponíveis.' : 'no SETE nas cargas disponíveis.'));
     return;
   }
-  cmpAviso(cargas.length < 2 ? 'Só há uma carga do SETE no banco (<b>' + escHtml(cargas[0].rotulo)
-    + '</b>). A série ganha um ponto a cada nova carga enviada.' : '', null, 'evoAviso');
-  const serie = cargas.map(function(c) {
-    return { carga: c.carga, rotulo: c.rotulo, x: evoMes(c.carga), v: evoValor(item, dados[c.carga]),
-      r: comRef ? evoValor(item, ref && ref[c.carga]) : null };
+  const avisos = [];
+  if (periodos.length < 2) {
+    avisos.push(censo ? 'Só há um ano do Censo Escolar no banco (<b>' + escHtml(periodos[0].rotulo)
+      + '</b>). A série ganha um ponto a cada ano do Censo enviado.'
+      : 'Só há uma carga do SETE no banco (<b>' + escHtml(periodos[0].rotulo) + '</b>). A série ganha um ponto a cada nova carga enviada.');
+  }
+  if (censo && esc.nivel !== 'municipio' && item.id === 'ATE') {
+    avisos.push('Nesta série, o ATE de UF, região e Brasil divide os alunos transportados pelas escolas com transporte público do Censo, '
+      + 'a mesma regra do município. No painel, o ATE desses níveis usa as escolas atendidas pelo SETE, por isso os valores podem diferir.');
+  }
+  cmpAviso(avisos.join('<br>'), null, 'evoAviso');
+  const serie = periodos.map(function(p) {
+    return { id: p.id, rotulo: p.rotulo, x: p.x, v: evoValor(item, dados[p.id]),
+      r: comRef ? evoValor(item, ref && ref[p.id]) : null };
   });
   corpo.hidden = false;
   const titulo = (item.sigla ? item.sigla + ' — ' : '') + item.nome;
@@ -20300,22 +20393,51 @@ async function renderEvolucao() {
   evoRenderResumo(item, serie, comRef);
   evoRenderTabela(item, serie, esc, comRef);
   // Gráfico e grade só são refeitos quando o que mostram muda (renderAllViews chama esta função com frequência)
-  const chaveGrade = esc.nivel + '|' + esc.chave + '|' + currentLang + '|' + JSON.stringify(dados);
+  const chaveGrade = EVO.base + '|' + esc.nivel + '|' + esc.chave + '|' + currentLang + '|' + JSON.stringify(dados);
   const chaveGrafico = item.id + '|' + comRef + '|' + currentTheme + '|' + chaveGrade + '|' + (comRef ? JSON.stringify(ref) : '');
   if (chaveGrafico !== EVO.chaveGrafico || !EVO.chart) {
     evoRenderGrafico(item, serie, esc, comRef, true);
     EVO.chaveGrafico = chaveGrafico;
   }
   if (chaveGrade !== EVO.chaveGrade) {
-    evoRenderGrade(itens, cargas, dados);
+    evoRenderGrade(itens, periodos, dados);
     EVO.chaveGrade = chaveGrade;
   }
   evoMarcarCartao(item.id);
 }
 
+// Botões da base da série e textos que dependem dela (cargas do SETE × anos do Censo)
+function evoSincronizarBase() {
+  const censo = EVO.base === 'censo';
+  document.querySelectorAll('[data-evo-base]').forEach(function(b) {
+    b.setAttribute('aria-pressed', b.getAttribute('data-evo-base') === EVO.base ? 'true' : 'false');
+  });
+  const dica = document.getElementById('evoDica'), nota = document.getElementById('evoNota');
+  const T = evoTermos();
+  if (dica) dica.textContent = 'Cada cartão traz o valor ' + T.recente + ', a variação desde ' + T.desde
+    + ' com dado e a série completa. Selecione um cartão para abrir o indicador no gráfico.';
+  if (nota) nota.textContent = censo
+    ? 'Cada ponto é um ano do Censo Escolar (INEP), independente das cargas do SETE; o universo é o das escolas em atividade com matrícula. '
+      + 'ATE e MEDATE contam os alunos que usam transporte escolar público por escola com transporte; PATM e PATE dividem esse transporte '
+      + 'entre as redes municipal e estadual. Indicadores em % variam em pontos percentuais (p.p.). Ausência de dado aparece como “—” e interrompe a linha.'
+    : 'Cada ponto é uma carga do SETE; a posição no eixo horizontal segue a data da extração. Indicadores em % variam em pontos percentuais (p.p.). '
+      + 'Ausência de dado aparece como “—” e interrompe a linha. As cargas usam o mesmo Censo Escolar pareado, por isso os indicadores do Censo '
+      + '(ATE, MEDATE, PATM, PATE) só mudam se o pareamento mudar; a série por ano do Censo está na base “Anos do Censo Escolar”. '
+      + 'Com poucas cargas, a série mostra a variação entre elas, e não uma tendência.';
+}
+
+function evoDefinirBase(base) {
+  if (base !== 'sete' && base !== 'censo') return;
+  if (EVO.base === base) return;
+  EVO.base = base;
+  EVO.chaveGrade = '';
+  evoDestruirGrafico();
+  renderEvolucao();
+}
+
 // Escolha do indicador pelo seletor ou por um cartão da grade (que também leva a vista ao gráfico)
 function evoSelecionar(id, rolar) {
-  EVO.item = id;
+  EVO.itemPorBase[EVO.base] = id;
   const pronto = renderEvolucao();
   if (!rolar) return;
   pronto.then(function() {
@@ -20332,6 +20454,8 @@ function evoSelecionar(id, rolar) {
 document.addEventListener('click', function(ev) {
   const b = ev.target && ev.target.closest ? ev.target.closest('[data-evo-item]') : null;
   if (b) evoSelecionar(b.getAttribute('data-evo-item'), true);
+  const base = ev.target && ev.target.closest ? ev.target.closest('[data-evo-base]') : null;
+  if (base) evoDefinirBase(base.getAttribute('data-evo-base'));
 });
 
 // Troca da base SETE pelo seletor das barras de território (listener único, delegado)
@@ -21866,12 +21990,13 @@ if (document.readyState === 'loading') {
       </div>
     </div>
     <div class="pif-body">
-      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.4.5</strong></div>
-      <div class="pif-row"><span>Data da alteração:</span><span class="pnite-date-val">19/11/2026</span></div>
-      <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">19:30</span></div>
+      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.4.6</strong></div>
+      <div class="pif-row"><span>Data da alteração:</span><span class="pnite-date-val">20/11/2026</span></div>
+      <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">14:00</span></div>
       <div class="pif-row"><span>Responsável técnico:</span><span class="pnite-author-val">Equipe PNITE</span></div>
       <div class="pif-note">
         <i class="ti ti-check" style="color:var(--accent);margin-right:3px"></i>
+        <strong>Série anual do Censo Escolar (v.3.4.6):</strong> a aba Evolução dos Indicadores ganha a base “Anos do Censo Escolar”, com um ponto por ano do Censo (2023, 2024 e 2025) para ATE, MEDATE, PATM e PATE e para os contadores do Censo, em município, UF, região e Brasil. Novos anos do Censo entram pelo carregador (<code>--tabelas censo --censo-ano AAAA</code>) sem mudanças na interface.<br>
         <strong>Evolução dos Indicadores e revisão geral (v.3.4.5):</strong> nova aba com a série de cada indicador por carga do SETE (gráfico, tabela e cartões com minigráfico, por território, com o Brasil como referência). Revisão geral do código: corrigidos os downloads dos cartões (saíam com “—”), a troca de carga durante o carregamento, o tooltip de estados vizinhos e outros pontos do mapa, a paginação da tabela municipal do SETE, travas do gerenciador de indicadores e a validação da foto de perfil.<br>
         <strong>Alunos de novembro/2026 (v.3.4.4):</strong> o cadastro de alunos da carga 202611 foi recarregado a partir do arquivo completo (4.430.187 alunos; antes, 716.990); PAD, PARI, PAIH e TEDC de novembro foram recalculados.<br>
         <strong>Carga de novembro/2026 no banco (v.3.4.3):</strong> os 14 CSVs da extração de novembro foram carregados como carga <code>202611</code> (Novembro/2026), ao lado de maio; o carregador passa a casar as colunas pelo nome do cabeçalho (ausentes ficam vazias, extras são ignoradas). A carga aparece no seletor “Base SETE” e no “Comparativo entre Cargas”.<br>
@@ -21920,7 +22045,7 @@ if (document.readyState === 'loading') {
   </div>
   <button type="button" class="pif-btn" id="pifBtn" aria-label="Informações de Versão">
     <i class="ti ti-info-circle"></i>
-    <span class="pif-btn-label pnite-version-val">v.3.4.5</span>
+    <span class="pif-btn-label pnite-version-val">v.3.4.6</span>
   </button>
 </div>
 

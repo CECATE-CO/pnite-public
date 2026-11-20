@@ -6,6 +6,7 @@ Estrutura do banco que alimenta a **PNITE**: o que existe em cada schema, como o
 > Indicadores e views da cascata atualizados até a migração `0024` (19/11/2026): PAIH, PAFI, TVA e MQT calculados; PARI com a regra do PAIH; **várias cargas do SETE** (a carga existente é `202605` = Maio/2026).
 >
 > **Cargas do SETE (desde a 0022).** Cada extração do SETE é uma carga identificada por `carga` (AAAAMM da data de referência: `202605` = maio de 2026, `202611` = novembro de 2026), registrada em `ref.cargas` com rótulo, data e Censo pareado. Todas as tabelas do SETE, as views de análise e as views da API têm a coluna `carga`, e as junções usam `(carga, codigo_cidade, id)`. `ano_carga` continua sendo o **ano** de referência (base da idade da frota) e é o mesmo nas cargas de um mesmo ano. A interface lista as cargas em `public.cargas_sete`, filtra tudo por `carga=eq.<carga>` e compara duas cargas na página **Comparativo entre Cargas**.
+> **Censo Escolar por ano (desde a 0028).** `censo.matricula` guarda vários anos do Censo (`ano_carga` = ano do Censo: 2023, 2024 e 2025). As cargas do SETE usam só o Censo pareado em `ref.cargas` (2025); a série anual, independente do SETE, está em `public.indicadores_censo_anual` (ATE, MEDATE, PATM, PATE e contadores por ano, nível e chave) e aparece na aba **Evolução dos Indicadores**, base "Anos do Censo Escolar".
 > A fonte da verdade da estrutura são as migrações em [`supabase/migrations/`](supabase/migrations/); este documento as resume.
 > **As colunas de cada tabela e view estão na [seção 10 — Dicionário de dados](#10-dicionário-de-dados--uma-seção-por-tabela)**, uma subseção por tabela.
 
@@ -92,11 +93,11 @@ Todas as tabelas brutas têm `ano_carga` (ano de referência da carga), `codigo_
 | `fornecedores` | 4.876 | Fornecedores de manutenção, combustível e seguro |
 | `normas` | 339 | Normas e atos municipais |
 
-### 3.2. `censo` — Censo Escolar 2025
+### 3.2. `censo` — Censo Escolar (2023, 2024 e 2025)
 
 | Tabela | Linhas | Conteúdo |
 |---|---:|---|
-| `matricula` | 178.766 | Uma linha por escola, 264 colunas. As usadas nos indicadores são `qt_transp_publico`, `qt_transp_resp_mun` e `qt_transp_resp_est` |
+| `matricula` | 536.528 | Uma linha por escola em atividade com matrícula e por ano do Censo (`ano_carga`): 2023 = 178.476, 2024 = 179.286, 2025 = 178.766. 264 colunas (as de 2025; nos anos carregados da tabela de escolas do INEP, as colunas de matrícula detalhada que o arquivo não traz ficam NULL). As usadas nos indicadores são `qt_mat_bas`, `qt_transp_publico`, `qt_transp_resp_mun` e `qt_transp_resp_est` |
 
 ### 3.3. `ref` — referências
 
@@ -193,6 +194,7 @@ Todas as views exigem o cabeçalho `apikey: {SUPABASE_PUBLISHABLE_KEY}` e são f
 | `indicadores_municipio_complemento` | 5.571 | Complementa o município: `censo` e `frota` | `?carga=eq.202605&codigo_cidade=eq.5208707` |
 | `sete_municipios` | 1 | Tabela "Dados SETE", mapa municipal, comparações: `{cols, municipios, ufs}` | `?carga=eq.202605&select=dados` |
 | `rotas_tracado` | 31.626 | Traçado das rotas no mapa do município (GeoJSON EPSG:4326, simplificado ~10 m) | `?carga=eq.202605&codigo_cidade=eq.5212501` |
+| `indicadores_censo_anual` | — | Série anual do Censo Escolar, independente do SETE: `ano_censo`, `nivel`, `chave`, `ind` (ATE, MEDATE, PATM, PATE) e `raw` (escolas, matriculas_basica, transp, esc_at, mun, est). Sem filtro de carga | `?nivel=eq.estado&chave=eq.go&order=ano_censo` |
 | `cargas_sete` | 1 | Cargas com dados: `carga`, `rotulo`, `data_referencia`, `ano_carga`, `ano_censo`, `atual` (a mais recente) | `?order=carga` |
 | `capacitacao_dados` | 1 | Frente de Capacitação: `{tabela: {colunas, linhas}}` | `?select=dados` |
 
@@ -288,7 +290,7 @@ Cada nível soma o anterior. Os percentuais são sempre recalculados a partir do
 python scripts/supabase_migrar.py                                     # aplica migrações pendentes
 python scripts/criar_banco_dados_brutos.py --tabelas municipios      # lista de municípios do IBGE
 python scripts/criar_banco_dados_brutos.py --carga 2026-11 --pasta upload/sete/2026-11   # uma carga do SETE (--retomar se interromper)
-python scripts/criar_banco_dados_brutos.py --tabelas censo           # Censo (só quando mudar)
+python scripts/criar_banco_dados_brutos.py --tabelas censo --censo-ano 2024   # um ano do Censo (CSV em upload/censo/2024/)
 python scripts/atualizar_indicadores.py                               # recalcula as views de todas as cargas
 python scripts/extrair_capacitacao.py                                 # capacitações
 python scripts/importar_planilha.py --simular                         # planilhas da pasta upload/
@@ -307,6 +309,15 @@ Proteções do carregador do SETE (v.3.4.5): `--pasta` obrigatória fora da carg
 4. Carga completa: `python scripts/criar_banco_dados_brutos.py --carga 2026-11 --pasta upload/sete/2026-11`. O script registra a carga em `ref.cargas` (rótulo `Novembro/2026`, Censo pareado `ANO_CARGA_CENSO`) e substitui só as linhas da mesma carga; as demais cargas não são tocadas. Ocupa cerca de 1,9 GB a mais no banco.
 5. `python scripts/atualizar_indicadores.py`. A nova carga aparece em `public.cargas_sete`, vira a padrão da interface (a mais recente) e entra no seletor **Base SETE** e no **Comparativo entre Cargas**.
 6. Nos níveis UF, região e Brasil, a nova carga não tem planilha consolidada (não carregar `--tabelas referencia` com as planilhas "Consolidação NN" da extração: elas não trazem IMFP, IMFT, MIFCE, MEDATE, os dados do Censo nem as regiões, e a linha incompleta anularia a referência calculada daquele escopo): PVPCE, IMFP, IMFT, MIFCE, MEDATE, PATM e PATE vêm de `analise.referencia_calculada` (iguais aos legados na carga de maio). O ATE de UF usa as escolas atendidas pelo SETE (`esc_at_sete`), e o legado de maio usa outra contagem (27.751 × 29.525 no Brasil): a diferença aparece no comparativo.
+
+### Novo ano do Censo Escolar (ex.: 2026)
+
+1. Colocar o CSV do INEP (tabela de escolas `microdados_ed_basica_AAAA.csv` ou de matrículas) em `upload/censo/AAAA/`, fora do Git.
+2. `python scripts/criar_banco_dados_brutos.py --tabelas censo --censo-ano AAAA` (ou `--censo-arquivo caminho.csv`). O carregador lê as colunas de `censo.matricula` no banco e casa as do CSV pelo nome (ausentes = NULL, extras ignoradas), mantém só as escolas em atividade com matrícula (`TP_SITUACAO_FUNCIONAMENTO = 1` e `QT_MAT_BAS` preenchido, o universo da tabela de matrículas), confere se `NU_ANO_CENSO` é o ano informado antes de apagar algo e substitui só aquele ano.
+3. `python scripts/atualizar_indicadores.py`. O ano entra em `public.indicadores_censo_anual` e na série "Anos do Censo Escolar" da aba Evolução, sem mudanças na interface.
+4. Para parear o novo Censo com uma carga do SETE, defina `ANO_CARGA_CENSO` no `.env` antes de registrar a carga (uma carga já registrada mantém o pareamento).
+
+Na série anual, ATE, MEDATE, PATM e PATE seguem as regras do complemento municipal em todos os níveis. O ATE de UF, região e Brasil no painel das cargas usa as escolas atendidas pelo SETE (`esc_at_sete`) e por isso difere do ATE da série anual.
 
 ---
 
@@ -340,6 +351,7 @@ Proteções do carregador do SETE (v.3.4.5): `--pasta` obrigatória fora da carg
 | `0024_indices_sete_por_carga` | Índices das tabelas do SETE passam de `(ano_carga, …)` para `(carga, …)` |
 | `0025_exclui_catalogo_caminho_escola` | Exclui do catálogo os 9 itens de Gestão › Caminho da Escola (6 indicadores e 3 visuais, em rascunho e sem publicação), com a definição completa registrada na auditoria; os painéis do Caminho da Escola ficam sem visual a publicar até serem recriados |
 | `0026_exclui_visual_monitoramento_sete` | Exclui do catálogo o visual `SETE_PAINEL_SNAPSHOT` (em rascunho, sem publicação), com a definição registrada na auditoria; o catálogo fica com os 31 indicadores do transporte |
+| `0028_censo_serie_anual` | `censo.matricula` com vários anos do Censo; `analise.mv_censo_anual` e `public.indicadores_censo_anual` (ATE, MEDATE, PATM, PATE e contadores por ano, nível e chave, regras do complemento municipal); a cascata `pnite_meta.atualizar_indicadores()` passa a atualizá-las |
 | `0027_foto_perfil_validacao_estrita` | A foto de perfil passa a ser validada por inteiro (data URI de imagem em base64, sem outros caracteres) no CHECK de `acesso.autorizacoes.foto` e em `public.pnite_atualizar_perfil`; antes só o prefixo era conferido, o que permitia injetar atributos no `<img>` da lista de usuários |
 
 ---
@@ -782,9 +794,9 @@ Vínculo rota × motorista (`script_17_rota_dirigida_por_motorista`). Contém CP
 
 #### 10.2.1. `censo.matricula`
 
-Microdados do Censo Escolar (INEP), tabela de matrículas: **uma linha por escola**, 264 colunas. Pareada com o SETE por `ref.cargas` (Censo 2025 ↔ SETE 2026).
+Microdados do Censo Escolar (INEP): **uma linha por escola em atividade com matrícula e por ano**, 264 colunas. 2025 veio da tabela de matrículas; 2023 e 2024, da tabela de escolas (`microdados_ed_basica_AAAA.csv`), com as colunas casadas pelo nome. Pareada com o SETE por `ref.cargas` (Censo 2025 ↔ SETE 2026); a série anual está em `public.indicadores_censo_anual`.
 
-**Tipo:** tabela · **Linhas:** 178.766 · **Colunas:** 264
+**Tipo:** tabela · **Linhas:** 536.528 (2023 = 178.476, 2024 = 179.286, 2025 = 178.766) · **Colunas:** 264
 
 **Chaves e índices:** `índice (ano_carga, co_municipio)`; `índice (ano_carga, sg_uf)`
 
@@ -792,7 +804,7 @@ Colunas principais (identificação e as usadas pela PNITE):
 
 | Coluna | Tipo | Descrição |
 |---|---|---|
-| `ano_carga` | smallint | Ano do Censo carregado (2025). |
+| `ano_carga` | smallint | Ano do Censo da linha (2023, 2024, 2025). |
 | `nu_ano_censo` | integer | Ano do Censo (INEP). |
 | `no_regiao` | text | Região (nome). |
 | `co_regiao` | bigint | Região (código). |

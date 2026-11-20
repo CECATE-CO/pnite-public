@@ -32,6 +32,22 @@ python scripts/atualizar_indicadores.py                                         
 
 A nova carga convive com as anteriores (a atual é Maio/2026) e aparece no seletor **Base SETE** e no **Comparativo entre Cargas**.
 
+## Microdados do Censo Escolar (`upload/censo/`)
+
+Um CSV do INEP por ano, numa subpasta com o ano (ex.: `upload/censo/2024/microdados_ed_basica_2024.csv`). Serve a tabela
+de escolas (`microdados_ed_basica_AAAA.csv`) ou a de matrículas. Essa subpasta **não** é lida pelo `importar_planilha.py`;
+o envio é feito por:
+
+```bash
+python scripts/criar_banco_dados_brutos.py --tabelas censo --censo-ano 2024   # substitui só o ano 2024
+python scripts/atualizar_indicadores.py                                       # recalcula as views
+```
+
+As colunas são casadas pelo nome com as de `censo.matricula` (ausentes ficam vazias, extras são ignoradas) e entram só as
+escolas em atividade com matrícula. O ano do arquivo (`NU_ANO_CENSO`) tem de ser o informado. Cada ano vira um ponto da série
+**Anos do Censo Escolar** na aba Evolução dos Indicadores (ATE, MEDATE, PATM, PATE e contadores do Censo). Anos já carregados:
+2023, 2024 e 2025.
+
 ## Regras por planilha
 
 Este envio é genérico: a estrutura de cada tabela é inferida do próprio arquivo. A estrutura esperada

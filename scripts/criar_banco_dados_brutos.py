@@ -14,8 +14,12 @@ Fluxo:
 Regras de carga:
 - cada extração do SETE é uma carga: ``--carga AAAA-MM`` (ou ``CARGA_SETE`` no ``.env``) grava
   ``carga = AAAAMM`` e ``ano_carga = AAAA`` e registra a carga em ``ref.cargas`` (rótulo, data de
-  referência e Censo pareado). Cargas existentes: 2026-05 (maio/2026). O Censo usa
-  ``ano_carga = ANO_CARGA_CENSO`` (2025);
+  referência e Censo pareado). Cargas existentes: 2026-05 (maio/2026);
+- o Censo guarda vários anos em ``censo.matricula`` (``ano_carga`` = ano do Censo): ``--tabelas censo
+  --censo-ano AAAA`` carrega o CSV único de ``upload/censo/AAAA/`` (ou ``--censo-arquivo``) e substitui
+  só aquele ano. Aceita a tabela de matrículas (2025) ou a de escolas (``microdados_ed_basica_AAAA.csv``)
+  do INEP: as colunas são casadas pelo nome com as do banco, e só entram as escolas em atividade com
+  matrícula (o recorte da tabela de matrículas). Sem ``--censo-ano``, vale ``ANO_CARGA_CENSO`` (2025);
 - ``--pasta`` indica a pasta dos CSVs do SETE (padrão: ``data/Transporte Escolar``);
 - idempotente: antes de inserir, apaga as linhas da mesma carga (e da UF, se filtrada);
   as demais cargas não são tocadas;
@@ -38,6 +42,7 @@ Uso:
     python scripts/criar_banco_dados_brutos.py --tabelas municipios referencia
     python scripts/criar_banco_dados_brutos.py --carga 2026-11 --pasta upload/sete/2026-11 --uf go   # piloto
     python scripts/criar_banco_dados_brutos.py --carga 2026-11 --pasta upload/sete/2026-11           # carga completa
+    python scripts/criar_banco_dados_brutos.py --tabelas censo --censo-ano 2024   # um ano do Censo
     python scripts/atualizar_indicadores.py                       # recalcula as views (todas as cargas)
 """
 
@@ -61,6 +66,7 @@ PASTA_DADOS = RAIZ / "data" / "Transporte Escolar"
 DICIONARIO = PASTA_DADOS / "dicionario.docx"
 ARQ_CENSO = "Micro_Dados_Censo_Tabela_Matricula_2025_V2.csv"
 ARQ_MUNICIPIOS = "Lista de Municipios IBGE.csv"
+PASTA_CENSO = RAIZ / "upload" / "censo"   # upload/censo/AAAA/<um CSV do INEP>
 PASTA_MIGRACOES = RAIZ / "supabase" / "migrations"
 # Um checkpoint por tabela: permite cargas paralelas (ex.: rotas num processo, o resto em outro)
 PASTA_CHECKPOINT = RAIZ / "scripts" / ".checkpoint_carga"
@@ -284,6 +290,52 @@ def config_censo():
     }
 
 
+def config_censo_ano(ano, arquivo):
+    """Configuração de carga de um ano do Censo: as colunas são as que existem em censo.matricula (o
+    arquivo do INEP muda de layout entre anos e entre a tabela de matrículas e a de escolas)."""
+    cols = executar_sql("SELECT column_name, data_type FROM information_schema.columns"
+                        " WHERE table_schema = 'censo' AND table_name = 'matricula' AND column_name <> 'ano_carga'"
+                        " ORDER BY ordinal_position;")
+    if not cols:
+        sys.exit("censo.matricula não existe no banco; aplique as migrações (scripts/supabase_migrar.py).")
+    with open(arquivo, encoding="latin1", newline="") as fh:
+        cab = [c.strip().upper() for c in next(csv.reader(fh, delimiter=";"), [])]
+    if not {"SG_UF", "CO_MUNICIPIO", "QT_TRANSP_PUBLICO", "QT_MAT_BAS"} <= set(cab):
+        sys.exit(f"{arquivo.name} não parece um microdado do Censo Escolar (faltam SG_UF, CO_MUNICIPIO,"
+                 " QT_TRANSP_PUBLICO ou QT_MAT_BAS). Nada foi alterado.")
+    tipos = {"bigint": "bigint", "integer": "integer", "smallint": "smallint"}
+    cfg = {
+        "arquivo": arquivo.name,
+        "caminho": arquivo,
+        "descricao": f"Microdados do Censo Escolar {ano}.",
+        "colunas": [(c["column_name"], tipos.get(c["data_type"], "text")) for c in cols],
+        "csv": {"encoding": "latin1", "delimiter": ";"},
+        "coluna_uf": "sg_uf",
+        "ano_censo": ano,
+    }
+    # Tabela de escolas (tem a situação de funcionamento): só escolas em atividade com matrícula,
+    # o mesmo universo da tabela de matrículas de 2025 (as demais não têm os campos de transporte)
+    if "TP_SITUACAO_FUNCIONAMENTO" in cab:
+        i_sit, i_mat = cab.index("TP_SITUACAO_FUNCIONAMENTO"), cab.index("QT_MAT_BAS")
+        cfg["filtro_csv"] = lambda r: r[i_sit].strip() == "1" and r[i_mat].strip() != ""
+    return cfg
+
+
+def arquivo_censo(ano, informado):
+    """CSV do Censo de um ano: --censo-arquivo ou o único CSV de upload/censo/AAAA/."""
+    if informado:
+        arq = informado if informado.is_absolute() else RAIZ / informado
+        if not arq.is_file():
+            sys.exit(f"Arquivo do Censo não encontrado: {arq}. Nada foi alterado.")
+        return arq
+    pasta = PASTA_CENSO / str(ano)
+    csvs = sorted(pasta.glob("*.csv")) if pasta.is_dir() else []
+    if len(csvs) != 1:
+        sys.exit(f"Esperado um único CSV em upload/censo/{ano}/ (encontrados {len(csvs)}); informe"
+                 " --censo-arquivo. Nada foi alterado.")
+    return csvs[0]
+
+
 def ler_dicionario():
     """Lê data/Transporte Escolar/dicionario.docx -> {tabela: {coluna: descrição}}."""
     try:
@@ -501,7 +553,8 @@ def enviar_linha_grande(tabela, colunas, linha, tamanho_parte=600_000):
 def carregar_tabela(schema, nome, cfg, ano, args, carga=None):
     """Carrega um CSV. SETE: grava ano_carga e carga (AAAAMM) e substitui só a mesma carga.
     Censo: grava ano_carga (ano do Censo) e substitui o mesmo ano."""
-    caminho = (args.pasta if schema == "sete" else PASTA_DADOS) / cfg["arquivo"]
+    caminho = cfg.get("caminho") or (args.pasta if schema == "sete" else PASTA_DADOS) / cfg["arquivo"]
+    filtro_csv = cfg.get("filtro_csv")
     opcoes_csv = cfg.get("csv", {"encoding": "utf-8-sig", "delimiter": ","})
     nomes_csv = [c for c, _ in cfg["colunas"]]
     conversores = [conversor(t) for _, t in cfg["colunas"]]
@@ -536,6 +589,15 @@ def carregar_tabela(schema, nome, cfg, ano, args, carga=None):
     faltam = sorted(c for c in chaves if c in nomes_csv and c not in previa)
     if faltam:
         raise RuntimeError(f"{cfg['arquivo']} não tem colunas-chave: {faltam}; nada foi apagado no banco.")
+    if cfg.get("ano_censo") and "nu_ano_censo" in previa:
+        # O ano do arquivo tem de ser o ano informado: senão um ano seria gravado com os dados de outro
+        with open(caminho, encoding=opcoes_csv["encoding"], newline="") as fh:
+            leitor = csv.reader(fh, delimiter=opcoes_csv["delimiter"])
+            next(leitor)
+            ano_arq = next(leitor, [""] * len(previa))[previa.index("nu_ano_censo")].strip()
+        if ano_arq != str(cfg["ano_censo"]):
+            raise RuntimeError(f"{cfg['arquivo']} é do Censo {ano_arq or '?'}, e foi informado o ano"
+                               f" {cfg['ano_censo']}; nada foi apagado no banco.")
 
     if not pular:
         executar_sql(f"DELETE FROM {tabela} WHERE {filtro};"
@@ -581,6 +643,8 @@ def carregar_tabela(schema, nome, cfg, ano, args, carga=None):
         n_cab = len(cabecalho)
         for registro in leitor:
             if not registro:                    # linha em branco não é registro
+                continue
+            if filtro_csv and not filtro_csv(registro):   # recorte do Censo (escolas em atividade com matrícula)
                 continue
             if len(registro) != n_cab:          # linha truncada ou com colunas a mais: avisada no fim
                 desalinhadas += 1
@@ -737,6 +801,10 @@ def main():
     p.add_argument("--forcar-referencia", action="store_true",
                    help="com --tabelas referencia: regrava a referência mesmo que isso apague campos existentes"
                         " ou substitua a referência calculada de uma carga sem planilha")
+    p.add_argument("--censo-ano", type=int,
+                   help="com --tabelas censo: ano do Censo Escolar (ex.: 2024); padrão: ANO_CARGA_CENSO do .env")
+    p.add_argument("--censo-arquivo", type=Path,
+                   help="com --tabelas censo: CSV do INEP (padrão: o único CSV de upload/censo/AAAA/)")
     p.add_argument("--uf", help="carrega apenas uma UF (sigla, ex.: go) — carga piloto")
     p.add_argument("--lote-mb", type=float, default=1.5,
                    help="tamanho aproximado de cada lote (MB); requisições acima do limite do servidor são divididas")
@@ -777,7 +845,12 @@ def main():
         elif nome == "referencia":
             carregar_referencia(carga, ano_sete, args.pasta, args.forcar_referencia)
         elif nome == "censo":
-            if not carregar_tabela("censo", "matricula", config_censo(), ANO_CENSO, args):
+            ano_c = args.censo_ano or ANO_CENSO
+            if args.censo_ano or args.censo_arquivo:
+                cfg_c = config_censo_ano(ano_c, arquivo_censo(ano_c, args.censo_arquivo))
+            else:
+                cfg_c = config_censo()      # Censo pareado padrão (data/Transporte Escolar, 2025)
+            if not carregar_tabela("censo", "matricula", cfg_c, ano_c, args):
                 falhas.append(nome)
         elif not carregar_tabela("sete", nome, TABELAS[nome], ano_sete, args, carga):
             falhas.append(nome)
