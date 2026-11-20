@@ -195,6 +195,7 @@ Todas as views exigem o cabeçalho `apikey: {SUPABASE_PUBLISHABLE_KEY}` e são f
 | `sete_municipios` | 1 | Tabela "Dados SETE", mapa municipal, comparações: `{cols, municipios, ufs}` | `?carga=eq.202605&select=dados` |
 | `rotas_tracado` | 31.626 | Traçado das rotas no mapa do município (GeoJSON EPSG:4326, simplificado ~10 m) | `?carga=eq.202605&codigo_cidade=eq.5212501` |
 | `indicadores_censo_anual` | — | Série anual do Censo Escolar, independente do SETE: `ano_censo`, `nivel`, `chave`, `ind` (ATE, MEDATE, PATM, PATE) e `raw` (escolas, matriculas_basica, transp, esc_at, mun, est). Sem filtro de carga | `?nivel=eq.estado&chave=eq.go&order=ano_censo` |
+| `censo_anual_municipios` | 1 por ano | Censo por ano e município numa linha: `dados = {código IBGE: [ATE, MEDATE, PATM, PATE, transp, esc_at, mun, est]}`. Usada quando o usuário escolhe um ano do Censo diferente do pareado (mapa e tabela municipal) | `?ano_censo=eq.2024&select=dados` |
 | `cargas_sete` | 1 | Cargas com dados: `carga`, `rotulo`, `data_referencia`, `ano_carga`, `ano_censo`, `atual` (a mais recente) | `?order=carga` |
 | `capacitacao_dados` | 1 | Frente de Capacitação: `{tabela: {colunas, linhas}}` | `?select=dados` |
 
@@ -317,6 +318,8 @@ Proteções do carregador do SETE (v.3.4.5): `--pasta` obrigatória fora da carg
 3. `python scripts/atualizar_indicadores.py`. O ano entra em `public.indicadores_censo_anual` e na série "Anos do Censo Escolar" da aba Evolução, sem mudanças na interface.
 4. Para parear o novo Censo com uma carga do SETE, defina `ANO_CARGA_CENSO` no `.env` antes de registrar a carga (uma carga já registrada mantém o pareamento).
 
+Na interface, o seletor **Censo Escolar** das barras de território lista os anos de `public.indicadores_censo_anual` e usa por padrão o mais recente (a escolha não é gravada). Quando o ano escolhido difere do Censo pareado à carga, a interface troca MEDATE, PATM, PATE e PCSC (SETE ÷ Censo do ano) em todos os níveis, o ATE municipal, a tabela municipal e os contadores do Censo da memória de cálculo; o ATE de UF, região e Brasil do painel é do SETE e não muda. O **Comparativo** tem a base "Anos do Censo Escolar" para comparar dois anos.
+
 Na série anual, ATE, MEDATE, PATM e PATE seguem as regras do complemento municipal em todos os níveis. O ATE de UF, região e Brasil no painel das cargas usa as escolas atendidas pelo SETE (`esc_at_sete`) e por isso difere do ATE da série anual.
 
 ---
@@ -352,6 +355,7 @@ Na série anual, ATE, MEDATE, PATM e PATE seguem as regras do complemento munici
 | `0025_exclui_catalogo_caminho_escola` | Exclui do catálogo os 9 itens de Gestão › Caminho da Escola (6 indicadores e 3 visuais, em rascunho e sem publicação), com a definição completa registrada na auditoria; os painéis do Caminho da Escola ficam sem visual a publicar até serem recriados |
 | `0026_exclui_visual_monitoramento_sete` | Exclui do catálogo o visual `SETE_PAINEL_SNAPSHOT` (em rascunho, sem publicação), com a definição registrada na auditoria; o catálogo fica com os 31 indicadores do transporte |
 | `0028_censo_serie_anual` | `censo.matricula` com vários anos do Censo; `analise.mv_censo_anual` e `public.indicadores_censo_anual` (ATE, MEDATE, PATM, PATE e contadores por ano, nível e chave, regras do complemento municipal); a cascata `pnite_meta.atualizar_indicadores()` passa a atualizá-las |
+| `0029_censo_anual_municipios` | `public.censo_anual_municipios` (Censo de todos os municípios por ano numa linha) para o seletor de ano do Censo da interface; entra na cascata |
 | `0027_foto_perfil_validacao_estrita` | A foto de perfil passa a ser validada por inteiro (data URI de imagem em base64, sem outros caracteres) no CHECK de `acesso.autorizacoes.foto` e em `public.pnite_atualizar_perfil`; antes só o prefixo era conferido, o que permitia injetar atributos no `<img>` da lista de usuários |
 
 ---
