@@ -1612,47 +1612,53 @@ body {
 }
 
 /* LOGOS RODAPÉ DA SIDEBAR */
+/* Duas "plaquinhas" brancas de mesma altura e largura nos dois temas: as marcas mantêm as cores
+   originais (sem filtros no escuro) e ganham o mesmo peso visual. A logo da UFG já traz margem
+   branca no próprio arquivo, por isso ocupa a altura toda da plaquinha. */
 .cap-sidebar-footer {
   margin-top: auto;
-  padding-top: 14px;
+  padding-top: 16px;
   border-top: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   gap: 10px;
-  align-items: center;
+  align-items: stretch;
+}
+.cap-logos-titulo {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  text-align: center;
 }
 .cap-partner-logo {
-  width: 100%;
+  height: 72px;
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 0.88;
-  transition: opacity 0.2s;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background-color: #ffffff;
+  overflow: hidden;
 }
-.cap-partner-logo:hover {
-  opacity: 1;
-}
+.cap-partner-logo.cap-logo-ufg { padding: 0 14px; }
 .cap-partner-img {
-  max-width: 100%;
-  height: auto;
-  max-height: 42px;
-  object-fit: contain;
   display: block;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
 }
-.cap-ufg-img {
-  max-height: 38px;
-  border-radius: 6px;
-}
-.cap-cecate-img {
-  max-height: 44px;
-}
-[data-theme="dark"] .cap-ufg-img {
-  background: #ffffff;
-  padding: 3px 6px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.25);
-}
-[data-theme="dark"] .cap-cecate-img {
-  filter: drop-shadow(0 0 2px rgba(255,255,255,0.35));
+.cap-ufg-img { height: 100%; }
+.cap-cecate-img { height: 50px; }
+[data-theme="dark"] .cap-partner-logo { border-color: transparent; }
+@media (max-width: 1150px) {
+  .cap-sidebar-footer { flex-direction: row; flex-wrap: wrap; justify-content: center; align-items: center; }
+  .cap-logos-titulo { flex-basis: 100%; }
+  .cap-partner-logo { flex: 0 1 200px; }
 }
 
 /* ÁREA PRINCIPAL DA CAPACITAÇÃO */
@@ -6884,11 +6890,12 @@ window.onerror = function(msg, url, line, col, err) {
 
         <!-- RODAPÉ DA SIDEBAR: LOGOS UFG E CECATE -->
         <div class="cap-sidebar-footer">
+          <span class="cap-logos-titulo">Realização</span>
           <div class="cap-partner-logo cap-logo-ufg" title="Universidade Federal de Goiás">
-            <img src="assets/logos/logo_ufg.jpg" alt="Logo UFG" class="cap-partner-img cap-ufg-img" onerror="this.onerror=null;this.style.display='none'">
+            <img src="assets/logos/logo_ufg.jpg" alt="Universidade Federal de Goiás (UFG)" class="cap-partner-img cap-ufg-img" onerror="this.onerror=null;this.style.display='none'">
           </div>
           <div class="cap-partner-logo cap-logo-cecate" title="CECATE - Centro Colaborador de Apoio ao Transporte Escolar">
-            <img src="assets/logos/logo_cecate.svg" alt="Logo CECATE" class="cap-partner-img cap-cecate-img" onerror="this.onerror=null;this.style.display='none'">
+            <img src="assets/logos/logo_cecate.svg" alt="CECATE-CO — Centro Colaborador de Apoio ao Transporte Escolar do Centro-Oeste" class="cap-partner-img cap-cecate-img" onerror="this.onerror=null;this.style.display='none'">
           </div>
         </div>
       </aside>
@@ -8717,7 +8724,7 @@ window.onerror = function(msg, url, line, col, err) {
     <div class="smb-sec">
       <div class="smb-sec-title" data-i18n="settings_info_title">Informações da Versão</div>
       <div style="font-size:12px;color:var(--text-2);display:flex;flex-direction:column;gap:4px;margin-top:6px">
-        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.5.6</b></div>
+        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.5.7</b></div>
         <div><span data-i18n="settings_updated">Última Atualização:</span> <b class="pnite-date-val">06/10/2026</b> às <b class="pnite-time-val">21:05</b></div>
         <div><span data-i18n="settings_author">Responsável Técnico:</span> <b class="pnite-author-val">Equipe PNITE</b></div>
       </div>
@@ -9706,9 +9713,9 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.5.6";
+const PNITE_VERSION = "v.3.5.7";
 const PNITE_LAST_UPDATE = "22/11/2026";
-const PNITE_LAST_TIME = "17:00";
+const PNITE_LAST_TIME = "17:30";
 
 // Escapa texto para inserção segura via innerHTML (entradas do usuário, nomes de arquivo)
 function escHtml(s) {
@@ -19883,12 +19890,13 @@ async function recarregarDadosExternos() {
       </div>
     </div>
     <div class="pif-body">
-      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.5.6</strong></div>
+      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.5.7</strong></div>
       <div class="pif-row"><span>Data da alteração:</span><span class="pnite-date-val">09/11/2026</span></div>
       <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">14:00</span></div>
       <div class="pif-row"><span>Responsável técnico:</span><span class="pnite-author-val">Equipe PNITE</span></div>
       <div class="pif-note">
         <i class="ti ti-check" style="color:var(--accent);margin-right:3px"></i>
+        <strong>Logos da capacitação (v.3.5.7):</strong> UFG e CECATE-CO em plaquinhas de mesmo tamanho, com o mesmo peso visual nos dois temas.<br>
         <strong>Busca de município (v.3.5.6):</strong> na página Capacitações, o município é escolhido por um campo de busca com lupa; com um município selecionado, o cartão Capacitação mostra as capacitações em que ele teve presença.<br>
         <strong>Mapa do Brasil na capacitação (v.3.5.5):</strong> a opção "Todos os atendimentos" passa a se chamar "Brasil" e, com ela (e com "Outros"), o mapa mostra o Brasil inteiro com todos os municípios alcançados pelo CECATE-CO.<br>
         <strong>Design da capacitação (v.3.5.4):</strong> padrão visual único (cartões, raios, bordas, sombras e tipografia), acento amarelo do ônibus escolar com azul-marinho, novas cores dos gráficos validadas para daltonismo e mapa em fundo "papel" com versão própria no modo escuro.<br>
@@ -19954,7 +19962,7 @@ async function recarregarDadosExternos() {
   </div>
   <button class="pif-btn" id="pifBtn" aria-label="Informações de Versão">
     <i class="ti ti-info-circle"></i>
-    <span class="pif-btn-label pnite-version-val">v.3.5.6</span>
+    <span class="pif-btn-label pnite-version-val">v.3.5.7</span>
   </button>
 </div>
 
