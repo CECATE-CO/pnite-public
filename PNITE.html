@@ -7094,7 +7094,6 @@ window.onerror = function(msg, url, line, col, err) {
           <header class="cap-page-head">
             <h2 id="capCapTitulo">Capacitações</h2>
             <div class="cap-home-title-bar"></div>
-            <p>Detalhamento de cada capacitação: polo, data, municípios convidados, inscrições e presença por município.</p>
           </header>
           <div class="cap-toolbar" role="group" aria-label="Filtros das capacitações">
             <div class="cap-field cap-field-wide">
@@ -7133,17 +7132,14 @@ window.onerror = function(msg, url, line, col, err) {
             </div>
             <div class="cap-panel">
               <h3 class="cap-panel-title">Participantes por público</h3>
-              <p class="cap-panel-sub">Distribuição dos presentes entre gestores municipais e conselheiros do CACS-FUNDEB.</p>
               <div class="cap-chart-box cap-event-public-chart"><canvas id="capChartCapPublico" role="img" aria-label="Gráfico de participantes por público"></canvas></div>
               <div id="capCapPublicoResumo" class="cap-event-public-summary"></div>
               <h4 class="cap-panel-title">Participação dos municípios convidados</h4>
               <div class="cap-kpi-grid" id="capCapParticipacao"></div>
-              <p class="cap-panel-sub" id="capCapParticipacaoNota"></p>
             </div>
           </div>
           <div class="cap-panel">
             <h3 class="cap-panel-title">Participantes por capacitação</h3>
-            <p class="cap-panel-sub">Gestores e CACS presentes em cada capacitação; a selecionada fica em destaque. Os totais sobre as barras somam os públicos visíveis.</p>
             <div class="cap-event-series-scroll" tabindex="0" role="region" aria-label="Comparação por capacitação; role horizontalmente em telas menores"><div class="cap-chart-box cap-event-series"><canvas id="capChartCapSerie" role="img" aria-label="Gráfico de participantes por capacitação"></canvas></div></div>
           </div>
           <div class="cap-panel">
@@ -7153,7 +7149,6 @@ window.onerror = function(msg, url, line, col, err) {
               <div class="cap-field cap-field-wide"><label for="capCapBusca">Buscar município na tabela</label><input type="search" id="capCapBusca" placeholder="Nome ou código IBGE" oninput="capRenderTabelaEvento()"></div>
               <div class="cap-field"><label for="capCapOrdem">Ordenar registros</label><select id="capCapOrdem" onchange="capRenderTabelaEvento()"><option value="evento">Capacitação, UF e município</option><option value="nome">Município (A–Z)</option><option value="participantes">Mais participantes</option><option value="gestores">Mais gestores</option><option value="cacs">Mais CACS</option><option value="situacao">Participou primeiro</option></select></div>
             </div>
-            <p class="cap-panel-sub" id="capCapConsultaNota">Busca e ordenação afetam somente a tabela.</p>
             <div class="cap-table-wrap" id="capCapTabela" tabindex="0" role="region" aria-label="Registros municipais das capacitações"></div>
           </div>
         </section>
@@ -7163,7 +7158,6 @@ window.onerror = function(msg, url, line, col, err) {
           <header class="cap-page-head">
             <h2 id="capUfTitulo">Unidades da Federação</h2>
             <div class="cap-home-title-bar"></div>
-            <p>Comparativo da participação nas capacitações por estado, com médias por município e evolução semestral.</p>
           </header>
           <div class="cap-toolbar" role="group" aria-label="Filtros por Unidade da Federação">
             <div class="cap-field">
@@ -7175,7 +7169,6 @@ window.onerror = function(msg, url, line, col, err) {
               <select id="capUfAno" data-cap-filter></select>
             </div>
           </div>
-          <p class="cap-coverage-note cap-uf-scope" id="capUfRecorte" role="status" aria-live="polite"></p>
           <h3 class="cap-panel-title cap-uf-group-title">Participação e perfil do público</h3>
           <div class="cap-kpi-grid" id="capUfKpis"></div>
           <h3 class="cap-panel-title cap-uf-group-title">Estrutura dos eventos e deslocamento</h3>
@@ -7183,31 +7176,27 @@ window.onerror = function(msg, url, line, col, err) {
           <section class="cap-panel" aria-labelledby="capUfCoberturaTitulo">
             <h3 class="cap-panel-title" id="capUfCoberturaTitulo">Cobertura municipal por Unidade da Federação</h3>
             <div class="cap-kpi-grid cap-uf-rates" id="capUfTaxas"></div>
-            <p class="cap-coverage-note" id="capUfCoberturaNota">Cobertura dos municípios do Centro-Oeste. Participação externa é apresentada separadamente.</p>
-            <div class="cap-chart-box"><canvas id="capChartUfCobertura" role="img" aria-label="Percentual de municípios alcançados por UF" aria-describedby="capUfCoberturaMetodo"></canvas></div>
+            <div class="cap-chart-box"><canvas id="capChartUfCobertura" role="img" aria-label="Percentual de municípios alcançados por UF"></canvas></div>
             <div class="cap-table-wrap" id="capUfCoberturaTabela"></div>
-            <p class="cap-coverage-note" id="capUfCoberturaMetodo">Cobertura regional = municípios únicos do Centro-Oeste com ao menos um participante presente ÷ total de municípios da área regional selecionada × 100. Outras UFs não compõem esta base. Cada município é contado uma vez, inclusive os participantes não convidados. Fonte: listas de presença e cadastro municipal do IBGE disponível na PNITE. O DF é representado por Brasília. Sem base territorial, o percentual é exibido como —.</p>
+            <p class="cap-coverage-note" id="capUfCoberturaNota" hidden>Cobertura regional não se aplica a este recorte.</p>
           </section>
           <div class="cap-grid-2">
             <div class="cap-panel">
               <h3 class="cap-panel-title">Participantes por estado</h3>
-              <p class="cap-panel-sub">Gestores e CACS presentes, segundo a UF do município representado.</p>
               <div class="cap-chart-box"><canvas id="capChartUfEstado" role="img" aria-label="Gráfico de participantes por estado"></canvas></div>
             </div>
             <div class="cap-panel">
               <h3 class="cap-panel-title">Evolução da capacitação por semestre</h3>
-              <p class="cap-panel-sub" id="capUfEvolucaoNota">Participantes por semestre de realização.</p>
               <div class="cap-field cap-uf-evolution-field"><label for="capUfMedida">Medida da evolução semestral</label><select id="capUfMedida" data-cap-filter><option value="participantes">Participantes — gestores e CACS</option><option value="municipios">Municípios únicos alcançados</option></select></div>
               <div class="cap-chart-box"><canvas id="capChartUfSemestre" role="img" aria-label="Gráfico da evolução semestral de participantes"></canvas></div>
             </div>
           </div>
           <div class="cap-panel">
             <h3 class="cap-panel-title">Quadro comparativo por estado</h3>
-            <p class="cap-panel-sub">Taxa de participação = municípios convidados que participaram ÷ municípios convidados (por capacitação).</p>
             <div class="cap-toolbar" role="group" aria-label="Ordenação do comparativo por estado"><div class="cap-field"><label for="capUfOrdem">Ordenar estados</label><select id="capUfOrdem" onchange="capRenderUf()"><option value="uf">UF (A–Z)</option><option value="cobertura">Maior cobertura territorial</option><option value="taxa">Maior participação entre convidados</option><option value="participantes">Mais participantes</option><option value="distancia">Maior distância média</option></select></div></div>
             <div class="cap-table-wrap" id="capUfTabela" tabindex="0" role="region" aria-label="Comparativo dos estados; role horizontalmente para consultar todas as colunas"></div>
           </div>
-          <section class="cap-panel" aria-labelledby="capUfOutrosTitulo"><h3 class="cap-panel-title" id="capUfOutrosTitulo">Outros — atendimentos fora do Centro-Oeste</h3><p class="cap-panel-sub">Participação externa no ano selecionado, preservada independentemente do recorte territorial acima. Não representa meta de cobertura desses estados.</p><div class="cap-table-wrap" id="capUfOutros"></div></section>
+          <section class="cap-panel" aria-labelledby="capUfOutrosTitulo"><h3 class="cap-panel-title" id="capUfOutrosTitulo">Outros — atendimentos fora do Centro-Oeste</h3><div class="cap-table-wrap" id="capUfOutros"></div></section>
         </section>
 
         <!-- SUB-VIEW 4: AVALIAÇÃO DAS CAPACITAÇÕES 1 A 5 -->
@@ -7223,9 +7212,8 @@ window.onerror = function(msg, url, line, col, err) {
           <section class="cap-evaluation-panel" role="tabpanel" tabindex="0" id="capSubAval1_5" aria-labelledby="capTabAval1_5">
           <header class="cap-page-head">
             <h3 id="capA15Titulo">Avaliação por pergunta</h3>
-            <p class="cap-territory-note">Avaliação completa dos eventos 1 a 5: a base não identifica a origem municipal dos respondentes. Não é possível separar Centro-Oeste e outras UFs, nem classificar pela sede do evento.</p>
+            <p class="cap-territory-note">A base das capacitações 1 a 5 não identifica o município do respondente: o filtro de origem não se aplica.</p>
             <div class="cap-home-title-bar"></div>
-            <p>Explore os aspectos gerais, cada módulo, o SETE e o ensino a distância no mesmo gráfico, selecionando o bloco de perguntas.</p>
           </header>
           <div class="cap-toolbar" role="group" aria-label="Filtros da avaliação 1 a 5">
             <div class="cap-field">
@@ -7244,7 +7232,7 @@ window.onerror = function(msg, url, line, col, err) {
           <div class="cap-kpi-grid" id="capA15Kpis"></div>
           <div class="cap-panel">
             <h3 class="cap-panel-title" id="capA15ChartTitulo">Distribuição das respostas por pergunta</h3>
-            <p class="cap-panel-sub" id="capA15ChartSub">Barras 100% empilhadas com percentual e quantidade de respostas. Segmentos estreitos têm o rótulo abaixo da barra.</p>
+            <p class="cap-panel-sub" id="capA15ChartSub" hidden></p>
             <p class="cap-panel-sub" id="capA15Base"></p>
             <div class="cap-empty" id="capA15Vazio" hidden>Sem respostas para os filtros selecionados.</div>
             <div class="cap-chart-box cap-a15-chart" id="capA15ChartBox"><canvas id="capChartA15Perguntas" role="img" aria-label="Gráfico de distribuição das respostas por pergunta"></canvas></div>
@@ -7254,9 +7242,8 @@ window.onerror = function(msg, url, line, col, err) {
           <section class="cap-evaluation-panel" role="tabpanel" tabindex="0" hidden id="capSubStat1_5" aria-labelledby="capTabStat1_5">
           <header class="cap-page-head">
             <h3 id="capS15Titulo">Resultados e percepções dos participantes</h3>
-            <p class="cap-territory-note">Avaliação completa dos eventos 1 a 5: a base não identifica a origem municipal dos respondentes. Não é possível separar Centro-Oeste e outras UFs, nem classificar pela sede do evento.</p>
+            <p class="cap-territory-note">A base das capacitações 1 a 5 não identifica o município do respondente: o filtro de origem não se aplica.</p>
             <div class="cap-home-title-bar"></div>
-            <p>Comparação da satisfação entre capacitações, canais de divulgação, sugestões e comentários.</p>
           </header>
           <div class="cap-toolbar" role="group" aria-label="Filtros dos resultados e percepções 1 a 5">
             <div class="cap-field">
@@ -7271,14 +7258,11 @@ window.onerror = function(msg, url, line, col, err) {
           <div class="cap-grid-2">
             <div class="cap-panel">
               <h3 class="cap-panel-title">Satisfação por capacitação</h3>
-              <p class="cap-panel-sub">% de “Ótimo” nos aspectos gerais e % de “Sim” nos blocos Módulos, SETE e EAD.</p>
-              <p class="cap-panel-sub">“Ótimo” e “Sim” pertencem a escalas distintas. As bases somam respostas válidas às perguntas de cada conjunto, não pessoas únicas.</p>
               <div class="cap-table-wrap" id="capS15Bases"></div>
               <div class="cap-chart-box"><canvas id="capChartS15Caps" role="img" aria-label="Gráfico de satisfação por capacitação"></canvas></div>
             </div>
             <div class="cap-panel">
               <h3 class="cap-panel-title">Como ficou sabendo da capacitação?</h3>
-              <p class="cap-panel-sub">Pergunta de múltipla escolha (aplicada da 3ª à 5ª); percentual sobre os respondentes.</p>
               <div id="capS15Canais"></div>
             </div>
           </div>
@@ -7308,7 +7292,6 @@ window.onerror = function(msg, url, line, col, err) {
           <header class="cap-page-head">
             <h3 id="capA616Titulo">Avaliação por critério</h3>
             <div class="cap-home-title-bar"></div>
-            <p>Conceitos de 1 (Muito ruim) a 5 (Excelente) atribuídos pelos participantes aos critérios da formação. Favoráveis: Bom e Excelente; neutro: Neutro; desfavoráveis: Ruim e Muito ruim.</p>
           </header>
           <div class="cap-toolbar" role="group" aria-label="Filtros da avaliação 6 a 16">
             <div class="cap-field">
@@ -7327,19 +7310,16 @@ window.onerror = function(msg, url, line, col, err) {
           <div class="cap-kpi-grid" id="capA616Kpis"></div>
           <div class="cap-panel">
             <h3 class="cap-panel-title">Distribuição dos conceitos por critério</h3>
-            <p class="cap-panel-sub">Barras 100% empilhadas, de Muito ruim a Excelente, com percentual e quantidade de respostas. Segmentos estreitos têm o rótulo abaixo da barra.</p>
             <p class="cap-panel-sub" id="capA616Base"></p>
             <div class="cap-chart-box cap-a616-chart" id="capA616DistBox"><canvas id="capChartA616Dist" role="img" aria-label="Gráfico de distribuição dos conceitos por critério"></canvas></div>
           </div>
           <div class="cap-grid-2">
             <div class="cap-panel">
               <h3 class="cap-panel-title">Favorável × desfavorável por critério</h3>
-              <p class="cap-panel-sub">À direita, Bom e Excelente; à esquerda, Ruim e Muito ruim. Neutro fica fora das barras.</p>
               <div class="cap-chart-box"><canvas id="capChartA616Saldo" role="img" aria-label="Gráfico divergente de avaliações favoráveis e desfavoráveis por critério"></canvas></div>
             </div>
             <div class="cap-panel">
               <h3 class="cap-panel-title">Evolução da avaliação favorável por capacitação</h3>
-              <p class="cap-panel-sub">% de conceitos Bom ou Excelente em todos os critérios, por cargo do respondente.</p>
               <div class="cap-chart-box"><canvas id="capChartA616Evol" role="img" aria-label="Gráfico da evolução do percentual de avaliações favoráveis por capacitação"></canvas></div>
             </div>
           </div>
@@ -7349,7 +7329,6 @@ window.onerror = function(msg, url, line, col, err) {
           <header class="cap-page-head">
             <h3 id="capS616Titulo">Resultados e percepções dos participantes</h3>
             <div class="cap-home-title-bar"></div>
-            <p>Canais de divulgação, aspectos positivos, pontos a melhorar, temas sugeridos e comentários.</p>
           </header>
           <div class="cap-toolbar" role="group" aria-label="Filtros dos resultados e percepções 6 a 16">
             <div class="cap-field">
@@ -7369,13 +7348,11 @@ window.onerror = function(msg, url, line, col, err) {
           <div class="cap-grid-2">
             <div class="cap-panel">
               <h3 class="cap-panel-title">Respondentes por canal de divulgação</h3>
-              <p class="cap-panel-sub">Pergunta de múltipla escolha; um respondente pode citar mais de um canal.</p>
               <p class="cap-panel-sub" id="capS616CanaisBase"></p>
               <div class="cap-chart-box"><canvas id="capChartS616Canais" role="img" aria-label="Gráfico de respondentes por canal de divulgação"></canvas></div>
             </div>
             <div class="cap-panel">
               <h3 class="cap-panel-title">Respostas abertas por capacitação</h3>
-              <p class="cap-panel-sub">Quantidade de campos de texto preenchidos.</p>
               <div class="cap-chart-box"><canvas id="capChartS616Abertas" role="img" aria-label="Gráfico de respostas abertas por capacitação"></canvas></div>
             </div>
           </div>
@@ -8675,7 +8652,7 @@ window.onerror = function(msg, url, line, col, err) {
     <div class="smb-sec">
       <div class="smb-sec-title" data-i18n="settings_info_title">Informações da Versão</div>
       <div style="font-size:12px;color:var(--text-2);display:flex;flex-direction:column;gap:4px;margin-top:6px">
-        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.5.2</b></div>
+        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.5.3</b></div>
         <div><span data-i18n="settings_updated">Última Atualização:</span> <b class="pnite-date-val">06/10/2026</b> às <b class="pnite-time-val">21:05</b></div>
         <div><span data-i18n="settings_author">Responsável Técnico:</span> <b class="pnite-author-val">Equipe PNITE</b></div>
       </div>
@@ -9664,9 +9641,9 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.5.2";
+const PNITE_VERSION = "v.3.5.3";
 const PNITE_LAST_UPDATE = "22/11/2026";
-const PNITE_LAST_TIME = "13:30";
+const PNITE_LAST_TIME = "14:00";
 
 // Escapa texto para inserção segura via innerHTML (entradas do usuário, nomes de arquivo)
 function escHtml(s) {
@@ -17632,10 +17609,10 @@ function updateCapacitacaoView() {
   const caps = new Set(rows.map(r => r.capacitacao));
   const cobertura = capCoberturaMunicipal(rows, capUfsCobertura(selUf));
   capKpis('capHomeKpis', [
-    { l: 'Participantes', v: capInt(rows.length ? s.P : null), n: 'Presenças com registro municipal no recorte selecionado.' },
-    { l: 'Capacitações', v: capInt(caps.size), n: 'Eventos com registros municipais no recorte selecionado.' },
-    { l: 'Municípios alcançados', v: capInt(capMunicipiosComPresenca(rows)), n: 'Municípios únicos com presença no território analisado.' },
-    { l: 'Cobertura regional', v: capPct(cobertura.alcancados, cobertura.total), n: cobertura.total != null ? capInt(cobertura.alcancados) + ' de ' + capInt(cobertura.total) + ' municípios do território.' : (capUfsCobertura(selUf).length ? 'Base territorial indisponível.' : 'Não se aplica: recorte fora da área regional.') }
+    { l: 'Participantes', v: capInt(rows.length ? s.P : null),  },
+    { l: 'Capacitações', v: capInt(caps.size),  },
+    { l: 'Municípios alcançados', v: capInt(capMunicipiosComPresenca(rows)),  },
+    { l: 'Cobertura regional', v: capPct(cobertura.alcancados, cobertura.total), n: cobertura.total != null ? capInt(cobertura.alcancados) + ' de ' + capInt(cobertura.total) + ' municípios' : (capUfsCobertura(selUf).length ? 'Base territorial indisponível.' : 'Não se aplica: recorte fora da área regional.') }
   ]);
   renderCapacitacaoMap('capSvgContainer', municipios,
     Array.from(caps).map(n => d.capPorNum.get(n).polo_cod_ibge), CAP_STATE.mapaModo);
@@ -17646,11 +17623,11 @@ function capRenderCoberturaHome(rows, uf) {
   const c = capCoberturaMunicipal(rows, ufs);
   const territorio = uf && ufs.length ? 'de ' + uf : 'do Centro-Oeste';
   const pct = capPct(c.alcancados, c.total);
-  const resumo = !ufs.length ? 'Cobertura regional não se aplica a este recorte. Atendimentos de outras UFs e de origem não identificada são preservados, sem compor o denominador do Centro-Oeste.' : c.total != null ? pct + ' dos municípios ' + territorio + ' já participaram das capacitações.'
+  const resumo = !ufs.length ? 'Cobertura regional não se aplica a este recorte.' : c.total != null ? pct + ' dos municípios ' + territorio + ' já participaram das capacitações.'
     : 'Sem base territorial para calcular a cobertura ' + territorio + '.';
   capSetTxt('capCoberturaTitulo', 'Cobertura regional ' + (uf && ufs.length ? 'em ' + uf : 'do Centro-Oeste'));
   capSetTxt('capCoberturaPct', pct);
-  capSetTxt('capCoberturaResumo', c.total != null ? resumo + ' ' + capInt(c.alcancados) + ' de ' + capInt(c.total) + ' municípios, considerando os filtros ativos. Cobertura territorial difere da taxa de participação entre convidados.' : resumo);
+  capSetTxt('capCoberturaResumo', c.total != null ? resumo + ' ' + capInt(c.alcancados) + ' de ' + capInt(c.total) + ' municípios.' : resumo);
   const canvas = document.getElementById('capChartHomeCobertura');
   canvas.setAttribute('aria-label', resumo);
   const t = capTema();
@@ -17922,7 +17899,7 @@ function capRenderTabelaEvento() {
   document.getElementById('capCapTabela').innerHTML = capTabelaHtml(
     [{ t: 'Capacitação' }, { t: 'UF' }, { t: 'Município' }, { t: 'Convite' }, { t: 'Participou?' }, { t: 'Inscritos', num: 1 },
       { t: 'Participantes', num: 1 }, { t: 'Gestores', num: 1 }, { t: 'CACS', num: 1 }, { t: 'Distância ao polo (km)', num: 1 }], linhas);
-  capSetTxt('capCapTabelaSub', `${capInt(filtradas.length)} de ${capInt(rows.length)} registro(s) município × capacitação. Distância em linha reta entre os centróides do município e do polo.`);
+  capSetTxt('capCapTabelaSub', `${capInt(filtradas.length)} de ${capInt(rows.length)} registro(s) município × capacitação.`);
 }
 
 function capRenderCapacitacoes() {
@@ -17952,11 +17929,11 @@ function capRenderCapacitacoes() {
   if (c) kpis.push({ l: 'Local', v: c.local || '—', texto: true });
   kpis.push(
     { l: 'Municípios convidados', v: capInt(rows.length ? s.convidados : null) },
-    { l: 'Municípios participantes', v: capInt(rows.length ? s.participou : null), n: s.espontaneos ? `+ ${s.espontaneos} não convidado(s) com participantes` : 'Convidados com ao menos 1 presente' },
-    { l: 'Taxa de participação', v: capPct(s.participou, s.convidados), n: 'Participantes ÷ convidados' },
-    { l: 'Inscritos', v: capInt(s.inscritos), n: s.inscritos == null ? 'Sem formulário de inscrição' : (c ? 'Formulário de inscrição' : 'Formulários da 5ª à 16ª') },
-    { l: 'Participantes', v: capInt(rows.length ? s.P : null), n: semMun > 0 ? `${semMun} presenças sem município identificado não integram este indicador municipal` : 'Presentes na lista de presença' },
-    { l: 'Comparecimento', v: capPct(s.presentesComInscricao, s.inscritos), n: c ? 'Presentes ÷ inscritos' : 'Presentes ÷ inscritos (5ª à 16ª)' }
+    { l: 'Municípios participantes', v: capInt(rows.length ? s.participou : null), n: s.espontaneos ? `+ ${s.espontaneos} não convidado(s) com participantes` : '' },
+    { l: 'Taxa de participação', v: capPct(s.participou, s.convidados) },
+    { l: 'Inscritos', v: capInt(s.inscritos), n: s.inscritos == null ? 'Sem formulário de inscrição' : (c ? '' : 'Da 5ª à 16ª') },
+    { l: 'Participantes', v: capInt(rows.length ? s.P : null), n: semMun > 0 ? `${semMun} presença(s) sem município identificado não incluída(s)` : '' },
+    { l: 'Comparecimento', v: capPct(s.presentesComInscricao, s.inscritos), n: c ? '' : 'Da 5ª à 16ª' }
   );
   capKpis('capCapEvento', kpis.splice(0, c ? 3 : 2));
   capKpis('capCapKpis', kpis);
@@ -17980,7 +17957,6 @@ function capRenderCapacitacoes() {
     { l: 'Participaram', v: capInt(rows.length ? s.participou : null) },
     { l: 'Ausentes', v: capInt(rows.length ? s.ausente : null) }
   ]);
-  capSetTxt('capCapParticipacaoNota', capPct(s.participou, s.convidados) + ' de participação entre convidados. ' + (sel ? 'Contagem de municípios no evento.' : 'Contagem de registros município × capacitação; um município pode aparecer em vários eventos.'));
   document.getElementById('capCapPublicoResumo').innerHTML = [['Gestores', s.G], ['CACS', s.C], ['Outros', s.O]].map(([nome, valor]) => '<p><span>' + nome + '</span><strong>' + capInt(valor) + ' · ' + capPct(valor, s.P) + '</strong></p>').join('');
   const publico = [['Gestores', s.G, t.gest], ['CACS', s.C, t.cacs], ['Outros', s.O, t.outros]].filter(p => p[1] > 0);
   capGrafico('capChartCapPublico', {
@@ -18131,8 +18107,7 @@ function capRenderUf() {
   document.getElementById('capChartUfCobertura').parentElement.hidden = !ufsDoGrafico.length;
   document.getElementById('capUfCoberturaTabela').hidden = !ufsDoGrafico.length;
   capSetTxt('capUfCoberturaTitulo', ufsDoGrafico.length ? 'Cobertura municipal do Centro-Oeste' : 'Participação no recorte selecionado');
-  capSetTxt('capUfCoberturaNota', ufsDoGrafico.length ? 'GO, MT, MS e DF são a base da cobertura regional. A UF selecionada fica em destaque; outras UFs não entram nesse denominador.' : 'Cobertura regional não é calculada para outras UFs nem para registros de origem não identificada. Esses atendimentos permanecem registrados, sem compor metas territoriais externas.');
-  document.getElementById('capUfCoberturaMetodo').hidden = !ufsDoGrafico.length;
+  document.getElementById('capUfCoberturaNota').hidden = !!ufsDoGrafico.length;
   capRenderCoberturaUf(rowsAno, ufsDoGrafico, uf, t);
   const externas = Array.from(new Set(rowsAnoBase.map(capUfOrigem).filter(u => u && !CAP_UFS_MAPA.includes(u)))).sort();
   document.getElementById('capUfOutros').innerHTML = capTabelaHtml([{ t: 'UF externa' }, { t: 'Municípios únicos com presença', num: 1 }, { t: 'Presenças', num: 1 }, { t: 'Gestores', num: 1 }, { t: 'CACS', num: 1 }], externas.map(u => {
@@ -18156,22 +18131,21 @@ function capRenderUf() {
   const k = indicadores(rowsUf);
   const polos = polosDe(uf);
   capKpis('capUfKpis', [
-    { l: 'Total capacitado', v: capInt(rowsUf.length ? k.s.P : null), n: 'Participantes presentes' },
+    { l: 'Total capacitado', v: capInt(rowsUf.length ? k.s.P : null) },
     { l: '% Gestores', v: capPct(k.s.G, k.s.P), n: rowsUf.length ? capInt(k.s.G) + ' gestores' : 'Sem registros no recorte' },
     { l: '% CACS', v: capPct(k.s.C, k.s.P), n: rowsUf.length ? capInt(k.s.C) + ' conselheiros' : 'Sem registros no recorte' }
   ]);
   capKpis('capUfEstrutura', [
-    { l: 'Média de gestores', v: capDec(k.mediaG, 1), n: 'Por município participante, por capacitação' },
-    { l: 'Média de CACS', v: capDec(k.mediaC, 1), n: 'Por município participante, por capacitação' },
-    { l: 'Nº de polos', v: capInt(polos.size), n: 'Uma capacitação = um polo, mesmo com sede repetida; não é a origem dos participantes' },
-    { l: 'Distância média ao polo', v: k.dist != null ? capDec(k.dist, 0) + ' km' : '—', n: 'Municípios participantes (linha reta)' }
+    { l: 'Média de gestores por município', v: capDec(k.mediaG, 1) },
+    { l: 'Média de CACS por município', v: capDec(k.mediaC, 1) },
+    { l: 'Nº de polos', v: capInt(polos.size) },
+    { l: 'Distância média ao polo', v: k.dist != null ? capDec(k.dist, 0) + ' km' : '—' }
   ]);
 
   const coberturaRecorte = capCoberturaMunicipal(rowsUf, capUfsCobertura(uf));
-  capSetTxt('capUfRecorte', 'Recorte atual: ' + capNomeTerritorio() + ' · ' + (uf ? rotuloUf(uf) : 'Todos no recorte') + ' · ' + (ano || 'Todos os anos') + '. ' + (coberturaRecorte.total != null ? capInt(coberturaRecorte.alcancados) + ' de ' + capInt(coberturaRecorte.total) + ' municípios com presença registrada.' : (capUfsCobertura(uf).length ? 'Base territorial incompleta para calcular a cobertura.' : 'Cobertura regional não se aplica.')) + (!rowsUf.length ? ' Sem registros municipais neste recorte.' : !k.s.P ? ' Há registros, mas nenhuma presença registrada.' : ''));
   capKpis('capUfTaxas', [
-    { l: 'Cobertura regional', v: capPct(coberturaRecorte.alcancados, coberturaRecorte.total), n: 'Municípios únicos com presença no Centro-Oeste ÷ municípios da área regional selecionada. Outras UFs não entram no cálculo.' },
-    { l: 'Participação entre convidados', v: capPct(k.s.participou, k.s.convidados), n: 'Registros de convidados que participaram ÷ registros de convidados, por capacitação.' }
+    { l: 'Cobertura regional', v: capPct(coberturaRecorte.alcancados, coberturaRecorte.total), n: coberturaRecorte.total != null ? capInt(coberturaRecorte.alcancados) + ' de ' + capInt(coberturaRecorte.total) + ' municípios' : '' },
+    { l: 'Participação entre convidados', v: capPct(k.s.participou, k.s.convidados) }
   ]);
   const porUf = ufs.map(u => ({ u, ...indicadores(rowsAno.filter(r => r.uf === u)), cobertura: capCoberturaMunicipal(rowsAno, CAP_UFS_MAPA.includes(u) ? [u] : []) }));
   const realce = (cor, u) => (!uf || u === uf) ? cor : cor + '55';
@@ -18192,7 +18166,6 @@ function capRenderUf() {
   const rowsSem = semestres.map(sm => rowsUf.filter(r => r.semestre === sm));
   const porSem = rowsSem.map(rs => capResumo(rs));
   const porMunicipio = capVal('capUfMedida') === 'municipios';
-  capSetTxt('capUfEvolucaoNota', porMunicipio ? 'Municípios únicos com presença em cada semestre; um município pode aparecer em semestres diferentes.' : 'Presenças de gestores e CACS por semestre; totais somam os públicos visíveis.');
   const labelsSem = semestres.map(sm => sm.replace('/', ' · ') + 'º semestre');
   const datasetsSem = porMunicipio ? [capDataset('Municípios únicos alcançados', rowsSem.map(rs => rs.length ? new Set(rs.filter(r => r.presentes_total > 0 && /^\d{7}$/.test(String(r.cod_ibge))).map(r => String(r.cod_ibge))).size : null), t.unica, t)] : [
     capDataset('Gestores', porSem.map((p, i) => rowsSem[i].length ? p.G : null), t.gest, t),
@@ -18373,15 +18346,16 @@ function capRenderAval15() {
     { l: 'Respondentes', v: capInt(resp.length) },
     { l: 'Gestores', v: capInt(resp.filter(r => r.publico === 'Gestores').length) },
     { l: 'CACS', v: capInt(resp.filter(r => r.publico === 'CACS').length) },
-    { l: '% Ótimo — aspectos gerais', v: capPct(gerais.filter(i => i.resposta === 'Ótimo').length, gerais.length), n: 'Base: ' + capInt(gerais.length) + ' respostas nos aspectos gerais' },
-    { l: '% Sim — módulos, SETE e EAD', v: capPct(resultados.filter(i => i.resposta === 'Sim').length, resultados.length), n: 'Base: ' + capInt(resultados.length) + ' respostas nos módulos, SETE e EAD' }
+    { l: '% Ótimo — aspectos gerais', v: capPct(gerais.filter(i => i.resposta === 'Ótimo').length, gerais.length), n: 'Base: ' + capInt(gerais.length) + ' respostas' },
+    { l: '% Sim — módulos, SETE e EAD', v: capPct(resultados.filter(i => i.resposta === 'Sim').length, resultados.length), n: 'Base: ' + capInt(resultados.length) + ' respostas' }
   ]);
   const { cont, categorias, cores, rotulo, nota } = capBlocoAval15('capA15Bloco', itens, t);
   capSetTxt('capA15ChartTitulo', 'Distribuição das respostas — ' + rotulo);
-  capSetTxt('capA15ChartSub', 'Barras 100% empilhadas com percentual e quantidade de respostas. Segmentos estreitos têm o rótulo abaixo da barra.' + nota);
+  capSetTxt('capA15ChartSub', nota.trim());
+  document.getElementById('capA15ChartSub').hidden = !nota;
   const descricaoRespostas = cont.map(c => c.rotulo + ': ' + categorias.map(cat => cat + ' ' + capPct(c.cont[cat], c.total) + ' (' + capInt(c.cont[cat]) + ')').join(', ')).join('; ');
   document.getElementById('capChartA15Perguntas').setAttribute('aria-label', 'Distribuição das respostas — ' + rotulo + '. ' + descricaoRespostas);
-  capSetTxt('capA15Base', 'Base do recorte: ' + capInt(resp.length) + ' respondente(s). No bloco selecionado: ' + capInt(cont.reduce((n, c) => n + c.total, 0)) + ' respostas válidas somadas em ' + capInt(cont.length) + ' pergunta(s). Cada percentual usa as respostas válidas da própria pergunta.');
+  capSetTxt('capA15Base', 'Base: ' + capInt(resp.length) + ' respondente(s); ' + capInt(cont.reduce((n, c) => n + c.total, 0)) + ' respostas em ' + capInt(cont.length) + ' pergunta(s).');
   capSetTxt('capA15Vazio', capMensagemSemRespostas15(capVal('capA15Bloco'), capVal('capA15Cap')));
   document.getElementById('capA15Vazio').hidden = cont.length > 0;
   document.getElementById('capA15ChartBox').hidden = !cont.length;
@@ -18433,7 +18407,7 @@ function capRenderStat15() {
     ? '<div class="cap-hbar-list">' + canais.map(c => `<div class="cap-hbar-row"><span>${escHtml(c.canal)}</span>
         <div class="cap-hbar-track"><div class="cap-hbar-fill" style="width:${c.n / respDiv * 100}%;background-color:${t.unica}"></div></div>
         <span class="cap-hbar-val">${capPct(c.n, respDiv)} (${capInt(c.n)})</span></div>`).join('') + '</div>'
-      + `<p class="cap-note">${capInt(respDiv)} respondente(s) com resposta registrada: base dos percentuais. Múltipla escolha; a soma pode ultrapassar 100%.</p>`
+      + `<p class="cap-note">Base: ${capInt(respDiv)} respondente(s). Múltipla escolha.</p>`
     : '<div class="cap-empty">' + escHtml(capMensagemSemRespostas15('Divulgação', cap)) + '</div>';
 
   const abertas = itens.filter(i => (i.bloco === 'Sugestões' || i.bloco === 'Comentários') && i.resposta && i.resposta.length > 2)
@@ -18445,7 +18419,7 @@ function capRenderStat15() {
     lista.map(i => `<tr><td>${capNum2(i.cap)} — ${escHtml(d.capPorNum.get(i.cap).polo)}</td><td>${escHtml(i.pub)}</td>
       <td>${i.bloco === 'Sugestões' ? 'Temas futuros' : 'Comentário'}</td><td class="cap-text-cell">${capTextoResposta(i.resposta)}</td></tr>`),
     'Nenhuma sugestão ou comentário registrado.');
-  capSetTxt('capS15SugSub', `${capInt(lista.length)} de ${capInt(abertas.length)} resposta(s) de texto livre exibida(s). Busca e tipo afetam somente esta tabela.`);
+  capSetTxt('capS15SugSub', `${capInt(lista.length)} de ${capInt(abertas.length)} resposta(s).`);
 }
 
 // --------------------------------------------------------------------------
@@ -18488,8 +18462,8 @@ function capRenderAval616() {
   const notas = resp.flatMap(r => r.notas);
   capKpis('capA616Kpis', [
     { l: 'Total de respostas', v: capInt(resp.length) },
-    { l: 'Municípios identificados', v: capInt(new Set(resp.filter(r => capUfOrigem(r)).map(r => r.cod_ibge).filter(Boolean)).size), n: 'Municípios distintos identificados pelo código IBGE' },
-    { l: 'Conceito mediano', v: capConceitoMediano(notas), texto: true, n: 'Posição central da escala Likert' },
+    { l: 'Municípios identificados', v: capInt(new Set(resp.filter(r => capUfOrigem(r)).map(r => r.cod_ibge).filter(Boolean)).size) },
+    { l: 'Conceito mediano', v: capConceitoMediano(notas), texto: true },
     { l: '% favorável', v: capPct(notas.filter(n => n.nota >= 4).length, notas.length), n: 'Bom ou Excelente' },
     { l: '% desfavorável', v: capPct(notas.filter(n => n.nota <= 2).length, notas.length), n: 'Ruim ou Muito ruim' }
   ]);
@@ -18499,7 +18473,7 @@ function capRenderAval616() {
     ns.forEach(n => { c[CAP_ESCALA_NOTA[n.nota - 1]] += 1; });
     return { rotulo: p.pergunta, cont: c, total: ns.length };
   });
-  capSetTxt('capA616Base', 'Base: ' + capInt(resp.length) + ' respondente(s) e ' + capInt(notas.length) + ' conceitos registrados. Percentuais por critério usam a base de respostas do próprio critério. Neutros: ' + capInt(notas.filter(n => n.nota === 3).length) + '.' + (!notas.length ? ' Sem conceitos registrados; não é possível concluir se os critérios foram aplicados.' : ''));
+  capSetTxt('capA616Base', 'Base: ' + capInt(resp.length) + ' respondente(s) e ' + capInt(notas.length) + ' conceitos registrados; neutros: ' + capInt(notas.filter(n => n.nota === 3).length) + '.' + (!notas.length ? ' Sem conceitos registrados; não é possível concluir se os critérios foram aplicados.' : ''));
   document.getElementById('capA616DistBox').style.setProperty('--cap-a616-perguntas', String(cont.length));
   const descricaoConceitos = cont.map(c => c.rotulo + ': ' + CAP_ESCALA_NOTA.map(cat => cat + ' ' + capPct(c.cont[cat], c.total) + ' (' + capInt(c.cont[cat]) + ')').join(', ')).join('; ');
   document.getElementById('capChartA616Dist').setAttribute('aria-label', 'Distribuição dos conceitos por critério. ' + descricaoConceitos);
@@ -18566,12 +18540,12 @@ function capRenderStat616() {
   }));
   capKpis('capS616Kpis', [
     { l: 'Total de respostas', v: capInt(resp.length) },
-    { l: 'Respostas abertas', v: capInt(abertas.length), n: 'Campos de texto preenchidos' },
+    { l: 'Respostas abertas', v: capInt(abertas.length) },
     { l: 'Respostas com temas', v: capInt(resp.filter(r => r.temas_futuros).length), n: capPct(resp.filter(r => r.temas_futuros).length, resp.length) + ' dos respondentes' },
     { l: 'Respostas com comentários', v: capInt(resp.filter(r => r.comentarios).length), n: capPct(resp.filter(r => r.comentarios).length, resp.length) + ' dos respondentes' }
   ]);
 
-  capSetTxt('capS616CanaisBase', 'Base dos percentuais: ' + capInt(resp.length) + ' respondente(s) no recorte; ' + capInt(resp.filter(r => r.canais.length).length) + ' informaram ao menos um canal. Múltipla escolha; a soma pode ultrapassar 100%.' + (!resp.some(r => r.canais.length) ? ' Sem canais registrados; isso não comprova que a pergunta não foi aplicada.' : ''));
+  capSetTxt('capS616CanaisBase', 'Base: ' + capInt(resp.length) + ' respondente(s); ' + capInt(resp.filter(r => r.canais.length).length) + ' informaram canal. Múltipla escolha.' + (!resp.some(r => r.canais.length) ? ' Sem canais registrados; isso não comprova que a pergunta não foi aplicada.' : ''));
   const canais = Array.from(resp.reduce((m, r) => { new Set(r.canais).forEach(c => m.set(c, (m.get(c) || 0) + 1)); return m; }, new Map()).entries())
     .sort((a, b) => b[1] - a[1]);
   capGrafico('capChartS616Canais', {
@@ -18594,7 +18568,7 @@ function capRenderStat616() {
     lista.map(a => `<tr><td>${capNum2(a.r.capacitacao)} — ${escHtml(d.capPorNum.get(a.r.capacitacao).polo)}</td><td>${escHtml(a.r.municipio || '—')}</td>
       <td>${escHtml(a.r.cargo)}</td><td>${escHtml(a.tipo.rotulo)}</td><td class="cap-text-cell">${capTextoResposta(a.r[a.tipo.campo])}</td></tr>`),
     'Nenhuma resposta encontrada para os filtros e a busca informados.');
-  capSetTxt('capS616TabelaSub', `${capInt(lista.length)} de ${capInt(filtradas.length)} resposta(s) do tipo selecionado exibida(s); ${capInt(abertas.length)} campos de texto no recorte. A busca afeta somente esta tabela.`);
+  capSetTxt('capS616TabelaSub', `${capInt(lista.length)} de ${capInt(filtradas.length)} resposta(s).`);
 }
 
 // --------------------------------------------------------------------------
@@ -19632,12 +19606,13 @@ async function recarregarDadosExternos() {
       </div>
     </div>
     <div class="pif-body">
-      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.5.2</strong></div>
+      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.5.3</strong></div>
       <div class="pif-row"><span>Data da alteração:</span><span class="pnite-date-val">09/11/2026</span></div>
       <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">14:00</span></div>
       <div class="pif-row"><span>Responsável técnico:</span><span class="pnite-author-val">Equipe PNITE</span></div>
       <div class="pif-note">
         <i class="ti ti-check" style="color:var(--accent);margin-right:3px"></i>
+        <strong>Textos auxiliares da capacitação (v.3.5.3):</strong> removidas descrições, fórmulas e instruções que poluíam os painéis; mantidos dados, bases dos percentuais e avisos que mudam a interpretação.<br>
         <strong>Imagem só do visual (v.3.5.2):</strong> o menu de exportação de cada painel da capacitação oferece "Imagem com informações" (título, recorte e fonte) ou só o gráfico, mapa ou tabela, sem moldura e sem os textos do painel.<br>
         <strong>Polos por capacitação (v.3.5.1):</strong> em Unidades da Federação, "Nº de polos" e a coluna "Polos (capacitações)" contam cada capacitação separadamente, mesmo quando a sede se repete (ex.: as três edições de Aparecida de Goiânia).<br>
         <strong>Exportação da capacitação para todos (v.3.5.0):</strong> os botões de exportação dos painéis e da página de Indicadores da Capacitação passam a aparecer para todos os usuários, sem exigir login ou permissão de download.<br>
@@ -19699,7 +19674,7 @@ async function recarregarDadosExternos() {
   </div>
   <button class="pif-btn" id="pifBtn" aria-label="Informações de Versão">
     <i class="ti ti-info-circle"></i>
-    <span class="pif-btn-label pnite-version-val">v.3.5.2</span>
+    <span class="pif-btn-label pnite-version-val">v.3.5.3</span>
   </button>
 </div>
 
