@@ -2314,16 +2314,15 @@ body {
 @media (max-width: 600px) { .cap-territory-panel { width: 100%; align-self: stretch; } }
 .cap-territory-note { color: var(--text-2); font-size: 12px; line-height: 1.6; margin-bottom: 14px; }
 
-/* v.3.4.9 — Exportação da capacitação (somente para quem tem permissão de download).
+/* v.3.4.9 — Exportação da capacitação; v.3.5.0 — disponível para todos os usuários, sem login.
    Cada painel recebe um botão que aparece ao passar o cursor ou ao receber foco; ele substitui,
    nesta frente, o botão genérico dos gráficos (.pnite-dl-chart), que exporta só o canvas. */
-html.pnite-pode-baixar #frontCapacitacao .pnite-dl-chart { display: none; }
+#frontCapacitacao .pnite-dl-chart, html.pnite-pode-baixar #frontCapacitacao .pnite-dl-chart { display: none; }
 .cap-export-host { position: relative; }
-.cap-export-ui { display: none; position: absolute; top: 8px; right: 8px; z-index: 6; }
-html.pnite-pode-baixar .cap-export-ui { display: block; }
-html.pnite-pode-baixar .cap-export-host > .cap-panel-title:first-of-type,
-html.pnite-pode-baixar .cap-export-host > .cap-map-legend-bar { padding-right: 40px; }
-html.pnite-pode-baixar .cap-export-host > .cap-card-title { padding-inline: 40px; }
+.cap-export-ui { display: block; position: absolute; top: 8px; right: 8px; z-index: 6; }
+.cap-export-host > .cap-panel-title:first-of-type,
+.cap-export-host > .cap-map-legend-bar { padding-right: 40px; }
+.cap-export-host > .cap-card-title { padding-inline: 40px; }
 .cap-export-toggle {
   display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px;
   border-radius: 8px; border: 1px solid var(--border); background-color: var(--bg-card); color: var(--text-2);
@@ -2348,8 +2347,7 @@ html.pnite-pode-baixar .cap-export-host > .cap-card-title { padding-inline: 40px
 .cap-export-menu button:hover, .cap-export-menu button:focus-visible { background-color: var(--bg-active); color: var(--c-blue); }
 .cap-export-menu button[disabled], .cap-export-page-btn[disabled] { opacity: .55; cursor: progress; }
 .cap-export-menu i, .cap-export-page-btn i { font-size: 16px; flex-shrink: 0; }
-.cap-export-page { display: none; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
-html.pnite-pode-baixar .cap-export-page { display: grid; gap: 6px; }
+.cap-export-page { display: grid; gap: 6px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
 .cap-export-page-title { font-size: 12px; font-weight: 700; color: var(--text-1); }
 .cap-export-page-btn { border: 1px solid var(--border); background-color: var(--bg-input); min-height: 40px; }
 .cap-export-page-btn:hover { border-color: var(--c-blue); color: var(--c-blue); }
@@ -2363,9 +2361,9 @@ html.pnite-pode-baixar .cap-export-page { display: grid; gap: 6px; }
 @media (pointer: coarse) {
   .cap-export-toggle { width: 44px; height: 44px; }
   .cap-export-menu button, .cap-export-page-btn { min-height: 44px; }
-  html.pnite-pode-baixar .cap-export-host > .cap-panel-title:first-of-type,
-  html.pnite-pode-baixar .cap-export-host > .cap-map-legend-bar { padding-right: 52px; }
-  html.pnite-pode-baixar .cap-export-host > .cap-card-title { padding-inline: 52px; }
+  .cap-export-host > .cap-panel-title:first-of-type,
+  .cap-export-host > .cap-map-legend-bar { padding-right: 52px; }
+  .cap-export-host > .cap-card-title { padding-inline: 52px; }
 }
 
 /* Organização exclusiva da comparação por UF. */
@@ -8677,7 +8675,7 @@ window.onerror = function(msg, url, line, col, err) {
     <div class="smb-sec">
       <div class="smb-sec-title" data-i18n="settings_info_title">Informações da Versão</div>
       <div style="font-size:12px;color:var(--text-2);display:flex;flex-direction:column;gap:4px;margin-top:6px">
-        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.4.9</b></div>
+        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.5.0</b></div>
         <div><span data-i18n="settings_updated">Última Atualização:</span> <b class="pnite-date-val">06/10/2026</b> às <b class="pnite-time-val">21:05</b></div>
         <div><span data-i18n="settings_author">Responsável Técnico:</span> <b class="pnite-author-val">Equipe PNITE</b></div>
       </div>
@@ -9666,9 +9664,9 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.4.9";
+const PNITE_VERSION = "v.3.5.0";
 const PNITE_LAST_UPDATE = "22/11/2026";
-const PNITE_LAST_TIME = "12:00";
+const PNITE_LAST_TIME = "12:30";
 
 // Escapa texto para inserção segura via innerHTML (entradas do usuário, nomes de arquivo)
 function escHtml(s) {
@@ -16999,8 +16997,9 @@ function capRegistrarEventos() {
 
 // --------------------------------------------------------------------------
 // Exportação (v.3.4.9): cada painel em imagem (PNG) ou planilha (XLSX) e a página ativa inteira.
-// Respeita a permissão de download (PNITE_AUTH.podeBaixar), como as demais frentes. Tudo é gerado
-// no navegador; a imagem usa html2canvas (MIT), carregado do cdnjs somente no primeiro uso.
+// Desde a v.3.5.0 disponível para todos os usuários, com ou sem login (não depende de
+// PNITE_AUTH.podeBaixar). Exporta somente o que a página já exibe; tudo é gerado no navegador e a
+// imagem usa html2canvas (MIT), carregado do cdnjs somente no primeiro uso.
 // --------------------------------------------------------------------------
 const CAP_EXPORT = { lib: null, ocupado: false, seq: 0 };
 const CAP_EXPORT_ALTURA_MAX = 6000; // px CSS: acima disso, tabelas roláveis ficam no trecho visível
@@ -17425,7 +17424,6 @@ function capExportAviso(texto, cls) {
 }
 
 async function capExportExecutar(tipo, alvo, escopo, botao) {
-  if (!PNITE_AUTH.podeBaixar()) { pniteAuthBotao(); return; }
   if (CAP_EXPORT.ocupado) { capExportAviso('Aguarde a conclusão da exportação em andamento.'); return; }
   if (!alvo || !capDados()) { capExportAviso('Aguarde o carregamento dos dados das capacitações.', 'err'); return; }
   const titulo = capExportTitulo(alvo);
@@ -19597,12 +19595,13 @@ async function recarregarDadosExternos() {
       </div>
     </div>
     <div class="pif-body">
-      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.4.9</strong></div>
+      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.5.0</strong></div>
       <div class="pif-row"><span>Data da alteração:</span><span class="pnite-date-val">09/11/2026</span></div>
       <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">14:00</span></div>
       <div class="pif-row"><span>Responsável técnico:</span><span class="pnite-author-val">Equipe PNITE</span></div>
       <div class="pif-note">
         <i class="ti ti-check" style="color:var(--accent);margin-right:3px"></i>
+        <strong>Exportação da capacitação para todos (v.3.5.0):</strong> os botões de exportação dos painéis e da página de Indicadores da Capacitação passam a aparecer para todos os usuários, sem exigir login ou permissão de download.<br>
         <strong>Exportação da capacitação (v.3.4.9):</strong> cada painel (gráficos, tabelas, mapas e cartões) ganha um botão, visível ao passar o cursor, para baixar imagem (PNG) com título, recorte e fonte, ou planilha (XLSX) com os dados e os filtros aplicados; a página ativa também pode ser exportada inteira. Disponível para usuários com permissão de download.<br>
         <strong>Mapa da capacitação (v.3.4.8):</strong> removidos os dois textos auxiliares indicados acima do mapa.<br>
         <strong>Mapa da Home (v.3.4.7):</strong> removida a nota explicativa acima do mapa.<br>
@@ -19661,7 +19660,7 @@ async function recarregarDadosExternos() {
   </div>
   <button class="pif-btn" id="pifBtn" aria-label="Informações de Versão">
     <i class="ti ti-info-circle"></i>
-    <span class="pif-btn-label pnite-version-val">v.3.4.9</span>
+    <span class="pif-btn-label pnite-version-val">v.3.5.0</span>
   </button>
 </div>
 
