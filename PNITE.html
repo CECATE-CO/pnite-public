@@ -2275,6 +2275,21 @@ body {
   font-size: 12px;
   font-family: inherit;
 }
+/* Busca de município (combobox): campo com lupa e lista filtrada; o <select> oculto guarda o valor. */
+.cap-combo-box { position: relative; min-width: 0; }
+.cap-combo-box > .ti-search { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); font-size: 16px; color: var(--text-3); pointer-events: none; }
+.cap-field input[type="search"].cap-combo-input { padding-left: 34px; min-height: 44px; }
+.cap-combo-lista {
+  position: absolute; top: calc(100% + 4px); left: 0; right: 0; z-index: 30; max-height: 300px; overflow-y: auto;
+  margin: 0; padding: 4px; list-style: none; background-color: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 10px; box-shadow: 0 8px 24px rgba(0, 0, 0, .14);
+}
+.cap-combo-lista[hidden] { display: none; }
+.cap-combo-lista li { padding: 9px 12px; border-radius: 7px; font-size: 12.5px; color: var(--text-1); cursor: pointer; overflow-wrap: anywhere; }
+.cap-combo-lista li:hover, .cap-combo-lista li.ativo { background-color: var(--cap-acento-suave); color: var(--cap-tinta); }
+.cap-combo-lista li[aria-selected="true"] { font-weight: 600; }
+.cap-combo-lista .cap-combo-vazio { color: var(--text-3); cursor: default; }
+.cap-combo-lista .cap-combo-vazio:hover { background-color: transparent; color: var(--text-3); }
 .cap-field select:focus-visible,
 .cap-field input[type="search"]:focus-visible {
   outline: 2px solid var(--accent);
@@ -7145,9 +7160,14 @@ window.onerror = function(msg, url, line, col, err) {
               <label for="capCapSel">Capacitação</label>
               <select id="capCapSel" data-cap-filter></select>
             </div>
-            <div class="cap-field cap-field-wide">
-              <label for="capCapMun">Município</label>
-              <select id="capCapMun" data-cap-filter></select>
+            <div class="cap-field cap-field-wide cap-combo" data-cap-combo="capCapMun">
+              <label for="capCapMunBusca">Município</label>
+              <div class="cap-combo-box">
+                <i class="ti ti-search" aria-hidden="true"></i>
+                <input type="search" id="capCapMunBusca" class="cap-combo-input" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="capCapMunLista" placeholder="Todos os municípios — digite para buscar" autocomplete="off" spellcheck="false">
+                <ul class="cap-combo-lista" id="capCapMunLista" role="listbox" aria-label="Municípios encontrados" hidden></ul>
+              </div>
+              <select id="capCapMun" data-cap-filter hidden aria-hidden="true" tabindex="-1"></select>
             </div>
           </div>
           <div class="cap-event-scope cap-home-scope">
@@ -8697,7 +8717,7 @@ window.onerror = function(msg, url, line, col, err) {
     <div class="smb-sec">
       <div class="smb-sec-title" data-i18n="settings_info_title">Informações da Versão</div>
       <div style="font-size:12px;color:var(--text-2);display:flex;flex-direction:column;gap:4px;margin-top:6px">
-        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.5.5</b></div>
+        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.5.6</b></div>
         <div><span data-i18n="settings_updated">Última Atualização:</span> <b class="pnite-date-val">06/10/2026</b> às <b class="pnite-time-val">21:05</b></div>
         <div><span data-i18n="settings_author">Responsável Técnico:</span> <b class="pnite-author-val">Equipe PNITE</b></div>
       </div>
@@ -9686,9 +9706,9 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.5.5";
+const PNITE_VERSION = "v.3.5.6";
 const PNITE_LAST_UPDATE = "22/11/2026";
-const PNITE_LAST_TIME = "16:00";
+const PNITE_LAST_TIME = "17:00";
 
 // Escapa texto para inserção segura via innerHTML (entradas do usuário, nomes de arquivo)
 function escHtml(s) {
@@ -17015,6 +17035,108 @@ function capRegistrarEventos() {
     cont.addEventListener('mouseleave', capMapOut);
   });
   capExportRegistrar();
+  capComboRegistrar();
+}
+
+// --------------------------------------------------------------------------
+// Busca de município com lupa (combobox acessível). O <select> oculto, indicado em
+// data-cap-combo, continua sendo a fonte do valor: os filtros e o mapa não mudam.
+// --------------------------------------------------------------------------
+const CAP_COMBO_MAX = 60;
+
+function capComboPartes(el) {
+  const raiz = el && el.closest && el.closest('[data-cap-combo]');
+  if (!raiz) return null;
+  return { raiz, input: raiz.querySelector('.cap-combo-input'), lista: raiz.querySelector('.cap-combo-lista'), select: document.getElementById(raiz.getAttribute('data-cap-combo')) };
+}
+
+// Mostra no campo o município selecionado (vazio = todos), sem atrapalhar quem está digitando.
+function capComboSincronizar(selectId) {
+  const raiz = document.querySelector('[data-cap-combo="' + selectId + '"]');
+  const p = capComboPartes(raiz);
+  if (!p || document.activeElement === p.input) return;
+  const op = p.select.selectedOptions[0];
+  p.input.value = op && op.value ? op.text : '';
+}
+
+function capComboFechar(p, restaurar) {
+  p.lista.hidden = true;
+  p.input.setAttribute('aria-expanded', 'false');
+  p.input.removeAttribute('aria-activedescendant');
+  if (restaurar) { const op = p.select.selectedOptions[0]; p.input.value = op && op.value ? op.text : ''; }
+}
+
+function capComboAbrir(p) {
+  const termo = capNormTxt(p.input.value.trim());
+  const atual = p.select.value;
+  const opcoes = Array.from(p.select.options).filter(o => o.value && (!termo || capNormTxt(o.text).includes(termo)));
+  const itens = (termo ? [] : [{ v: '', t: p.select.options[0] ? p.select.options[0].text : 'Todos' }])
+    .concat(opcoes.slice(0, CAP_COMBO_MAX).map(o => ({ v: o.value, t: o.text })));
+  const idBase = p.lista.id + '-op';
+  p.lista.innerHTML = itens.length
+    ? itens.map((it, i) => '<li role="option" id="' + idBase + i + '" data-v="' + escHtml(it.v) + '" aria-selected="' + (it.v === atual) + '">' + escHtml(it.t) + '</li>').join('')
+      + (opcoes.length > CAP_COMBO_MAX ? '<li class="cap-combo-vazio" role="presentation">Continue digitando para ver mais ' + capInt(opcoes.length - CAP_COMBO_MAX) + ' município(s)</li>' : '')
+    : '<li class="cap-combo-vazio" role="presentation">Nenhum município encontrado</li>';
+  p.lista.hidden = false;
+  p.input.setAttribute('aria-expanded', 'true');
+  p.input.removeAttribute('aria-activedescendant');
+}
+
+function capComboEscolher(p, valor) {
+  p.select.value = valor;
+  capComboFechar(p, true);
+  // O evento change aciona o filtro registrado em capRegistrarEventos ([data-cap-filter]).
+  p.select.dispatchEvent(new Event('change', { bubbles: true }));
+}
+
+function capComboRegistrar() {
+  document.addEventListener('input', e => {
+    const p = e.target.classList && e.target.classList.contains('cap-combo-input') ? capComboPartes(e.target) : null;
+    if (p) capComboAbrir(p);
+  });
+  document.addEventListener('focusin', e => {
+    const p = e.target.classList && e.target.classList.contains('cap-combo-input') ? capComboPartes(e.target) : null;
+    if (p) { p.input.select(); capComboAbrir(p); }
+  });
+  document.addEventListener('focusout', e => {
+    const p = e.target.classList && e.target.classList.contains('cap-combo-input') ? capComboPartes(e.target) : null;
+    if (p) setTimeout(() => { if (document.activeElement !== p.input) capComboFechar(p, true); }, 120);
+  });
+  document.addEventListener('mousedown', e => {
+    const li = e.target.closest && e.target.closest('.cap-combo-lista li[role="option"]');
+    const p = li ? capComboPartes(li) : null;
+    if (p) { e.preventDefault(); capComboEscolher(p, li.getAttribute('data-v')); }
+  });
+  document.addEventListener('keydown', e => {
+    const p = e.target.classList && e.target.classList.contains('cap-combo-input') ? capComboPartes(e.target) : null;
+    if (!p) return;
+    const itens = Array.from(p.lista.querySelectorAll('li[role="option"]'));
+    let i = itens.findIndex(li => li.classList.contains('ativo'));
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (p.lista.hidden) capComboAbrir(p);
+      const lista = Array.from(p.lista.querySelectorAll('li[role="option"]'));
+      if (!lista.length) return;
+      i = e.key === 'ArrowDown' ? Math.min(lista.length - 1, i + 1) : Math.max(0, i - 1);
+      lista.forEach((li, j) => li.classList.toggle('ativo', j === i));
+      p.input.setAttribute('aria-activedescendant', lista[i].id);
+      lista[i].scrollIntoView({ block: 'nearest' });
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (i >= 0) capComboEscolher(p, itens[i].getAttribute('data-v'));
+      else if (!p.input.value.trim()) capComboEscolher(p, '');
+      else if (itens.length === 1) capComboEscolher(p, itens[0].getAttribute('data-v'));
+    } else if (e.key === 'Escape' && !p.lista.hidden) {
+      e.preventDefault();
+      e.stopPropagation();
+      capComboFechar(p, true);
+    }
+  });
+  // Botão "x" do campo de busca: limpa o filtro de município.
+  document.addEventListener('search', e => {
+    const p = e.target.classList && e.target.classList.contains('cap-combo-input') ? capComboPartes(e.target) : null;
+    if (p && !p.input.value && p.select.value) capComboEscolher(p, '');
+  }, true);
 }
 
 // --------------------------------------------------------------------------
@@ -18057,16 +18179,30 @@ function capRenderCapacitacoes() {
     .sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'))
     .map(r => ({ v: r.cod_ibge, t: `${r.nome} (${r.uf})` }));
   capPreencherSelect('capCapMun', [{ v: '', t: 'Todos os municípios' }].concat(munOpcoes));
+  capComboSincronizar('capCapMun');
   const mun = capVal('capCapMun');
   const rows = rowsCap.filter(r => !mun || r.cod_ibge === mun);
   const s = capResumo(rows);
   const semMun = mun ? 0 : (sel ? (d.semMunicipio[sel] || 0) : Object.values(d.semMunicipio).reduce((a, b) => a + b, 0));
   const datas = d.caps.map(x => x.data_inicio).sort();
 
-  const kpis = [
-    { l: 'Capacitação', v: c ? capNum2(c.numero) + 'ª' : 'Todas', n: c ? `Polo ${c.polo} (${c.uf})` : `${d.caps.length} capacitações` },
-    { l: 'Data', v: c ? capPeriodo(c) : capData(datas[0]) + ' a ' + capData(d.caps.map(x => x.data_fim).sort().pop()), texto: true, n: c ? 'Semestre ' + c.semestre : '' }
-  ];
+  // Município específico em "Todas": cartões mostram as capacitações em que ele teve presença.
+  const listaPt = itens => itens.length > 1 ? itens.slice(0, -1).join(', ') + ' e ' + itens[itens.length - 1] : (itens[0] || '');
+  let cartaoCap, cartaoData;
+  if (!c && mun) {
+    const foi = Array.from(new Set(rows.filter(r => r.presentes_total > 0).map(r => r.capacitacao))).sort((a, b) => a - b).map(n => d.capPorNum.get(n));
+    const convidadas = Array.from(new Set(rows.filter(r => r.convidado).map(r => r.capacitacao))).sort((a, b) => a - b);
+    cartaoCap = foi.length
+      ? { l: foi.length > 1 ? 'Capacitações do município' : 'Capacitação do município', v: listaPt(foi.map(x => capNum2(x.numero) + 'ª')), texto: foi.length > 2,
+          n: 'Polo' + (foi.length > 1 ? 's' : '') + ': ' + Array.from(new Set(foi.map(x => x.polo + ' (' + x.uf + ')'))).join(' · ') }
+      : { l: 'Capacitação do município', v: 'Nenhuma', n: convidadas.length ? 'Convidado para a ' + listaPt(convidadas.map(n => capNum2(n) + 'ª')) + ', sem presença registrada' : 'Sem presença registrada' };
+    cartaoData = { l: foi.length > 1 ? 'Datas' : 'Data', v: foi.length ? foi.map(capPeriodo).join(' · ') : '—', texto: true,
+      n: foi.length ? Array.from(new Set(foi.map(x => 'Semestre ' + x.semestre))).join(' · ') : '' };
+  } else {
+    cartaoCap = { l: 'Capacitação', v: c ? capNum2(c.numero) + 'ª' : 'Todas', n: c ? `Polo ${c.polo} (${c.uf})` : `${d.caps.length} capacitações` };
+    cartaoData = { l: 'Data', v: c ? capPeriodo(c) : capData(datas[0]) + ' a ' + capData(d.caps.map(x => x.data_fim).sort().pop()), texto: true, n: c ? 'Semestre ' + c.semestre : '' };
+  }
+  const kpis = [cartaoCap, cartaoData];
   if (c) kpis.push({ l: 'Local', v: c.local || '—', texto: true });
   kpis.push(
     { l: 'Municípios convidados', v: capInt(rows.length ? s.convidados : null) },
@@ -19747,12 +19883,13 @@ async function recarregarDadosExternos() {
       </div>
     </div>
     <div class="pif-body">
-      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.5.5</strong></div>
+      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.5.6</strong></div>
       <div class="pif-row"><span>Data da alteração:</span><span class="pnite-date-val">09/11/2026</span></div>
       <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">14:00</span></div>
       <div class="pif-row"><span>Responsável técnico:</span><span class="pnite-author-val">Equipe PNITE</span></div>
       <div class="pif-note">
         <i class="ti ti-check" style="color:var(--accent);margin-right:3px"></i>
+        <strong>Busca de município (v.3.5.6):</strong> na página Capacitações, o município é escolhido por um campo de busca com lupa; com um município selecionado, o cartão Capacitação mostra as capacitações em que ele teve presença.<br>
         <strong>Mapa do Brasil na capacitação (v.3.5.5):</strong> a opção "Todos os atendimentos" passa a se chamar "Brasil" e, com ela (e com "Outros"), o mapa mostra o Brasil inteiro com todos os municípios alcançados pelo CECATE-CO.<br>
         <strong>Design da capacitação (v.3.5.4):</strong> padrão visual único (cartões, raios, bordas, sombras e tipografia), acento amarelo do ônibus escolar com azul-marinho, novas cores dos gráficos validadas para daltonismo e mapa em fundo "papel" com versão própria no modo escuro.<br>
         <strong>Textos auxiliares da capacitação (v.3.5.3):</strong> removidas descrições, fórmulas e instruções que poluíam os painéis; mantidos dados, bases dos percentuais e avisos que mudam a interpretação.<br>
@@ -19817,7 +19954,7 @@ async function recarregarDadosExternos() {
   </div>
   <button class="pif-btn" id="pifBtn" aria-label="Informações de Versão">
     <i class="ti ti-info-circle"></i>
-    <span class="pif-btn-label pnite-version-val">v.3.5.5</span>
+    <span class="pif-btn-label pnite-version-val">v.3.5.6</span>
   </button>
 </div>
 
