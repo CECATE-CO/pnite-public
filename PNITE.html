@@ -1559,12 +1559,12 @@ body {
   top: 76px;
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: 16px;
+  border-radius: var(--cap-raio);
   padding: 16px 12px;
   display: flex;
   flex-direction: column;
   gap: 12px;
-  box-shadow: var(--shadow);
+  box-shadow: var(--cap-sombra);
   max-height: calc(100vh - 96px);
   overflow-y: auto;
 }
@@ -1582,15 +1582,15 @@ body {
   gap: 10px;
   padding: 11px 12px;
   border-radius: 8px;
-  border: 1.5px solid var(--border);
-  background: var(--bg-card);
+  border: 1px solid transparent;
+  background-color: transparent;
   color: var(--text-2);
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 600;
   text-transform: uppercase;
   text-align: left;
   cursor: pointer;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.05em;
   line-height: 1.25;
   transition: all 0.15s ease;
 }
@@ -1599,22 +1599,16 @@ body {
   flex-shrink: 0;
 }
 .cap-nav-btn:hover {
-  background: var(--bg-hover);
-  color: var(--accent-dark);
-  border-color: var(--accent);
-}
-.cap-nav-btn.active {
-  border: 2px solid var(--text-1);
-  background: var(--bg-card);
+  background-color: var(--bg-hover);
   color: var(--text-1);
-  font-weight: 800;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
 }
-[data-theme="dark"] .cap-nav-btn.active {
-  border-color: #ffffff;
-  background: #282828;
-  color: #ffffff;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+.cap-nav-btn:focus-visible { outline: 2px solid var(--cap-acento-linha); outline-offset: 2px; }
+/* Página ativa: faixa amarela à esquerda (cor do ônibus escolar) e fundo suave */
+.cap-nav-btn.active {
+  background-color: var(--cap-acento-suave);
+  color: var(--cap-tinta);
+  font-weight: 700;
+  box-shadow: inset 3px 0 0 var(--cap-acento);
 }
 
 /* LOGOS RODAPÉ DA SIDEBAR */
@@ -1685,12 +1679,12 @@ body {
 #capS15Bases { margin-bottom: 14px; }
 
 /* Duas páginas por faixa, com avaliação e estatísticas em abas internas. */
-.cap-evaluation-tabs { display: flex; gap: 8px; margin-bottom: 20px; padding: 6px; border: 1px solid var(--border); border-radius: 12px; background-color: var(--bg-card); }
+.cap-evaluation-tabs { display: flex; gap: 6px; margin-bottom: 20px; padding: 4px; border: 1px solid var(--border); border-radius: var(--cap-raio); background-color: var(--bg-card); box-shadow: var(--cap-sombra); }
 .cap-evaluation-tabs [role="tab"] { flex: 1; min-width: 0; min-height: 44px; padding: 10px 16px; border: 1px solid transparent; border-radius: 8px; background-color: transparent; color: var(--text-2); font: inherit; font-weight: 600; cursor: pointer; }
-.cap-evaluation-tabs [aria-selected="true"] { background-color: var(--bg-active); color: var(--text-1); border-color: var(--accent); }
+.cap-evaluation-tabs [aria-selected="true"] { background-color: var(--cap-acento-suave); color: var(--cap-tinta); border-color: var(--cap-acento); }
 .cap-evaluation-tabs [role="tab"]:focus-visible, .cap-evaluation-panel:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .cap-evaluation-panel[hidden] { display: none; }
-.cap-evaluation-panel > .cap-page-head h3 { font-size: 19px; color: var(--text-1); margin-bottom: 6px; }
+.cap-evaluation-panel > .cap-page-head h3 { font-size: 18px; font-weight: 600; color: var(--text-1); margin-bottom: 6px; }
 .cap-evaluation-panel > .cap-page-head .cap-home-title-bar { display: none; }
 
 /* CABEÇALHO DO RELATÓRIO HOME & FILTROS */
@@ -1702,28 +1696,28 @@ body {
   margin-bottom: 22px;
 }
 .cap-home-title {
-  font-size: 26px;
-  font-weight: 800;
+  font-size: 24px;
+  font-weight: 700;
   color: var(--text-1);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
   margin-bottom: 6px;
 }
 .cap-home-title-bar {
-  width: 160px;
-  height: 4px;
-  background: #e8990a;
+  width: 56px;
+  height: 3px;
+  background-color: var(--cap-acento);
   border-radius: 2px;
   margin-bottom: 14px;
 }
 .cap-info-banner {
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: var(--cap-raio);
   padding: 14px 18px;
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  box-shadow: var(--shadow);
+  box-shadow: var(--cap-sombra);
 }
 .cap-info-icon {
   font-size: 22px;
@@ -1741,24 +1735,24 @@ body {
 .cap-filter-panel {
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 14px 16px;
-  box-shadow: var(--shadow);
+  border-radius: var(--cap-raio);
+  padding: 16px 18px;
+  box-shadow: var(--cap-sombra);
 }
 .cap-filter-header {
   display: flex;
   align-items: center;
   gap: 8px;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--text-1);
   margin-bottom: 12px;
   position: relative;
 }
 .cap-filter-bar {
   flex: 1;
-  height: 2px;
-  background: #e8990a;
+  height: 1px;
+  background-color: var(--border);
   border-radius: 1px;
   margin-left: 6px;
 }
@@ -1830,23 +1824,20 @@ body {
   gap: 16px;
 }
 
-/* CARDS DE PERFIL (MOLDURA AZUL SUAVE) */
+/* CARDS DE PERFIL (mesmo modelo dos demais cartões) */
 .cap-profile-card {
   background: var(--bg-card);
-  border: 1.5px solid #5b9bd5;
-  border-radius: 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--cap-raio);
   padding: 16px 18px;
-  box-shadow: var(--shadow);
-}
-[data-theme="dark"] .cap-profile-card {
-  border-color: #3b74ad;
+  box-shadow: var(--cap-sombra);
 }
 .cap-card-title {
   text-align: center;
-  font-size: 12.5px;
-  font-weight: 700;
+  font-size: 11px;
+  font-weight: 600;
   color: var(--text-2);
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
   margin-bottom: 12px;
 }
 .cap-main-kpi {
@@ -1855,8 +1846,9 @@ body {
 }
 .cap-kpi-num {
   display: block;
-  font-size: 32px;
-  font-weight: 800;
+  font-size: 30px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
   color: var(--text-1);
   line-height: 1.1;
 }
@@ -1880,7 +1872,8 @@ body {
 .cap-sub-num {
   display: block;
   font-size: 20px;
-  font-weight: 700;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
   color: var(--text-1);
   line-height: 1.1;
 }
@@ -1900,8 +1893,8 @@ body {
 }
 .cap-coverage-ring {
   position: relative;
-  width: 176px;
-  height: 176px;
+  width: 150px;
+  height: 150px;
   max-width: 100%;
   margin: 0 auto;
 }
@@ -1918,14 +1911,15 @@ body {
 }
 .cap-coverage-center strong {
   color: var(--text-1);
-  font-size: 30px;
+  font-size: 24px;
+  font-weight: 600;
   line-height: 1.2;
 }
 .cap-coverage-summary {
   color: var(--text-1);
-  font-size: 18px;
-  font-weight: 700;
-  line-height: 1.45;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.6;
   margin-bottom: 8px;
 }
 .cap-coverage-note {
@@ -1943,12 +1937,12 @@ body {
 .cap-sliders-card {
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 14px 16px;
+  border-radius: var(--cap-raio);
+  padding: 16px 18px;
   display: flex;
   flex-direction: column;
   gap: 14px;
-  box-shadow: var(--shadow);
+  box-shadow: var(--cap-sombra);
 }
 .cap-slider-item {
   display: flex;
@@ -1976,7 +1970,7 @@ body {
   flex-shrink: 0;
   padding: 0 4px;
   height: 24px;
-  border-radius: 4px;
+  border-radius: 6px;
   border: 1px solid var(--border);
   background: var(--bg-input);
   display: flex;
@@ -1990,40 +1984,62 @@ body {
   flex: 1;
   min-width: 0;
   max-width: 100%;
-  accent-color: #e8990a;
+  accent-color: var(--cap-acento-linha);
   cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 20px;
+  background-color: transparent;
 }
+/* Trilho fino neutro e marcador amarelo (ônibus escolar) com anel, nos dois temas */
+.cap-slider-inputs input[type="range"]::-webkit-slider-runnable-track { height: 4px; border-radius: 2px; background-color: var(--border-mid); }
+.cap-slider-inputs input[type="range"]::-moz-range-track { height: 4px; border-radius: 2px; background-color: var(--border-mid); }
+.cap-slider-inputs input[type="range"]::-moz-range-progress { height: 4px; border-radius: 2px; background-color: var(--cap-acento); }
+.cap-slider-inputs input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none; width: 16px; height: 16px; margin-top: -6px; border-radius: 50%;
+  background-color: var(--cap-acento); border: 2px solid var(--bg-card); box-shadow: 0 0 0 1px var(--cap-acento-linha);
+}
+.cap-slider-inputs input[type="range"]::-moz-range-thumb {
+  width: 14px; height: 14px; border-radius: 50%;
+  background-color: var(--cap-acento); border: 2px solid var(--bg-card); box-shadow: 0 0 0 1px var(--cap-acento-linha);
+}
+.cap-slider-inputs input[type="range"]:focus-visible { outline: 2px solid var(--cap-acento-linha); outline-offset: 2px; border-radius: 4px; }
 
-/* CARD DO MAPA (MOLDURA VERDE-LIMÃO DESTACADA) */
+/* CARD DO MAPA (fundo "papel", mesmo contorno dos demais cartões) */
 .cap-map-wrapper {
   width: 100%;
   min-width: 0;
 }
 .cap-map-modes {
-  display: flex;
+  display: inline-flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 4px;
   margin-bottom: 10px;
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background-color: var(--bg-card);
 }
 .cap-map-mode {
-  min-height: 44px;
-  padding: 9px 16px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background-color: var(--bg-card);
+  min-height: 40px;
+  padding: 8px 16px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  background-color: transparent;
   color: var(--text-2);
   font: inherit;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
 }
+.cap-map-mode:hover { color: var(--text-1); }
 .cap-map-mode[aria-pressed="true"] {
-  border-color: var(--c-blue);
-  background-color: var(--bg-badge);
-  color: var(--text-1);
+  border-color: var(--cap-acento);
+  background-color: var(--cap-acento-suave);
+  color: var(--cap-tinta);
 }
 .cap-map-mode:focus-visible {
-  outline: 2px solid var(--c-blue);
+  outline: 2px solid var(--cap-acento-linha);
   outline-offset: 3px;
 }
 .cap-polos-legend {
@@ -2032,9 +2048,8 @@ body {
   gap: 8px 14px;
   padding: 12px 8px;
   font-size: 11.5px;
-  color: #1a201c;
+  color: var(--text-1);
 }
-[data-theme="dark"] .cap-polos-legend { color: #f0fdf4; }
 .cap-polos-legend[hidden], .cap-map-legend-bar[hidden] { display: none; }
 .cap-polo-entry {
   display: flex;
@@ -2047,7 +2062,7 @@ body {
   width: 14px;
   height: 14px;
   flex-shrink: 0;
-  border: 1px solid #34473b;
+  border: 1px solid var(--border-mid);
   border-radius: 3px;
   background-color: var(--cap-polo-cor);
 }
@@ -2055,17 +2070,13 @@ body {
   background-image: repeating-linear-gradient(135deg, #4477aa 0 4px, #eeaa33 4px 8px, #aa4499 8px 12px);
 }
 .cap-map-card {
-  border: 3.5px solid #ccdf2b;
-  border-radius: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--cap-raio);
   padding: 12px;
-  background: #e2ede0;
-  box-shadow: var(--shadow);
+  background-color: var(--cap-map-fundo);
+  box-shadow: var(--cap-sombra);
   position: relative;
   overflow: hidden;
-}
-[data-theme="dark"] .cap-map-card {
-  border-color: #b5d424;
-  background: #17241b;
 }
 .cap-map-legend-bar {
   display: flex;
@@ -2073,11 +2084,8 @@ body {
   gap: 14px;
   padding: 4px 8px 8px;
   font-size: 12px;
-  font-weight: 700;
-  color: #1a201c;
-}
-[data-theme="dark"] .cap-map-legend-bar {
-  color: #f0fdf4;
+  font-weight: 600;
+  color: var(--text-1);
 }
 .cap-legend-tags {
   display: flex;
@@ -2089,15 +2097,15 @@ body {
   align-items: center;
   gap: 5px;
   font-size: 11.5px;
-  font-weight: 700;
+  font-weight: 500;
 }
 .cap-dot {
   width: 9px;
   height: 9px;
   border-radius: 50%;
 }
-.dot-nao { background: #2f3e36; }
-.dot-sim { background: #d8eb26; }
+.dot-nao { background-color: var(--cap-map-nao); }
+.dot-sim { background-color: var(--cap-map-sim); }
 .cap-svg-container {
   width: 100%;
   min-height: 520px;
@@ -2106,6 +2114,7 @@ body {
   justify-content: center;
   position: relative;
 }
+.cap-svg-container:has(svg) { min-height: 0; } /* espaço reservado só enquanto o mapa carrega */
 .cap-svg-container svg {
   width: 100%;
   height: auto;
@@ -2117,11 +2126,8 @@ body {
   justify-content: space-between;
   align-items: center;
   font-size: 10px;
-  color: #556b59;
+  color: var(--text-3);
   padding: 6px 8px 2px;
-}
-[data-theme="dark"] .cap-map-watermarks {
-  color: #7b9980;
 }
 .cap-map-tooltip {
   position: absolute;
@@ -2138,29 +2144,67 @@ body {
   line-height: 1.4;
 }
 
-/* PALETA DOS GRÁFICOS DA CAPACITAÇÃO (validada para daltonismo nos dois temas)
-   Público: Gestores (azul) e CACS (laranja); escalas de avaliação divergentes vermelho ↔ azul com cinza neutro */
+/* v.3.5.4 — DESIGN SYSTEM DA CAPACITAÇÃO: clássico e fino, com as cores do transporte escolar.
+   Acento: amarelo do ônibus escolar; tinta: azul-marinho (asfalto e sinalização); neutros "papel".
+   Séries dos gráficos validadas (daltonismo, luminosidade e contraste) nos dois temas:
+   Gestores (marinho) e CACS (âmbar); escalas de avaliação divergentes vermelho ↔ azul com cinza neutro. */
 :root {
-  --cap-gest: #2a78d6;
-  --cap-cacs: #eb6834;
+  --cap-acento: #f2b705;
+  --cap-acento-linha: #d99a00;
+  --cap-acento-suave: #fff6d9;
+  --cap-tinta: #1f3a5f;
+  --cap-raio: 12px;
+  --cap-sombra: 0 1px 2px rgba(16, 24, 40, .05), 0 1px 3px rgba(16, 24, 40, .04);
+  --cap-gest: #2f62ad;
+  --cap-cacs: #b88208;
   --cap-outros: #8e95a3;
-  --cap-unica: #4a3aa7;
-  --cap-serie-2: #1baf7a;
+  --cap-unica: #2f62ad;
+  --cap-serie-2: #2e8a63;
   --cap-lk-1: #b3261e;
   --cap-lk-2: #ee7d5a;
   --cap-lk-3: #dedcd6;
   --cap-lk-4: #7fb0ee;
   --cap-lk-5: #1c5cab;
-  --cap-map-sim: #d8eb26;
-  --cap-map-nao: #2f3e36;
-  --cap-map-fora: #82a187;
+  --cap-map-sim: #f2b705;
+  --cap-map-nao: #3e5570;
+  --cap-map-fora: #c8ccd2;
+  --cap-map-fundo: #f3f0e8;
+  --cap-map-terra: #e2ddd1;
+  --cap-map-vizinho: #e8e3d8;
+  --cap-map-vizinho-borda: #c9c1b0;
+  --cap-map-rotulo: #8e8572;
+  --cap-map-rotulo-forte: #6e6655;
+  --cap-map-mun-borda: #26364a;
+  --cap-map-limite: #1c2b3d;
+  --cap-map-rotulo-uf: #13202f;
+  --cap-map-polo: #c62828;
+  --cap-map-polo-anel: #ffffff;
 }
 [data-theme="dark"] {
-  --cap-gest: #3987e5;
-  --cap-cacs: #d95926;
+  --cap-acento: #f2b705;
+  --cap-acento-linha: #f2b705;
+  --cap-acento-suave: rgba(242, 183, 5, .13);
+  --cap-tinta: #f3d27a;
+  --cap-sombra: 0 1px 2px rgba(0, 0, 0, .35);
+  --cap-gest: #4f86d1;
+  --cap-cacs: #b98316;
   --cap-outros: #8a8984;
-  --cap-unica: #9085e9;
-  --cap-serie-2: #199e70;
+  --cap-unica: #4f86d1;
+  --cap-serie-2: #3f9a74;
+  --cap-map-sim: #e6aa05;
+  --cap-map-nao: #6c84a6;
+  --cap-map-fora: #4a5468;
+  --cap-map-fundo: #161c26;
+  --cap-map-terra: #222a37;
+  --cap-map-vizinho: #252e3c;
+  --cap-map-vizinho-borda: #384356;
+  --cap-map-rotulo: #7d889b;
+  --cap-map-rotulo-forte: #a2acbd;
+  --cap-map-mun-borda: #0b1017;
+  --cap-map-limite: #dce3ee;
+  --cap-map-rotulo-uf: #eef2f8;
+  --cap-map-polo: #ff6b5b;
+  --cap-map-polo-anel: #161c26;
   --cap-lk-1: #f28b82;
   --cap-lk-2: #c0392b;
   --cap-lk-3: #8a8984;
@@ -2173,10 +2217,10 @@ body {
   margin-bottom: 16px;
 }
 .cap-page-head h2 {
-  font-size: 24px;
-  font-weight: 800;
+  font-size: 22px;
+  font-weight: 700;
   color: var(--text-1);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
   margin-bottom: 4px;
 }
 .cap-page-head p {
@@ -2197,10 +2241,10 @@ body {
   align-items: flex-end;
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 12px 14px;
+  border-radius: var(--cap-raio);
+  padding: 14px 16px;
   margin-bottom: 16px;
-  box-shadow: var(--shadow);
+  box-shadow: var(--cap-sombra);
 }
 .cap-field {
   display: flex;
@@ -2247,9 +2291,9 @@ body {
 .cap-kpi {
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 12px 14px;
-  box-shadow: var(--shadow);
+  border-radius: var(--cap-raio);
+  padding: 14px 16px;
+  box-shadow: var(--cap-sombra);
   min-width: 0;
 }
 .cap-kpi-label {
@@ -2258,13 +2302,14 @@ body {
   font-weight: 600;
   color: var(--text-2);
   text-transform: uppercase;
-  letter-spacing: 0.03em;
-  margin-bottom: 4px;
+  letter-spacing: 0.06em;
+  margin-bottom: 6px;
 }
 .cap-kpi-value {
   display: block;
   font-size: 22px;
-  font-weight: 800;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
   color: var(--text-1);
   line-height: 1.15;
   overflow-wrap: anywhere;
@@ -2284,7 +2329,7 @@ body {
 #capCapEvento { grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); }
 #capCapKpis { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 #capCapParticipacao { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 12px; }
-#capSubCapacitacoes .cap-event-scope { margin: 0 0 16px; padding: 12px 14px; border: 1px solid var(--border); border-radius: 12px; background-color: var(--bg-card); }
+#capSubCapacitacoes .cap-event-scope { margin: 0 0 16px; padding: 12px 16px; border: 1px solid var(--border); border-radius: var(--cap-raio); background-color: var(--bg-card); box-shadow: var(--cap-sombra); }
 #capSubCapacitacoes .cap-event-public-chart { height: 240px; max-width: 360px; margin: 0 auto 14px; }
 .cap-event-public-summary { display: grid; gap: 6px; margin-bottom: 20px; color: var(--text-2); font-size: 12px; }
 .cap-event-public-summary p { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; }
@@ -2305,7 +2350,7 @@ body {
 @media (max-width: 420px) { #capCapKpis { grid-template-columns: minmax(0, 1fr); } }
 
 /* Escopo territorial comum; a origem municipal é independente da sede do evento. */
-.cap-territory-panel { order: 2; flex: 0 0 210px; width: 210px; padding: 12px; border: 1px solid var(--border); border-radius: 12px; background-color: var(--bg-card); min-width: 0; position: sticky; top: 76px; }
+.cap-territory-panel { order: 2; flex: 0 0 210px; width: 210px; padding: 14px; border: 1px solid var(--border); border-radius: var(--cap-raio); background-color: var(--bg-card); box-shadow: var(--cap-sombra); min-width: 0; position: sticky; top: 76px; }
 .cap-territory-panel select { min-height: 44px; max-width: 100%; }
 @media (max-width: 1150px) {
   .cap-territory-panel { order: 1; flex: 0 0 auto; width: min(280px, 100%); align-self: flex-end; position: static; }
@@ -2388,9 +2433,9 @@ body {
 .cap-panel {
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 14px 16px;
-  box-shadow: var(--shadow);
+  border-radius: var(--cap-raio);
+  padding: 16px 18px;
+  box-shadow: var(--cap-sombra);
   min-width: 0;
   margin-bottom: 16px;
 }
@@ -2398,10 +2443,10 @@ body {
   margin-bottom: 0;
 }
 .cap-panel-title {
-  font-size: 13.5px;
-  font-weight: 700;
+  font-size: 14px;
+  font-weight: 600;
   color: var(--text-1);
-  margin-bottom: 2px;
+  margin-bottom: 4px;
 }
 .cap-panel-sub {
   font-size: 11.5px;
@@ -2482,7 +2527,7 @@ body {
   z-index: 1;
   background-color: var(--bg-badge);
   color: var(--text-2);
-  font-weight: 700;
+  font-weight: 600;
   text-align: left;
   padding: 8px 10px;
   border-bottom: 1px solid var(--border-mid);
@@ -2590,7 +2635,7 @@ body {
 
 /* MAPA: TERCEIRO ESTADO DA LEGENDA E MARCADOR DE POLO */
 .dot-fora { background: var(--cap-map-fora); }
-.dot-polo { background: #e11d48; border: 1.5px solid #ffffff; box-shadow: 0 0 0 1px #e11d48; }
+.dot-polo { background-color: var(--cap-map-polo); border: 1.5px solid var(--cap-map-polo-anel); box-shadow: 0 0 0 1px var(--cap-map-polo); }
 .cap-map-card.cap-map-compact .cap-svg-container {
   min-height: 360px;
 }
@@ -7032,11 +7077,11 @@ window.onerror = function(msg, url, line, col, err) {
                 <div class="cap-map-legend-bar" id="capParticipacaoLegenda">
                   <span class="cap-legend-title">Município Participou?</span>
                   <div class="cap-legend-tags">
-                    <span class="cap-legend-tag tag-nao">
-                      <span class="cap-dot dot-nao"></span> NÃO
-                    </span>
                     <span class="cap-legend-tag tag-sim">
                       <span class="cap-dot dot-sim"></span> SIM
+                    </span>
+                    <span class="cap-legend-tag tag-nao">
+                      <span class="cap-dot dot-nao"></span> NÃO
                     </span>
                     <span class="cap-legend-tag">
                       <span class="cap-dot dot-fora"></span> Fora da seleção
@@ -8652,7 +8697,7 @@ window.onerror = function(msg, url, line, col, err) {
     <div class="smb-sec">
       <div class="smb-sec-title" data-i18n="settings_info_title">Informações da Versão</div>
       <div style="font-size:12px;color:var(--text-2);display:flex;flex-direction:column;gap:4px;margin-top:6px">
-        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.5.3</b></div>
+        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.5.4</b></div>
         <div><span data-i18n="settings_updated">Última Atualização:</span> <b class="pnite-date-val">06/10/2026</b> às <b class="pnite-time-val">21:05</b></div>
         <div><span data-i18n="settings_author">Responsável Técnico:</span> <b class="pnite-author-val">Equipe PNITE</b></div>
       </div>
@@ -9641,9 +9686,9 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.5.3";
+const PNITE_VERSION = "v.3.5.4";
 const PNITE_LAST_UPDATE = "22/11/2026";
-const PNITE_LAST_TIME = "14:00";
+const PNITE_LAST_TIME = "15:00";
 
 // Escapa texto para inserção segura via innerHTML (entradas do usuário, nomes de arquivo)
 function escHtml(s) {
@@ -17345,7 +17390,7 @@ function capExportComporImagem(captura, titulo, escala, fundo, escopo, nota) {
 
 // html2canvas não desenha controles deslizantes: no clone, cada um vira uma barra com o valor atual.
 function capExportTrocarSliders(doc) {
-  const trilho = capCor('--border-mid') || '#d0d3d8', cor = capCor('--c-blue') || '#2589F4';
+  const trilho = capCor('--border-mid') || '#d0d3d8', cor = capCor('--cap-acento-linha') || '#d99a00';
   doc.querySelectorAll('#frontCapacitacao input[type="range"]').forEach(s => {
     const min = Number(s.min) || 0, max = Number(s.max) || 0;
     const pct = max > min ? (Number(s.value) - min) / (max - min) * 100 : 0;
@@ -17745,25 +17790,29 @@ function renderCapacitacaoMap(containerId, statusPorCod, polosCod, modo = 'parti
   }
   CAP_STATE.mapInfo[containerId] = statusPorCod;
   const cores = { sim: capCor('--cap-map-sim'), nao: capCor('--cap-map-nao'), fora: capCor('--cap-map-fora') };
+  // Base cartográfica nas cores do tema ativo (tokens --cap-map-*), sem cores fixas no SVG.
+  const mc = {};
+  ['fundo', 'terra', 'vizinho', 'vizinho-borda', 'rotulo', 'rotulo-forte', 'mun-borda', 'limite', 'rotulo-uf', 'polo', 'polo-anel']
+    .forEach(k => { mc[k] = capCor('--cap-map-' + k); });
 
   const porPolo = modo === 'polos';
   const polosInfo = capPolosMapa(capDados());
-  let svg = `<svg viewBox="0 0 ${g.W} ${g.H}" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="background:#e4eee2;border-radius:12px;" role="img" aria-label="${porPolo ? 'Mapa dos municípios do Centro-Oeste por polo frequentado; listras indicam participação em mais de um polo' : 'Mapa dos municípios do Centro-Oeste por participação nas capacitações'}">`;
+  let svg = `<svg viewBox="0 0 ${g.W} ${g.H}" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="background:${mc.fundo};border-radius:10px;" role="img" aria-label="${porPolo ? 'Mapa dos municípios do Centro-Oeste por polo frequentado; listras indicam participação em mais de um polo' : 'Mapa dos municípios do Centro-Oeste por participação nas capacitações'}">`;
   svg += `<g>
-    <path d="M 0 160 L 95 190 L 115 310 L 80 430 L 30 520 L 0 540 Z" fill="#b9cdb6" stroke="#9bb198" stroke-width="1.2" opacity="0.85"/>
-    <text x="35" y="360" font-family="system-ui, sans-serif" font-size="16" font-weight="800" fill="#6c8069" letter-spacing="3" transform="rotate(-30, 35, 360)">BOLÍVIA</text>
-    <path d="M 50 640 L 160 580 L 220 620 L 245 720 L 50 720 Z" fill="#b9cdb6" stroke="#9bb198" stroke-width="1.2" opacity="0.85"/>
-    <text x="135" y="670" font-family="system-ui, sans-serif" font-size="14" font-weight="800" fill="#6c8069" letter-spacing="3">PARAGUAI</text>
+    <path d="M 0 160 L 95 190 L 115 310 L 80 430 L 30 520 L 0 540 Z" fill="${mc.terra}" stroke="${mc['vizinho-borda']}" stroke-width="1"/>
+    <text x="35" y="360" font-family="system-ui, sans-serif" font-size="15" font-weight="600" fill="${mc.rotulo}" letter-spacing="3" transform="rotate(-30, 35, 360)">BOLÍVIA</text>
+    <path d="M 50 640 L 160 580 L 220 620 L 245 720 L 50 720 Z" fill="${mc.terra}" stroke="${mc['vizinho-borda']}" stroke-width="1"/>
+    <text x="135" y="670" font-family="system-ui, sans-serif" font-size="13" font-weight="600" fill="${mc.rotulo}" letter-spacing="3">PARAGUAI</text>
   </g>`;
-  svg += '<g fill="#c3d7bf" stroke="#92a88e" stroke-width="1.2">' + g.vizinhos.map(dp => `<path d="${dp}"/>`).join('') + '</g>';
-  svg += `<g font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#586f55" letter-spacing="1.5">
+  svg += '<g fill="' + mc.vizinho + '" stroke="' + mc['vizinho-borda'] + '" stroke-width="1">' + g.vizinhos.map(dp => `<path d="${dp}"/>`).join('') + '</g>';
+  svg += `<g font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="${mc.rotulo}" letter-spacing="1.5">
     <text x="45" y="150">RONDÔNIA</text><text x="560" y="140">TOCANTINS</text><text x="645" y="220">PIAUÍ</text>
     <text x="655" y="300">BAHIA</text><text x="640" y="470">MINAS GERAIS</text><text x="540" y="620">SÃO PAULO</text>
     <text x="430" y="695">PARANÁ</text>
-    <text x="460" y="90" font-size="20" font-weight="900" fill="#4d634a" letter-spacing="4">BRASIL</text>
+    <text x="460" y="90" font-size="19" font-weight="600" fill="${mc['rotulo-forte']}" letter-spacing="6">BRASIL</text>
   </g>`;
 
-  svg += '<g stroke="#162319" stroke-width="0.55">';
+  svg += '<g stroke="' + mc['mun-borda'] + '" stroke-width="0.45" stroke-opacity="0.7">';
   g.municipios.forEach(m => {
     const info = statusPorCod.get(m.cod);
     const status = info ? info.status : 'fora';
@@ -17783,8 +17832,8 @@ function renderCapacitacaoMap(containerId, statusPorCod, polosCod, modo = 'parti
     svg += '<path d="' + m.d + '" fill="' + fill + '" opacity="' + (info ? 1 : 0.55) + '" data-cod="' + m.cod + '" data-nome="' + escHtml(m.nome) + '" data-uf="' + escHtml(m.uf) + '"><title>' + escHtml(m.nome + ' (' + m.uf + '): ' + detalhe) + '</title></path>';
   });
   svg += '</g>';
-  svg += '<g fill="none" stroke="#132117" stroke-width="2.2" stroke-linejoin="round" pointer-events="none">' + g.contornos.map(dp => `<path d="${dp}"/>`).join('') + '</g>';
-  svg += `<g font-family="system-ui, sans-serif" font-weight="900" fill="#152419" letter-spacing="1" pointer-events="none">
+  svg += '<g fill="none" stroke="' + mc.limite + '" stroke-width="1.8" stroke-linejoin="round" pointer-events="none">' + g.contornos.map(dp => `<path d="${dp}"/>`).join('') + '</g>';
+  svg += `<g font-family="system-ui, sans-serif" font-weight="700" fill="${mc['rotulo-uf']}" stroke="${mc.fundo}" stroke-width="3" stroke-linejoin="round" paint-order="stroke" letter-spacing="1.5" pointer-events="none">
     <text x="270" y="270" font-size="16">MATO GROSSO</text><text x="500" y="375" font-size="16">GOIÁS</text>
     <text x="315" y="545" font-size="15">MATO GROSSO DO SUL</text><text x="575" y="360" font-size="10">DF</text>
   </g>`;
@@ -17798,7 +17847,7 @@ function renderCapacitacaoMap(containerId, statusPorCod, polosCod, modo = 'parti
       const m = d.municipios.get(cod);
       if (!m || m.lat == null || m.lon == null) return;
       const xy = g.pr(m.lon, m.lat);
-      svg += `<circle cx="${xy[0]}" cy="${xy[1]}" r="5.5" fill="#e11d48" stroke="#ffffff" stroke-width="1.8"><title>Polo: ${escHtml(m.nome)}</title></circle>`;
+      svg += `<circle cx="${xy[0]}" cy="${xy[1]}" r="5.5" fill="${mc.polo}" stroke="${mc['polo-anel']}" stroke-width="1.8"><title>Polo: ${escHtml(m.nome)}</title></circle>`;
     });
     svg += '</g>';
   }
@@ -19606,12 +19655,13 @@ async function recarregarDadosExternos() {
       </div>
     </div>
     <div class="pif-body">
-      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.5.3</strong></div>
+      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.5.4</strong></div>
       <div class="pif-row"><span>Data da alteração:</span><span class="pnite-date-val">09/11/2026</span></div>
       <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">14:00</span></div>
       <div class="pif-row"><span>Responsável técnico:</span><span class="pnite-author-val">Equipe PNITE</span></div>
       <div class="pif-note">
         <i class="ti ti-check" style="color:var(--accent);margin-right:3px"></i>
+        <strong>Design da capacitação (v.3.5.4):</strong> padrão visual único (cartões, raios, bordas, sombras e tipografia), acento amarelo do ônibus escolar com azul-marinho, novas cores dos gráficos validadas para daltonismo e mapa em fundo "papel" com versão própria no modo escuro.<br>
         <strong>Textos auxiliares da capacitação (v.3.5.3):</strong> removidas descrições, fórmulas e instruções que poluíam os painéis; mantidos dados, bases dos percentuais e avisos que mudam a interpretação.<br>
         <strong>Imagem só do visual (v.3.5.2):</strong> o menu de exportação de cada painel da capacitação oferece "Imagem com informações" (título, recorte e fonte) ou só o gráfico, mapa ou tabela, sem moldura e sem os textos do painel.<br>
         <strong>Polos por capacitação (v.3.5.1):</strong> em Unidades da Federação, "Nº de polos" e a coluna "Polos (capacitações)" contam cada capacitação separadamente, mesmo quando a sede se repete (ex.: as três edições de Aparecida de Goiânia).<br>
@@ -19674,7 +19724,7 @@ async function recarregarDadosExternos() {
   </div>
   <button class="pif-btn" id="pifBtn" aria-label="Informações de Versão">
     <i class="ti ti-info-circle"></i>
-    <span class="pif-btn-label pnite-version-val">v.3.5.3</span>
+    <span class="pif-btn-label pnite-version-val">v.3.5.4</span>
   </button>
 </div>
 
