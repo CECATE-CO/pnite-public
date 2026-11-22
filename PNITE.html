@@ -6879,7 +6879,7 @@ window.onerror = function(msg, url, line, col, err) {
       </aside>
 
       <aside class="cap-territory-panel" aria-label="Recorte territorial e exportação da capacitação">
-        <div class="cap-field"><label for="capTerritorio">Origem do município representado</label><select id="capTerritorio" onchange="capTrocarTerritorio()"><option value="co">Centro-Oeste</option><option value="outros">Outros — outras UFs</option><option value="todos">Todos os atendimentos</option></select></div>
+        <div class="cap-field"><label for="capTerritorio">Origem do município representado</label><select id="capTerritorio" onchange="capTrocarTerritorio()"><option value="co">Centro-Oeste</option><option value="outros">Outros — outras UFs</option><option value="todos">Brasil</option></select></div>
         <div class="cap-export-page" role="group" aria-labelledby="capExportPageTitulo">
           <span class="cap-export-page-title" id="capExportPageTitulo">Exportar esta página</span>
           <button type="button" class="cap-export-page-btn" onclick="capExportarPagina('png', this)"><i class="ti ti-photo" aria-hidden="true"></i> Relatório em imagem (PNG)</button>
@@ -8697,7 +8697,7 @@ window.onerror = function(msg, url, line, col, err) {
     <div class="smb-sec">
       <div class="smb-sec-title" data-i18n="settings_info_title">Informações da Versão</div>
       <div style="font-size:12px;color:var(--text-2);display:flex;flex-direction:column;gap:4px;margin-top:6px">
-        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.5.4</b></div>
+        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.5.5</b></div>
         <div><span data-i18n="settings_updated">Última Atualização:</span> <b class="pnite-date-val">06/10/2026</b> às <b class="pnite-time-val">21:05</b></div>
         <div><span data-i18n="settings_author">Responsável Técnico:</span> <b class="pnite-author-val">Equipe PNITE</b></div>
       </div>
@@ -9686,9 +9686,9 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.5.4";
+const PNITE_VERSION = "v.3.5.5";
 const PNITE_LAST_UPDATE = "22/11/2026";
-const PNITE_LAST_TIME = "15:00";
+const PNITE_LAST_TIME = "16:00";
 
 // Escapa texto para inserção segura via innerHTML (entradas do usuário, nomes de arquivo)
 function escHtml(s) {
@@ -16716,7 +16716,7 @@ function capFiltrarTerritorio(rows, territorio = capVal('capTerritorio') || 'co'
 }
 
 function capNomeTerritorio() {
-  return ({ co: 'Centro-Oeste', outros: 'Outros — outras UFs', nao_identificada: 'Origem não identificada', todos: 'Todos os atendimentos' })[capVal('capTerritorio') || 'co'];
+  return ({ co: 'Centro-Oeste', outros: 'Outros — outras UFs', nao_identificada: 'Origem não identificada', todos: 'Brasil' })[capVal('capTerritorio') || 'co'];
 }
 
 function capUfsCobertura(uf) {
@@ -17112,7 +17112,7 @@ function capExportRegistrar() {
 }
 
 function capExportTitulo(alvo) {
-  if (alvo.id === 'capMapCard') return 'Mapa do Centro-Oeste — ' + (CAP_STATE.mapaModo === 'polos' ? 'por polo frequentado' : 'participação dos municípios');
+  if (alvo.id === 'capMapCard') return 'Mapa ' + ({ todos: 'do Brasil', outros: 'do Brasil (outras UFs)' }[capVal('capTerritorio')] || 'do Centro-Oeste') + ' — ' + (CAP_STATE.mapaModo === 'polos' ? 'por polo frequentado' : 'participação dos municípios');
   if (alvo.classList.contains('cap-subview')) return capExportTituloPagina();
   return capExportTexto(alvo.querySelector('.cap-panel-title, .cap-card-title, h2, h3')) || 'Painel';
 }
@@ -17756,6 +17756,83 @@ function capGeometria() {
   return CAP_STATE.geo;
 }
 
+// Mapa nacional (recortes "Brasil" e "Outros"): estados de BR_GEO como base e malha municipal
+// do IBGE apenas nas UFs com municípios no recorte (mais o Centro-Oeste, já carregado).
+// As malhas são baixadas uma vez (cache compartilhado com o mapa do Transporte); UFs cuja
+// malha falhar ficam só com o contorno estadual, sem novas tentativas em laço.
+function capGeometriaBrasil(statusPorCod) {
+  if (typeof BR_GEO === 'undefined' || !BR_GEO.features) { CAP_STATE.geoBrSemBase = true; return null; }
+  const falhas = CAP_STATE.geoBrFalhas || (CAP_STATE.geoBrFalhas = new Set());
+  const ufs = new Set(CAP_UFS_MAPA);
+  statusPorCod.forEach((v, cod) => { const uf = CAP_UF_POR_PREFIXO[String(cod).slice(0, 2)]; if (uf) ufs.add(uf); });
+  const lista = Array.from(ufs).filter(uf => !falhas.has(uf)).sort();
+  const cacheMalhas = window.municipalGeoCache || {};
+  const pendentes = lista.filter(uf => !cacheMalhas[UF_IBGE_CODES[uf]]);
+  if (pendentes.length) {
+    if (!CAP_STATE.geoBrPendente) {
+      CAP_STATE.geoBrPendente = Promise.all(pendentes.map(uf => loadMunicipalGeoForUf(uf).then(geo => { if (!geo) falhas.add(uf); })))
+        .finally(() => {
+          CAP_STATE.geoBrPendente = null;
+          if (['todos', 'outros'].includes(capVal('capTerritorio'))) renderCapSubview();
+        });
+    }
+    return null;
+  }
+  const chave = lista.join(',');
+  CAP_STATE.geoBr = CAP_STATE.geoBr || {};
+  if (CAP_STATE.geoBr[chave]) return CAP_STATE.geoBr[chave];
+
+  const b = { minX: -74.1, maxX: -34.7, minY: -33.8, maxY: 5.4 };
+  const W = 720;
+  const k = Math.cos(-15 * Math.PI / 180);
+  const sx = W / ((b.maxX - b.minX) * k);
+  const H = Math.round((b.maxY - b.minY) * sx);
+  const pr = (lon, lat) => [Math.round((lon - b.minX) * k * sx * 10) / 10, Math.round((b.maxY - lat) * sx * 10) / 10];
+  const caminho = geometry => {
+    const polys = geometry.type === 'Polygon' ? [geometry.coordinates] : geometry.coordinates;
+    let dPath = '';
+    polys.forEach(poly => poly.forEach(ring => {
+      ring.forEach((pt, idx) => { const xy = pr(pt[0], pt[1]); dPath += (idx === 0 ? 'M' : 'L') + xy[0] + ' ' + xy[1]; });
+      dPath += 'Z ';
+    }));
+    return dPath;
+  };
+  // Posição do rótulo da UF: centróide do maior polígono, em coordenadas projetadas.
+  const centro = geometry => {
+    const polys = geometry.type === 'Polygon' ? [geometry.coordinates] : geometry.coordinates;
+    let melhor = null;
+    polys.forEach(poly => {
+      const anel = poly[0].map(pt => pr(pt[0], pt[1]));
+      let a = 0, cx = 0, cy = 0;
+      for (let i = 0; i < anel.length - 1; i++) {
+        const c = anel[i][0] * anel[i + 1][1] - anel[i + 1][0] * anel[i][1];
+        a += c; cx += (anel[i][0] + anel[i + 1][0]) * c; cy += (anel[i][1] + anel[i + 1][1]) * c;
+      }
+      if (a && (!melhor || Math.abs(a) > melhor.a)) melhor = { a: Math.abs(a), x: cx / (3 * a), y: cy / (3 * a) };
+    });
+    return melhor ? [Math.round(melhor.x), Math.round(melhor.y) + 4] : [0, 0];
+  };
+  const d = capDados();
+  const nomes = new Map(capLinhas(CAP_STATE.raw && CAP_STATE.raw.municipios_mapa).map(m => [String(m.cod_ibge), m]));
+  const municipios = [];
+  lista.forEach(uf => {
+    const geo = cacheMalhas[UF_IBGE_CODES[uf]];
+    // Nomes: base da capacitação e, para os demais municípios da UF, o cadastro nacional da PNITE.
+    const cadastro = new Map(((typeof BRAZIL_MUN_BY_UF !== 'undefined' && BRAZIL_MUN_BY_UF[uf]) || []).map(m => [String(m.cod), { nome: m.nome, uf }]));
+    ((geo && geo.features) || []).forEach(f => {
+      const cod = String(f.properties.codarea);
+      const m = (d && d.municipios.get(cod)) || nomes.get(cod) || cadastro.get(cod) || {};
+      municipios.push({ cod, nome: m.nome || '', uf: m.uf || uf, d: caminho(f.geometry) });
+    });
+  });
+  const estados = BR_GEO.features.filter(f => f.properties && f.properties.SIGLA_UF).map(f => {
+    const xy = centro(f.geometry);
+    return { sigla: f.properties.SIGLA_UF, d: caminho(f.geometry), x: xy[0], y: xy[1] };
+  });
+  CAP_STATE.geoBr[chave] = { W, H, pr, brasil: true, municipios, estados };
+  return CAP_STATE.geoBr[chave];
+}
+
 // A cor identifica a sede do polo, inclusive quando há várias edições no mesmo local.
 // A base completa mantém as cores estáveis ao aplicar filtros ou trocar o tema.
 function capChavePolo(c) {
@@ -17777,15 +17854,18 @@ function renderCapacitacaoMap(containerId, statusPorCod, polosCod, modo = 'parti
   const container = document.getElementById(containerId);
   if (!container) return;
   const territorio = capVal('capTerritorio') || 'co';
-  if (['outros', 'nao_identificada'].includes(territorio)) {
-    container.innerHTML = '<div class="cap-empty">Este mapa representa somente o Centro-Oeste. Consulte os registros do recorte ' + escHtml(capNomeTerritorio()) + ' nas tabelas de Capacitações e Unidades da Federação.</div>';
+  if (territorio === 'nao_identificada') {
+    container.innerHTML = '<div class="cap-empty">Registros sem origem municipal identificada não podem ser representados no mapa.</div>';
     CAP_STATE.mapInfo[containerId] = new Map();
     if (containerId === 'capSvgContainer') document.getElementById('capPolosLegenda').innerHTML = '';
     return;
   }
-  const g = capGeometria();
+  // "Brasil" e "Outros" usam o mapa nacional; o Centro-Oeste mantém o mapa regional detalhado.
+  const brasil = ['todos', 'outros'].includes(territorio);
+  const g = brasil ? capGeometriaBrasil(statusPorCod) : capGeometria();
   if (!g) {
-    container.innerHTML = '<div class="cap-empty">Malha municipal do Centro-Oeste indisponível.</div>';
+    CAP_STATE.mapInfo[containerId] = new Map();
+    container.innerHTML = '<div class="cap-empty">' + (brasil && !CAP_STATE.geoBrSemBase ? 'Carregando a malha municipal das UFs atendidas (IBGE)…' : 'Malha municipal indisponível.') + '</div>';
     return;
   }
   CAP_STATE.mapInfo[containerId] = statusPorCod;
@@ -17797,7 +17877,12 @@ function renderCapacitacaoMap(containerId, statusPorCod, polosCod, modo = 'parti
 
   const porPolo = modo === 'polos';
   const polosInfo = capPolosMapa(capDados());
-  let svg = `<svg viewBox="0 0 ${g.W} ${g.H}" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="background:${mc.fundo};border-radius:10px;" role="img" aria-label="${porPolo ? 'Mapa dos municípios do Centro-Oeste por polo frequentado; listras indicam participação em mais de um polo' : 'Mapa dos municípios do Centro-Oeste por participação nas capacitações'}">`;
+  const area = brasil ? 'do Brasil' : 'do Centro-Oeste';
+  let svg = `<svg viewBox="0 0 ${g.W} ${g.H}" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="background:${mc.fundo};border-radius:10px;" role="img" aria-label="${porPolo ? 'Mapa dos municípios ' + area + ' por polo frequentado; listras indicam participação em mais de um polo' : 'Mapa dos municípios ' + area + ' por participação nas capacitações'}">`;
+  if (brasil) {
+    // Estados como base; o detalhe municipal existe só nas UFs com registros do CECATE-CO.
+    svg += '<g fill="' + mc.vizinho + '" stroke="none">' + g.estados.map(e => `<path d="${e.d}"/>`).join('') + '</g>';
+  } else {
   svg += `<g>
     <path d="M 0 160 L 95 190 L 115 310 L 80 430 L 30 520 L 0 540 Z" fill="${mc.terra}" stroke="${mc['vizinho-borda']}" stroke-width="1"/>
     <text x="35" y="360" font-family="system-ui, sans-serif" font-size="15" font-weight="600" fill="${mc.rotulo}" letter-spacing="3" transform="rotate(-30, 35, 360)">BOLÍVIA</text>
@@ -17811,8 +17896,9 @@ function renderCapacitacaoMap(containerId, statusPorCod, polosCod, modo = 'parti
     <text x="430" y="695">PARANÁ</text>
     <text x="460" y="90" font-size="19" font-weight="600" fill="${mc['rotulo-forte']}" letter-spacing="6">BRASIL</text>
   </g>`;
+  }
 
-  svg += '<g stroke="' + mc['mun-borda'] + '" stroke-width="0.45" stroke-opacity="0.7">';
+  svg += '<g stroke="' + mc['mun-borda'] + '" stroke-width="' + (brasil ? 0.25 : 0.45) + '" stroke-opacity="0.7">';
   g.municipios.forEach(m => {
     const info = statusPorCod.get(m.cod);
     const status = info ? info.status : 'fora';
@@ -17832,11 +17918,17 @@ function renderCapacitacaoMap(containerId, statusPorCod, polosCod, modo = 'parti
     svg += '<path d="' + m.d + '" fill="' + fill + '" opacity="' + (info ? 1 : 0.55) + '" data-cod="' + m.cod + '" data-nome="' + escHtml(m.nome) + '" data-uf="' + escHtml(m.uf) + '"><title>' + escHtml(m.nome + ' (' + m.uf + '): ' + detalhe) + '</title></path>';
   });
   svg += '</g>';
+  if (brasil) {
+    svg += '<g fill="none" stroke="' + mc.limite + '" stroke-width="0.9" stroke-opacity="0.75" stroke-linejoin="round" pointer-events="none">' + g.estados.map(e => `<path d="${e.d}"/>`).join('') + '</g>';
+    svg += `<g font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="${mc['rotulo-uf']}" stroke="${mc.fundo}" stroke-width="2.6" stroke-linejoin="round" paint-order="stroke" letter-spacing="1" text-anchor="middle" pointer-events="none">`
+      + g.estados.filter(e => e.sigla !== 'DF').map(e => `<text x="${e.x}" y="${e.y}">${escHtml(e.sigla)}</text>`).join('') + '</g>';
+  } else {
   svg += '<g fill="none" stroke="' + mc.limite + '" stroke-width="1.8" stroke-linejoin="round" pointer-events="none">' + g.contornos.map(dp => `<path d="${dp}"/>`).join('') + '</g>';
   svg += `<g font-family="system-ui, sans-serif" font-weight="700" fill="${mc['rotulo-uf']}" stroke="${mc.fundo}" stroke-width="3" stroke-linejoin="round" paint-order="stroke" letter-spacing="1.5" pointer-events="none">
     <text x="270" y="270" font-size="16">MATO GROSSO</text><text x="500" y="375" font-size="16">GOIÁS</text>
     <text x="315" y="545" font-size="15">MATO GROSSO DO SUL</text><text x="575" y="360" font-size="10">DF</text>
   </g>`;
+  }
 
   // Marcadores dos polos (sede das capacitações)
   const d = capDados();
@@ -17847,7 +17939,7 @@ function renderCapacitacaoMap(containerId, statusPorCod, polosCod, modo = 'parti
       const m = d.municipios.get(cod);
       if (!m || m.lat == null || m.lon == null) return;
       const xy = g.pr(m.lon, m.lat);
-      svg += `<circle cx="${xy[0]}" cy="${xy[1]}" r="5.5" fill="${mc.polo}" stroke="${mc['polo-anel']}" stroke-width="1.8"><title>Polo: ${escHtml(m.nome)}</title></circle>`;
+      svg += `<circle cx="${xy[0]}" cy="${xy[1]}" r="${brasil ? 4 : 5.5}" fill="${mc.polo}" stroke="${mc['polo-anel']}" stroke-width="1.8"><title>Polo: ${escHtml(m.nome)}</title></circle>`;
     });
     svg += '</g>';
   }
@@ -19655,12 +19747,13 @@ async function recarregarDadosExternos() {
       </div>
     </div>
     <div class="pif-body">
-      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.5.4</strong></div>
+      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.5.5</strong></div>
       <div class="pif-row"><span>Data da alteração:</span><span class="pnite-date-val">09/11/2026</span></div>
       <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">14:00</span></div>
       <div class="pif-row"><span>Responsável técnico:</span><span class="pnite-author-val">Equipe PNITE</span></div>
       <div class="pif-note">
         <i class="ti ti-check" style="color:var(--accent);margin-right:3px"></i>
+        <strong>Mapa do Brasil na capacitação (v.3.5.5):</strong> a opção "Todos os atendimentos" passa a se chamar "Brasil" e, com ela (e com "Outros"), o mapa mostra o Brasil inteiro com todos os municípios alcançados pelo CECATE-CO.<br>
         <strong>Design da capacitação (v.3.5.4):</strong> padrão visual único (cartões, raios, bordas, sombras e tipografia), acento amarelo do ônibus escolar com azul-marinho, novas cores dos gráficos validadas para daltonismo e mapa em fundo "papel" com versão própria no modo escuro.<br>
         <strong>Textos auxiliares da capacitação (v.3.5.3):</strong> removidas descrições, fórmulas e instruções que poluíam os painéis; mantidos dados, bases dos percentuais e avisos que mudam a interpretação.<br>
         <strong>Imagem só do visual (v.3.5.2):</strong> o menu de exportação de cada painel da capacitação oferece "Imagem com informações" (título, recorte e fonte) ou só o gráfico, mapa ou tabela, sem moldura e sem os textos do painel.<br>
@@ -19724,7 +19817,7 @@ async function recarregarDadosExternos() {
   </div>
   <button class="pif-btn" id="pifBtn" aria-label="Informações de Versão">
     <i class="ti ti-info-circle"></i>
-    <span class="pif-btn-label pnite-version-val">v.3.5.4</span>
+    <span class="pif-btn-label pnite-version-val">v.3.5.5</span>
   </button>
 </div>
 
