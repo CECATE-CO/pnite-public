@@ -2314,6 +2314,60 @@ body {
 @media (max-width: 600px) { .cap-territory-panel { width: 100%; align-self: stretch; } }
 .cap-territory-note { color: var(--text-2); font-size: 12px; line-height: 1.6; margin-bottom: 14px; }
 
+/* v.3.4.9 — Exportação da capacitação (somente para quem tem permissão de download).
+   Cada painel recebe um botão que aparece ao passar o cursor ou ao receber foco; ele substitui,
+   nesta frente, o botão genérico dos gráficos (.pnite-dl-chart), que exporta só o canvas. */
+html.pnite-pode-baixar #frontCapacitacao .pnite-dl-chart { display: none; }
+.cap-export-host { position: relative; }
+.cap-export-ui { display: none; position: absolute; top: 8px; right: 8px; z-index: 6; }
+html.pnite-pode-baixar .cap-export-ui { display: block; }
+html.pnite-pode-baixar .cap-export-host > .cap-panel-title:first-of-type,
+html.pnite-pode-baixar .cap-export-host > .cap-map-legend-bar { padding-right: 40px; }
+html.pnite-pode-baixar .cap-export-host > .cap-card-title { padding-inline: 40px; }
+.cap-export-toggle {
+  display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px;
+  border-radius: 8px; border: 1px solid var(--border); background-color: var(--bg-card); color: var(--text-2);
+  font-size: 16px; cursor: pointer; box-shadow: var(--shadow); opacity: 0; transition: opacity .15s ease;
+}
+.cap-export-host:hover > .cap-export-ui .cap-export-toggle,
+.cap-export-host:focus-within > .cap-export-ui .cap-export-toggle,
+.cap-export-ui.open .cap-export-toggle { opacity: 1; }
+.cap-export-toggle:hover, .cap-export-toggle:focus-visible, .cap-export-ui.open .cap-export-toggle { color: var(--c-blue); border-color: var(--c-blue); }
+.cap-export-toggle:focus-visible, .cap-export-menu button:focus-visible, .cap-export-page-btn:focus-visible { outline: 2px solid var(--c-blue); outline-offset: 2px; }
+.cap-export-menu {
+  position: absolute; top: calc(100% + 4px); right: 0; width: max-content; min-width: 190px; max-width: min(260px, 80vw);
+  display: grid; gap: 2px; padding: 6px; border: 1px solid var(--border); border-radius: 10px;
+  background-color: var(--bg-card); box-shadow: 0 8px 24px rgba(0, 0, 0, .16);
+}
+.cap-export-menu[hidden] { display: none; }
+.cap-export-menu button, .cap-export-page-btn {
+  display: flex; align-items: center; gap: 8px; width: 100%; padding: 8px 10px; border-radius: 8px;
+  font: inherit; font-size: 12.5px; text-align: left; color: var(--text-1); cursor: pointer;
+}
+.cap-export-menu button { border: 0; background-color: transparent; }
+.cap-export-menu button:hover, .cap-export-menu button:focus-visible { background-color: var(--bg-active); color: var(--c-blue); }
+.cap-export-menu button[disabled], .cap-export-page-btn[disabled] { opacity: .55; cursor: progress; }
+.cap-export-menu i, .cap-export-page-btn i { font-size: 16px; flex-shrink: 0; }
+.cap-export-page { display: none; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
+html.pnite-pode-baixar .cap-export-page { display: grid; gap: 6px; }
+.cap-export-page-title { font-size: 12px; font-weight: 700; color: var(--text-1); }
+.cap-export-page-btn { border: 1px solid var(--border); background-color: var(--bg-input); min-height: 40px; }
+.cap-export-page-btn:hover { border-color: var(--c-blue); color: var(--c-blue); }
+.cap-export-msg { margin: 0; font-size: 11.5px; line-height: 1.5; color: var(--text-2); overflow-wrap: anywhere; }
+.cap-export-msg:empty { display: none; }
+.cap-export-msg.err { color: #b42318; }
+.cap-export-msg.ok { color: #0a6640; }
+[data-theme="dark"] .cap-export-msg.err { color: #ff8a80; }
+[data-theme="dark"] .cap-export-msg.ok { color: #4ed99a; }
+@media (hover: none) { .cap-export-toggle { opacity: 1; } }
+@media (pointer: coarse) {
+  .cap-export-toggle { width: 44px; height: 44px; }
+  .cap-export-menu button, .cap-export-page-btn { min-height: 44px; }
+  html.pnite-pode-baixar .cap-export-host > .cap-panel-title:first-of-type,
+  html.pnite-pode-baixar .cap-export-host > .cap-map-legend-bar { padding-right: 52px; }
+  html.pnite-pode-baixar .cap-export-host > .cap-card-title { padding-inline: 52px; }
+}
+
 /* Organização exclusiva da comparação por UF. */
 .cap-uf-group-title { margin: 18px 0 10px; }
 .cap-uf-scope { padding: 12px 14px; background-color: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; }
@@ -6781,8 +6835,14 @@ window.onerror = function(msg, url, line, col, err) {
         </div>
       </aside>
 
-      <aside class="cap-territory-panel" aria-label="Recorte territorial da capacitação">
+      <aside class="cap-territory-panel" aria-label="Recorte territorial e exportação da capacitação">
         <div class="cap-field"><label for="capTerritorio">Origem do município representado</label><select id="capTerritorio" onchange="capTrocarTerritorio()"><option value="co">Centro-Oeste</option><option value="outros">Outros — outras UFs</option><option value="todos">Todos os atendimentos</option></select></div>
+        <div class="cap-export-page" role="group" aria-labelledby="capExportPageTitulo">
+          <span class="cap-export-page-title" id="capExportPageTitulo">Exportar esta página</span>
+          <button type="button" class="cap-export-page-btn" onclick="capExportarPagina('png', this)"><i class="ti ti-photo" aria-hidden="true"></i> Relatório em imagem (PNG)</button>
+          <button type="button" class="cap-export-page-btn" onclick="capExportarPagina('xlsx', this)"><i class="ti ti-file-spreadsheet" aria-hidden="true"></i> Dados da página (XLSX)</button>
+          <p class="cap-export-msg" id="capExportMsg" role="status" aria-live="polite"></p>
+        </div>
       </aside>
 
       <!-- CONTEÚDO PRINCIPAL DA CAPACITAÇÃO -->
@@ -8617,7 +8677,7 @@ window.onerror = function(msg, url, line, col, err) {
     <div class="smb-sec">
       <div class="smb-sec-title" data-i18n="settings_info_title">Informações da Versão</div>
       <div style="font-size:12px;color:var(--text-2);display:flex;flex-direction:column;gap:4px;margin-top:6px">
-        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.4.8</b></div>
+        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.4.9</b></div>
         <div><span data-i18n="settings_updated">Última Atualização:</span> <b class="pnite-date-val">06/10/2026</b> às <b class="pnite-time-val">21:05</b></div>
         <div><span data-i18n="settings_author">Responsável Técnico:</span> <b class="pnite-author-val">Equipe PNITE</b></div>
       </div>
@@ -9606,9 +9666,9 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.4.8";
-const PNITE_LAST_UPDATE = "16/11/2026";
-const PNITE_LAST_TIME = "00:07";
+const PNITE_VERSION = "v.3.4.9";
+const PNITE_LAST_UPDATE = "22/11/2026";
+const PNITE_LAST_TIME = "12:00";
 
 // Escapa texto para inserção segura via innerHTML (entradas do usuário, nomes de arquivo)
 function escHtml(s) {
@@ -16934,6 +16994,462 @@ function capRegistrarEventos() {
     cont.addEventListener('mousemove', capMapHover);
     cont.addEventListener('mouseleave', capMapOut);
   });
+  capExportRegistrar();
+}
+
+// --------------------------------------------------------------------------
+// Exportação (v.3.4.9): cada painel em imagem (PNG) ou planilha (XLSX) e a página ativa inteira.
+// Respeita a permissão de download (PNITE_AUTH.podeBaixar), como as demais frentes. Tudo é gerado
+// no navegador; a imagem usa html2canvas (MIT), carregado do cdnjs somente no primeiro uso.
+// --------------------------------------------------------------------------
+const CAP_EXPORT = { lib: null, ocupado: false, seq: 0 };
+const CAP_EXPORT_ALTURA_MAX = 6000; // px CSS: acima disso, tabelas roláveis ficam no trecho visível
+const CAP_EXPORT_ALVOS = '.cap-panel, #capMapCard, .cap-profile-card';
+const CAP_EXPORT_FONTE = 'Fonte: CECATE-CO/UFG (convocações, inscrições, listas de presença e avaliações das capacitações)';
+
+function capExportTexto(el) { return el ? el.textContent.replace(/\s+/g, ' ').trim() : ''; }
+
+// Botão de exportação em cada painel de nível superior (os painéis são estáticos; o conteúdo
+// interno é que é renderizado, então o botão inserido uma única vez permanece).
+function capExportPrepararAlvos() {
+  const raiz = document.querySelector('#frontCapacitacao .cap-main-area');
+  if (!raiz) return;
+  raiz.querySelectorAll(CAP_EXPORT_ALVOS).forEach(alvo => {
+    if (alvo.parentElement.closest(CAP_EXPORT_ALVOS) || alvo.querySelector(':scope > .cap-export-ui')) return;
+    alvo.classList.add('cap-export-host');
+    // O nome acessível acompanha o título do painel, que pode mudar com os filtros.
+    const tituloEl = alvo.id === 'capMapCard' ? null : alvo.querySelector('.cap-panel-title, .cap-card-title, h2, h3');
+    const idBotao = 'capExpBtn' + (++CAP_EXPORT.seq);
+    if (tituloEl && !tituloEl.id) tituloEl.id = 'capExpTit' + CAP_EXPORT.seq;
+    const nome = tituloEl ? 'aria-label="Exportar" aria-labelledby="' + idBotao + ' ' + tituloEl.id + '"' : 'aria-label="Exportar: mapa do Centro-Oeste"';
+    const ui = document.createElement('div');
+    ui.className = 'cap-export-ui';
+    ui.setAttribute('data-html2canvas-ignore', 'true');
+    ui.innerHTML = '<button type="button" class="cap-export-toggle" id="' + idBotao + '" aria-haspopup="menu" aria-expanded="false" title="Exportar" ' + nome + '><i class="ti ti-download" aria-hidden="true"></i></button>'
+      + '<div class="cap-export-menu" role="menu" hidden>'
+      + '<button type="button" role="menuitem" data-cap-export="png"><i class="ti ti-photo" aria-hidden="true"></i> Imagem (PNG)</button>'
+      + '<button type="button" role="menuitem" data-cap-export="xlsx"><i class="ti ti-file-spreadsheet" aria-hidden="true"></i> Planilha (XLSX)</button>'
+      + '</div>';
+    alvo.appendChild(ui);
+  });
+}
+
+function capExportFecharMenus(exceto) {
+  document.querySelectorAll('#frontCapacitacao .cap-export-ui.open').forEach(ui => {
+    if (ui === exceto) return;
+    ui.classList.remove('open');
+    ui.querySelector('.cap-export-menu').hidden = true;
+    ui.querySelector('.cap-export-toggle').setAttribute('aria-expanded', 'false');
+  });
+}
+
+function capExportRegistrar() {
+  capExportPrepararAlvos();
+  document.addEventListener('click', ev => {
+    const alvo = ev.target && ev.target.closest ? ev.target : null;
+    if (!alvo) return;
+    const toggle = alvo.closest('#frontCapacitacao .cap-export-toggle');
+    const item = alvo.closest('#frontCapacitacao [data-cap-export]');
+    if (toggle) {
+      const ui = toggle.parentElement;
+      const menu = ui.querySelector('.cap-export-menu');
+      const abrir = !ui.classList.contains('open');
+      capExportFecharMenus(ui);
+      ui.classList.toggle('open', abrir);
+      menu.hidden = !abrir;
+      toggle.setAttribute('aria-expanded', String(abrir));
+      if (abrir) {
+        menu.querySelector('[data-cap-export="xlsx"]').hidden = !capExportTemDados(ui.parentElement);
+        menu.querySelector('button:not([hidden])').focus();
+      }
+      return;
+    }
+    if (item) {
+      const ui = item.closest('.cap-export-ui');
+      capExportFecharMenus();
+      ui.querySelector('.cap-export-toggle').focus();
+      capExportExecutar(item.getAttribute('data-cap-export'), ui.parentElement, 'painel', null);
+      return;
+    }
+    if (!alvo.closest('.cap-export-ui')) capExportFecharMenus();
+  });
+  document.addEventListener('keydown', ev => {
+    const ui = document.querySelector('#frontCapacitacao .cap-export-ui.open');
+    if (!ui) return;
+    if (ev.key === 'Escape') {
+      capExportFecharMenus();
+      ui.querySelector('.cap-export-toggle').focus();
+    } else if ((ev.key === 'ArrowDown' || ev.key === 'ArrowUp') && ev.target.closest && ev.target.closest('.cap-export-menu')) {
+      const itens = Array.from(ui.querySelectorAll('[data-cap-export]:not([hidden])'));
+      const i = itens.indexOf(ev.target);
+      ev.preventDefault();
+      itens[(i + (ev.key === 'ArrowDown' ? 1 : -1) + itens.length) % itens.length].focus();
+    }
+  });
+}
+
+function capExportTitulo(alvo) {
+  if (alvo.id === 'capMapCard') return 'Mapa do Centro-Oeste — ' + (CAP_STATE.mapaModo === 'polos' ? 'por polo frequentado' : 'participação dos municípios');
+  if (alvo.classList.contains('cap-subview')) return capExportTituloPagina();
+  return capExportTexto(alvo.querySelector('.cap-panel-title, .cap-card-title, h2, h3')) || 'Painel';
+}
+
+function capExportTituloPagina() {
+  const vista = document.getElementById(CAP_VIEWS[CAP_STATE.view]);
+  let titulo = capExportTexto(vista && vista.querySelector('h1, h2')) || 'Indicadores da Capacitação';
+  const aba = vista && vista.querySelector('[role="tab"][aria-selected="true"]');
+  if (aba) titulo += ' — ' + capExportTexto(aba);
+  return titulo;
+}
+
+// Filtros que definem o recorte exibido: origem territorial e campos visíveis da página ativa.
+function capExportFiltros() {
+  const vista = document.getElementById(CAP_VIEWS[CAP_STATE.view]);
+  const campos = [document.getElementById('capTerritorio')].concat(vista ? Array.from(vista.querySelectorAll('select, input')) : []);
+  const filtros = [];
+  campos.forEach(el => {
+    if (!el || !pniteVisivel(el)) return;
+    const rotulo = el.id ? document.querySelector('label[for="' + CSS.escape(el.id) + '"]') : null;
+    const valor = el.tagName === 'SELECT' ? (el.selectedIndex >= 0 ? el.options[el.selectedIndex].text : '') : String(el.value || '').trim();
+    if (el.type === 'search' && !valor) return;
+    filtros.push([capExportTexto(rotulo) || el.getAttribute('aria-label') || el.id, valor || '—']);
+  });
+  if (CAP_STATE.view === 'home') filtros.push(['Visualização do mapa', CAP_STATE.mapaModo === 'polos' ? 'Por polo frequentado' : 'Participação']);
+  return filtros;
+}
+
+// Números no formato pt-BR ("1.234", "45,2%") viram células numéricas; o restante fica como texto.
+function capExportNumero(texto) {
+  const m = /^(-?\d{1,3}(?:\.\d{3})*(?:,\d+)?|-?\d+(?:,\d+)?)\s*(%?)$/.exec(String(texto).trim());
+  if (!m) return null;
+  const n = Number(m[1].replace(/\./g, '').replace(',', '.'));
+  if (!Number.isFinite(n)) return null;
+  if (!m[2]) return n;
+  const casas = (m[1].split(',')[1] || '').length;
+  return { v: Number((n / 100).toFixed(casas + 2)), t: 'n', z: casas ? '0.' + '0'.repeat(casas) + '%' : '0%' };
+}
+
+function capExportValor(el) {
+  const texto = capExportTexto(el);
+  const n = capExportNumero(texto);
+  return n != null ? n : (texto || '—');
+}
+
+function capExportTabelaAoa(tabela) {
+  return Array.from(tabela.rows).map(tr => Array.from(tr.cells).map(celula => {
+    // Respostas longas mostram um trecho e o texto completo em <details>: exporta só o completo.
+    const completo = celula.querySelector('.cap-answer-detail p');
+    const texto = completo ? capExportTexto(completo) : capExportTexto(celula);
+    if (celula.tagName === 'TD' && celula.classList.contains('num')) {
+      const n = capExportNumero(texto);
+      if (n != null) return n;
+    }
+    return texto || '—';
+  }));
+}
+
+function capExportGraficoAoa(chart) {
+  const dados = chart.data || {};
+  const rotulos = (dados.labels || []).map(l => [].concat(l).join(' '));
+  const horizontal = chart.options && chart.options.indexAxis === 'y';
+  const eixo = chart.scales ? (horizontal ? chart.scales.x : chart.scales.y) : null;
+  let pct = false;
+  try {
+    const cb = eixo && eixo.options && eixo.options.ticks && eixo.options.ticks.callback;
+    pct = typeof cb === 'function' && /%$/.test(String(cb.call(eixo, 50, 0, [{ value: 50 }])));
+  } catch (e) { pct = false; }
+  const valor = v => {
+    if (v && typeof v === 'object') v = horizontal ? v.x : v.y;
+    return (v != null && Number.isFinite(Number(v))) ? Number(v) : null;
+  };
+  // Gráficos divergentes desenham a série desfavorável com sinal negativo apenas para ir à esquerda:
+  // na planilha, o percentual volta a ser positivo.
+  const series = (dados.datasets || []).map((ds, i) => ({ ds, i })).filter(s => chart.isDatasetVisible(s.i)).map(s => {
+    const nums = (s.ds.data || []).map(v => valor(v)).filter(v => v != null);
+    return { ...s, espelhada: Array.isArray(s.ds.contagens) && nums.length > 0 && nums.every(v => v <= 0) && nums.some(v => v < 0) };
+  });
+  const cab = ['Categoria'];
+  series.forEach(({ ds }, n) => {
+    const nome = ds.label || (series.length === 1 ? 'Valor' : 'Série ' + (n + 1));
+    cab.push(nome + (pct ? ' (%)' : ''));
+    if (Array.isArray(ds.contagens)) cab.push(nome + ' — quantidade');
+  });
+  const celula = (v, formato) => v == null ? '—' : (formato ? { v, t: 'n', z: formato } : v);
+  return [cab].concat(rotulos.map((rotulo, idx) => {
+    const linha = [rotulo || '—'];
+    series.forEach(({ ds, espelhada }) => {
+      const v = valor((ds.data || [])[idx]);
+      linha.push(celula(v != null && espelhada ? Math.abs(v) : v, pct ? '0.0' : null));
+      if (Array.isArray(ds.contagens)) linha.push(celula(valor(ds.contagens[idx]), null));
+    });
+    return linha;
+  }));
+}
+
+// Barras em HTML (ex.: canais de divulgação 1 a 5): "45,2% (12)" vira percentual e quantidade.
+function capExportBarrasAoa(lista) {
+  return [['Categoria', 'Percentual', 'Quantidade']].concat(Array.from(lista.querySelectorAll('.cap-hbar-row')).map(row => {
+    const valor = capExportTexto(row.querySelector('.cap-hbar-val'));
+    const m = /^(.+%)\s*\(([\d.]+)\)$/.exec(valor);
+    const pct = m ? capExportNumero(m[1]) : null;
+    const qtd = m ? capExportNumero(m[2]) : null;
+    return [capExportTexto(row.querySelector('span')), pct != null ? pct : (valor || '—'), qtd != null ? qtd : '—'];
+  }));
+}
+
+function capExportMapaAoa(cont) {
+  const info = CAP_STATE.mapInfo[cont.id] || new Map();
+  const vistos = new Set();
+  const linhas = [];
+  cont.querySelectorAll('path[data-cod]').forEach(p => {
+    const cod = p.getAttribute('data-cod');
+    if (vistos.has(cod)) return;
+    vistos.add(cod);
+    const e = info.get(cod);
+    const det = e && e.linhas ? Object.fromEntries(e.linhas) : {};
+    linhas.push([cod, p.getAttribute('data-nome') || '—', p.getAttribute('data-uf') || '—',
+      !e ? 'Fora da seleção' : e.status === 'sim' ? 'Participou' : 'Não participou',
+      det['Capacitações'] || '—', det['Polos frequentados'] || '—',
+      e ? e.G : '—', e ? e.C : '—', e ? e.P : '—']);
+  });
+  const ordem = { 'Participou': 0, 'Não participou': 1, 'Fora da seleção': 2 };
+  linhas.sort((a, b) => ordem[a[3]] - ordem[b[3]] || a[2].localeCompare(b[2]) || a[1].localeCompare(b[1], 'pt-BR'));
+  return [['Código IBGE', 'Município', 'UF', 'Situação no recorte', 'Capacitações', 'Polos frequentados', 'Gestores', 'CACS', 'Total de participantes']].concat(linhas);
+}
+
+function capExportGrupo(el) {
+  const rotulo = el.getAttribute('aria-label');
+  if (rotulo) return rotulo;
+  const anterior = el.previousElementSibling;
+  if (anterior && /^H[1-4]$/.test(anterior.tagName)) return capExportTexto(anterior);
+  const host = el.closest('.cap-export-host');
+  return host ? capExportTitulo(host) : capExportTituloPagina();
+}
+
+// Reúne o que está visível no elemento: indicadores, tabelas, gráficos, barras e mapas.
+function capExportColetar(raiz) {
+  const visivel = el => pniteVisivel(el) && !el.closest('.cap-export-ui');
+  const indicadores = [];
+  raiz.querySelectorAll('.cap-kpi').forEach(k => {
+    if (!visivel(k)) return;
+    indicadores.push([capExportGrupo(k.closest('.cap-kpi-grid') || k), capExportTexto(k.querySelector('.cap-kpi-label')),
+      capExportValor(k.querySelector('.cap-kpi-value')), capExportTexto(k.querySelector('.cap-kpi-note'))]);
+  });
+  raiz.querySelectorAll('.cap-main-kpi, .cap-kpi-col').forEach(k => {
+    if (!visivel(k)) return;
+    const card = k.closest('.cap-profile-card');
+    indicadores.push([card ? capExportTitulo(card) : '', capExportTexto(k.querySelector('.cap-kpi-lbl, .cap-sub-lbl')),
+      capExportValor(k.querySelector('.cap-kpi-num, .cap-sub-num')), '']);
+  });
+  const tabelas = Array.from(raiz.querySelectorAll('table')).filter(t => visivel(t) && t.rows.length > 1)
+    .map(t => ({ nome: pniteTituloProximo(t), aoa: capExportTabelaAoa(t) }));
+  const graficos = Array.from(raiz.querySelectorAll('canvas')).filter(c => visivel(c) && window.Chart && Chart.getChart(c))
+    .map(c => ({ nome: pniteTituloProximo(c), aoa: capExportGraficoAoa(Chart.getChart(c)) }))
+    .concat(Array.from(raiz.querySelectorAll('.cap-hbar-list')).filter(visivel).map(l => ({ nome: pniteTituloProximo(l), aoa: capExportBarrasAoa(l) })))
+    .filter(g => g.aoa.length > 1);
+  const mapas = Array.from(raiz.querySelectorAll('.cap-svg-container')).filter(m => visivel(m) && m.querySelector('svg path[data-cod]'))
+    .map(m => ({ nome: 'Mapa ' + (m.id === 'capSvgContainer' ? 'Home' : 'Capacitação'), aoa: capExportMapaAoa(m) }));
+  return { indicadores, tabelas, graficos, mapas };
+}
+
+function capExportTemDados(raiz) {
+  const d = capExportColetar(raiz);
+  return !!(d.indicadores.length || d.tabelas.length || d.graficos.length || d.mapas.length);
+}
+
+function capExportPlanilha(raiz, titulo, escopo) {
+  if (typeof XLSX === 'undefined') throw new Error('biblioteca de planilhas indisponível (verifique a conexão)');
+  const dados = capExportColetar(raiz);
+  const wb = XLSX.utils.book_new();
+  const usados = new Set();
+  const adicionar = (base, aoa) => {
+    const limpo = String(base || 'Dados').replace(/[\\\/\?\*\[\]:]/g, ' ').replace(/\s+/g, ' ').trim() || 'Dados';
+    let nome = limpo.slice(0, 31).trim();
+    for (let n = 2; usados.has(nome.toLowerCase()); n++) nome = limpo.slice(0, 27).trim() + ' ' + n;
+    usados.add(nome.toLowerCase());
+    const ws = XLSX.utils.aoa_to_sheet(aoa);
+    const larguras = [];
+    aoa.forEach(linha => linha.forEach((v, i) => {
+      const txt = String(v && typeof v === 'object' ? v.v : v);
+      larguras[i] = Math.max(larguras[i] || 0, txt.length);
+    }));
+    ws['!cols'] = larguras.map(w => ({ wch: Math.min(60, Math.max(8, w + 2)) }));
+    XLSX.utils.book_append_sheet(wb, ws, nome);
+  };
+  const recorte = [['PNITE — Plataforma Nacional de Inteligência em Transporte Escolar'], ['Indicadores da Capacitação'], [],
+    ['Página', capExportTituloPagina()]];
+  if (escopo === 'painel') recorte.push(['Painel', titulo]);
+  recorte.push([], ['Filtro', 'Seleção']);
+  capExportFiltros().forEach(f => recorte.push(f));
+  recorte.push([], ['Gerado em', new Date().toLocaleString('pt-BR')], ['Versão', PNITE_VERSION], ['Fonte', CAP_EXPORT_FONTE]);
+  adicionar('Recorte', recorte);
+  if (dados.indicadores.length) adicionar('Indicadores', [['Grupo', 'Indicador', 'Valor', 'Observação']].concat(dados.indicadores));
+  dados.tabelas.forEach(t => adicionar(t.nome, t.aoa));
+  dados.graficos.forEach(g => adicionar('Gráfico ' + g.nome, g.aoa));
+  dados.mapas.forEach(m => adicionar(m.nome, m.aoa));
+  const abas = wb.SheetNames.length - 1;
+  if (!abas) throw new Error('não há tabela, gráfico ou indicador para exportar neste recorte');
+  XLSX.writeFile(wb, pniteNomeArquivo('capacitacao_' + titulo, 'xlsx'));
+  return abas;
+}
+
+function capCarregarHtml2canvas() {
+  if (window.html2canvas) return Promise.resolve(window.html2canvas);
+  if (!CAP_EXPORT.lib) {
+    CAP_EXPORT.lib = new Promise((ok, falha) => {
+      const s = document.createElement('script');
+      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+      s.async = true;
+      s.onload = () => window.html2canvas ? ok(window.html2canvas) : falha(new Error('biblioteca de imagem indisponível'));
+      s.onerror = () => { CAP_EXPORT.lib = null; s.remove(); falha(new Error('não foi possível carregar a biblioteca de imagem (verifique a conexão)')); };
+      document.head.appendChild(s);
+    });
+  }
+  return CAP_EXPORT.lib;
+}
+
+function capExportQuebrar(ctx, texto, largura) {
+  const linhas = [];
+  let atual = '';
+  String(texto).split(' ').forEach(p => {
+    const teste = atual ? atual + ' ' + p : p;
+    if (atual && ctx.measureText(teste).width > largura) { linhas.push(atual); atual = p; } else atual = teste;
+  });
+  if (atual) linhas.push(atual);
+  return linhas;
+}
+
+// Moldura da imagem: título, recorte (filtros) e rodapé com fonte, data e versão da PNITE.
+function capExportComporImagem(captura, titulo, escala, fundo, escopo, nota) {
+  const fonte = getComputedStyle(document.body).fontFamily || 'Inter, system-ui, sans-serif';
+  const cor1 = capCor('--text-1') || '#1a1d24', cor2 = capCor('--text-2') || '#595959', corBorda = capCor('--border') || '#e4e6ea';
+  const px = v => Math.round(v * escala);
+  const margem = px(20);
+  const largura = captura.width + 2 * margem;
+  const util = largura - 2 * margem;
+  // Na página inteira o título já faz parte da captura; a moldura traz só a origem e o recorte.
+  const blocos = [
+    { texto: 'Indicadores da Capacitação · ' + capExportTituloPagina(), tam: px(11), peso: 600, cor: cor2 },
+    escopo === 'painel' ? { texto: titulo, tam: px(17), peso: 700, cor: cor1 } : null,
+    { texto: 'Recorte: ' + capExportFiltros().map(f => f[0] + ': ' + f[1]).join(' · '), tam: px(11.5), peso: 400, cor: cor2 }
+  ].filter(Boolean);
+  const rodape = { texto: (nota ? nota + ' ' : '') + 'PNITE — Plataforma Nacional de Inteligência em Transporte Escolar · ' + CAP_EXPORT_FONTE + ' · Gerado em ' + new Date().toLocaleString('pt-BR') + ' · ' + PNITE_VERSION, tam: px(10.5), peso: 400, cor: cor2 };
+  const medida = document.createElement('canvas').getContext('2d');
+  [...blocos, rodape].forEach(b => {
+    medida.font = b.peso + ' ' + b.tam + 'px ' + fonte;
+    b.linhas = capExportQuebrar(medida, b.texto, util);
+    b.altura = b.linhas.length * Math.round(b.tam * 1.45);
+  });
+  const altCab = margem + blocos.reduce((s, b) => s + b.altura + px(4), 0) + px(8);
+  const altRod = px(12) + rodape.altura + margem;
+  const c = document.createElement('canvas');
+  c.width = largura;
+  c.height = Math.ceil(altCab + captura.height + altRod);
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = fundo;
+  ctx.fillRect(0, 0, c.width, c.height);
+  ctx.textBaseline = 'top';
+  const escrever = (b, y) => {
+    ctx.font = b.peso + ' ' + b.tam + 'px ' + fonte;
+    ctx.fillStyle = b.cor;
+    b.linhas.forEach((l, i) => ctx.fillText(l, margem, y + i * Math.round(b.tam * 1.45)));
+    return y + b.altura;
+  };
+  let y = margem;
+  blocos.forEach(b => { y = escrever(b, y) + px(4); });
+  ctx.drawImage(captura, margem, altCab);
+  const yRod = altCab + captura.height + px(6);
+  ctx.fillStyle = corBorda;
+  ctx.fillRect(margem, yRod, util, Math.max(1, px(1)));
+  escrever(rodape, yRod + px(6));
+  return c;
+}
+
+// html2canvas não desenha controles deslizantes: no clone, cada um vira uma barra com o valor atual.
+function capExportTrocarSliders(doc) {
+  const trilho = capCor('--border-mid') || '#d0d3d8', cor = capCor('--c-blue') || '#2589F4';
+  doc.querySelectorAll('#frontCapacitacao input[type="range"]').forEach(s => {
+    const min = Number(s.min) || 0, max = Number(s.max) || 0;
+    const pct = max > min ? (Number(s.value) - min) / (max - min) * 100 : 0;
+    const barra = doc.createElement('div');
+    barra.style.cssText = 'flex:1 1 auto;min-width:40px;height:6px;margin:0 8px;align-self:center;border-radius:3px;position:relative;background-color:' + trilho;
+    barra.innerHTML = '<div style="position:absolute;left:0;top:0;bottom:0;border-radius:3px;width:' + pct + '%;background-color:' + cor + '"></div>';
+    s.replaceWith(barra);
+  });
+}
+
+async function capExportImagem(el, titulo, escopo) {
+  const h2c = await capCarregarHtml2canvas();
+  const r = el.getBoundingClientRect();
+  // Tabelas com rolagem interna são expandidas na imagem quando o resultado cabe no limite.
+  const rolaveis = Array.from(el.querySelectorAll('.cap-table-wrap')).filter(t => pniteVisivel(t) && t.scrollHeight > t.clientHeight + 1);
+  const extra = rolaveis.reduce((s, t) => s + t.scrollHeight - t.clientHeight, 0);
+  const expandir = r.height + extra <= CAP_EXPORT_ALTURA_MAX;
+  const w = Math.max(1, Math.ceil(r.width)), h = Math.max(1, Math.ceil(r.height + (expandir ? extra : 0)));
+  // Nitidez 2× para documentos, reduzida em páginas muito longas (limite de tamanho do canvas).
+  const escala = Math.max(0.5, Math.min(2, 7000 / w, 14000 / h));
+  const fundo = pniteFundoTema();
+  rolaveis.forEach((t, i) => t.setAttribute('data-cap-export-rola', i));
+  // Gráficos redesenhados temporariamente na resolução da exportação (evita imagem borrada).
+  const graficos = window.Chart ? Array.from(el.querySelectorAll('canvas')).map(c => Chart.getChart(c)).filter(Boolean) : [];
+  const resolucoes = graficos.map(ch => ch.options.devicePixelRatio);
+  let final;
+  try {
+    graficos.forEach(ch => { ch.options.devicePixelRatio = Math.max(escala, window.devicePixelRatio || 1); ch.resize(); ch.update('none'); });
+    const captura = await h2c(el, {
+      scale: escala, backgroundColor: fundo, logging: false, useCORS: true,
+      ignoreElements: n => !!(n.classList && (n.classList.contains('cap-export-ui') || n.classList.contains('cap-map-tooltip'))),
+      onclone: doc => {
+        capExportTrocarSliders(doc);
+        if (expandir) doc.querySelectorAll('[data-cap-export-rola]').forEach(t => { t.style.maxHeight = 'none'; });
+      }
+    });
+    const nota = rolaveis.length && !expandir ? 'Tabela extensa: a imagem mostra o trecho visível; a planilha (XLSX) traz todos os registros.' : '';
+    final = capExportComporImagem(captura, titulo, escala, fundo, escopo, nota);
+  } finally {
+    rolaveis.forEach(t => t.removeAttribute('data-cap-export-rola'));
+    graficos.forEach((ch, i) => { ch.options.devicePixelRatio = resolucoes[i]; ch.resize(); ch.update('none'); });
+  }
+  await new Promise((ok, falha) => final.toBlob(b => {
+    if (!b) { falha(new Error('o navegador não gerou a imagem')); return; }
+    pniteSalvarBlob(b, pniteNomeArquivo('capacitacao_' + titulo, 'png'));
+    ok();
+  }, 'image/png'));
+}
+
+function capExportAviso(texto, cls) {
+  const el = document.getElementById('capExportMsg');
+  if (!el) return;
+  el.textContent = texto;
+  el.className = 'cap-export-msg' + (cls ? ' ' + cls : '');
+}
+
+async function capExportExecutar(tipo, alvo, escopo, botao) {
+  if (!PNITE_AUTH.podeBaixar()) { pniteAuthBotao(); return; }
+  if (CAP_EXPORT.ocupado) { capExportAviso('Aguarde a conclusão da exportação em andamento.'); return; }
+  if (!alvo || !capDados()) { capExportAviso('Aguarde o carregamento dos dados das capacitações.', 'err'); return; }
+  const titulo = capExportTitulo(alvo);
+  CAP_EXPORT.ocupado = true;
+  if (botao) botao.disabled = true;
+  capExportAviso(tipo === 'png' ? 'Gerando a imagem: ' + titulo + '…' : 'Gerando a planilha: ' + titulo + '…');
+  try {
+    if (tipo === 'png') {
+      await capExportImagem(alvo, titulo, escopo);
+      capExportAviso('Imagem gerada: ' + titulo + '.', 'ok');
+    } else {
+      const abas = capExportPlanilha(alvo, titulo, escopo);
+      capExportAviso('Planilha gerada: aba Recorte e ' + abas + ' aba(s) de dados.', 'ok');
+    }
+  } catch (e) {
+    capExportAviso('Não foi possível exportar: ' + (e && e.message ? e.message : e) + '.', 'err');
+  } finally {
+    CAP_EXPORT.ocupado = false;
+    if (botao) botao.disabled = false;
+  }
+}
+
+function capExportarPagina(tipo, botao) {
+  capExportExecutar(tipo, document.getElementById(CAP_VIEWS[CAP_STATE.view]), 'pagina', botao);
 }
 
 function initCapacitacaoView() {
@@ -19081,12 +19597,13 @@ async function recarregarDadosExternos() {
       </div>
     </div>
     <div class="pif-body">
-      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.4.8</strong></div>
+      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.4.9</strong></div>
       <div class="pif-row"><span>Data da alteração:</span><span class="pnite-date-val">09/11/2026</span></div>
       <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">14:00</span></div>
       <div class="pif-row"><span>Responsável técnico:</span><span class="pnite-author-val">Equipe PNITE</span></div>
       <div class="pif-note">
         <i class="ti ti-check" style="color:var(--accent);margin-right:3px"></i>
+        <strong>Exportação da capacitação (v.3.4.9):</strong> cada painel (gráficos, tabelas, mapas e cartões) ganha um botão, visível ao passar o cursor, para baixar imagem (PNG) com título, recorte e fonte, ou planilha (XLSX) com os dados e os filtros aplicados; a página ativa também pode ser exportada inteira. Disponível para usuários com permissão de download.<br>
         <strong>Mapa da capacitação (v.3.4.8):</strong> removidos os dois textos auxiliares indicados acima do mapa.<br>
         <strong>Mapa da Home (v.3.4.7):</strong> removida a nota explicativa acima do mapa.<br>
         <strong>Filtro territorial lateral (v.3.4.6):</strong> controle isolado à direita, com Centro-Oeste, Outros e Todos os atendimentos, sem o bloco de explicações.<br>
@@ -19144,7 +19661,7 @@ async function recarregarDadosExternos() {
   </div>
   <button class="pif-btn" id="pifBtn" aria-label="Informações de Versão">
     <i class="ti ti-info-circle"></i>
-    <span class="pif-btn-label pnite-version-val">v.3.4.8</span>
+    <span class="pif-btn-label pnite-version-val">v.3.4.9</span>
   </button>
 </div>
 
