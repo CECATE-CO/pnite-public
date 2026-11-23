@@ -6572,6 +6572,8 @@ html.pnite-logado .pnite-auth-btn .pab-chev { display: inline-block; }
 .pab-perfil-info b { font-size: 17px; color: var(--text-1); overflow-wrap: anywhere; }
 .pab-perfil-info small { font-size: 13px; color: var(--text-2); overflow-wrap: anywhere; }
 .pab-perfil-info .pab-link { align-self: flex-start; }
+.pab-perfil-senha { font-size: 13px; color: var(--text-2); line-height: 1.5; margin: 0 0 10px; }
+#pnitePerfilLinkSenha { margin-bottom: 16px; }
 .pab-sec-title { font-size: 12px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--text-2); margin: 18px 0 10px; padding-top: 14px; border-top: 1px solid var(--border); }
 .pu-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block; }
 .pu-avatar { overflow: hidden; }
@@ -6795,6 +6797,7 @@ html[data-theme="dark"] .adm-msg.ok { color: #7ee2b0; }
 .sm-dica { position: absolute; pointer-events: none; z-index: 5; background: var(--bg-card); color: var(--text-1); border: 1px solid var(--border-mid); border-radius: 10px; padding: 6px 10px; font-size: 12px; box-shadow: 0 4px 14px rgba(0,0,0,.15); white-space: nowrap; }
 
 /* ================================================================
+    v.3.5.9 — EDITAR PERFIL SEM TROCA DE SENHA: A SENHA É TROCADA SÓ PELO LINK DE RECUPERAÇÃO (BOTÃO "ENVIAR LINK PARA TROCAR A SENHA")
     v.3.5.8 — LISTA DE USUÁRIOS: CONTROLES E AÇÕES NA MESMA LINHA E BOTÃO "EXCLUIR" COM TEXTO
     v.3.5.7 — GESTÃO DE USUÁRIOS: CADASTRO SOMENTE POR CONVITE (SAEM "COM SENHA" E "SÓ AUTORIZAR"); AÇÕES DA LISTA SÓ COM RECUPERAÇÃO DE SENHA (OU REENVIO DO CONVITE, SEM CONTA) E EXCLUIR
     v.3.5.6 — E-MAIL DE CONFIRMAÇÃO DE CADASTRO REESCRITO COMO CONVITE PARA INTEGRAR A PNITE (email/confirmacao.html)
@@ -9789,9 +9792,9 @@ window.onerror = function(msg, url, line, col, err) {
         </div>
       </div>
       <div class="pab-field"><label for="pnitePerfilNome">Nome</label><input class="pab-input" type="text" id="pnitePerfilNome" maxlength="120" autocomplete="name"></div>
-      <div class="pab-sec-title">Alterar senha (opcional)</div>
-      <div class="pab-field"><label for="pnitePerfilSenha">Nova senha</label><input class="pab-input" type="password" id="pnitePerfilSenha" autocomplete="new-password" minlength="8" placeholder="Deixe em branco para manter a atual"></div>
-      <div class="pab-field"><label for="pnitePerfilSenha2">Confirmar nova senha</label><input class="pab-input" type="password" id="pnitePerfilSenha2" autocomplete="new-password" minlength="8"></div>
+      <div class="pab-sec-title">Senha</div>
+      <p class="pab-perfil-senha">Por segurança, a senha é trocada pelo link enviado ao seu e-mail.</p>
+      <button type="button" class="pab-btn" id="pnitePerfilLinkSenha" onclick="pniteEnviarLinkSenha()"><i class="ti ti-mail-forward" aria-hidden="true"></i> Enviar link para trocar a senha</button>
       <div class="pab-actions">
         <button type="submit" class="pab-btn pab-btn-primary" id="pnitePerfilSalvar"><i class="ti ti-device-floppy" aria-hidden="true"></i> Salvar perfil</button>
         <button type="button" class="pab-btn pab-btn-danger" onclick="pniteAuthSair()"><i class="ti ti-logout" aria-hidden="true"></i> Sair da conta</button>
@@ -9992,8 +9995,6 @@ const PNITE_AUTH = (function() {
     fecharMenu();
     fotoPendente = undefined;
     document.getElementById('pnitePerfilNome').value = (acesso && acesso.nome) || '';
-    document.getElementById('pnitePerfilSenha').value = '';
-    document.getElementById('pnitePerfilSenha2').value = '';
     document.getElementById('pnitePerfilArquivo').value = '';
     msg('pnitePerfilMsg', '');
     atualizarUI();
@@ -10037,12 +10038,6 @@ const PNITE_AUTH = (function() {
   async function salvarPerfil(ev) {
     ev.preventDefault();
     const nome = document.getElementById('pnitePerfilNome').value.trim();
-    const s1 = document.getElementById('pnitePerfilSenha').value;
-    const s2 = document.getElementById('pnitePerfilSenha2').value;
-    if (s1 || s2) {
-      if (s1.length < 8) { msg('pnitePerfilMsg', 'A nova senha deve ter pelo menos 8 caracteres.', 'err'); return; }
-      if (s1 !== s2) { msg('pnitePerfilMsg', 'As senhas não conferem.', 'err'); return; }
-    }
     const btn = document.getElementById('pnitePerfilSalvar');
     btn.disabled = true;
     msg('pnitePerfilMsg', 'Salvando…');
@@ -10051,18 +10046,26 @@ const PNITE_AUTH = (function() {
         acesso = await rpc('pnite_atualizar_perfil', { p_nome: nome, p_foto: typeof fotoPendente === 'string' ? fotoPendente : null,
                                                       p_remover_foto: fotoPendente === null });
       }
-      if (s1) {
-        const tk = await token();
-        await chamar('/auth/v1/user', { method: 'PUT', body: { password: s1 }, headers: { Authorization: 'Bearer ' + tk } });
-        document.getElementById('pnitePerfilSenha').value = '';
-        document.getElementById('pnitePerfilSenha2').value = '';
-      }
       fotoPendente = undefined;
       atualizarUI();
-      msg('pnitePerfilMsg', 'Perfil atualizado' + (s1 ? ' e senha alterada.' : '.'), 'ok');
+      msg('pnitePerfilMsg', 'Perfil atualizado.', 'ok');
     } catch (e) {
       msg('pnitePerfilMsg', e.message || 'Falha ao salvar o perfil.', 'err');
     } finally { btn.disabled = false; }
+  }
+
+  // A troca de senha é sempre pelo link de recuperação (página redefinir-senha.html), enviado ao e-mail da conta
+  async function enviarLinkSenha() {
+    if (!sessao || !sessao.email) { msg('pnitePerfilMsg', 'Entre novamente para receber o link.', 'err'); return; }
+    const btn = document.getElementById('pnitePerfilLinkSenha');
+    if (btn) btn.disabled = true;
+    msg('pnitePerfilMsg', 'Enviando o link…');
+    try {
+      await enviarEmailUsuario('recuperacao', sessao.email);
+      msg('pnitePerfilMsg', 'Link enviado para ' + sessao.email + '. Abra o e-mail para criar a nova senha.', 'ok');
+    } catch (e) {
+      msg('pnitePerfilMsg', e.message || 'Falha de conexão com o Supabase.', 'err');
+    } finally { if (btn) btn.disabled = false; }
   }
 
   function msg(id, texto, tipo) {
@@ -10260,7 +10263,7 @@ const PNITE_AUTH = (function() {
            podeBaixar: podeBaixar, ehAdmin: ehAdmin, logado: function() { return !!sessao; }, enviarEmailUsuario: enviarEmailUsuario,
            email: function() { return sessao ? sessao.email : ''; }, rpc: rpc,
            alternarMenu: alternarMenu, fecharMenu: fecharMenu, abrirPerfil: abrirPerfil,
-           escolherFoto: escolherFoto, removerFoto: removerFoto, salvarPerfil: salvarPerfil };
+           escolherFoto: escolherFoto, removerFoto: removerFoto, salvarPerfil: salvarPerfil, enviarLinkSenha: enviarLinkSenha };
 })();
 
 // Funções globais usadas pelos handlers inline
@@ -10277,6 +10280,7 @@ function pniteAbrirPerfil() { PNITE_AUTH.abrirPerfil(); }
 function pnitePerfilFotoEscolhida(input) { PNITE_AUTH.escolherFoto(input); }
 function pnitePerfilRemoverFoto() { PNITE_AUTH.removerFoto(); }
 function pniteSalvarPerfil(ev) { PNITE_AUTH.salvarPerfil(ev); }
+function pniteEnviarLinkSenha() { PNITE_AUTH.enviarLinkSenha(); }
 function pniteAuthBotao() {
   if (PNITE_AUTH.logado()) PNITE_AUTH.alternarMenu();
   else { PNITE_AUTH.definirModo('entrar'); PNITE_AUTH.abrir('pniteLoginOverlay'); }
@@ -10735,7 +10739,7 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.5.8";
+const PNITE_VERSION = "v.3.5.9";
 const PNITE_LAST_UPDATE = "19/11/2026";
 const PNITE_LAST_TIME = "19:30";
 
