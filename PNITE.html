@@ -6481,19 +6481,22 @@ html.pnite-admin .hcn-tab { flex-shrink: 0; }
 [data-theme="dark"] .pu-badge.ok { background: #0e3322; color: #4ed99a; }
 [data-theme="dark"] .pu-badge.warn { background: #2e2004; color: #f5c84a; }
 [data-theme="dark"] .pu-badge.off { background: #3a1410; color: #ff8a80; }
-.pu-ctrl { display: flex; align-items: center; gap: 18px; min-width: 0; }
-.pu-ctrl .pu-switch { min-height: 36px; margin: 0; font-size: 12.5px; white-space: nowrap; }
-.pu-ctrl select.pab-input { flex: 0 0 150px; width: 150px; padding: 7px 8px; font-size: 12.5px; }
+.pu-ctrl { display: flex; align-items: center; gap: 14px; min-width: 0; }
+.pu-ctrl .pu-switch { min-height: 36px; margin: 0; font-size: 12.5px; white-space: nowrap; gap: 8px; }
+.pu-ctrl select.pab-input { flex: 0 0 140px; width: 140px; padding: 7px 8px; font-size: 12.5px; }
 .pu-meta { font-size: 11.5px; color: var(--text-2); margin-top: 6px; }
-.pu-acts { display: grid; grid-template-columns: 158px 38px; gap: 6px; align-items: center; }
-.pu-acts .pab-btn { padding: 7px 10px; font-size: 12.5px; justify-content: center; width: 100%; min-height: 36px; white-space: nowrap; }
+.pu-acts { display: grid; grid-template-columns: 148px 96px; gap: 8px; align-items: center; justify-self: end; }
+.pu-acts .pab-btn { padding: 7px 12px; font-size: 12.5px; justify-content: center; gap: 6px; width: 100%; min-height: 36px; white-space: nowrap; line-height: 1; }
+.pu-acts .pab-btn .ti { font-size: 15px; line-height: 1; }
 .pu-acts .pu-vazio { display: block; }
-@container (max-width: 1080px) {
+/* Até 1000px de lista: identidade em cima e, abaixo, controles e ações na mesma linha; até 640px, tudo empilhado */
+@container (max-width: 1000px) {
   .pu-user { grid-template-columns: minmax(0, 1fr) auto; }
   .pu-id { grid-column: 1 / -1; }
 }
-@container (max-width: 760px) {
+@container (max-width: 640px) {
   .pu-user { grid-template-columns: minmax(0, 1fr); }
+  .pu-acts { justify-self: start; }
 }
 @container (max-width: 600px) {
   .pu-ctrl { flex-wrap: wrap; gap: 4px 18px; }
@@ -6792,6 +6795,7 @@ html[data-theme="dark"] .adm-msg.ok { color: #7ee2b0; }
 .sm-dica { position: absolute; pointer-events: none; z-index: 5; background: var(--bg-card); color: var(--text-1); border: 1px solid var(--border-mid); border-radius: 10px; padding: 6px 10px; font-size: 12px; box-shadow: 0 4px 14px rgba(0,0,0,.15); white-space: nowrap; }
 
 /* ================================================================
+    v.3.5.8 — LISTA DE USUÁRIOS: CONTROLES E AÇÕES NA MESMA LINHA E BOTÃO "EXCLUIR" COM TEXTO
     v.3.5.7 — GESTÃO DE USUÁRIOS: CADASTRO SOMENTE POR CONVITE (SAEM "COM SENHA" E "SÓ AUTORIZAR"); AÇÕES DA LISTA SÓ COM RECUPERAÇÃO DE SENHA (OU REENVIO DO CONVITE, SEM CONTA) E EXCLUIR
     v.3.5.6 — E-MAIL DE CONFIRMAÇÃO DE CADASTRO REESCRITO COMO CONVITE PARA INTEGRAR A PNITE (email/confirmacao.html)
     v.3.5.5 — GESTÃO DE USUÁRIOS: CONVITE POR E-MAIL (A PESSOA CRIA A PRÓPRIA SENHA) COMO FORMA PADRÃO DE CADASTRO E BOTÕES "RECUPERAÇÃO"/"REENVIAR CONVITE" POR USUÁRIO
@@ -10389,7 +10393,7 @@ function puRender() {
       + (!u.ativo ? vazio : u.conta_criada
           ? '<button type="button" class="pab-btn" data-pu-email="recuperacao" onclick="puEnviarEmail(this)" aria-label="Enviar e-mail de recuperação de senha para ' + e + '"><i class="ti ti-mail-forward" aria-hidden="true"></i> Recuperação</button>'
           : '<button type="button" class="pab-btn" data-pu-email="convite" onclick="puEnviarEmail(this)" aria-label="Reenviar convite para ' + e + '"><i class="ti ti-mail-plus" aria-hidden="true"></i> Reenviar convite</button>')
-      + (proprio ? vazio : '<button type="button" class="pab-btn pab-btn-danger" onclick="puRemover(this)" aria-label="Remover ' + e + '"><i class="ti ti-trash" aria-hidden="true"></i></button>')
+      + (proprio ? vazio : '<button type="button" class="pab-btn pab-btn-danger" onclick="puRemover(this)" aria-label="Excluir ' + e + '"><i class="ti ti-trash" aria-hidden="true"></i> Excluir</button>')
       + '</div></li>';
   }).join('');
 }
@@ -10437,10 +10441,10 @@ async function puSalvar(botao) {
 
 async function puRemover(botao) {
   const email = botao.closest('.pu-user').getAttribute('data-email');
-  if (!confirm('Remover ' + email + '?\n\nA autorização e a conta serão apagadas do Supabase. Esta ação não pode ser desfeita.')) return;
+  if (!confirm('Excluir ' + email + '?\n\nA autorização e a conta serão apagadas do Supabase. Esta ação não pode ser desfeita.')) return;
   try {
     await PNITE_AUTH.rpc('pnite_admin_remover_usuario', { p_email: email });
-    puMsg('puListMsg', email + ' removido.', 'ok');
+    puMsg('puListMsg', email + ' excluído.', 'ok');
     await puCarregar();
   } catch (e) { puMsg('puListMsg', e.message, 'err'); }
 }
@@ -10731,7 +10735,7 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.5.7";
+const PNITE_VERSION = "v.3.5.8";
 const PNITE_LAST_UPDATE = "19/11/2026";
 const PNITE_LAST_TIME = "19:30";
 
