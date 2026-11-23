@@ -7004,7 +7004,7 @@ window.onerror = function(msg, url, line, col, err) {
               <div class="cap-info-banner">
                 <div class="cap-info-icon"><i class="ti ti-info-circle"></i></div>
                 <div class="cap-info-text">
-                  Relatório interativo das capacitações em transporte escolar promovidas pelo FNDE e pelo CECATE-CO/UFG no Centro-Oeste: municípios convidados, participação, perfil dos participantes (gestores e CACS) e avaliação dos eventos. Fonte: convocações, formulários de inscrição, listas de presença e avaliações de cada capacitação.
+                  Relatório interativo das capacitações em transporte escolar promovidas pelo FNDE e pelo CECATE-CO/UFG no Centro-Oeste: municípios convidados, participação, perfil dos participantes (gestores e CACS) e avaliação dos eventos. Fonte: planilha oficial de participantes do CECATE-CO, convocações, formulários de inscrição e avaliações de cada capacitação.
                 </div>
               </div>
             </div>
@@ -8849,7 +8849,7 @@ window.onerror = function(msg, url, line, col, err) {
     <div class="smb-sec">
       <div class="smb-sec-title" data-i18n="settings_info_title">Informações da Versão</div>
       <div style="font-size:12px;color:var(--text-2);display:flex;flex-direction:column;gap:4px;margin-top:6px">
-        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.6.3</b></div>
+        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.6.4</b></div>
         <div><span data-i18n="settings_updated">Última Atualização:</span> <b class="pnite-date-val">06/10/2026</b> às <b class="pnite-time-val">21:05</b></div>
         <div><span data-i18n="settings_author">Responsável Técnico:</span> <b class="pnite-author-val">Equipe PNITE</b></div>
       </div>
@@ -9838,9 +9838,9 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.6.3";
+const PNITE_VERSION = "v.3.6.4";
 const PNITE_LAST_UPDATE = "23/11/2026";
-const PNITE_LAST_TIME = "09:00";
+const PNITE_LAST_TIME = "18:30";
 
 // Escapa texto para inserção segura via innerHTML (entradas do usuário, nomes de arquivo)
 function escHtml(s) {
@@ -16816,8 +16816,33 @@ function capDados() {
   });
   const capPorNum = new Map(caps.map(c => [c.numero, c]));
   const municipios = new Map(capLinhas(raw.municipios).map(m => [m.cod_ibge, m]));
-  const fato = capLinhas(raw.municipio_capacitacao).map(r => {
-    const m = municipios.get(r.cod_ibge) || {};
+  const nomesMapa = new Map(capLinhas(raw.municipios_mapa).map(m => [String(m.cod_ibge), m]));
+  const fatoBase = capLinhas(raw.municipio_capacitacao);
+  // Participação e presentes oficiais (planilha do CECATE-CO, AGENTS.md §45.1): nas capacitações
+  // presentes na planilha, substituem as contagens das listas de presença brutas. Convites,
+  // inscrições e distância continuam da base de convocações.
+  const oficial = capLinhas(raw.participacao_oficial);
+  const capsOficiais = new Set(oficial.map(o => o.capacitacao));
+  if (oficial.length) {
+    const porChave = new Map(oficial.map(o => [o.capacitacao + '|' + o.cod_ibge, o]));
+    const campos = ['presentes_total', 'presentes_gestores', 'presentes_cacs', 'presentes_outros'];
+    fatoBase.forEach(r => {
+      if (!capsOficiais.has(r.capacitacao)) return;
+      const k = r.capacitacao + '|' + r.cod_ibge;
+      const o = porChave.get(k);
+      campos.forEach(c => { r[c] = o ? o[c] : 0; });
+      porChave.delete(k);
+    });
+    // Municípios só da planilha: com "Sim", participaram sem convite registrado; com "Não", foram convidados.
+    porChave.forEach(o => {
+      fatoBase.push({ capacitacao: o.capacitacao, cod_ibge: o.cod_ibge, convidado: o.participou ? 0 : 1, inscritos_total: null,
+        inscritos_gestores: null, inscritos_cacs: null, inscritos_outros: null, presentes_total: o.presentes_total,
+        presentes_gestores: o.presentes_gestores, presentes_cacs: o.presentes_cacs, presentes_outros: o.presentes_outros, distancia_polo_km: null });
+      if (!municipios.has(o.cod_ibge) && nomesMapa.has(o.cod_ibge)) municipios.set(o.cod_ibge, { ...nomesMapa.get(o.cod_ibge), lat: null, lon: null });
+    });
+  }
+  const fato = fatoBase.map(r => {
+    const m = municipios.get(r.cod_ibge) || nomesMapa.get(r.cod_ibge) || {};
     const c = capPorNum.get(r.capacitacao) || {};
     return { ...r, nome: m.nome || r.cod_ibge, uf: m.uf || '', ano: c.ano, semestre: c.semestre };
   });
@@ -16840,7 +16865,9 @@ function capDados() {
   CAP_STATE.dados = {
     caps, capPorNum, municipios, fato, resp15, itens15, resp616,
     perg616: capLinhas(raw.aval616_perguntas),
-    semMunicipio: raw.presentes_sem_municipio || {}
+    // Na planilha oficial todo participante tem município: não há presenças sem município nessas capacitações.
+    semMunicipio: Object.assign({}, raw.presentes_sem_municipio || {}, Object.fromEntries(Array.from(capsOficiais).map(n => [n, 0]))),
+    fonteOficial: raw.participacao_oficial_carga || null
   };
   return CAP_STATE.dados;
 }
@@ -17409,7 +17436,7 @@ function capComboRegistrar() {
 const CAP_EXPORT = { lib: null, ocupado: false, seq: 0 };
 const CAP_EXPORT_ALTURA_MAX = 6000; // px CSS: acima disso, tabelas roláveis ficam no trecho visível
 const CAP_EXPORT_ALVOS = '.cap-panel, #capMapCard, .cap-profile-card';
-const CAP_EXPORT_FONTE = 'Fonte: CECATE-CO/UFG (convocações, inscrições, listas de presença e avaliações das capacitações)';
+const CAP_EXPORT_FONTE = 'Fonte: CECATE-CO/UFG (planilha oficial de participantes, convocações, inscrições e avaliações das capacitações)';
 
 function capExportTexto(el) { return el ? el.textContent.replace(/\s+/g, ' ').trim() : ''; }
 
@@ -20422,12 +20449,13 @@ async function recarregarDadosExternos() {
       </div>
     </div>
     <div class="pif-body">
-      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.6.3</strong></div>
+      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.6.4</strong></div>
       <div class="pif-row"><span>Data da alteração:</span><span class="pnite-date-val">09/11/2026</span></div>
       <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">14:00</span></div>
       <div class="pif-row"><span>Responsável técnico:</span><span class="pnite-author-val">Equipe PNITE</span></div>
       <div class="pif-note">
         <i class="ti ti-check" style="color:var(--accent);margin-right:3px"></i>
+        <strong>Participação oficial (v.3.6.4):</strong> a planilha oficial de participantes do CECATE-CO passa a ser a fonte de participação e presentes por município e capacitação (264 municípios do Centro-Oeste capacitados); convites, inscrições e avaliações seguem da base de convocações.<br>
         <strong>Mapas só do Centro-Oeste (v.3.6.3):</strong> os mapas regionais da capacitação mostram apenas o Centro-Oeste, sem países e estados vizinhos; as divisas estaduais passam a vir da própria malha municipal do IBGE, também no mapa do Brasil.<br>
         <strong>Busca de não alcançados (v.3.6.2):</strong> a busca de município passa a filtrar cartões, mapa, gráfico e lista, e avisa quando o município buscado já foi alcançado.<br>
         <strong>Não alcançados sem polo mais próximo (v.3.6.1):</strong> removidos o filtro, as colunas, a ordenação e os marcadores de "polo mais próximo", já que os polos mudam a cada capacitação; nova ordenação por convocação mais antiga.<br>
@@ -20500,7 +20528,7 @@ async function recarregarDadosExternos() {
   </div>
   <button class="pif-btn" id="pifBtn" aria-label="Informações de Versão">
     <i class="ti ti-info-circle"></i>
-    <span class="pif-btn-label pnite-version-val">v.3.6.3</span>
+    <span class="pif-btn-label pnite-version-val">v.3.6.4</span>
   </button>
 </div>
 

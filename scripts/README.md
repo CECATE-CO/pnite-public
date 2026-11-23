@@ -35,6 +35,9 @@ Conjunto de scripts Python e Node.js para processamento, extração, agregação
 - **`scripts/extrair_capacitacao.py`**:
   Extrai e consolida os dados das capacitações a partir de `data/Capacitação/` (convocações HTML, formulários de inscrição, listas de presença e avaliações de cada `XCTE`, além do legado `legado_cte_01a04_powerbi.json` das capacitações 1 a 4). Grava as tabelas consolidadas, sem dados pessoais, no schema privado `capacitacao` do Supabase (migração `0012_capacitacao.sql`), numa única transação, e atualiza a view pública `public.capacitacao_dados` lida pelo `PNITE.html`. Uso: `pip install openpyxl requests python-dotenv` e `python scripts/extrair_capacitacao.py`.
 
+- **`scripts/importar_capacitacao_oficial.py`**:
+  Carrega a **participação oficial** nas capacitações a partir da planilha "2024-2026 - Participantes das Capacitações" (cópia em Excel da planilha do CECATE-CO no Google Planilhas), colocada em `upload/` (fora do Git). Identifica a capacitação pela data da formação, valida códigos IBGE e conflitos Sim/Não, conta pessoas distintas por município e cargo e grava **somente agregados** em `capacitacao.participacao_oficial` (migração `0030_capacitacao_participacao_oficial.sql`), atualizando a view `public.capacitacao_dados`. Nome, CPF, e-mail e telefone nunca são gravados nem impressos. Nas capacitações presentes na planilha, a interface usa essa participação no lugar das listas de presença brutas (regra em `AGENTS.md` §45.1). Uso: `python scripts/importar_capacitacao_oficial.py --simular` e depois `python scripts/importar_capacitacao_oficial.py`.
+
 - **`scripts/pegar_dado_rota.py` / `scripts/pegar_dado_rota.js`**:
   Utilitários para amostragem e inspeção detalhada de traçados geométricos de rotas e coordenadas geográficas do SETE.
 
