@@ -6416,9 +6416,6 @@ html.pnite-admin .hcn-tab { flex-shrink: 0; }
 .pu-form-card { position: sticky; top: 130px; }
 .pu-card-title { display: flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 700; color: var(--text-1); margin: 0 0 14px; }
 .pu-card-title i { color: var(--c-blue); }
-.pu-seg { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; padding: 4px; border-radius: 12px; background-color: var(--bg-input); border: 1px solid var(--border); margin-bottom: 10px; }
-.pu-seg-btn { font-family: inherit; font-size: 12.5px; font-weight: 600; padding: 8px 6px; border: none; border-radius: 9px; cursor: pointer; background: transparent; color: var(--text-2); min-height: 36px; }
-.pu-seg-btn.active { background-color: var(--bg-card); color: var(--text-1); box-shadow: 0 1px 4px rgba(0, 0, 0, .12); }
 .pu-hint { font-size: 12.5px; color: var(--text-2); line-height: 1.5; margin: 0 0 14px; }
 .pu-req { color: #b42318; }
 [data-theme="dark"] .pu-req { color: #ff8a80; }
@@ -6456,9 +6453,6 @@ html.pnite-admin .hcn-tab { flex-shrink: 0; }
 .pu-switch input:checked + .pu-switch-track::after { transform: translateX(16px); }
 .pu-switch input:focus-visible + .pu-switch-track { outline: 2px solid var(--c-blue); outline-offset: 2px; }
 .pu-switch input:disabled + .pu-switch-track { opacity: .5; }
-.pu-cred { margin-top: 14px; border: 1px dashed var(--c-blue); border-radius: 14px; padding: 14px; background-color: var(--bg-input); }
-.pu-cred-head { font-size: 13px; font-weight: 700; color: var(--text-1); display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
-.pu-cred pre { font-size: 12.5px; color: var(--text-1); white-space: pre-wrap; overflow-wrap: anywhere; margin: 0 0 10px; font-family: ui-monospace, Consolas, monospace; }
 .pu-list-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 8px; }
 .pu-list-head .pu-card-title { margin: 0; }
 .pu-tools { display: flex; flex-wrap: wrap; gap: 8px; min-width: 0; }
@@ -6491,7 +6485,7 @@ html.pnite-admin .hcn-tab { flex-shrink: 0; }
 .pu-ctrl .pu-switch { min-height: 36px; margin: 0; font-size: 12.5px; white-space: nowrap; }
 .pu-ctrl select.pab-input { flex: 0 0 150px; width: 150px; padding: 7px 8px; font-size: 12.5px; }
 .pu-meta { font-size: 11.5px; color: var(--text-2); margin-top: 6px; }
-.pu-acts { display: grid; grid-template-columns: 158px 92px 38px; gap: 6px; align-items: center; }
+.pu-acts { display: grid; grid-template-columns: 158px 38px; gap: 6px; align-items: center; }
 .pu-acts .pab-btn { padding: 7px 10px; font-size: 12.5px; justify-content: center; width: 100%; min-height: 36px; white-space: nowrap; }
 .pu-acts .pu-vazio { display: block; }
 @container (max-width: 1080px) {
@@ -6520,7 +6514,7 @@ html.pnite-admin .hcn-tab { flex-shrink: 0; }
   .pu-kpi { padding: 12px; gap: 10px; }
 }
 @media (pointer: coarse) {
-  .pu-icon-btn, .pu-seg-btn { min-height: 44px; }
+  .pu-icon-btn { min-height: 44px; }
   .pu-ctrl .pu-switch { min-height: 44px; }
 }
 /* ================================================================
@@ -6798,6 +6792,7 @@ html[data-theme="dark"] .adm-msg.ok { color: #7ee2b0; }
 .sm-dica { position: absolute; pointer-events: none; z-index: 5; background: var(--bg-card); color: var(--text-1); border: 1px solid var(--border-mid); border-radius: 10px; padding: 6px 10px; font-size: 12px; box-shadow: 0 4px 14px rgba(0,0,0,.15); white-space: nowrap; }
 
 /* ================================================================
+    v.3.5.7 — GESTÃO DE USUÁRIOS: CADASTRO SOMENTE POR CONVITE (SAEM "COM SENHA" E "SÓ AUTORIZAR"); AÇÕES DA LISTA SÓ COM RECUPERAÇÃO DE SENHA (OU REENVIO DO CONVITE, SEM CONTA) E EXCLUIR
     v.3.5.6 — E-MAIL DE CONFIRMAÇÃO DE CADASTRO REESCRITO COMO CONVITE PARA INTEGRAR A PNITE (email/confirmacao.html)
     v.3.5.5 — GESTÃO DE USUÁRIOS: CONVITE POR E-MAIL (A PESSOA CRIA A PRÓPRIA SENHA) COMO FORMA PADRÃO DE CADASTRO E BOTÕES "RECUPERAÇÃO"/"REENVIAR CONVITE" POR USUÁRIO
     v.3.5.4 — SENHA: MÍNIMO DE 8 CARACTERES AO DEFINIR SENHA, NÍVEL DE SEGURANÇA COM 4 REGRAS (8+ CARACTERES, MAIÚSCULAS E MINÚSCULAS, NÚMERO, SÍMBOLO) E SEM O OLHO NATIVO DUPLICADO DO EDGE
@@ -8130,24 +8125,10 @@ window.onerror = function(msg, url, line, col, err) {
         <div class="pu-grid">
           <section class="pu-card pu-form-card" aria-labelledby="puFormTitle">
             <h2 class="pu-card-title" id="puFormTitle"><i class="ti ti-user-plus" aria-hidden="true"></i> Novo usuário</h2>
-            <div class="pu-seg" role="radiogroup" aria-label="Forma de cadastro">
-              <button type="button" class="pu-seg-btn active" role="radio" aria-checked="true" data-pu-modo="convite" onclick="puModo('convite')">Por convite</button>
-              <button type="button" class="pu-seg-btn" role="radio" aria-checked="false" data-pu-modo="conta" onclick="puModo('conta')">Com senha</button>
-              <button type="button" class="pu-seg-btn" role="radio" aria-checked="false" data-pu-modo="autorizar" onclick="puModo('autorizar')">Só autorizar</button>
-            </div>
-            <p class="pu-hint" id="puModoHint">A pessoa recebe o e-mail "PNITE — Confirme seu cadastro", clica no botão e cria a própria senha. Você não precisa definir nem enviar senha.</p>
+            <p class="pu-hint">Informe o e-mail e o acesso da pessoa. Ela recebe um convite por e-mail, confirma o cadastro e cria a própria senha.</p>
             <form id="puForm" onsubmit="puCriar(event)" novalidate>
               <div class="pab-field"><label for="puNome">Nome completo</label><input class="pab-input" type="text" id="puNome" autocomplete="off" placeholder="Ex.: Maria da Silva"></div>
               <div class="pab-field"><label for="puEmail">E-mail <span class="pu-req" aria-hidden="true">*</span></label><input class="pab-input" type="email" id="puEmail" autocomplete="off" required placeholder="nome@instituicao.br"></div>
-              <div class="pab-field" id="puSenhaField" hidden>
-                <label for="puSenha">Senha inicial <span class="pu-req" aria-hidden="true">*</span></label>
-                <div class="pu-pass">
-                  <input class="pab-input" type="password" id="puSenha" autocomplete="new-password" minlength="8" placeholder="Mínimo de 8 caracteres" oninput="puForca('puSenha','puForcaBar')">
-                  <button type="button" class="pu-icon-btn" onclick="puMostrar('puSenha', this)" aria-label="Mostrar senha"><i class="ti ti-eye" aria-hidden="true"></i></button>
-                  <button type="button" class="pu-icon-btn" onclick="puGerar('puSenha','puForcaBar')" aria-label="Gerar senha forte"><i class="ti ti-wand" aria-hidden="true"></i></button>
-                </div>
-                <div class="pu-forca" aria-hidden="true"><span id="puForcaBar"></span></div>
-              </div>
               <fieldset class="pu-fieldset">
                 <legend>Papel</legend>
                 <div class="pu-roles">
@@ -8159,11 +8140,6 @@ window.onerror = function(msg, url, line, col, err) {
               <div class="pab-actions"><button type="submit" class="pab-btn pab-btn-primary" id="puSubmit"><i class="ti ti-mail-plus" aria-hidden="true"></i> Enviar convite</button></div>
               <p class="pab-msg" id="puMsg" role="status" aria-live="polite"></p>
             </form>
-            <div class="pu-cred" id="puCred" hidden>
-              <div class="pu-cred-head"><i class="ti ti-key" aria-hidden="true"></i> Dados de acesso para enviar à pessoa</div>
-              <pre id="puCredTxt"></pre>
-              <button type="button" class="pab-btn" onclick="puCopiarCred()"><i class="ti ti-copy" aria-hidden="true"></i> Copiar</button>
-            </div>
           </section>
 
           <section class="pu-card pu-list-card" aria-labelledby="puListTitle">
@@ -9839,29 +9815,6 @@ window.onerror = function(msg, url, line, col, err) {
   </div>
 </div>
 
-<div class="pnite-auth-overlay" id="puSenhaOverlay">
-  <div class="pnite-auth-box" role="dialog" aria-modal="true" aria-labelledby="puSenhaTitle">
-    <div class="pab-head">
-      <h2 class="pab-title" id="puSenhaTitle">Redefinir senha</h2>
-      <button type="button" class="pab-close" aria-label="Fechar" onclick="pniteAuthFechar('puSenhaOverlay')"><i class="ti ti-x" aria-hidden="true"></i></button>
-    </div>
-    <p class="pab-sub">Nova senha para <b id="puSenhaEmail"></b>. A senha anterior deixa de valer imediatamente.</p>
-    <form onsubmit="puSalvarSenha(event)" novalidate>
-      <div class="pab-field">
-        <label for="puNovaSenha">Nova senha</label>
-        <div class="pu-pass">
-          <input class="pab-input" type="password" id="puNovaSenha" autocomplete="new-password" minlength="8" oninput="puForca('puNovaSenha','puForcaBar2')">
-          <button type="button" class="pu-icon-btn" onclick="puMostrar('puNovaSenha', this)" aria-label="Mostrar senha"><i class="ti ti-eye" aria-hidden="true"></i></button>
-          <button type="button" class="pu-icon-btn" onclick="puGerar('puNovaSenha','puForcaBar2')" aria-label="Gerar senha forte"><i class="ti ti-wand" aria-hidden="true"></i></button>
-        </div>
-        <div class="pu-forca" aria-hidden="true"><span id="puForcaBar2"></span></div>
-      </div>
-      <div class="pab-actions"><button type="submit" class="pab-btn pab-btn-primary"><i class="ti ti-device-floppy" aria-hidden="true"></i> Salvar nova senha</button></div>
-      <p class="pab-msg" id="puSenhaMsg" role="status" aria-live="polite"></p>
-    </form>
-  </div>
-</div>
-
 <!-- Bibliotecas de Leitura de Dados Excel e Consolidados -->
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <!-- Configuração pública da API (URL + chave publishable), gerada do .env por scripts/gerar_config_web.py -->
@@ -10332,7 +10285,7 @@ function pniteAuthSair() { PNITE_AUTH.sair(); }
 function pniteAbrirDownloads() { if (!PNITE_AUTH.podeBaixar()) return; PNITE_AUTH.fecharMenu(); PNITE_AUTH.abrir('pniteDownloadsOverlay'); }
 
 // ---------------- v.3.2.3 — Página "Usuários" (somente administrador) ----------------
-const PU_STATE = { lista: [], modo: 'convite', carregando: null, senhaEmail: '' };
+const PU_STATE = { lista: [], carregando: null };
 
 function puEl(id) { return document.getElementById(id); }
 function puMsg(id, t, tipo) { const el = puEl(id); if (el) { el.textContent = t || ''; el.className = 'pab-msg' + (tipo ? ' ' + tipo : ''); } }
@@ -10433,17 +10386,16 @@ function puRender() {
       + '<label class="pu-switch"><input type="checkbox" data-campo="ativo"' + (u.ativo ? ' checked' : '') + (proprio ? ' disabled' : '') + ' onchange="puAlterado(this)"><span class="pu-switch-track" aria-hidden="true"></span>Ativo</label>'
       + '<button type="button" class="pab-btn pab-btn-primary" data-pu-salvar hidden onclick="puSalvar(this)"><i class="ti ti-device-floppy" aria-hidden="true"></i> Salvar</button></div>'
       + '<div class="pu-acts">'
-      + (!u.ativo ? '' : (u.conta_criada && u.email_confirmado)
+      + (!u.ativo ? vazio : u.conta_criada
           ? '<button type="button" class="pab-btn" data-pu-email="recuperacao" onclick="puEnviarEmail(this)" aria-label="Enviar e-mail de recuperação de senha para ' + e + '"><i class="ti ti-mail-forward" aria-hidden="true"></i> Recuperação</button>'
           : '<button type="button" class="pab-btn" data-pu-email="convite" onclick="puEnviarEmail(this)" aria-label="Reenviar convite para ' + e + '"><i class="ti ti-mail-plus" aria-hidden="true"></i> Reenviar convite</button>')
-      + (u.ativo ? '' : vazio)
-      + (u.conta_criada ? '<button type="button" class="pab-btn" onclick="puAbrirSenha(this)" aria-label="Redefinir senha de ' + e + '"><i class="ti ti-key" aria-hidden="true"></i> Senha</button>' : vazio)
       + (proprio ? vazio : '<button type="button" class="pab-btn pab-btn-danger" onclick="puRemover(this)" aria-label="Remover ' + e + '"><i class="ti ti-trash" aria-hidden="true"></i></button>')
       + '</div></li>';
   }).join('');
 }
 
-// Dispara, pelo Supabase Auth, o e-mail de recuperação de senha (conta confirmada) ou o convite (sem conta ou sem confirmação)
+// Dispara, pelo Supabase Auth, o e-mail de recuperação de senha (conta criada; o link também confirma o e-mail)
+// ou o convite (e-mail autorizado que ainda não tem conta)
 async function puEnviarEmail(botao) {
   const email = botao.closest('.pu-user').getAttribute('data-email');
   const tipo = botao.getAttribute('data-pu-email');
@@ -10493,32 +10445,6 @@ async function puRemover(botao) {
   } catch (e) { puMsg('puListMsg', e.message, 'err'); }
 }
 
-function puModo(m) {
-  PU_STATE.modo = m;
-  document.querySelectorAll('[data-pu-modo]').forEach(function(b) {
-    const on = b.getAttribute('data-pu-modo') === m;
-    b.classList.toggle('active', on);
-    b.setAttribute('aria-checked', on ? 'true' : 'false');
-  });
-  const sf = puEl('puSenhaField');
-  if (sf) sf.hidden = (m !== 'conta');
-  const dicas = {
-    convite: 'A pessoa recebe o e-mail "PNITE — Confirme seu cadastro", clica no botão e cria a própria senha. Você não precisa definir nem enviar senha.',
-    conta: 'A conta já nasce confirmada. Entregue o e-mail e a senha inicial à pessoa; ela pode trocar a senha depois em "Esqueci a senha".',
-    autorizar: 'O e-mail fica autorizado, sem envio de e-mail; a própria pessoa cria a conta em "Entrar → Criar conta".'
-  };
-  const botoes = {
-    convite: '<i class="ti ti-mail-plus" aria-hidden="true"></i> Enviar convite',
-    conta: '<i class="ti ti-user-plus" aria-hidden="true"></i> Cadastrar usuário',
-    autorizar: '<i class="ti ti-mail-check" aria-hidden="true"></i> Autorizar e-mail'
-  };
-  const h = puEl('puModoHint');
-  if (h) h.textContent = dicas[m] || dicas.convite;
-  const s = puEl('puSubmit');
-  if (s) s.innerHTML = botoes[m] || botoes.convite;
-  puMsg('puMsg', '');
-}
-
 function puMostrar(id, btn) {
   const i = puEl(id);
   if (!i) return;
@@ -10526,17 +10452,6 @@ function puMostrar(id, btn) {
   i.type = mostrar ? 'text' : 'password';
   btn.setAttribute('aria-label', mostrar ? 'Ocultar senha' : 'Mostrar senha');
   btn.innerHTML = '<i class="ti ' + (mostrar ? 'ti-eye-off' : 'ti-eye') + '" aria-hidden="true"></i>';
-}
-
-function puGerar(id, barra) {
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789!@#$%*';
-  const n = new Uint32Array(14);
-  crypto.getRandomValues(n);
-  const i = puEl(id);
-  if (!i) return;
-  i.value = Array.from(n, function(x) { return chars[x % chars.length]; }).join('');
-  i.type = 'text';
-  puForca(id, barra);
 }
 
 // Pontua a senha de 0 a 4 (8+ caracteres, maiúsculas e minúsculas, número, símbolo) e pinta a barra;
@@ -10564,79 +10479,36 @@ function puForca(id, barra, rotulo) {
   return p;
 }
 
+// Novo usuário: autoriza o e-mail com o acesso escolhido e envia o convite (a pessoa cria a própria senha)
 async function puCriar(ev) {
   ev.preventDefault();
   const email = (puEl('puEmail').value || '').trim().toLowerCase();
   const nome = (puEl('puNome').value || '').trim();
-  const senha = puEl('puSenha').value || '';
   const papelEl = document.querySelector('input[name="puPapel"]:checked');
   const papel = papelEl ? papelEl.value : 'usuario';
   const baixar = puEl('puBaixar').checked;
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { puMsg('puMsg', 'Informe um e-mail válido.', 'err'); puEl('puEmail').focus(); return; }
   const existente = PU_STATE.lista.find(function(u) { return u.email === email; });
-  if (PU_STATE.modo === 'convite' && existente && existente.conta_criada && existente.email_confirmado) {
-    puMsg('puMsg', email + ' já tem conta ativa. Para ajudar no acesso, use "Recuperação" na lista de usuários.', 'err'); return;
+  if (existente && existente.conta_criada) {
+    puMsg('puMsg', email + ' já tem conta. Para ajudar no acesso, use "Recuperação" na lista de usuários.', 'err'); return;
   }
-  if (PU_STATE.modo === 'conta' && senha.length < 8) { puMsg('puMsg', 'A senha inicial deve ter pelo menos 8 caracteres.', 'err'); puEl('puSenha').focus(); return; }
   const btn = puEl('puSubmit');
   btn.disabled = true;
   puMsg('puMsg', 'Gravando no Supabase…');
   try {
-    if (PU_STATE.modo === 'conta') {
-      await PNITE_AUTH.rpc('pnite_admin_criar_usuario', { p_email: email, p_senha: senha, p_nome: nome || null, p_papel: papel, p_pode_baixar: baixar });
-      const endereco = location.origin + location.pathname;
-      puEl('puCredTxt').textContent = 'PNITE — Plataforma Nacional de Inteligência em Transporte Escolar\n'
-        + 'Endereço: ' + endereco + '\nE-mail: ' + email + '\nSenha inicial: ' + senha
-        + '\nAcesso: ' + (papel === 'admin' ? 'Administrador' : 'Usuário') + (baixar ? ', com downloads' : '');
-      puEl('puCred').hidden = false;
-      puMsg('puMsg', 'Conta de ' + email + ' criada e pronta para uso.', 'ok');
-    } else {
-      await PNITE_AUTH.rpc('pnite_admin_definir_acesso', { p_email: email, p_papel: papel, p_pode_baixar: baixar, p_ativo: true, p_nome: nome || null });
-      puEl('puCred').hidden = true;
-      if (PU_STATE.modo === 'convite') {
-        puMsg('puMsg', 'Enviando o convite…');
-        try {
-          await PNITE_AUTH.enviarEmailUsuario('convite', email);
-          puMsg('puMsg', 'Convite enviado para ' + email + '. A pessoa cria a própria senha pelo link do e-mail.', 'ok');
-        } catch (e) {
-          puMsg('puMsg', email + ' foi autorizado, mas o convite não foi enviado: ' + e.message + ' Use "Reenviar convite" na lista.', 'err');
-        }
-      } else {
-        puMsg('puMsg', email + ' autorizado. A pessoa já pode criar a conta em "Entrar → Criar conta".', 'ok');
-      }
+    await PNITE_AUTH.rpc('pnite_admin_definir_acesso', { p_email: email, p_papel: papel, p_pode_baixar: baixar, p_ativo: true, p_nome: nome || null });
+    puMsg('puMsg', 'Enviando o convite…');
+    try {
+      await PNITE_AUTH.enviarEmailUsuario('convite', email);
+      puMsg('puMsg', 'Convite enviado para ' + email + '. A pessoa cria a própria senha pelo link do e-mail.', 'ok');
+    } catch (e) {
+      puMsg('puMsg', email + ' foi autorizado, mas o convite não foi enviado: ' + e.message + ' Use "Reenviar convite" na lista.', 'err');
     }
     puEl('puForm').reset();
-    puEl('puSenha').type = 'password';
-    puForca('puSenha', 'puForcaBar');
     await puCarregar();
   } catch (e) {
     puMsg('puMsg', e.message, 'err');
   } finally { btn.disabled = false; }
-}
-
-function puCopiarCred() {
-  const t = (puEl('puCredTxt') || {}).textContent || '';
-  if (navigator.clipboard) navigator.clipboard.writeText(t).then(function() { puMsg('puMsg', 'Dados copiados.', 'ok'); }, function() { puMsg('puMsg', 'Não foi possível copiar; selecione o texto manualmente.', 'err'); });
-}
-
-function puAbrirSenha(botao) {
-  PU_STATE.senhaEmail = botao.closest('.pu-user').getAttribute('data-email');
-  puEl('puSenhaEmail').textContent = PU_STATE.senhaEmail;
-  puEl('puNovaSenha').value = '';
-  puEl('puNovaSenha').type = 'password';
-  puForca('puNovaSenha', 'puForcaBar2');
-  puMsg('puSenhaMsg', '');
-  PNITE_AUTH.abrir('puSenhaOverlay');
-}
-
-async function puSalvarSenha(ev) {
-  ev.preventDefault();
-  const s = puEl('puNovaSenha').value || '';
-  if (s.length < 8) { puMsg('puSenhaMsg', 'A senha deve ter pelo menos 8 caracteres.', 'err'); return; }
-  try {
-    await PNITE_AUTH.rpc('pnite_admin_definir_senha', { p_email: PU_STATE.senhaEmail, p_senha: s });
-    puMsg('puSenhaMsg', 'Senha alterada. Informe a nova senha à pessoa.', 'ok');
-  } catch (e) { puMsg('puSenhaMsg', e.message, 'err'); }
 }
 
 // ---------------- Downloads (gerados no navegador) ----------------
@@ -10859,7 +10731,7 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.5.6";
+const PNITE_VERSION = "v.3.5.7";
 const PNITE_LAST_UPDATE = "19/11/2026";
 const PNITE_LAST_TIME = "19:30";
 
