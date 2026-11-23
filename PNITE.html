@@ -14,8 +14,14 @@ try {
   if (pniteSavedTheme === 'dark' || pniteSavedTheme === 'light') document.documentElement.setAttribute('data-theme', pniteSavedTheme);
 } catch (e) {}
 // v.3.2.2: retorno dos links de e-mail do Supabase Auth (#access_token=…): guarda e limpa o hash antes da navegação por seções
+// v.3.5.3: links de recuperação e de convite (inclusive os enviados antes desta versão) vão para a página de redefinição de senha
 try {
-  if (/(^#|&)(access_token|error_description)=/.test(location.hash)) {
+  if (/(^#|&)access_token=/.test(location.hash) && /(^#|&)type=(recovery|invite)(&|$)/.test(location.hash)) {
+    location.replace(new URL('redefinir-senha.html', location.href).href + location.hash);
+  }
+} catch (e) {}
+try {
+  if (/(^#|&)(access_token|error_description)=/.test(location.hash) && !/(^#|&)type=(recovery|invite)(&|$)/.test(location.hash)) {
     window.PNITE_AUTH_HASH = location.hash.slice(1);
     history.replaceState(null, '', location.pathname + location.search);
   }
@@ -6777,6 +6783,7 @@ html[data-theme="dark"] .adm-msg.ok { color: #7ee2b0; }
 .sm-dica { position: absolute; pointer-events: none; z-index: 5; background: var(--bg-card); color: var(--text-1); border: 1px solid var(--border-mid); border-radius: 10px; padding: 6px 10px; font-size: 12px; box-shadow: 0 4px 14px rgba(0,0,0,.15); white-space: nowrap; }
 
 /* ================================================================
+    v.3.5.3 — PÁGINA PRÓPRIA DE REDEFINIÇÃO DE SENHA (redefinir-senha.html) PARA OS LINKS DE RECUPERAÇÃO E CONVITE; MODAL DE LOGIN SEM O MODO "NOVA SENHA"
     v.3.5.2 — DEFINIÇÃO DE SENHA (CADASTRO E NOVA SENHA) COM CAMPO DE CONFIRMAÇÃO, BARRA DE NÍVEL DE SEGURANÇA E BOTÃO MOSTRAR SENHA
     v.3.5.1 — CONTAGEM REGRESSIVA NO BOTÃO DE ENVIO DE E-MAIL (RECUPERAÇÃO/CADASTRO) E MENSAGEM DO LIMITE DE REENVIO EM PORTUGUÊS
     v.3.5.0 — MODELOS DE E-MAIL DO CECATE (RECUPERAÇÃO DE SENHA, CONFIRMAÇÃO DE CADASTRO E CONVITE) PUBLICADOS EM /email/; LINK DE CONVITE ABRE A TELA DE NOVA SENHA
@@ -9855,7 +9862,7 @@ const PNITE_AUTH = (function() {
   let sessao = null;          // { access_token, refresh_token, expires_at, email }
   let acesso = null;          // { email, nome, papel, pode_baixar, ativo }
   let renovando = null;       // promessa de renovação em andamento
-  let modo = 'entrar';        // entrar | cadastro | recuperar | nova-senha
+  let modo = 'entrar';        // entrar | cadastro | recuperar (a nova senha é definida em redefinir-senha.html)
 
   function cfg() { return window.PNITE_CONFIG || null; }
   function base() { const c = cfg(); return c && c.supabaseUrl ? c.supabaseUrl.replace(/\/$/, '') : ''; }
@@ -10099,7 +10106,7 @@ const PNITE_AUTH = (function() {
   }
   function fechar(id) { const o = document.getElementById(id); if (o) o.classList.remove('open'); }
 
-  const BOTOES_LOGIN = { entrar: 'Entrar', cadastro: 'Criar conta', recuperar: 'Enviar link de recuperação', 'nova-senha': 'Salvar nova senha' };
+  const BOTOES_LOGIN = { entrar: 'Entrar', cadastro: 'Criar conta', recuperar: 'Enviar link de recuperação' };
   // Intervalo mínimo entre e-mails (igual a GOTRUE_SMTP_MAX_FREQUENCY no servidor); o servidor pode exigir mais
   const ESPERA_REENVIO_S = 10;
   let esperaFim = 0, esperaTimer = null;
@@ -10125,12 +10132,11 @@ const PNITE_AUTH = (function() {
 
   function definirModo(m) {
     modo = m;
-    const titulos = { entrar: 'Entrar na PNITE', cadastro: 'Criar conta', recuperar: 'Recuperar senha', 'nova-senha': 'Definir nova senha' };
+    const titulos = { entrar: 'Entrar na PNITE', cadastro: 'Criar conta', recuperar: 'Recuperar senha' };
     const subs = {
       entrar: 'Usuários autorizados podem baixar gráficos, tabelas, indicadores e o mapa. A consulta à plataforma continua aberta a todos.',
       cadastro: 'Somente e-mails autorizados pelo administrador podem criar conta. Você receberá um e-mail para confirmar o cadastro.',
-      recuperar: 'Informe o seu e-mail para receber o link de redefinição de senha.',
-      'nova-senha': 'Digite a nova senha da sua conta (mínimo de 6 caracteres).'
+      recuperar: 'Informe o seu e-mail para receber o link de redefinição de senha.'
     };
     const set = function(id, txt) { const el = document.getElementById(id); if (el) el.textContent = txt; };
     set('pniteLoginTitle', titulos[m]);
@@ -10138,13 +10144,12 @@ const PNITE_AUTH = (function() {
     set('pniteLoginSub', subs[m]);
     const emailF = document.getElementById('pniteLoginEmailField');
     const senhaF = document.getElementById('pniteLoginSenhaField');
-    if (emailF) emailF.hidden = (m === 'nova-senha');
+    if (emailF) emailF.hidden = false;
     if (senhaF) senhaF.hidden = (m === 'recuperar');
     const senha = document.getElementById('pniteLoginSenha');
     if (senha) senha.setAttribute('autocomplete', m === 'entrar' ? 'current-password' : 'new-password');
-    // Ao definir senha (cadastro ou nova senha): confirmação e nível de segurança
-    const define = (m === 'cadastro' || m === 'nova-senha');
-    set('pniteLoginSenhaLabel', m === 'nova-senha' ? 'Nova senha' : 'Senha');
+    // Ao criar conta: confirmação e nível de segurança da senha
+    const define = (m === 'cadastro');
     const s2F = document.getElementById('pniteLoginSenha2Field');
     if (s2F) s2F.hidden = !define;
     const fw = document.getElementById('pniteLoginForcaWrap');
@@ -10156,7 +10161,7 @@ const PNITE_AUTH = (function() {
     if (s2 && !define) s2.value = '';
     senhaInput();
     const vis = function(id, v) { const el = document.getElementById(id); if (el) el.hidden = !v; };
-    vis('pniteLinkEntrar', m !== 'entrar' && m !== 'nova-senha');
+    vis('pniteLinkEntrar', m !== 'entrar');
     vis('pniteLinkCadastro', m === 'entrar');
     vis('pniteLinkRecuperar', m === 'entrar');
     msg('pniteLoginMsg', '');
@@ -10165,7 +10170,7 @@ const PNITE_AUTH = (function() {
 
   // Atualiza o nível de segurança e o aviso de senhas iguais enquanto o usuário digita
   function senhaInput() {
-    if (modo !== 'cadastro' && modo !== 'nova-senha') return;
+    if (modo !== 'cadastro') return;
     puForca('pniteLoginSenha', 'pniteLoginForcaBar', 'pniteLoginForcaTxt');
     const s1 = document.getElementById('pniteLoginSenha').value || '';
     const s2 = document.getElementById('pniteLoginSenha2').value || '';
@@ -10184,15 +10189,17 @@ const PNITE_AUTH = (function() {
     if (!configurado()) { msg('pniteLoginMsg', 'Configuração da API do Supabase ausente (config.local.js).', 'err'); return; }
     const email = (document.getElementById('pniteLoginEmail').value || '').trim().toLowerCase();
     const senha = document.getElementById('pniteLoginSenha').value || '';
-    if (modo !== 'nova-senha' && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { msg('pniteLoginMsg', 'Informe um e-mail válido.', 'err'); return; }
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { msg('pniteLoginMsg', 'Informe um e-mail válido.', 'err'); return; }
     if (modo !== 'recuperar' && senha.length < 6) { msg('pniteLoginMsg', 'A senha deve ter pelo menos 6 caracteres.', 'err'); return; }
-    if ((modo === 'cadastro' || modo === 'nova-senha') && senha !== (document.getElementById('pniteLoginSenha2').value || '')) {
+    if (modo === 'cadastro' && senha !== (document.getElementById('pniteLoginSenha2').value || '')) {
       msg('pniteLoginMsg', 'As senhas não conferem.', 'err'); return;
     }
     const btn = document.getElementById('pniteLoginSubmit');
     btn.disabled = true;
     msg('pniteLoginMsg', 'Aguarde…');
     const retorno = encodeURIComponent(location.origin + location.pathname);
+    // O link de recuperação abre a página própria de redefinição de senha
+    const retornoSenha = encodeURIComponent(new URL('redefinir-senha.html', location.href).href);
     try {
       if (modo === 'entrar') {
         const r = await chamar('/auth/v1/token?grant_type=password', { body: { email: email, password: senha } });
@@ -10206,16 +10213,9 @@ const PNITE_AUTH = (function() {
         if (r && r.access_token) { gravarSessao(sessaoDeResposta(r)); await carregarAcesso(); fechar('pniteLoginOverlay'); }
         else { msg('pniteLoginMsg', 'Conta criada. Abra o link de confirmação enviado para ' + email + ' e depois entre.', 'ok'); iniciarEspera(ESPERA_REENVIO_S); }
       } else if (modo === 'recuperar') {
-        await chamar('/auth/v1/recover?redirect_to=' + retorno, { body: { email: email } });
+        await chamar('/auth/v1/recover?redirect_to=' + retornoSenha, { body: { email: email } });
         msg('pniteLoginMsg', 'Se o e-mail tiver conta, você receberá o link de redefinição.', 'ok');
         iniciarEspera(ESPERA_REENVIO_S);
-      } else if (modo === 'nova-senha') {
-        const t = await token();
-        await chamar('/auth/v1/user', { method: 'PUT', body: { password: senha }, headers: { Authorization: 'Bearer ' + t } });
-        document.getElementById('pniteLoginSenha').value = '';
-        msg('pniteLoginMsg', 'Senha alterada com sucesso.', 'ok');
-        definirModo('entrar');
-        fechar('pniteLoginOverlay');
       }
     } catch (e) {
       msg('pniteLoginMsg', e.message || 'Falha de conexão com o Supabase.', 'err');
@@ -10255,8 +10255,6 @@ const PNITE_AUTH = (function() {
       gravarSessao(Object.assign({}, sessao, { email: (u && u.email) || '' }));
     } catch (e) {}
     await carregarAcesso();
-    // Recuperação e convite chegam sem senha definida: abrir direto a tela de nova senha
-    if (p.get('type') === 'recovery' || p.get('type') === 'invite') { definirModo('nova-senha'); abrir('pniteLoginOverlay'); }
     return true;
   }
 
@@ -10785,7 +10783,7 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.5.2";
+const PNITE_VERSION = "v.3.5.3";
 const PNITE_LAST_UPDATE = "19/11/2026";
 const PNITE_LAST_TIME = "19:30";
 

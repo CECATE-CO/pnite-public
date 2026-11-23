@@ -21,6 +21,7 @@ const DIST = join(RAIZ, 'dist');
 // [origem no repositório, destino em dist/]
 const PUBLICAVEIS = [
   ['PNITE.html', 'index.html'],
+  ['redefinir-senha.html', 'redefinir-senha.html'],   // página dos links de recuperação de senha e de convite
   ['assets/logos', 'assets/logos'],
   ['assets/img', 'assets/img'],
   ['email', 'email'],   // modelos de e-mail do Supabase Auth (lidos pelo servidor por URL)

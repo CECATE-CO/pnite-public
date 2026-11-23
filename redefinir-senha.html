@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<script>
+// Tema salvo pela PNITE (pnite_theme), aplicado antes da renderização para evitar o flash do tema claro
+try {
+  var rsTema = localStorage.getItem('pnite_theme');
+  if (rsTema === 'dim') rsTema = 'dark';
+  if (rsTema === 'dark' || rsTema === 'light') document.documentElement.setAttribute('data-theme', rsTema);
+} catch (e) {}
+// Tokens do link de e-mail (#access_token=…): guardados e retirados da barra de endereço
+window.RS_HASH = location.hash.replace(/^#/, '');
+try { if (window.RS_HASH) history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex">
+<title>Redefinir senha — PNITE</title>
+<link rel="icon" type="image/png" href="assets/logos/logo_pnite_color.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
+<style>
+/* Mesmos tokens do design system da PNITE (PNITE.html) */
+:root {
+  --c-blue: #2589F4; --c-navy: #0d1a30;
+  --bg-page: #f8f9fb; --bg-card: #ffffff; --bg-input: #f8f9fb; --bg-badge: #f0f2f6;
+  --border: #eaedf2; --border-mid: #d7dbe3;
+  --text-1: #1a1d24; --text-2: #595959; --text-3: #8e95a3;
+  --ok: #0a6640; --warn: #8a5a00; --err: #b42318;
+  --bar-fraca: #d64545; --bar-media: #e0a100; --bar-forte: #1d9e75;
+  --shadow: 0 16px 48px rgba(13, 26, 48, 0.10);
+  --font-serif: 'EB Garamond', Georgia, serif;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+[data-theme="dark"] {
+  --c-blue: #60cdff;
+  --bg-page: #191919; --bg-card: #242424; --bg-input: #202020; --bg-badge: #2a2a2a;
+  --border: #2d2d2d; --border-mid: #3d3d3d;
+  --text-1: #ffffff; --text-2: #cccccc; --text-3: #8e8e8e;
+  --ok: #4ed99a; --warn: #f5c25b; --err: #ff8a80;
+  --shadow: 0 16px 48px rgba(0, 0, 0, 0.45);
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; }
+body {
+  font-family: var(--font-sans); background-color: var(--bg-page); color: var(--text-1);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  min-height: 100vh; padding: 32px 16px; line-height: 1.5;
+}
+.rs-card {
+  width: 100%; max-width: 460px; background-color: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 20px; box-shadow: var(--shadow); overflow: hidden;
+}
+.rs-faixa { height: 5px; background-color: var(--c-blue); }
+.rs-corpo { padding: 28px 28px 26px; }
+.rs-marca { display: flex; align-items: center; gap: 12px; margin-bottom: 22px; text-decoration: none; color: inherit; }
+.rs-marca img { width: 40px; height: 40px; border-radius: 10px; }
+.rs-marca b { display: block; font-size: 15px; letter-spacing: .04em; }
+.rs-marca span { display: block; font-size: 12px; color: var(--text-2); line-height: 1.35; }
+h1 { font-family: var(--font-serif); font-weight: 500; font-size: 26px; line-height: 1.2; margin: 0 0 6px; }
+.rs-sub { font-size: 14px; color: var(--text-2); margin: 0 0 20px; }
+.rs-conta { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-2); background-color: var(--bg-badge);
+  border-radius: 10px; padding: 8px 12px; margin: 0 0 18px; min-width: 0; overflow-wrap: anywhere; }
+.rs-conta i { font-size: 16px; color: var(--c-blue); flex-shrink: 0; }
+.rs-campo { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; min-width: 0; }
+.rs-campo label { font-size: 12.5px; font-weight: 600; color: var(--text-2); }
+.rs-senha { display: flex; gap: 6px; min-width: 0; }
+.rs-input {
+  flex: 1; min-width: 0; font-family: inherit; font-size: 15px; padding: 11px 12px; border-radius: 10px;
+  border-width: 1px; border-style: solid; border-color: var(--border-mid);
+  background-color: var(--bg-input); color: var(--text-1);
+}
+.rs-input:focus { outline: 2px solid var(--c-blue); outline-offset: 1px; }
+.rs-olho {
+  width: 46px; flex-shrink: 0; border-radius: 10px; border: 1px solid var(--border-mid); background-color: var(--bg-input);
+  color: var(--text-2); cursor: pointer; font-size: 18px; display: inline-flex; align-items: center; justify-content: center;
+}
+.rs-olho:hover, .rs-olho:focus-visible { color: var(--c-blue); border-color: var(--c-blue); }
+.rs-olho:focus-visible { outline: 2px solid var(--c-blue); outline-offset: 1px; }
+.rs-forca { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; margin-top: 4px; }
+.rs-forca i { height: 6px; border-radius: 4px; background-color: var(--bg-badge); transition: background-color .2s; }
+.rs-dica { font-size: 12.5px; color: var(--text-2); margin: 2px 0 0; min-height: 1.4em; }
+.rs-dica.fraca, .rs-dica.err { color: var(--err); }
+.rs-dica.media { color: var(--warn); }
+.rs-dica.forte, .rs-dica.ok { color: var(--ok); }
+.rs-regras { list-style: none; padding: 0; margin: 6px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(170px, 100%), 1fr)); gap: 2px 12px; }
+.rs-regras li { font-size: 12px; color: var(--text-3); display: flex; align-items: center; gap: 5px; }
+.rs-regras li.ok { color: var(--ok); }
+.rs-regras li i { font-size: 14px; }
+.rs-btn {
+  width: 100%; margin-top: 6px; font-family: inherit; font-size: 15px; font-weight: 600; padding: 12px 18px; border-radius: 24px;
+  border: 1px solid var(--c-blue); background-color: var(--c-blue); color: #fff; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; min-height: 44px;
+}
+[data-theme="dark"] .rs-btn { color: var(--c-navy); }
+.rs-btn:hover { filter: brightness(1.06); }
+.rs-btn:focus-visible { outline: 2px solid var(--c-blue); outline-offset: 2px; }
+.rs-btn:disabled { opacity: .6; cursor: wait; }
+.rs-btn-sec { background-color: transparent; color: var(--c-blue); }
+[data-theme="dark"] .rs-btn-sec { color: var(--c-blue); }
+.rs-msg { font-size: 13.5px; margin: 12px 0 0; min-height: 1.2em; }
+.rs-msg.err { color: var(--err); }
+.rs-msg.ok { color: var(--ok); }
+.rs-estado { text-align: center; padding: 8px 0 4px; }
+.rs-estado > i { font-size: 46px; display: block; margin-bottom: 8px; }
+.rs-estado.ok > i { color: var(--ok); }
+.rs-estado.err > i { color: var(--err); }
+.rs-estado.carregando > i { color: var(--c-blue); animation: rs-gira 1s linear infinite; }
+@keyframes rs-gira { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .rs-estado.carregando > i { animation: none; } }
+.rs-estado h1 { margin-bottom: 8px; }
+.rs-estado p { font-size: 14px; color: var(--text-2); margin: 0 0 18px; }
+.rs-rodape { margin-top: 18px; font-size: 12px; color: var(--text-3); text-align: center; max-width: 460px; }
+.rs-rodape a { color: var(--text-2); white-space: nowrap; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0; }
+[hidden] { display: none !important; } /* `hidden` precisa vencer o display das classes */
+@media (max-width: 480px) { .rs-corpo { padding: 22px 18px 20px; } h1 { font-size: 23px; } }
+@media (pointer: coarse) { .rs-olho { min-height: 44px; } }
+</style>
+</head>
+<body>
+<main class="rs-card" aria-labelledby="rsTitulo">
+  <div class="rs-faixa" aria-hidden="true"></div>
+  <div class="rs-corpo">
+    <a class="rs-marca" href="PNITE.html">
+      <img src="assets/logos/logo_pnite_color.png" alt="">
+      <span><b>PNITE</b><span>Plataforma Nacional de Inteligência em Transporte Escolar</span></span>
+    </a>
+
+    <!-- Validando o link -->
+    <section class="rs-estado carregando" id="rsCarregando">
+      <i class="ti ti-loader-2" aria-hidden="true"></i>
+      <p role="status">Validando o link…</p>
+    </section>
+
+    <!-- Link inválido, expirado ou ausente -->
+    <section class="rs-estado err" id="rsErro" hidden>
+      <i class="ti ti-link-off" aria-hidden="true"></i>
+      <h1 id="rsErroTitulo">Link inválido ou expirado</h1>
+      <p id="rsErroTexto">O link pode ser usado uma única vez e expira em pouco tempo.</p>
+      <a class="rs-btn" href="PNITE.html"><i class="ti ti-mail-forward" aria-hidden="true"></i> Pedir um novo link na PNITE</a>
+    </section>
+
+    <!-- Formulário -->
+    <form id="rsForm" novalidate hidden>
+      <h1 id="rsTitulo">Redefinir senha</h1>
+      <p class="rs-sub" id="rsSub">Escolha uma nova senha para a sua conta na PNITE.</p>
+      <p class="rs-conta" id="rsConta" hidden><i class="ti ti-user-circle" aria-hidden="true"></i><span id="rsEmail"></span></p>
+      <!-- Campo de usuário oculto: permite ao gerenciador de senhas associar a nova senha à conta certa -->
+      <input type="email" id="rsUsuario" autocomplete="username" class="sr-only" tabindex="-1" aria-hidden="true" readonly>
+
+      <div class="rs-campo">
+        <label for="rsSenha">Nova senha</label>
+        <div class="rs-senha">
+          <input class="rs-input" type="password" id="rsSenha" autocomplete="new-password" minlength="6" required aria-describedby="rsForcaTxt rsRegras">
+          <button type="button" class="rs-olho" data-alvo="rsSenha" aria-label="Mostrar senha" aria-pressed="false"><i class="ti ti-eye" aria-hidden="true"></i></button>
+        </div>
+        <div class="rs-forca" id="rsForca" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+        <p class="rs-dica" id="rsForcaTxt">Nível de segurança: —</p>
+        <ul class="rs-regras" id="rsRegras" aria-label="Recomendações para uma senha forte">
+          <li data-regra="tam"><i class="ti ti-circle" aria-hidden="true"></i>12 ou mais caracteres</li>
+          <li data-regra="caixa"><i class="ti ti-circle" aria-hidden="true"></i>Maiúsculas e minúsculas</li>
+          <li data-regra="num"><i class="ti ti-circle" aria-hidden="true"></i>Pelo menos um número</li>
+          <li data-regra="simb"><i class="ti ti-circle" aria-hidden="true"></i>Pelo menos um símbolo</li>
+        </ul>
+      </div>
+
+      <div class="rs-campo">
+        <label for="rsSenha2">Confirmar nova senha</label>
+        <div class="rs-senha">
+          <input class="rs-input" type="password" id="rsSenha2" autocomplete="new-password" minlength="6" required aria-describedby="rsConfere">
+          <button type="button" class="rs-olho" data-alvo="rsSenha2" aria-label="Mostrar confirmação de senha" aria-pressed="false"><i class="ti ti-eye" aria-hidden="true"></i></button>
+        </div>
+        <p class="rs-dica" id="rsConfere"></p>
+      </div>
+
+      <button type="submit" class="rs-btn" id="rsSalvar"><i class="ti ti-lock-check" aria-hidden="true"></i> <span id="rsSalvarTxt">Salvar nova senha</span></button>
+      <p class="rs-msg" id="rsMsg" role="status" aria-live="polite"></p>
+    </form>
+
+    <!-- Concluído -->
+    <section class="rs-estado ok" id="rsSucesso" hidden>
+      <i class="ti ti-circle-check" aria-hidden="true"></i>
+      <h1 id="rsSucessoTitulo">Senha alterada</h1>
+      <p>Sua nova senha já está valendo e você está conectado à PNITE.</p>
+      <a class="rs-btn" href="PNITE.html"><i class="ti ti-arrow-right" aria-hidden="true"></i> Ir para a PNITE</a>
+    </section>
+  </div>
+</main>
+<p class="rs-rodape">CECATE Centro-Oeste · Universidade Federal de Goiás (UFG) · <a href="PNITE.html">Voltar para a PNITE</a></p>
+
+<script src="config.local.js"></script>
+<script>
+(function () {
+  'use strict';
+  var CHAVE_SESSAO = 'pnite_sessao';   // mesma chave da sessão em PNITE.html (PNITE_AUTH)
+  var MIN = 6;                          // mínimo aceito pelo servidor (GoTrue)
+  var cfg = window.PNITE_CONFIG || null;
+  var el = function (id) { return document.getElementById(id); };
+  var params = new URLSearchParams(window.RS_HASH || '');
+  window.RS_HASH = null;
+  var sessao = null;
+  var convite = params.get('type') === 'invite';
+
+  function mostrar(id) {
+    ['rsCarregando', 'rsErro', 'rsForm', 'rsSucesso'].forEach(function (s) { el(s).hidden = (s !== id); });
+  }
+  function erroLink(titulo, texto) {
+    el('rsErroTitulo').textContent = titulo;
+    el('rsErroTexto').textContent = texto;
+    mostrar('rsErro');
+  }
+  function msg(txt, tipo) {
+    var m = el('rsMsg');
+    m.textContent = txt || '';
+    m.className = 'rs-msg' + (tipo ? ' ' + tipo : '');
+  }
+
+  function traduzir(corpo, status) {
+    var t = (corpo && (corpo.error_description || corpo.msg || corpo.message || corpo.error)) || ('HTTP ' + status);
+    if (/different from the old password/i.test(t)) return 'A nova senha precisa ser diferente da senha atual.';
+    if (/Password should be at least/i.test(t)) return 'A senha deve ter pelo menos ' + MIN + ' caracteres.';
+    if (/weak|pwned|known to be/i.test(t)) return 'Esta senha é fraca ou conhecida em vazamentos. Escolha outra.';
+    if (status === 401 || /expired|invalid JWT|not found/i.test(t)) return 'O link expirou. Peça um novo link na PNITE.';
+    if (/rate limit|too many/i.test(t)) return 'Muitas tentativas. Aguarde alguns minutos e tente novamente.';
+    return 'Não foi possível concluir a operação (' + t + ').';
+  }
+  function chamar(caminho, metodo, corpo) {
+    return fetch(cfg.supabaseUrl.replace(/\/$/, '') + caminho, {
+      method: metodo,
+      headers: { apikey: cfg.publishableKey, Authorization: 'Bearer ' + sessao.access_token,
+                 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: corpo ? JSON.stringify(corpo) : undefined
+    }).then(function (r) {
+      return r.text().then(function (txt) {
+        var j = null;
+        try { j = txt ? JSON.parse(txt) : null; } catch (e) { j = { message: txt }; }
+        if (!r.ok) { var e = new Error(traduzir(j, r.status)); e.status = r.status; throw e; }
+        return j;
+      });
+    });
+  }
+
+  // Nível de segurança: mesma pontuação de puForca() em PNITE.html (0 a 5)
+  function avaliar(v) {
+    var r = { tam: v.length >= 12, caixa: /[a-z]/.test(v) && /[A-Z]/.test(v), num: /\d/.test(v), simb: /[^A-Za-z0-9]/.test(v) };
+    var p = (v.length >= 8 ? 1 : 0) + (r.tam ? 1 : 0) + (r.caixa ? 1 : 0) + (r.num ? 1 : 0) + (r.simb ? 1 : 0);
+    return { pontos: p, regras: r, nivel: !v ? '' : (p <= 2 ? 'fraca' : (p <= 3 ? 'media' : 'forte')) };
+  }
+  function atualizar() {
+    var s1 = el('rsSenha').value || '';
+    var s2 = el('rsSenha2').value || '';
+    var a = avaliar(s1);
+    var cores = { fraca: 'var(--bar-fraca)', media: 'var(--bar-media)', forte: 'var(--bar-forte)' };
+    var acesos = !s1 ? 0 : Math.max(1, a.pontos);
+    Array.prototype.forEach.call(el('rsForca').children, function (b, i) {
+      b.style.backgroundColor = i < acesos ? cores[a.nivel] : '';
+    });
+    var nomes = { fraca: 'Fraca', media: 'Média', forte: 'Forte' };
+    var t = el('rsForcaTxt');
+    t.className = 'rs-dica' + (a.nivel ? ' ' + a.nivel : '');
+    t.textContent = 'Nível de segurança: ' + (a.nivel ? nomes[a.nivel] : '—')
+      + (s1 && s1.length < MIN ? ' (mínimo de ' + MIN + ' caracteres)' : '');
+    Array.prototype.forEach.call(el('rsRegras').children, function (li) {
+      var ok = !!a.regras[li.getAttribute('data-regra')];
+      li.className = ok ? 'ok' : '';
+      li.firstChild.className = 'ti ' + (ok ? 'ti-circle-check' : 'ti-circle');
+    });
+    var c = el('rsConfere');
+    if (!s2) { c.className = 'rs-dica'; c.textContent = ''; }
+    else {
+      var igual = s1 === s2;
+      c.className = 'rs-dica ' + (igual ? 'ok' : 'err');
+      c.textContent = igual ? 'As senhas conferem.' : 'As senhas não conferem.';
+      if (igual && el('rsMsg').textContent === 'As senhas não conferem.') msg('');
+    }
+  }
+
+  function iniciar() {
+    if (convite) {
+      document.title = 'Criar senha — PNITE';
+      el('rsTitulo').textContent = 'Criar sua senha';
+      el('rsSub').textContent = 'Você foi convidado para a PNITE. Escolha uma senha para acessar a sua conta.';
+      el('rsSalvarTxt').textContent = 'Criar senha';
+      el('rsSucessoTitulo').textContent = 'Senha criada';
+    }
+    if (!cfg || !cfg.supabaseUrl || !cfg.publishableKey) {
+      erroLink('Configuração ausente', 'A configuração da API do Supabase (config.local.js) não foi encontrada.');
+      return;
+    }
+    if (params.get('error_description') || params.get('error')) {
+      var exp = params.get('error_code') === 'otp_expired' || /expired|invalid/i.test(params.get('error_description') || '');
+      erroLink(exp ? 'Link inválido ou expirado' : 'Não foi possível abrir o link',
+        exp ? 'O link pode ser usado uma única vez e expira em pouco tempo. Peça um novo link em "Entrar → Esqueci a senha".'
+            : (params.get('error_description') || params.get('error')));
+      return;
+    }
+    if (!params.get('access_token')) {
+      erroLink('Link de redefinição ausente', 'Abra esta página pelo link recebido por e-mail. Para receber um novo, use "Entrar → Esqueci a senha" na PNITE.');
+      return;
+    }
+    sessao = {
+      access_token: params.get('access_token'), refresh_token: params.get('refresh_token'),
+      expires_at: Number(params.get('expires_at')) || (Math.floor(Date.now() / 1000) + (Number(params.get('expires_in')) || 3600)),
+      email: ''
+    };
+    chamar('/auth/v1/user', 'GET').then(function (u) {
+      sessao.email = (u && u.email) || '';
+      if (sessao.email) { el('rsEmail').textContent = sessao.email; el('rsUsuario').value = sessao.email; el('rsConta').hidden = false; }
+      mostrar('rsForm');
+      atualizar();
+      el('rsSenha').focus();
+    }).catch(function (e) {
+      if (e.status === 401 || e.status === 403) erroLink('Link inválido ou expirado', 'O link pode ser usado uma única vez e expira em pouco tempo. Peça um novo link em "Entrar → Esqueci a senha".');
+      else erroLink('Falha de conexão', 'Não foi possível validar o link agora. Verifique a conexão e recarregue a página.');
+    });
+  }
+
+  // Eventos: digitação e também preenchimento automático (change)
+  ['input', 'change'].forEach(function (ev) {
+    el('rsSenha').addEventListener(ev, atualizar);
+    el('rsSenha2').addEventListener(ev, atualizar);
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('.rs-olho'), function (b) {
+    b.addEventListener('click', function () {
+      var i = el(b.getAttribute('data-alvo'));
+      var ver = i.type === 'password';
+      i.type = ver ? 'text' : 'password';
+      b.setAttribute('aria-pressed', String(ver));
+      b.setAttribute('aria-label', (ver ? 'Ocultar ' : 'Mostrar ') + (i.id === 'rsSenha' ? 'senha' : 'confirmação de senha'));
+      b.firstChild.className = 'ti ' + (ver ? 'ti-eye-off' : 'ti-eye');
+    });
+  });
+  el('rsForm').addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    var s1 = el('rsSenha').value || '';
+    var s2 = el('rsSenha2').value || '';
+    if (s1.length < MIN) { msg('A senha deve ter pelo menos ' + MIN + ' caracteres.', 'err'); el('rsSenha').focus(); return; }
+    if (s1 !== s2) { msg('As senhas não conferem.', 'err'); el('rsSenha2').focus(); return; }
+    var btn = el('rsSalvar');
+    btn.disabled = true;
+    msg('Salvando…');
+    chamar('/auth/v1/user', 'PUT', { password: s1 }).then(function () {
+      // Deixa o usuário conectado na PNITE com a sessão do link
+      try { localStorage.setItem(CHAVE_SESSAO, JSON.stringify(sessao)); } catch (e) {}
+      el('rsSenha').value = ''; el('rsSenha2').value = '';
+      mostrar('rsSucesso');
+    }).catch(function (e) {
+      msg(e.message || 'Falha de conexão com o Supabase.', 'err');
+    }).then(function () { btn.disabled = false; });
+  });
+
+  iniciar();
+})();
+</script>
+</body>
+</html>

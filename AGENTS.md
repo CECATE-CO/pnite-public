@@ -73,6 +73,7 @@ Esse arquivo contém a estrutura HTML, CSS e JavaScript da aplicação. O nome n
 
 ### 3.1. REGRA MANDATÓRIA DE ARQUIVAMENTO NA PASTA `old/`
 - Na raiz do repositório existe **apenas** `PNITE.html`, sempre com a versão mais recente.
+- Exceção: `redefinir-senha.html` (desde a v.3.5.3) é a página aberta pelos links de recuperação de senha e de convite do Supabase Auth. Não tem versão própria nem cópia em `old/`; suas alterações seguem a versão de `PNITE.html` e vão no mesmo commit. É publicada pela lista de `scripts/build_vercel.mjs` e usa a mesma chave de sessão (`pnite_sessao`) e o mesmo tema (`pnite_theme`) da PNITE.
 - Sempre que uma nova versão for criada ou for solicitada qualquer alteração na aplicação, **antes de editar**, a versão vigente deve ser copiada para `old/` com o número da versão que ela contém no nome, no formato:
   `old/PNITE [V.X.Y.Z].html` (ex.: `old/PNITE [V.2.9.8].html`)
 - O número usado no nome do arquivo arquivado é o valor atual de `PNITE_VERSION` (a versão que está sendo substituída), com `V` maiúsculo e sem o prefixo `v.` minúsculo.
