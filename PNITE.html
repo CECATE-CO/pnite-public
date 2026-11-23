@@ -2450,6 +2450,42 @@ body {
   .cap-export-host > .cap-card-title { padding-inline: 52px; }
 }
 
+/* v.3.5.9 — ANIMAÇÕES DA CAPACITAÇÃO: discretas, curtas e ligadas a uma interação.
+   Entrada de página/aba, atualização do mapa ao filtrar, seleção tracejada, menus e microinterações. */
+@keyframes capEntrada { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@keyframes capSurgir { from { opacity: 0; transform: scale(.96); } to { opacity: 1; transform: none; } }
+@keyframes capMenu { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+@keyframes capAtualizar { from { opacity: .55; } to { opacity: 1; } }
+@keyframes capTracejado { to { stroke-dashoffset: -16; } }
+#frontCapacitacao .cap-subview.active { animation: capEntrada .28s ease-out both; }
+#frontCapacitacao .cap-evaluation-panel:not([hidden]) { animation: capEntrada .24s ease-out both; }
+#frontCapacitacao .cap-svg-container svg { animation: capAtualizar .3s ease-out; }
+#capCapSvg path[aria-pressed="true"], #capSvgContainer path[aria-pressed="true"] { animation: capTracejado 1.2s linear infinite; }
+#frontCapacitacao .cap-filtro-chip:not([hidden]) { animation: capSurgir .2s ease-out; }
+#frontCapacitacao .cap-export-menu:not([hidden]),
+#frontCapacitacao .cap-combo-lista:not([hidden]),
+#frontCapacitacao .cap-map-tooltip { animation: capMenu .14s ease-out; }
+#frontCapacitacao .cap-kpi,
+#frontCapacitacao .cap-profile-card { transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease; }
+#frontCapacitacao .cap-kpi:hover,
+#frontCapacitacao .cap-profile-card:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(16, 24, 40, .08); border-color: var(--border-mid); }
+#frontCapacitacao .cap-evaluation-tabs [role="tab"],
+#frontCapacitacao .cap-map-mode,
+#frontCapacitacao .cap-home-clear,
+#frontCapacitacao .cap-export-page-btn,
+#frontCapacitacao .cap-export-menu button,
+#frontCapacitacao .cap-combo-lista li,
+#frontCapacitacao .cap-link { transition: background-color .15s ease, color .15s ease, border-color .15s ease, text-decoration-color .15s ease; }
+#frontCapacitacao .cap-table tbody tr { transition: background-color .12s ease; }
+#frontCapacitacao .cap-svg-container path[role="button"] { transition: stroke-width .12s ease; }
+.cap-slider-inputs input[type="range"]::-webkit-slider-thumb { transition: transform .12s ease; }
+.cap-slider-inputs input[type="range"]:active::-webkit-slider-thumb { transform: scale(1.15); }
+/* "Reduzir movimento" do sistema: sem animações nem transições nesta página. O !important é
+   necessário para vencer as animações e transições declaradas por componente acima. */
+@media (prefers-reduced-motion: reduce) {
+  #frontCapacitacao *, #frontCapacitacao *::before, #frontCapacitacao *::after { animation: none !important; transition: none !important; }
+}
+
 /* Organização exclusiva da comparação por UF. */
 .cap-uf-group-title { margin: 18px 0 10px; }
 .cap-uf-scope { padding: 12px 14px; background-color: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; }
@@ -8743,7 +8779,7 @@ window.onerror = function(msg, url, line, col, err) {
     <div class="smb-sec">
       <div class="smb-sec-title" data-i18n="settings_info_title">Informações da Versão</div>
       <div style="font-size:12px;color:var(--text-2);display:flex;flex-direction:column;gap:4px;margin-top:6px">
-        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.5.8</b></div>
+        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.5.9</b></div>
         <div><span data-i18n="settings_updated">Última Atualização:</span> <b class="pnite-date-val">06/10/2026</b> às <b class="pnite-time-val">21:05</b></div>
         <div><span data-i18n="settings_author">Responsável Técnico:</span> <b class="pnite-author-val">Equipe PNITE</b></div>
       </div>
@@ -9732,9 +9768,9 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.5.8";
+const PNITE_VERSION = "v.3.5.9";
 const PNITE_LAST_UPDATE = "22/11/2026";
-const PNITE_LAST_TIME = "18:30";
+const PNITE_LAST_TIME = "19:00";
 
 // Escapa texto para inserção segura via innerHTML (entradas do usuário, nomes de arquivo)
 function escHtml(s) {
@@ -16871,11 +16907,58 @@ function capOpcoesCapacitacao(d, min, max) {
 function capKpis(id, itens) {
   const el = document.getElementById(id);
   if (!el) return;
+  // Valores anteriores por rótulo, para a contagem animada até o novo valor.
+  const antes = new Map(Array.from(el.querySelectorAll('.cap-kpi')).map(k => [capExportTexto(k.querySelector('.cap-kpi-label')), capExportTexto(k.querySelector('.cap-kpi-value'))]));
   el.innerHTML = itens.map(k => `<div class="cap-kpi">
       <span class="cap-kpi-label">${escHtml(k.l)}</span>
       <span class="cap-kpi-value${k.texto ? ' cap-kpi-text' : ''}">${escHtml(k.v)}</span>
       ${k.n ? `<span class="cap-kpi-note">${escHtml(k.n)}</span>` : ''}
     </div>`).join('');
+  el.querySelectorAll('.cap-kpi').forEach((k, i) => {
+    const anterior = antes.get(itens[i].l);
+    if (anterior != null) capAnimarNumero(k.querySelector('.cap-kpi-value'), anterior, String(itens[i].v));
+  });
+}
+
+// --------------------------------------------------------------------------
+// Animações (v.3.5.9): discretas e funcionais; desligadas com "reduzir movimento" do sistema.
+// --------------------------------------------------------------------------
+function capMovimentoReduzido() {
+  return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+}
+
+// Lê números no formato da interface ("1.234", "67,85%", "132 km"); outros textos não animam.
+function capLerNumero(texto) {
+  const m = /^(-?\d{1,3}(?:\.\d{3})*|-?\d+)(?:,(\d+))?(\s*(?:%|km))?$/.exec(String(texto).trim());
+  if (!m) return null;
+  return { v: Number(m[1].replace(/\./g, '') + (m[2] ? '.' + m[2] : '')), casas: m[2] ? m[2].length : 0, sufixo: m[3] || '' };
+}
+
+// Contagem do valor anterior até o novo (450 ms). O texto final é sempre o valor exato.
+function capAnimarNumero(el, anterior, novo) {
+  if (!el) return;
+  if (el._capAnim) cancelAnimationFrame(el._capAnim);
+  el.textContent = novo;
+  const a = capLerNumero(anterior), b = capLerNumero(novo);
+  if (!a || !b || a.v === b.v || a.sufixo !== b.sufixo || capMovimentoReduzido()) return;
+  const inicio = performance.now(), dur = 450;
+  const passo = agora => {
+    const p = Math.min(1, (agora - inicio) / dur);
+    const v = a.v + (b.v - a.v) * (1 - Math.pow(1 - p, 3));
+    if (p < 1) {
+      el.textContent = v.toLocaleString('pt-BR', { minimumFractionDigits: b.casas, maximumFractionDigits: b.casas }) + b.sufixo;
+      el._capAnim = requestAnimationFrame(passo);
+    } else {
+      el.textContent = novo;
+      el._capAnim = null;
+    }
+  };
+  el._capAnim = requestAnimationFrame(passo);
+}
+
+function capSetNum(id, txt) {
+  const el = document.getElementById(id);
+  if (el) capAnimarNumero(el, el.textContent, String(txt));
 }
 
 function capTabelaHtml(cabecalhos, linhas, vazio) {
@@ -16922,6 +17005,9 @@ function capGrafico(id, config) {
   delete config.capClique;
   CAP_STATE.cliques[id] = clique;
   canvas.style.cursor = '';
+  // Transição única dos gráficos da capacitação; sem animação com "reduzir movimento".
+  const opcoes = config.options || (config.options = {});
+  opcoes.animation = capMovimentoReduzido() ? false : Object.assign({ duration: 450, easing: 'easeOutQuart' }, opcoes.animation || {});
   if (clique) {
     const o = config.options || (config.options = {});
     o.onClick = (evt, els, chart) => capGraficoClique(id, evt, chart);
@@ -16999,7 +17085,7 @@ function capOpcoesGrafico(t, o = {}) {
     responsive: true,
     maintainAspectRatio: false,
     indexAxis: o.horizontal ? 'y' : 'x',
-    animation: { duration: 250 },
+    animation: { duration: 450, easing: 'easeOutQuart' },
     interaction: { mode: o.modoTooltip || 'index', intersect: false, axis: eixoBusca },
     plugins: {
       legend: { display: o.legenda !== false, position: 'top', align: 'start', labels: { color: t.eixo, boxWidth: 10, boxHeight: 10, font: { size: 11 } } },
@@ -17865,15 +17951,15 @@ function updateCapacitacaoView() {
   s.ausente = s.convidados - s.participou;
   capSetTxt('capMinimosResultado', capInt(municipios.size) + (municipios.size === 1 ? ' município atende aos filtros.' : ' municípios atendem aos filtros.'));
 
-  capSetTxt('capValParticipantes', capInt(rows.length ? s.P : null));
-  capSetTxt('capValGestores', capInt(rows.length ? s.G : null));
-  capSetTxt('capValPctGestores', capPct(s.G, s.P, 2));
-  capSetTxt('capValCacs', capInt(rows.length ? s.C : null));
-  capSetTxt('capValPctCacs', capPct(s.C, s.P, 2));
-  capSetTxt('capValConvidados', capInt(rows.length ? s.convidados : null));
-  capSetTxt('capValParticipou', capInt(rows.length ? s.participou : null));
-  capSetTxt('capValTaxaPart', capPct(s.participou, s.convidados, 2));
-  capSetTxt('capValAusente', capInt(rows.length ? s.ausente : null));
+  capSetNum('capValParticipantes', capInt(rows.length ? s.P : null));
+  capSetNum('capValGestores', capInt(rows.length ? s.G : null));
+  capSetNum('capValPctGestores', capPct(s.G, s.P, 2));
+  capSetNum('capValCacs', capInt(rows.length ? s.C : null));
+  capSetNum('capValPctCacs', capPct(s.C, s.P, 2));
+  capSetNum('capValConvidados', capInt(rows.length ? s.convidados : null));
+  capSetNum('capValParticipou', capInt(rows.length ? s.participou : null));
+  capSetNum('capValTaxaPart', capPct(s.participou, s.convidados, 2));
+  capSetNum('capValAusente', capInt(rows.length ? s.ausente : null));
 
   capResumoFiltrosHome();
   capRenderCoberturaHome(rows, selUf);
@@ -17913,7 +17999,7 @@ function capRenderCoberturaHome(rows, uf) {
   const resumo = !ufs.length ? 'Cobertura regional não se aplica a este recorte.' : c.total != null ? pct + ' dos municípios ' + territorio + ' já participaram das capacitações.'
     : 'Sem base territorial para calcular a cobertura ' + territorio + '.';
   capSetTxt('capCoberturaTitulo', 'Cobertura regional ' + (uf && ufs.length ? 'em ' + uf : 'do Centro-Oeste'));
-  capSetTxt('capCoberturaPct', pct);
+  capSetNum('capCoberturaPct', pct);
   capSetTxt('capCoberturaResumo', c.total != null ? resumo + ' ' + capInt(c.alcancados) + ' de ' + capInt(c.total) + ' municípios.' : resumo);
   const canvas = document.getElementById('capChartHomeCobertura');
   canvas.setAttribute('aria-label', resumo);
@@ -20026,12 +20112,13 @@ async function recarregarDadosExternos() {
       </div>
     </div>
     <div class="pif-body">
-      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.5.8</strong></div>
+      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.5.9</strong></div>
       <div class="pif-row"><span>Data da alteração:</span><span class="pnite-date-val">09/11/2026</span></div>
       <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">14:00</span></div>
       <div class="pif-row"><span>Responsável técnico:</span><span class="pnite-author-val">Equipe PNITE</span></div>
       <div class="pif-note">
         <i class="ti ti-check" style="color:var(--accent);margin-right:3px"></i>
+        <strong>Animações da capacitação (v.3.5.9):</strong> entrada suave de páginas e abas, contagem animada dos números ao filtrar, transição única dos gráficos, atualização do mapa e seleção tracejada, menus e microinterações; tudo desligado quando o sistema pede para reduzir movimento.<br>
         <strong>Filtro cruzado na capacitação (v.3.5.8):</strong> como no Power BI, clicar num município do mapa, numa barra ou ponto de gráfico ou numa célula de tabela filtra a página inteira; clicar de novo limpa o filtro.<br>
         <strong>Logos da capacitação (v.3.5.7):</strong> UFG e CECATE-CO em plaquinhas de mesmo tamanho, com o mesmo peso visual nos dois temas.<br>
         <strong>Busca de município (v.3.5.6):</strong> na página Capacitações, o município é escolhido por um campo de busca com lupa; com um município selecionado, o cartão Capacitação mostra as capacitações em que ele teve presença.<br>
@@ -20099,7 +20186,7 @@ async function recarregarDadosExternos() {
   </div>
   <button class="pif-btn" id="pifBtn" aria-label="Informações de Versão">
     <i class="ti ti-info-circle"></i>
-    <span class="pif-btn-label pnite-version-val">v.3.5.8</span>
+    <span class="pif-btn-label pnite-version-val">v.3.5.9</span>
   </button>
 </div>
 
