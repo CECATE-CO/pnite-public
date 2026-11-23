@@ -6422,6 +6422,14 @@ html.pnite-admin .hcn-tab { flex-shrink: 0; }
 .pu-icon-btn:hover, .pu-icon-btn:focus-visible { color: var(--c-blue); border-color: var(--c-blue); }
 .pu-forca { height: 4px; border-radius: 4px; background-color: var(--bg-badge); overflow: hidden; margin-top: 4px; }
 .pu-forca span { display: block; height: 100%; width: 0; background: #b42318; transition: width .2s, background-color .2s; }
+.pnite-auth-box .pu-forca { height: 6px; margin-top: 6px; }
+.pab-forca-txt { font-size: 12px; line-height: 1.4; margin: 4px 0 0; min-height: 1.4em; color: var(--text-2); }
+.pab-forca-txt.fraca, .pab-forca-txt.err { color: #b42318; }
+.pab-forca-txt.media { color: #8a5a00; }
+.pab-forca-txt.forte, .pab-forca-txt.ok { color: #0a6640; }
+[data-theme="dark"] .pab-forca-txt.fraca, [data-theme="dark"] .pab-forca-txt.err { color: #ff8a80; }
+[data-theme="dark"] .pab-forca-txt.media { color: #f5c25b; }
+[data-theme="dark"] .pab-forca-txt.forte, [data-theme="dark"] .pab-forca-txt.ok { color: #4ed99a; }
 .pu-fieldset { border: none; padding: 0; margin: 0 0 12px; min-width: 0; }
 .pu-fieldset legend { font-size: 12px; font-weight: 600; color: var(--text-2); margin-bottom: 6px; padding: 0; }
 .pu-roles { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
@@ -6769,6 +6777,7 @@ html[data-theme="dark"] .adm-msg.ok { color: #7ee2b0; }
 .sm-dica { position: absolute; pointer-events: none; z-index: 5; background: var(--bg-card); color: var(--text-1); border: 1px solid var(--border-mid); border-radius: 10px; padding: 6px 10px; font-size: 12px; box-shadow: 0 4px 14px rgba(0,0,0,.15); white-space: nowrap; }
 
 /* ================================================================
+    v.3.5.2 — DEFINIÇÃO DE SENHA (CADASTRO E NOVA SENHA) COM CAMPO DE CONFIRMAÇÃO, BARRA DE NÍVEL DE SEGURANÇA E BOTÃO MOSTRAR SENHA
     v.3.5.1 — CONTAGEM REGRESSIVA NO BOTÃO DE ENVIO DE E-MAIL (RECUPERAÇÃO/CADASTRO) E MENSAGEM DO LIMITE DE REENVIO EM PORTUGUÊS
     v.3.5.0 — MODELOS DE E-MAIL DO CECATE (RECUPERAÇÃO DE SENHA, CONFIRMAÇÃO DE CADASTRO E CONVITE) PUBLICADOS EM /email/; LINK DE CONVITE ABRE A TELA DE NOVA SENHA
     v.3.4.9 — .env.example COM AS VARIÁVEIS DE AUTENTICAÇÃO DO SERVIDOR (ENDEREÇOS DE RETORNO DOS E-MAILS DE LOGIN E RECUPERAÇÃO DE SENHA)
@@ -9721,8 +9730,23 @@ window.onerror = function(msg, url, line, col, err) {
         <input class="pab-input" type="email" id="pniteLoginEmail" autocomplete="username" required>
       </div>
       <div class="pab-field" id="pniteLoginSenhaField">
-        <label for="pniteLoginSenha">Senha</label>
-        <input class="pab-input" type="password" id="pniteLoginSenha" autocomplete="current-password" minlength="6" required>
+        <label for="pniteLoginSenha" id="pniteLoginSenhaLabel">Senha</label>
+        <div class="pu-pass">
+          <input class="pab-input" type="password" id="pniteLoginSenha" autocomplete="current-password" minlength="6" required oninput="pniteAuthSenhaInput()">
+          <button type="button" class="pu-icon-btn" onclick="puMostrar('pniteLoginSenha', this)" aria-label="Mostrar senha"><i class="ti ti-eye" aria-hidden="true"></i></button>
+        </div>
+        <div class="pab-forca-wrap" id="pniteLoginForcaWrap" hidden>
+          <div class="pu-forca" aria-hidden="true"><span id="pniteLoginForcaBar"></span></div>
+          <p class="pab-forca-txt" id="pniteLoginForcaTxt">Nível de segurança: —</p>
+        </div>
+      </div>
+      <div class="pab-field" id="pniteLoginSenha2Field" hidden>
+        <label for="pniteLoginSenha2">Confirmar senha</label>
+        <div class="pu-pass">
+          <input class="pab-input" type="password" id="pniteLoginSenha2" autocomplete="new-password" minlength="6" oninput="pniteAuthSenhaInput()" aria-describedby="pniteLoginConfere">
+          <button type="button" class="pu-icon-btn" onclick="puMostrar('pniteLoginSenha2', this)" aria-label="Mostrar confirmação de senha"><i class="ti ti-eye" aria-hidden="true"></i></button>
+        </div>
+        <p class="pab-forca-txt" id="pniteLoginConfere"></p>
       </div>
       <div class="pab-actions">
         <button type="submit" class="pab-btn pab-btn-primary" id="pniteLoginSubmit">Entrar</button>
@@ -10118,12 +10142,41 @@ const PNITE_AUTH = (function() {
     if (senhaF) senhaF.hidden = (m === 'recuperar');
     const senha = document.getElementById('pniteLoginSenha');
     if (senha) senha.setAttribute('autocomplete', m === 'entrar' ? 'current-password' : 'new-password');
+    // Ao definir senha (cadastro ou nova senha): confirmação e nível de segurança
+    const define = (m === 'cadastro' || m === 'nova-senha');
+    set('pniteLoginSenhaLabel', m === 'nova-senha' ? 'Nova senha' : 'Senha');
+    const s2F = document.getElementById('pniteLoginSenha2Field');
+    if (s2F) s2F.hidden = !define;
+    const fw = document.getElementById('pniteLoginForcaWrap');
+    if (fw) fw.hidden = !define;
+    if (senha) {
+      if (define) senha.setAttribute('aria-describedby', 'pniteLoginForcaTxt'); else senha.removeAttribute('aria-describedby');
+    }
+    const s2 = document.getElementById('pniteLoginSenha2');
+    if (s2 && !define) s2.value = '';
+    senhaInput();
     const vis = function(id, v) { const el = document.getElementById(id); if (el) el.hidden = !v; };
     vis('pniteLinkEntrar', m !== 'entrar' && m !== 'nova-senha');
     vis('pniteLinkCadastro', m === 'entrar');
     vis('pniteLinkRecuperar', m === 'entrar');
     msg('pniteLoginMsg', '');
     atualizarEspera();
+  }
+
+  // Atualiza o nível de segurança e o aviso de senhas iguais enquanto o usuário digita
+  function senhaInput() {
+    if (modo !== 'cadastro' && modo !== 'nova-senha') return;
+    puForca('pniteLoginSenha', 'pniteLoginForcaBar', 'pniteLoginForcaTxt');
+    const s1 = document.getElementById('pniteLoginSenha').value || '';
+    const s2 = document.getElementById('pniteLoginSenha2').value || '';
+    const c = document.getElementById('pniteLoginConfere');
+    if (!c) return;
+    if (!s2) { c.className = 'pab-forca-txt'; c.textContent = ''; return; }
+    const ok = s1 === s2;
+    c.className = 'pab-forca-txt ' + (ok ? 'ok' : 'err');
+    c.textContent = ok ? 'As senhas conferem.' : 'As senhas não conferem.';
+    const m = document.getElementById('pniteLoginMsg');
+    if (ok && m && m.textContent === 'As senhas não conferem.') msg('pniteLoginMsg', '');
   }
 
   async function enviar(ev) {
@@ -10133,6 +10186,9 @@ const PNITE_AUTH = (function() {
     const senha = document.getElementById('pniteLoginSenha').value || '';
     if (modo !== 'nova-senha' && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { msg('pniteLoginMsg', 'Informe um e-mail válido.', 'err'); return; }
     if (modo !== 'recuperar' && senha.length < 6) { msg('pniteLoginMsg', 'A senha deve ter pelo menos 6 caracteres.', 'err'); return; }
+    if ((modo === 'cadastro' || modo === 'nova-senha') && senha !== (document.getElementById('pniteLoginSenha2').value || '')) {
+      msg('pniteLoginMsg', 'As senhas não conferem.', 'err'); return;
+    }
     const btn = document.getElementById('pniteLoginSubmit');
     btn.disabled = true;
     msg('pniteLoginMsg', 'Aguarde…');
@@ -10214,7 +10270,7 @@ const PNITE_AUTH = (function() {
     await carregarAcesso();
   }
 
-  return { iniciar: iniciar, abrir: abrir, fechar: fechar, definirModo: definirModo, enviar: enviar, sair: sair,
+  return { iniciar: iniciar, abrir: abrir, fechar: fechar, definirModo: definirModo, senhaInput: senhaInput, enviar: enviar, sair: sair,
            podeBaixar: podeBaixar, ehAdmin: ehAdmin, logado: function() { return !!sessao; },
            email: function() { return sessao ? sessao.email : ''; }, rpc: rpc,
            alternarMenu: alternarMenu, fecharMenu: fecharMenu, abrirPerfil: abrirPerfil,
@@ -10241,6 +10297,7 @@ function pniteAuthBotao() {
 }
 function pniteAuthModo(m) { PNITE_AUTH.definirModo(m); }
 function pniteAuthEnviar(ev) { PNITE_AUTH.enviar(ev); }
+function pniteAuthSenhaInput() { PNITE_AUTH.senhaInput(); }
 function pniteAuthFechar(id) { PNITE_AUTH.fechar(id); }
 function pniteAuthSair() { PNITE_AUTH.sair(); }
 function pniteAbrirDownloads() { if (!PNITE_AUTH.podeBaixar()) return; PNITE_AUTH.fecharMenu(); PNITE_AUTH.abrir('pniteDownloadsOverlay'); }
@@ -10422,7 +10479,8 @@ function puGerar(id, barra) {
   puForca(id, barra);
 }
 
-function puForca(id, barra) {
+// Pontua a senha de 0 a 5 e pinta a barra; com `rotulo`, escreve também o nível (Fraca/Média/Forte)
+function puForca(id, barra, rotulo) {
   const v = (puEl(id) || {}).value || '';
   let p = 0;
   if (v.length >= 8) p++;
@@ -10431,9 +10489,19 @@ function puForca(id, barra) {
   if (/\d/.test(v)) p++;
   if (/[^A-Za-z0-9]/.test(v)) p++;
   const b = puEl(barra);
-  if (!b) return;
-  b.style.width = (v ? Math.max(15, p * 20) : 0) + '%';
-  b.style.backgroundColor = p <= 2 ? '#d64545' : (p <= 3 ? '#e0a100' : '#1d9e75');
+  if (b) {
+    b.style.width = (v ? Math.max(15, p * 20) : 0) + '%';
+    b.style.backgroundColor = p <= 2 ? '#d64545' : (p <= 3 ? '#e0a100' : '#1d9e75');
+  }
+  const r = rotulo ? puEl(rotulo) : null;
+  if (r) {
+    const nivel = !v ? '' : (p <= 2 ? 'fraca' : (p <= 3 ? 'media' : 'forte'));
+    const nomes = { fraca: 'Fraca', media: 'Média', forte: 'Forte' };
+    r.className = 'pab-forca-txt' + (nivel ? ' ' + nivel : '');
+    r.textContent = 'Nível de segurança: ' + (nivel ? nomes[nivel] : '—')
+      + (nivel && nivel !== 'forte' ? ' (use 12+ caracteres, maiúsculas, minúsculas, números e símbolos)' : '');
+  }
+  return p;
 }
 
 async function puCriar(ev) {
@@ -10717,7 +10785,7 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.5.1";
+const PNITE_VERSION = "v.3.5.2";
 const PNITE_LAST_UPDATE = "19/11/2026";
 const PNITE_LAST_TIME = "19:30";
 
