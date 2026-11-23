@@ -6,7 +6,7 @@ São publicados pela Vercel em `https://pnite.vercel.app/email/` (ver `scripts/b
 | Arquivo | E-mail | Assunto sugerido |
 |---|---|---|
 | `recuperacao.html` | Redefinição de senha (`recovery`) | PNITE — Redefinição de senha |
-| `confirmacao.html` | Confirmação de cadastro (`confirmation`) | PNITE — Confirme seu cadastro |
+| `confirmacao.html` | Confirmação de cadastro (`confirmation`); também é o e-mail do botão "Por convite" / "Reenviar convite" da Gestão de Usuários, cujo link abre `redefinir-senha.html` | PNITE — Confirme seu cadastro |
 | `convite.html` | Convite (`invite`) | PNITE — Convite de acesso |
 | `logo_cecate.png` | Logo (PNG extraído de `assets/logos/logo_cecate.svg`; clientes de e-mail não exibem SVG) | — |
 

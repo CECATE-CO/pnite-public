@@ -205,7 +205,8 @@ h1 { font-family: var(--font-serif); font-weight: 500; font-size: 26px; line-hei
   var params = new URLSearchParams(window.RS_HASH || '');
   window.RS_HASH = null;
   var sessao = null;
-  var convite = params.get('type') === 'invite';
+  // Convite do administrador: chega como 'invite' ou, quando enviado pela PNITE, como confirmação de cadastro ('signup')
+  var convite = ['invite', 'signup', 'magiclink'].indexOf(params.get('type')) >= 0;
 
   function mostrar(id) {
     ['rsCarregando', 'rsErro', 'rsForm', 'rsSucesso'].forEach(function (s) { el(s).hidden = (s !== id); });
