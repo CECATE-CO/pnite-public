@@ -2185,6 +2185,7 @@ body {
   --cap-map-rotulo-uf: #13202f;
   --cap-map-polo: #c62828;
   --cap-map-polo-anel: #ffffff;
+  --cap-map-nunca: #c2410c;
 }
 [data-theme="dark"] {
   --cap-acento: #f2b705;
@@ -2211,6 +2212,7 @@ body {
   --cap-map-rotulo-uf: #eef2f8;
   --cap-map-polo: #ff6b5b;
   --cap-map-polo-anel: #161c26;
+  --cap-map-nunca: #d9542b;
   --cap-lk-1: #f28b82;
   --cap-lk-2: #c0392b;
   --cap-lk-3: #8a8984;
@@ -2485,6 +2487,23 @@ body {
 @media (prefers-reduced-motion: reduce) {
   #frontCapacitacao *, #frontCapacitacao *::before, #frontCapacitacao *::after { animation: none !important; transition: none !important; }
 }
+
+/* v.3.6.0 — Página "Municípios não alcançados" (priorização de convites). */
+.dot-nunca { background-color: var(--cap-map-nunca); }
+#capPriKpis { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.cap-pri-chip { margin: 2px 0 10px; }
+#capSubPrioridade .cap-map-legend-bar, #capSubPrioridade .cap-legend-tags { flex-wrap: wrap; min-width: 0; }
+#capSubPrioridade .cap-legend-tag { white-space: nowrap; }
+.cap-pri-baixar { width: auto; flex: 0 0 auto; min-height: 44px; align-self: flex-end; }
+#capSubPrioridade select, #capSubPrioridade input[type="search"] { min-height: 44px; }
+#capPriSvg path[role="button"] { cursor: pointer; }
+#capPriSvg path[aria-pressed="true"], #capPriSvg path[role="button"]:focus-visible { stroke: var(--text-1); stroke-width: 3px; stroke-dasharray: 5 3; animation: capTracejado 1.2s linear infinite; }
+.cap-tag-nunca { background-color: #fde4d6; color: #9a3412; }
+.cap-tag-convidado { background-color: #e3e9f2; color: #2b3d55; }
+[data-theme="dark"] .cap-tag-nunca { background-color: #3d1d12; color: #ffb38a; }
+[data-theme="dark"] .cap-tag-convidado { background-color: #26303f; color: #c3d0e3; }
+@media (max-width: 1000px) { #capPriKpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 600px) { #capPriKpis { grid-template-columns: minmax(0, 1fr); } }
 
 /* Organização exclusiva da comparação por UF. */
 .cap-uf-group-title { margin: 18px 0 10px; }
@@ -6932,6 +6951,10 @@ window.onerror = function(msg, url, line, col, err) {
             <i class="ti ti-map-2"></i>
             <span>UNIDADES DA FEDERAÇÃO</span>
           </button>
+          <button type="button" class="cap-nav-btn" id="capNavPrioridade" onclick="switchCapView('prioridade', this)">
+            <i class="ti ti-target"></i>
+            <span>NÃO ALCANÇADOS</span>
+          </button>
           <button type="button" class="cap-nav-btn" id="capNavAval1_5" aria-controls="capSubGrupo1_5" onclick="switchCapView('cap1_5', this)">
             <i class="ti ti-clipboard-check"></i>
             <span>CAPACITAÇÕES 1 A 5</span>
@@ -7324,6 +7347,55 @@ window.onerror = function(msg, url, line, col, err) {
             <div class="cap-table-wrap" id="capUfTabela" tabindex="0" role="region" aria-label="Comparativo dos estados; role horizontalmente para consultar todas as colunas"></div>
           </div>
           <section class="cap-panel" aria-labelledby="capUfOutrosTitulo"><h3 class="cap-panel-title" id="capUfOutrosTitulo">Outros — atendimentos fora do Centro-Oeste</h3><div class="cap-table-wrap" id="capUfOutros"></div></section>
+        </section>
+
+        <!-- SUB-VIEW: MUNICÍPIOS NÃO ALCANÇADOS (PRIORIZAÇÃO DE CONVITES) -->
+        <section class="cap-subview" id="capSubPrioridade" aria-labelledby="capPriTitulo">
+          <header class="cap-page-head">
+            <h2 id="capPriTitulo">Municípios não alcançados</h2>
+            <div class="cap-home-title-bar"></div>
+          </header>
+          <p class="cap-territory-note" id="capPriAviso" hidden>A priorização considera somente os municípios do Centro-Oeste, área de atuação regional do CECATE-CO; o filtro de origem não altera esta página.</p>
+          <div class="cap-toolbar" role="group" aria-label="Filtros dos municípios não alcançados">
+            <div class="cap-field"><label for="capPriUf">Estado</label><select id="capPriUf" data-cap-filter></select></div>
+            <div class="cap-field"><label for="capPriSit">Situação</label><select id="capPriSit" data-cap-filter><option value="">Todos os não alcançados</option><option value="nunca">Nunca convidados</option><option value="convidado">Convidados sem participação</option></select></div>
+            <div class="cap-field"><label for="capPriPolo">Polo mais próximo</label><select id="capPriPolo" data-cap-filter></select></div>
+            <div class="cap-field cap-field-wide"><label for="capPriBusca">Buscar município</label><input type="search" id="capPriBusca" data-cap-filter placeholder="Nome ou código IBGE"></div>
+          </div>
+          <div class="cap-kpi-grid" id="capPriKpis" role="group" aria-label="Situação dos municípios do Centro-Oeste no recorte"></div>
+          <div class="cap-grid-2">
+            <div class="cap-panel">
+              <h3 class="cap-panel-title">Mapa da situação dos municípios</h3>
+              <button type="button" class="cap-filtro-chip cap-pri-chip" id="capPriMunChip" hidden onclick="capPriSelecionarMunicipio('')"><i class="ti ti-x" aria-hidden="true"></i> <span id="capPriMunChipTxt"></span></button>
+              <div class="cap-map-card cap-map-compact" id="capPriMapCard">
+                <div class="cap-map-legend-bar">
+                  <span class="cap-legend-title">Situação</span>
+                  <div class="cap-legend-tags">
+                    <span class="cap-legend-tag"><span class="cap-dot dot-sim"></span> Alcançado</span>
+                    <span class="cap-legend-tag"><span class="cap-dot dot-nao"></span> Convidado sem participação</span>
+                    <span class="cap-legend-tag"><span class="cap-dot dot-nunca"></span> Nunca convidado</span>
+                    <span class="cap-legend-tag"><span class="cap-dot dot-polo"></span> Polo</span>
+                  </div>
+                </div>
+                <div class="cap-svg-container" id="capPriSvg"></div>
+                <div class="cap-map-watermarks"><span>Malha municipal: IBGE</span><span>Fonte: CECATE-CO / UFG</span></div>
+                <div class="cap-map-tooltip" style="display:none;"></div>
+              </div>
+            </div>
+            <div class="cap-panel">
+              <h3 class="cap-panel-title">Situação por estado</h3>
+              <div class="cap-chart-box"><canvas id="capChartPriUf" role="img" aria-label="Municípios alcançados, convidados sem participação e nunca convidados por estado"></canvas></div>
+            </div>
+          </div>
+          <div class="cap-panel">
+            <h3 class="cap-panel-title">Lista para priorização de convites</h3>
+            <p class="cap-panel-sub" id="capPriTabelaSub"></p>
+            <div class="cap-toolbar" role="group" aria-label="Ordenação e download da lista">
+              <div class="cap-field"><label for="capPriOrdem">Ordenar</label><select id="capPriOrdem" data-cap-filter><option value="uf">UF e município</option><option value="distancia">Mais distantes do polo</option><option value="proximo">Mais próximos do polo</option><option value="convites">Mais convites sem participação</option></select></div>
+              <button type="button" class="cap-export-page-btn cap-pri-baixar" onclick="capPriBaixar(this)"><i class="ti ti-file-spreadsheet" aria-hidden="true"></i> Baixar planilha (XLSX)</button>
+            </div>
+            <div class="cap-table-wrap" id="capPriTabela" tabindex="0" role="region" aria-label="Municípios não alcançados"></div>
+          </div>
         </section>
 
         <!-- SUB-VIEW 4: AVALIAÇÃO DAS CAPACITAÇÕES 1 A 5 -->
@@ -8779,7 +8851,7 @@ window.onerror = function(msg, url, line, col, err) {
     <div class="smb-sec">
       <div class="smb-sec-title" data-i18n="settings_info_title">Informações da Versão</div>
       <div style="font-size:12px;color:var(--text-2);display:flex;flex-direction:column;gap:4px;margin-top:6px">
-        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.5.9</b></div>
+        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.6.0</b></div>
         <div><span data-i18n="settings_updated">Última Atualização:</span> <b class="pnite-date-val">06/10/2026</b> às <b class="pnite-time-val">21:05</b></div>
         <div><span data-i18n="settings_author">Responsável Técnico:</span> <b class="pnite-author-val">Equipe PNITE</b></div>
       </div>
@@ -9768,9 +9840,9 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.5.9";
+const PNITE_VERSION = "v.3.6.0";
 const PNITE_LAST_UPDATE = "22/11/2026";
-const PNITE_LAST_TIME = "19:00";
+const PNITE_LAST_TIME = "20:00";
 
 // Escapa texto para inserção segura via innerHTML (entradas do usuário, nomes de arquivo)
 function escHtml(s) {
@@ -16660,12 +16732,12 @@ document.addEventListener('keydown', function(ev) {
 // Base: API do Supabase (public.capacitacao_dados, gravada por scripts/extrair_capacitacao.py),
 // com tabelas {colunas, linhas} do schema `capacitacao` (supabase/migrations/0012_capacitacao.sql).
 // Malha municipal do mapa: API de malhas do IBGE (loadMunicipalGeoForUf, com cache).
-const CAP_STATE = { raw: null, malhas: null, carga: null, dados: null, charts: {}, view: 'home', abas: { cap1_5: 'aval1_5', cap6_16: 'aval6_16' }, mapaModo: 'participacao', eventos: false, geo: null, mapInfo: {}, cliques: {}, homeMun: '' };
+const CAP_STATE = { raw: null, malhas: null, carga: null, dados: null, charts: {}, view: 'home', abas: { cap1_5: 'aval1_5', cap6_16: 'aval6_16' }, mapaModo: 'participacao', eventos: false, geo: null, mapInfo: {}, cliques: {}, homeMun: '', priMun: '' };
 const CAP_UFS_MAPA = ['GO', 'MT', 'MS', 'DF'];
 const CAP_UF_POR_PREFIXO = { '11': 'RO', '12': 'AC', '13': 'AM', '14': 'RR', '15': 'PA', '16': 'AP', '17': 'TO', '21': 'MA', '22': 'PI', '23': 'CE', '24': 'RN', '25': 'PB', '26': 'PE', '27': 'AL', '28': 'SE', '29': 'BA', '31': 'MG', '32': 'ES', '33': 'RJ', '35': 'SP', '41': 'PR', '42': 'SC', '43': 'RS', '50': 'MS', '51': 'MT', '52': 'GO', '53': 'DF' };
 const CAP_UFS_CONHECIDAS = new Set(Object.values(CAP_UF_POR_PREFIXO));
 const CAP_VIEWS = {
-  home: 'capSubHome', capacitacoes: 'capSubCapacitacoes', uf: 'capSubUf',
+  home: 'capSubHome', capacitacoes: 'capSubCapacitacoes', uf: 'capSubUf', prioridade: 'capSubPrioridade',
   aval1_5: 'capSubGrupo1_5', stat1_5: 'capSubGrupo1_5', aval6_16: 'capSubGrupo6_16', stat6_16: 'capSubGrupo6_16'
 };
 const CAP_ESCALA_15 = ['Ótimo', 'Bom', 'Regular', 'Ruim'];
@@ -17121,7 +17193,7 @@ function switchCapView(subviewId, btnEl) {
   CAP_STATE.view = CAP_VIEWS[destino] ? destino : 'home';
   const grupo = /^(aval|stat)(1_5|6_16)$/.exec(CAP_STATE.view);
   if (grupo) CAP_STATE.abas['cap' + grupo[2]] = CAP_STATE.view;
-  const navIds = { home: 'capNavHome', capacitacoes: 'capNavCapacitacoes', uf: 'capNavUf', aval1_5: 'capNavAval1_5', stat1_5: 'capNavAval1_5', aval6_16: 'capNavAval6_16', stat6_16: 'capNavAval6_16' };
+  const navIds = { home: 'capNavHome', capacitacoes: 'capNavCapacitacoes', uf: 'capNavUf', prioridade: 'capNavPrioridade', aval1_5: 'capNavAval1_5', stat1_5: 'capNavAval1_5', aval6_16: 'capNavAval6_16', stat6_16: 'capNavAval6_16' };
   document.querySelectorAll('.cap-nav-btn').forEach(b => {
     const ativo = b.id === navIds[CAP_STATE.view];
     b.classList.toggle('active', ativo);
@@ -17187,7 +17259,7 @@ function capNavegarAbas(ev) {
 function renderCapSubview() {
   if (!capDados()) return;
   const renderers = {
-    home: updateCapacitacaoView, capacitacoes: capRenderCapacitacoes, uf: capRenderUf,
+    home: updateCapacitacaoView, capacitacoes: capRenderCapacitacoes, uf: capRenderUf, prioridade: capRenderPrioridade,
     aval1_5: capRenderAval15, stat1_5: capRenderStat15, aval6_16: capRenderAval616, stat6_16: capRenderStat616
   };
   (renderers[CAP_STATE.view] || updateCapacitacaoView)();
@@ -17206,6 +17278,9 @@ function capRegistrarEventos() {
   const mapaEventos = document.getElementById('capCapSvg');
   mapaEventos.addEventListener('click', capSelecionarMunicipioEvento);
   mapaEventos.addEventListener('keydown', capSelecionarMunicipioEvento);
+  const mapaPri = document.getElementById('capPriSvg');
+  mapaPri.addEventListener('click', capSelecionarMunicipioPri);
+  mapaPri.addEventListener('keydown', capSelecionarMunicipioPri);
   const mapaHome = document.getElementById('capSvgContainer');
   mapaHome.addEventListener('click', capSelecionarMunicipioHome);
   mapaHome.addEventListener('keydown', capSelecionarMunicipioHome);
@@ -18178,18 +18253,18 @@ function capPolosMapa(d) {
     [chave, { ...p, cor: paleta[i] || 'hsl(' + ((i * 137.508) % 360).toFixed(2) + ', 55%, 55%)' }]));
 }
 
-function renderCapacitacaoMap(containerId, statusPorCod, polosCod, modo = 'participacao') {
+function renderCapacitacaoMap(containerId, statusPorCod, polosCod, modo = 'participacao', opcoes = {}) {
   const container = document.getElementById(containerId);
   if (!container) return;
   const territorio = capVal('capTerritorio') || 'co';
-  if (territorio === 'nao_identificada') {
+  if (territorio === 'nao_identificada' && !opcoes.regional) {
     container.innerHTML = '<div class="cap-empty">Registros sem origem municipal identificada não podem ser representados no mapa.</div>';
     CAP_STATE.mapInfo[containerId] = new Map();
     if (containerId === 'capSvgContainer') document.getElementById('capPolosLegenda').innerHTML = '';
     return;
   }
   // "Brasil" e "Outros" usam o mapa nacional; o Centro-Oeste mantém o mapa regional detalhado.
-  const brasil = ['todos', 'outros'].includes(territorio);
+  const brasil = !opcoes.regional && ['todos', 'outros'].includes(territorio);
   const g = brasil ? capGeometriaBrasil(statusPorCod) : capGeometria();
   if (!g) {
     CAP_STATE.mapInfo[containerId] = new Map();
@@ -18197,7 +18272,7 @@ function renderCapacitacaoMap(containerId, statusPorCod, polosCod, modo = 'parti
     return;
   }
   CAP_STATE.mapInfo[containerId] = statusPorCod;
-  const cores = { sim: capCor('--cap-map-sim'), nao: capCor('--cap-map-nao'), fora: capCor('--cap-map-fora') };
+  const cores = { sim: capCor('--cap-map-sim'), nao: capCor('--cap-map-nao'), fora: capCor('--cap-map-fora'), nunca: capCor('--cap-map-nunca') };
   // Base cartográfica nas cores do tema ativo (tokens --cap-map-*), sem cores fixas no SVG.
   const mc = {};
   ['fundo', 'terra', 'vizinho', 'vizinho-borda', 'rotulo', 'rotulo-forte', 'mun-borda', 'limite', 'rotulo-uf', 'polo', 'polo-anel']
@@ -18242,7 +18317,7 @@ function renderCapacitacaoMap(containerId, statusPorCod, polosCod, modo = 'parti
       svg += '</pattern></defs>';
       fill = 'url(#' + id + ')';
     }
-    const detalhe = porPolo && polos.length ? polos.map(k => polosInfo.get(k).nome).join(', ') : (info ? (info.status === 'sim' ? 'Participou' : 'Não participou') : 'Fora da seleção');
+    const detalhe = porPolo && polos.length ? polos.map(k => polosInfo.get(k).nome).join(', ') : (info ? ({ sim: 'Participou', nunca: 'Nunca convidado' }[info.status] || 'Não participou') : 'Fora da seleção');
     svg += '<path d="' + m.d + '" fill="' + fill + '" opacity="' + (info ? 1 : 0.55) + '" data-cod="' + m.cod + '" data-nome="' + escHtml(m.nome) + '" data-uf="' + escHtml(m.uf) + '"><title>' + escHtml(m.nome + ' (' + m.uf + '): ' + detalhe) + '</title></path>';
   });
   svg += '</g>';
@@ -18687,6 +18762,225 @@ function capRenderUf() {
   document.getElementById('capUfTabela').innerHTML = capTabelaHtml([{ t: 'UF' }, { t: 'Situação dos registros' }, { t: 'Cobertura regional', num: 1 }, { t: 'Convites', num: 1 }, { t: 'Participaram', num: 1 }, { t: 'Participação entre convidados', num: 1 },
     { t: 'Participantes', num: 1 }, { t: 'Gestores', num: 1 }, { t: 'CACS', num: 1 }, { t: 'Média gestores', num: 1 }, { t: 'Média CACS', num: 1 },
     { t: 'Polos (capacitações)', num: 1 }, { t: 'Distância média (km)', num: 1 }], linhas);
+}
+
+// --------------------------------------------------------------------------
+// Página MUNICÍPIOS NÃO ALCANÇADOS (v.3.6.0): apoio à priorização de convites.
+// Universo: municípios do Centro-Oeste com código IBGE de 7 dígitos (a mesma base da cobertura
+// regional). Situação de cada município somando todas as capacitações: alcançado (ao menos um
+// presente), convidado sem participação (convidado ao menos uma vez, nenhum presente) e nunca
+// convidado. Distância em linha reta do centróide do município à sede de polo mais próxima.
+// --------------------------------------------------------------------------
+const CAP_PRI_SITUACAO = { alcancado: 'Alcançado', convidado: 'Convidado sem participação', nunca: 'Nunca convidado' };
+
+function capCentroidesCO() {
+  if (CAP_STATE.centroides) return CAP_STATE.centroides;
+  const m = new Map();
+  (CAP_STATE.malhas || []).forEach(g => ((g && g.features) || []).forEach(f => {
+    const polys = f.geometry.type === 'Polygon' ? [f.geometry.coordinates] : f.geometry.coordinates;
+    let maior = null;
+    polys.forEach(poly => {
+      const anel = poly[0];
+      let a = 0, cx = 0, cy = 0;
+      for (let i = 0; i < anel.length - 1; i++) {
+        const c = anel[i][0] * anel[i + 1][1] - anel[i + 1][0] * anel[i][1];
+        a += c; cx += (anel[i][0] + anel[i + 1][0]) * c; cy += (anel[i][1] + anel[i + 1][1]) * c;
+      }
+      if (a && (!maior || Math.abs(a) > maior.a)) maior = { a: Math.abs(a), lon: cx / (3 * a), lat: cy / (3 * a) };
+    });
+    if (maior) m.set(String(f.properties.codarea), [maior.lat, maior.lon]);
+  }));
+  CAP_STATE.centroides = m;
+  return m;
+}
+
+function capDistanciaKm(a, b) {
+  const rad = Math.PI / 180;
+  const h = Math.sin((b[0] - a[0]) * rad / 2) ** 2 + Math.cos(a[0] * rad) * Math.cos(b[0] * rad) * Math.sin((b[1] - a[1]) * rad / 2) ** 2;
+  return Math.round(12742 * Math.asin(Math.sqrt(h)));
+}
+
+// Situação de todos os municípios do Centro-Oeste (independe dos filtros; calculada uma vez).
+function capPriDados() {
+  if (CAP_STATE.pri) return CAP_STATE.pri;
+  const d = capDados();
+  const base = capLinhas(CAP_STATE.raw.municipios_mapa).filter(m => CAP_UFS_MAPA.includes(m.uf) && /^\d{7}$/.test(String(m.cod_ibge)));
+  const porMun = capAgruparPor(d.fato, 'cod_ibge');
+  const centroides = capCentroidesCO();
+  const sedes = new Map();
+  d.caps.forEach(c => {
+    const m = d.municipios.get(c.polo_cod_ibge);
+    if (m && m.lat != null && m.lon != null) sedes.set(c.polo_cod_ibge, { cod: c.polo_cod_ibge, nome: c.polo + ' (' + c.uf + ')', lat: m.lat, lon: m.lon });
+  });
+  CAP_STATE.pri = base.map(m => {
+    const cod = String(m.cod_ibge);
+    const regs = porMun.get(cod) || [];
+    const presentes = regs.reduce((a, r) => a + (r.presentes_total || 0), 0);
+    const convidadas = Array.from(new Set(regs.filter(r => r.convidado === 1).map(r => r.capacitacao))).sort((a, b) => a - b);
+    const ref = d.municipios.get(cod);
+    const centro = centroides.get(cod) || (ref && ref.lat != null ? [ref.lat, ref.lon] : null);
+    let polo = null;
+    if (centro) sedes.forEach(s => { const km = capDistanciaKm(centro, [s.lat, s.lon]); if (!polo || km < polo.km) polo = { cod: s.cod, nome: s.nome, km }; });
+    return {
+      cod, nome: m.nome, uf: m.uf, presentes, convidadas, polo,
+      situacao: presentes > 0 ? 'alcancado' : convidadas.length ? 'convidado' : 'nunca',
+      ultima: convidadas.length ? d.capPorNum.get(convidadas[convidadas.length - 1]) : null
+    };
+  });
+  CAP_STATE.priSedes = Array.from(sedes.keys());
+  return CAP_STATE.pri;
+}
+
+function capPriSelecionarMunicipio(cod) {
+  CAP_STATE.priMun = !cod || CAP_STATE.priMun === cod ? '' : String(cod);
+  capRenderPrioridade();
+}
+
+function capSelecionarMunicipioPri(ev) {
+  const path = ev.target.closest ? ev.target.closest('#capPriSvg path[role="button"]') : null;
+  if (!path) return;
+  if (ev.type === 'keydown') {
+    if (ev.key !== 'Enter' && ev.key !== ' ') return;
+    ev.preventDefault(); ev.stopPropagation();
+  }
+  const tt = document.querySelector('#capPriMapCard .cap-map-tooltip');
+  if (tt) tt.style.display = 'none';
+  capPriSelecionarMunicipio(path.getAttribute('data-cod'));
+  const chip = document.getElementById('capPriMunChip');
+  if (chip && !chip.hidden) chip.focus();
+}
+
+function capPriRotuloCaps(m) {
+  return m.convidadas.length ? m.convidadas.map(n => capNum2(n) + 'ª').join(', ') : '—';
+}
+
+function capRenderPrioridade() {
+  capAtualizarTerritorio();
+  const d = capDados();
+  const t = capTema();
+  const todos = capPriDados();
+  document.getElementById('capPriAviso').hidden = (capVal('capTerritorio') || 'co') === 'co';
+  if (!document.getElementById('capPriUf').options.length) {
+    capPreencherSelect('capPriUf', [{ v: '', t: 'Todos (GO, MT, MS e DF)' }].concat(CAP_UFS_MAPA.map(u => ({ v: u, t: u }))));
+    const polos = Array.from(new Map(todos.filter(m => m.polo).map(m => [m.polo.cod, m.polo.nome])).entries()).sort((a, b) => a[1].localeCompare(b[1], 'pt-BR'));
+    capPreencherSelect('capPriPolo', [{ v: '', t: 'Todos' }].concat(polos.map(([v, nome]) => ({ v, t: nome }))));
+  }
+  const uf = capVal('capPriUf'), sit = capVal('capPriSit'), polo = capVal('capPriPolo');
+  const busca = capNormTxt(capVal('capPriBusca').trim());
+  const recorte = todos.filter(m => (!uf || m.uf === uf) && (!polo || (m.polo && m.polo.cod === polo)));
+  const conta = s => recorte.filter(m => m.situacao === s).length;
+  capKpis('capPriKpis', [
+    { l: 'Municípios no recorte', v: capInt(recorte.length) },
+    { l: 'Já alcançados', v: capInt(conta('alcancado')), n: capPct(conta('alcancado'), recorte.length) },
+    { l: 'Convidados sem participação', v: capInt(conta('convidado')), n: capPct(conta('convidado'), recorte.length) },
+    { l: 'Nunca convidados', v: capInt(conta('nunca')), n: capPct(conta('nunca'), recorte.length) }
+  ]);
+
+  // Lista: somente não alcançados, com os filtros de situação, município (mapa) e busca.
+  const mun = CAP_STATE.priMun;
+  const ordem = capVal('capPriOrdem');
+  const km = m => (m.polo ? m.polo.km : null);
+  const lista = recorte.filter(m => m.situacao !== 'alcancado' && (!sit || m.situacao === sit) && (!mun || m.cod === mun)
+    && (!busca || capNormTxt(m.nome).includes(busca) || m.cod.includes(busca)))
+    .sort((a, b) => {
+      const nome = a.uf.localeCompare(b.uf) || a.nome.localeCompare(b.nome, 'pt-BR');
+      if (ordem === 'distancia' || ordem === 'proximo') {
+        const va = km(a), vb = km(b);
+        if (va == null || vb == null) return va == null ? (vb == null ? nome : 1) : -1;
+        return (ordem === 'distancia' ? vb - va : va - vb) || nome;
+      }
+      if (ordem === 'convites') return b.convidadas.length - a.convidadas.length || nome;
+      return nome;
+    });
+  CAP_STATE.priLista = lista;
+  const tag = m => '<span class="cap-tag ' + (m.situacao === 'nunca' ? 'cap-tag-nunca' : 'cap-tag-convidado') + '">' + escHtml(CAP_PRI_SITUACAO[m.situacao]) + '</span>';
+  document.getElementById('capPriTabela').innerHTML = capTabelaHtml(
+    [{ t: 'Município' }, { t: 'UF' }, { t: 'Situação' }, { t: 'Convites', num: 1 }, { t: 'Capacitações para as quais foi convidado' }, { t: 'Última convocação' }, { t: 'Polo mais próximo' }, { t: 'Distância ao polo (km)', num: 1 }],
+    lista.map(m => '<tr><td>' + escHtml(m.nome) + '</td><td>' + escHtml(m.uf) + '</td><td>' + tag(m) + '</td><td class="num">' + capInt(m.convidadas.length) + '</td><td>' + escHtml(capPriRotuloCaps(m))
+      + '</td><td>' + escHtml(m.ultima ? capPeriodo(m.ultima) : '—') + '</td><td>' + escHtml(m.polo ? m.polo.nome : '—') + '</td><td class="num">' + capInt(km(m)) + '</td></tr>'),
+    'Nenhum município não alcançado para os filtros selecionados.');
+  capSetTxt('capPriTabelaSub', capInt(lista.length) + ' município(s) na lista.');
+
+  // Mapa regional (sempre Centro-Oeste) com as três situações; o filtro de situação vale também aqui.
+  const status = new Map();
+  recorte.filter(m => !sit || m.situacao === sit).forEach(m => status.set(m.cod, {
+    status: m.situacao === 'alcancado' ? 'sim' : m.situacao === 'convidado' ? 'nao' : 'nunca', polos: new Set(),
+    linhas: [['Situação', CAP_PRI_SITUACAO[m.situacao]], ['Convites', capInt(m.convidadas.length) + (m.convidadas.length ? ' (' + capPriRotuloCaps(m) + ')' : '')],
+      ['Polo mais próximo', m.polo ? m.polo.nome + ' · ' + capInt(m.polo.km) + ' km' : '—']]
+  }));
+  renderCapacitacaoMap('capPriSvg', status, CAP_STATE.priSedes || [], 'participacao', { regional: true });
+  const clicaveis = new Set(recorte.filter(m => m.situacao !== 'alcancado' && (!sit || m.situacao === sit)).map(m => m.cod));
+  document.querySelectorAll('#capPriSvg path[data-cod]').forEach(path => {
+    const cod = path.getAttribute('data-cod');
+    if (!clicaveis.has(cod)) return;
+    path.setAttribute('role', 'button');
+    path.setAttribute('tabindex', '0');
+    path.setAttribute('aria-label', 'Filtrar a lista por ' + path.getAttribute('data-nome'));
+    path.setAttribute('aria-pressed', String(cod === mun));
+  });
+  const munSel = mun ? todos.find(m => m.cod === mun) : null;
+  const chip = document.getElementById('capPriMunChip');
+  chip.hidden = !munSel;
+  capSetTxt('capPriMunChipTxt', munSel ? 'Município: ' + munSel.nome + ' (' + munSel.uf + ')' : '');
+  chip.setAttribute('aria-label', munSel ? 'Remover o filtro do município ' + munSel.nome : 'Remover o filtro do município');
+
+  // Situação por UF (barras empilhadas); clicar filtra a UF e, fora de "alcançados", a situação.
+  const base = todos.filter(m => !polo || (m.polo && m.polo.cod === polo));
+  const situacoes = [['alcancado', capCor('--cap-map-sim')], ['convidado', capCor('--cap-map-nao')], ['nunca', capCor('--cap-map-nunca')]];
+  const realce = (cor, u) => (!uf || u === uf) ? cor : cor + '55';
+  capGrafico('capChartPriUf', {
+    type: 'bar',
+    capClique: { chaves: CAP_UFS_MAPA, aplicar: (u, ds) => {
+      const ufEl = document.getElementById('capPriUf'), sitEl = document.getElementById('capPriSit');
+      const s = ds > 0 ? situacoes[ds][0] : '';
+      const mesmo = ufEl.value === u && sitEl.value === s;
+      ufEl.value = mesmo ? '' : u;
+      sitEl.value = mesmo ? '' : s;
+      renderCapSubview();
+    } },
+    data: { labels: CAP_UFS_MAPA, datasets: situacoes.map(([s, cor]) => capDataset(CAP_PRI_SITUACAO[s],
+      CAP_UFS_MAPA.map(u => base.filter(m => m.uf === u && m.situacao === s).length), CAP_UFS_MAPA.map(u => realce(cor, u)), t)) },
+    options: (() => {
+      const o = capOpcoesGrafico(t, { horizontal: true, empilhado: true });
+      o.plugins.legend.labels.generateLabels = () => situacoes.map(([s, cor], i) => ({ text: CAP_PRI_SITUACAO[s], fillStyle: cor, strokeStyle: cor, fontColor: t.eixo, datasetIndex: i }));
+      o.scales.x.ticks.precision = 0;
+      return o;
+    })()
+  });
+}
+
+// Planilha da lista atual (filtros e ordem da tela) com colunas para a equipe definir prioridades.
+function capPriBaixar(botao) {
+  if (typeof XLSX === 'undefined') { capExportAviso('Não foi possível exportar: biblioteca de planilhas indisponível (verifique a conexão).', 'err'); return; }
+  const lista = CAP_STATE.priLista || [];
+  if (!lista.length) { capExportAviso('Não há municípios na lista para exportar.', 'err'); return; }
+  if (botao) botao.disabled = true;
+  try {
+    const cab = ['Código IBGE', 'Município', 'UF', 'Situação', 'Nº de convites', 'Capacitações para as quais foi convidado', 'Última convocação', 'Polo mais próximo', 'Distância ao polo (km)', 'Prioridade (definir)', 'Observações'];
+    const linhas = lista.map(m => [m.cod, m.nome, m.uf, CAP_PRI_SITUACAO[m.situacao], m.convidadas.length, capPriRotuloCaps(m),
+      m.ultima ? capPeriodo(m.ultima) : '—', m.polo ? m.polo.nome : '—', m.polo ? m.polo.km : '—', '', '']);
+    const ws = XLSX.utils.aoa_to_sheet([cab].concat(linhas));
+    ws['!cols'] = [10, 30, 5, 26, 13, 34, 22, 30, 18, 18, 40].map(w => ({ wch: w }));
+    ws['!autofilter'] = { ref: XLSX.utils.encode_range({ s: { r: 0, c: 0 }, e: { r: linhas.length, c: cab.length - 1 } }) };
+    const recorte = [['PNITE — Plataforma Nacional de Inteligência em Transporte Escolar'], ['Indicadores da Capacitação — Municípios não alcançados'], [],
+      ['Filtro', 'Seleção']].concat(capExportFiltros().filter(f => !/^Origem/.test(f[0])));
+    if (CAP_STATE.priMun) recorte.push(['Município (mapa)', (lista[0] && lista[0].nome) || CAP_STATE.priMun]);
+    recorte.push([], ['Municípios na lista', lista.length],
+      ['Critérios', 'Centro-Oeste (GO, MT, MS e DF), municípios com código IBGE de 7 dígitos. Alcançado: ao menos um presente em alguma capacitação; convidado sem participação: convidado ao menos uma vez, sem presentes; nunca convidado: sem convite em nenhuma capacitação.'],
+      ['Distância', 'Linha reta entre o centróide do município e a sede de polo mais próxima.'],
+      ['Gerado em', new Date().toLocaleString('pt-BR')], ['Versão', PNITE_VERSION], ['Fonte', CAP_EXPORT_FONTE]);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Municípios não alcançados');
+    const wsR = XLSX.utils.aoa_to_sheet(recorte);
+    wsR['!cols'] = [{ wch: 24 }, { wch: 90 }];
+    XLSX.utils.book_append_sheet(wb, wsR, 'Recorte');
+    XLSX.writeFile(wb, pniteNomeArquivo('capacitacao_municipios_nao_alcancados', 'xlsx'));
+    capExportAviso('Planilha gerada com ' + capInt(lista.length) + ' município(s).', 'ok');
+  } catch (e) {
+    capExportAviso('Não foi possível exportar: ' + (e && e.message ? e.message : e) + '.', 'err');
+  } finally {
+    if (botao) botao.disabled = false;
+  }
 }
 
 // --------------------------------------------------------------------------
@@ -20112,12 +20406,13 @@ async function recarregarDadosExternos() {
       </div>
     </div>
     <div class="pif-body">
-      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.5.9</strong></div>
+      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.6.0</strong></div>
       <div class="pif-row"><span>Data da alteração:</span><span class="pnite-date-val">09/11/2026</span></div>
       <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">14:00</span></div>
       <div class="pif-row"><span>Responsável técnico:</span><span class="pnite-author-val">Equipe PNITE</span></div>
       <div class="pif-note">
         <i class="ti ti-check" style="color:var(--accent);margin-right:3px"></i>
+        <strong>Municípios não alcançados (v.3.6.0):</strong> nova página da capacitação com os municípios do Centro-Oeste nunca convidados e os convidados sem participação, mapa, situação por UF, polo mais próximo e planilha para priorizar convites.<br>
         <strong>Animações da capacitação (v.3.5.9):</strong> entrada suave de páginas e abas, contagem animada dos números ao filtrar, transição única dos gráficos, atualização do mapa e seleção tracejada, menus e microinterações; tudo desligado quando o sistema pede para reduzir movimento.<br>
         <strong>Filtro cruzado na capacitação (v.3.5.8):</strong> como no Power BI, clicar num município do mapa, numa barra ou ponto de gráfico ou numa célula de tabela filtra a página inteira; clicar de novo limpa o filtro.<br>
         <strong>Logos da capacitação (v.3.5.7):</strong> UFG e CECATE-CO em plaquinhas de mesmo tamanho, com o mesmo peso visual nos dois temas.<br>
@@ -20186,7 +20481,7 @@ async function recarregarDadosExternos() {
   </div>
   <button class="pif-btn" id="pifBtn" aria-label="Informações de Versão">
     <i class="ti ti-info-circle"></i>
-    <span class="pif-btn-label pnite-version-val">v.3.5.9</span>
+    <span class="pif-btn-label pnite-version-val">v.3.6.0</span>
   </button>
 </div>
 
