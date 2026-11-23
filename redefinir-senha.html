@@ -73,6 +73,8 @@ h1 { font-family: var(--font-serif); font-weight: 500; font-size: 26px; line-hei
   border-width: 1px; border-style: solid; border-color: var(--border-mid);
   background-color: var(--bg-input); color: var(--text-1);
 }
+/* O olho nativo do Edge duplicaria o botão Mostrar senha da página */
+.rs-input::-ms-reveal, .rs-input::-ms-clear { display: none; }
 .rs-input:focus { outline: 2px solid var(--c-blue); outline-offset: 1px; }
 .rs-olho {
   width: 46px; flex-shrink: 0; border-radius: 10px; border: 1px solid var(--border-mid); background-color: var(--bg-input);
@@ -80,7 +82,7 @@ h1 { font-family: var(--font-serif); font-weight: 500; font-size: 26px; line-hei
 }
 .rs-olho:hover, .rs-olho:focus-visible { color: var(--c-blue); border-color: var(--c-blue); }
 .rs-olho:focus-visible { outline: 2px solid var(--c-blue); outline-offset: 1px; }
-.rs-forca { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; margin-top: 4px; }
+.rs-forca { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin-top: 4px; }
 .rs-forca i { height: 6px; border-radius: 4px; background-color: var(--bg-badge); transition: background-color .2s; }
 .rs-dica { font-size: 12.5px; color: var(--text-2); margin: 2px 0 0; min-height: 1.4em; }
 .rs-dica.fraca, .rs-dica.err { color: var(--err); }
@@ -155,13 +157,13 @@ h1 { font-family: var(--font-serif); font-weight: 500; font-size: 26px; line-hei
       <div class="rs-campo">
         <label for="rsSenha">Nova senha</label>
         <div class="rs-senha">
-          <input class="rs-input" type="password" id="rsSenha" autocomplete="new-password" minlength="6" required aria-describedby="rsForcaTxt rsRegras">
+          <input class="rs-input" type="password" id="rsSenha" autocomplete="new-password" minlength="8" required aria-describedby="rsForcaTxt rsRegras">
           <button type="button" class="rs-olho" data-alvo="rsSenha" aria-label="Mostrar senha" aria-pressed="false"><i class="ti ti-eye" aria-hidden="true"></i></button>
         </div>
-        <div class="rs-forca" id="rsForca" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="rs-forca" id="rsForca" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
         <p class="rs-dica" id="rsForcaTxt">Nível de segurança: —</p>
         <ul class="rs-regras" id="rsRegras" aria-label="Recomendações para uma senha forte">
-          <li data-regra="tam"><i class="ti ti-circle" aria-hidden="true"></i>12 ou mais caracteres</li>
+          <li data-regra="tam"><i class="ti ti-circle" aria-hidden="true"></i>8 ou mais caracteres</li>
           <li data-regra="caixa"><i class="ti ti-circle" aria-hidden="true"></i>Maiúsculas e minúsculas</li>
           <li data-regra="num"><i class="ti ti-circle" aria-hidden="true"></i>Pelo menos um número</li>
           <li data-regra="simb"><i class="ti ti-circle" aria-hidden="true"></i>Pelo menos um símbolo</li>
@@ -171,7 +173,7 @@ h1 { font-family: var(--font-serif); font-weight: 500; font-size: 26px; line-hei
       <div class="rs-campo">
         <label for="rsSenha2">Confirmar nova senha</label>
         <div class="rs-senha">
-          <input class="rs-input" type="password" id="rsSenha2" autocomplete="new-password" minlength="6" required aria-describedby="rsConfere">
+          <input class="rs-input" type="password" id="rsSenha2" autocomplete="new-password" minlength="8" required aria-describedby="rsConfere">
           <button type="button" class="rs-olho" data-alvo="rsSenha2" aria-label="Mostrar confirmação de senha" aria-pressed="false"><i class="ti ti-eye" aria-hidden="true"></i></button>
         </div>
         <p class="rs-dica" id="rsConfere"></p>
@@ -197,7 +199,7 @@ h1 { font-family: var(--font-serif); font-weight: 500; font-size: 26px; line-hei
 (function () {
   'use strict';
   var CHAVE_SESSAO = 'pnite_sessao';   // mesma chave da sessão em PNITE.html (PNITE_AUTH)
-  var MIN = 6;                          // mínimo aceito pelo servidor (GoTrue)
+  var MIN = 8;                          // mínimo exigido pela PNITE ao definir senha (o servidor aceita 6)
   var cfg = window.PNITE_CONFIG || null;
   var el = function (id) { return document.getElementById(id); };
   var params = new URLSearchParams(window.RS_HASH || '');
@@ -244,11 +246,11 @@ h1 { font-family: var(--font-serif); font-weight: 500; font-size: 26px; line-hei
     });
   }
 
-  // Nível de segurança: mesma pontuação de puForca() em PNITE.html (0 a 5)
+  // Nível de segurança: mesmas 4 regras de puForca() em PNITE.html (0 a 4; 4 = Forte)
   function avaliar(v) {
-    var r = { tam: v.length >= 12, caixa: /[a-z]/.test(v) && /[A-Z]/.test(v), num: /\d/.test(v), simb: /[^A-Za-z0-9]/.test(v) };
-    var p = (v.length >= 8 ? 1 : 0) + (r.tam ? 1 : 0) + (r.caixa ? 1 : 0) + (r.num ? 1 : 0) + (r.simb ? 1 : 0);
-    return { pontos: p, regras: r, nivel: !v ? '' : (p <= 2 ? 'fraca' : (p <= 3 ? 'media' : 'forte')) };
+    var r = { tam: v.length >= MIN, caixa: /[a-z]/.test(v) && /[A-Z]/.test(v), num: /\d/.test(v), simb: /[^A-Za-z0-9]/.test(v) };
+    var p = (r.tam ? 1 : 0) + (r.caixa ? 1 : 0) + (r.num ? 1 : 0) + (r.simb ? 1 : 0);
+    return { pontos: p, regras: r, nivel: !v ? '' : (p <= 1 ? 'fraca' : (p <= 3 ? 'media' : 'forte')) };
   }
   function atualizar() {
     var s1 = el('rsSenha').value || '';

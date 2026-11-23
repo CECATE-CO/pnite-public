@@ -6424,6 +6424,8 @@ html.pnite-admin .hcn-tab { flex-shrink: 0; }
 [data-theme="dark"] .pu-req { color: #ff8a80; }
 .pu-pass { display: flex; gap: 6px; min-width: 0; }
 .pu-pass .pab-input { flex: 1; min-width: 0; }
+/* O olho nativo do Edge duplicaria o botão Mostrar senha */
+.pu-pass .pab-input::-ms-reveal, .pu-pass .pab-input::-ms-clear { display: none; }
 .pu-icon-btn { width: 42px; flex-shrink: 0; border-radius: 10px; border: 1px solid var(--border); background-color: var(--bg-input); color: var(--text-2); cursor: pointer; font-size: 17px; display: inline-flex; align-items: center; justify-content: center; }
 .pu-icon-btn:hover, .pu-icon-btn:focus-visible { color: var(--c-blue); border-color: var(--c-blue); }
 .pu-forca { height: 4px; border-radius: 4px; background-color: var(--bg-badge); overflow: hidden; margin-top: 4px; }
@@ -6783,6 +6785,7 @@ html[data-theme="dark"] .adm-msg.ok { color: #7ee2b0; }
 .sm-dica { position: absolute; pointer-events: none; z-index: 5; background: var(--bg-card); color: var(--text-1); border: 1px solid var(--border-mid); border-radius: 10px; padding: 6px 10px; font-size: 12px; box-shadow: 0 4px 14px rgba(0,0,0,.15); white-space: nowrap; }
 
 /* ================================================================
+    v.3.5.4 — SENHA: MÍNIMO DE 8 CARACTERES AO DEFINIR SENHA, NÍVEL DE SEGURANÇA COM 4 REGRAS (8+ CARACTERES, MAIÚSCULAS E MINÚSCULAS, NÚMERO, SÍMBOLO) E SEM O OLHO NATIVO DUPLICADO DO EDGE
     v.3.5.3 — PÁGINA PRÓPRIA DE REDEFINIÇÃO DE SENHA (redefinir-senha.html) PARA OS LINKS DE RECUPERAÇÃO E CONVITE; MODAL DE LOGIN SEM O MODO "NOVA SENHA"
     v.3.5.2 — DEFINIÇÃO DE SENHA (CADASTRO E NOVA SENHA) COM CAMPO DE CONFIRMAÇÃO, BARRA DE NÍVEL DE SEGURANÇA E BOTÃO MOSTRAR SENHA
     v.3.5.1 — CONTAGEM REGRESSIVA NO BOTÃO DE ENVIO DE E-MAIL (RECUPERAÇÃO/CADASTRO) E MENSAGEM DO LIMITE DE REENVIO EM PORTUGUÊS
@@ -9750,7 +9753,7 @@ window.onerror = function(msg, url, line, col, err) {
       <div class="pab-field" id="pniteLoginSenha2Field" hidden>
         <label for="pniteLoginSenha2">Confirmar senha</label>
         <div class="pu-pass">
-          <input class="pab-input" type="password" id="pniteLoginSenha2" autocomplete="new-password" minlength="6" oninput="pniteAuthSenhaInput()" aria-describedby="pniteLoginConfere">
+          <input class="pab-input" type="password" id="pniteLoginSenha2" autocomplete="new-password" minlength="8" oninput="pniteAuthSenhaInput()" aria-describedby="pniteLoginConfere">
           <button type="button" class="pu-icon-btn" onclick="puMostrar('pniteLoginSenha2', this)" aria-label="Mostrar confirmação de senha"><i class="ti ti-eye" aria-hidden="true"></i></button>
         </div>
         <p class="pab-forca-txt" id="pniteLoginConfere"></p>
@@ -10135,7 +10138,7 @@ const PNITE_AUTH = (function() {
     const titulos = { entrar: 'Entrar na PNITE', cadastro: 'Criar conta', recuperar: 'Recuperar senha' };
     const subs = {
       entrar: 'Usuários autorizados podem baixar gráficos, tabelas, indicadores e o mapa. A consulta à plataforma continua aberta a todos.',
-      cadastro: 'Somente e-mails autorizados pelo administrador podem criar conta. Você receberá um e-mail para confirmar o cadastro.',
+      cadastro: 'Somente e-mails autorizados pelo administrador podem criar conta. Use uma senha de pelo menos 8 caracteres; você receberá um e-mail para confirmar o cadastro.',
       recuperar: 'Informe o seu e-mail para receber o link de redefinição de senha.'
     };
     const set = function(id, txt) { const el = document.getElementById(id); if (el) el.textContent = txt; };
@@ -10190,7 +10193,9 @@ const PNITE_AUTH = (function() {
     const email = (document.getElementById('pniteLoginEmail').value || '').trim().toLowerCase();
     const senha = document.getElementById('pniteLoginSenha').value || '';
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { msg('pniteLoginMsg', 'Informe um e-mail válido.', 'err'); return; }
-    if (modo !== 'recuperar' && senha.length < 6) { msg('pniteLoginMsg', 'A senha deve ter pelo menos 6 caracteres.', 'err'); return; }
+    // Entrar aceita senhas antigas de 6 caracteres; ao criar conta, o mínimo da PNITE é 8
+    const minSenha = modo === 'cadastro' ? 8 : 6;
+    if (modo !== 'recuperar' && senha.length < minSenha) { msg('pniteLoginMsg', 'A senha deve ter pelo menos ' + minSenha + ' caracteres.', 'err'); return; }
     if (modo === 'cadastro' && senha !== (document.getElementById('pniteLoginSenha2').value || '')) {
       msg('pniteLoginMsg', 'As senhas não conferem.', 'err'); return;
     }
@@ -10477,27 +10482,27 @@ function puGerar(id, barra) {
   puForca(id, barra);
 }
 
-// Pontua a senha de 0 a 5 e pinta a barra; com `rotulo`, escreve também o nível (Fraca/Média/Forte)
+// Pontua a senha de 0 a 4 (8+ caracteres, maiúsculas e minúsculas, número, símbolo) e pinta a barra;
+// com `rotulo`, escreve também o nível (Fraca/Média/Forte). Mesmas regras de avaliar() em redefinir-senha.html
 function puForca(id, barra, rotulo) {
   const v = (puEl(id) || {}).value || '';
   let p = 0;
   if (v.length >= 8) p++;
-  if (v.length >= 12) p++;
   if (/[a-z]/.test(v) && /[A-Z]/.test(v)) p++;
   if (/\d/.test(v)) p++;
   if (/[^A-Za-z0-9]/.test(v)) p++;
   const b = puEl(barra);
   if (b) {
-    b.style.width = (v ? Math.max(15, p * 20) : 0) + '%';
-    b.style.backgroundColor = p <= 2 ? '#d64545' : (p <= 3 ? '#e0a100' : '#1d9e75');
+    b.style.width = (v ? Math.max(15, p * 25) : 0) + '%';
+    b.style.backgroundColor = p <= 1 ? '#d64545' : (p <= 3 ? '#e0a100' : '#1d9e75');
   }
   const r = rotulo ? puEl(rotulo) : null;
   if (r) {
-    const nivel = !v ? '' : (p <= 2 ? 'fraca' : (p <= 3 ? 'media' : 'forte'));
+    const nivel = !v ? '' : (p <= 1 ? 'fraca' : (p <= 3 ? 'media' : 'forte'));
     const nomes = { fraca: 'Fraca', media: 'Média', forte: 'Forte' };
     r.className = 'pab-forca-txt' + (nivel ? ' ' + nivel : '');
     r.textContent = 'Nível de segurança: ' + (nivel ? nomes[nivel] : '—')
-      + (nivel && nivel !== 'forte' ? ' (use 12+ caracteres, maiúsculas, minúsculas, números e símbolos)' : '');
+      + (nivel && nivel !== 'forte' ? ' (use 8+ caracteres, maiúsculas, minúsculas, números e símbolos)' : '');
   }
   return p;
 }
@@ -10783,7 +10788,7 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.5.3";
+const PNITE_VERSION = "v.3.5.4";
 const PNITE_LAST_UPDATE = "19/11/2026";
 const PNITE_LAST_TIME = "19:30";
 
