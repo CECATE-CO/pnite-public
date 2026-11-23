@@ -8849,7 +8849,7 @@ window.onerror = function(msg, url, line, col, err) {
     <div class="smb-sec">
       <div class="smb-sec-title" data-i18n="settings_info_title">Informações da Versão</div>
       <div style="font-size:12px;color:var(--text-2);display:flex;flex-direction:column;gap:4px;margin-top:6px">
-        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.6.1</b></div>
+        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.6.2</b></div>
         <div><span data-i18n="settings_updated">Última Atualização:</span> <b class="pnite-date-val">06/10/2026</b> às <b class="pnite-time-val">21:05</b></div>
         <div><span data-i18n="settings_author">Responsável Técnico:</span> <b class="pnite-author-val">Equipe PNITE</b></div>
       </div>
@@ -9838,9 +9838,9 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.6.1";
+const PNITE_VERSION = "v.3.6.2";
 const PNITE_LAST_UPDATE = "22/11/2026";
-const PNITE_LAST_TIME = "20:30";
+const PNITE_LAST_TIME = "21:00";
 
 // Escapa texto para inserção segura via innerHTML (entradas do usuário, nomes de arquivo)
 function escHtml(s) {
@@ -17271,7 +17271,11 @@ function capRegistrarEventos() {
   };
   document.addEventListener('change', aoFiltrar);
   document.addEventListener('input', e => {
-    if (e.target && e.target.type === 'search' && e.target.matches('[data-cap-filter]')) renderCapSubview();
+    // Campos de busca: redesenha após uma pausa curta na digitação (evita refazer a página a cada tecla).
+    if (e.target && e.target.type === 'search' && e.target.matches('[data-cap-filter]')) {
+      clearTimeout(CAP_STATE.buscaTimer);
+      CAP_STATE.buscaTimer = setTimeout(renderCapSubview, 180);
+    }
   });
   const mapaEventos = document.getElementById('capCapSvg');
   mapaEventos.addEventListener('click', capSelecionarMunicipioEvento);
@@ -18810,6 +18814,14 @@ function capSelecionarMunicipioPri(ev) {
   if (chip && !chip.hidden) chip.focus();
 }
 
+// Lista vazia: explica quando a busca encontrou apenas municípios já alcançados.
+function capPriVazio(recorte, busca) {
+  const alcancados = busca ? recorte.filter(m => m.situacao === 'alcancado') : [];
+  if (!alcancados.length) return busca ? 'Nenhum município encontrado para a busca e os filtros selecionados.' : 'Nenhum município não alcançado para os filtros selecionados.';
+  const nomes = alcancados.slice(0, 5).map(m => m.nome + ' (' + m.uf + ')').join(', ') + (alcancados.length > 5 ? ' e mais ' + capInt(alcancados.length - 5) : '');
+  return (alcancados.length > 1 ? 'Já alcançados: ' : 'Já alcançado: ') + nomes + '. A lista mostra somente municípios não alcançados.';
+}
+
 function capPriRotuloCaps(m) {
   return m.convidadas.length ? m.convidadas.map(n => capNum2(n) + 'ª').join(', ') : '—';
 }
@@ -18825,7 +18837,9 @@ function capRenderPrioridade() {
   }
   const uf = capVal('capPriUf'), sit = capVal('capPriSit');
   const busca = capNormTxt(capVal('capPriBusca').trim());
-  const recorte = todos.filter(m => !uf || m.uf === uf);
+  // A busca filtra todos os visuais da página (cartões, mapa, gráfico e lista), como no Power BI.
+  const casaBusca = m => !busca || capNormTxt(m.nome).includes(busca) || m.cod.includes(busca);
+  const recorte = todos.filter(m => (!uf || m.uf === uf) && casaBusca(m));
   const conta = s => recorte.filter(m => m.situacao === s).length;
   capKpis('capPriKpis', [
     { l: 'Municípios no recorte', v: capInt(recorte.length) },
@@ -18837,8 +18851,7 @@ function capRenderPrioridade() {
   // Lista: somente não alcançados, com os filtros de situação, município (mapa) e busca.
   const mun = CAP_STATE.priMun;
   const ordem = capVal('capPriOrdem');
-  const lista = recorte.filter(m => m.situacao !== 'alcancado' && (!sit || m.situacao === sit) && (!mun || m.cod === mun)
-    && (!busca || capNormTxt(m.nome).includes(busca) || m.cod.includes(busca)))
+  const lista = recorte.filter(m => m.situacao !== 'alcancado' && (!sit || m.situacao === sit) && (!mun || m.cod === mun))
     .sort((a, b) => {
       const nome = a.uf.localeCompare(b.uf) || a.nome.localeCompare(b.nome, 'pt-BR');
       // Convocação mais antiga primeiro; nunca convidados ao final desta ordenação.
@@ -18856,7 +18869,7 @@ function capRenderPrioridade() {
     [{ t: 'Município' }, { t: 'UF' }, { t: 'Situação' }, { t: 'Convites', num: 1 }, { t: 'Capacitações para as quais foi convidado' }, { t: 'Última convocação' }],
     lista.map(m => '<tr><td>' + escHtml(m.nome) + '</td><td>' + escHtml(m.uf) + '</td><td>' + tag(m) + '</td><td class="num">' + capInt(m.convidadas.length) + '</td><td>' + escHtml(capPriRotuloCaps(m))
       + '</td><td>' + escHtml(m.ultima ? capPeriodo(m.ultima) : '—') + '</td></tr>'),
-    'Nenhum município não alcançado para os filtros selecionados.');
+    capPriVazio(recorte, busca));
   capSetTxt('capPriTabelaSub', capInt(lista.length) + ' município(s) na lista.');
 
   // Mapa regional (sempre Centro-Oeste) com as três situações; o filtro de situação vale também aqui.
@@ -18896,7 +18909,7 @@ function capRenderPrioridade() {
       renderCapSubview();
     } },
     data: { labels: CAP_UFS_MAPA, datasets: situacoes.map(([s, cor]) => capDataset(CAP_PRI_SITUACAO[s],
-      CAP_UFS_MAPA.map(u => todos.filter(m => m.uf === u && m.situacao === s).length), CAP_UFS_MAPA.map(u => realce(cor, u)), t)) },
+      CAP_UFS_MAPA.map(u => todos.filter(m => m.uf === u && m.situacao === s && casaBusca(m)).length), CAP_UFS_MAPA.map(u => realce(cor, u)), t)) },
     options: (() => {
       const o = capOpcoesGrafico(t, { horizontal: true, empilhado: true });
       o.plugins.legend.labels.generateLabels = () => situacoes.map(([s, cor], i) => ({ text: CAP_PRI_SITUACAO[s], fillStyle: cor, strokeStyle: cor, fontColor: t.eixo, datasetIndex: i }));
@@ -20362,12 +20375,13 @@ async function recarregarDadosExternos() {
       </div>
     </div>
     <div class="pif-body">
-      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.6.1</strong></div>
+      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.6.2</strong></div>
       <div class="pif-row"><span>Data da alteração:</span><span class="pnite-date-val">09/11/2026</span></div>
       <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">14:00</span></div>
       <div class="pif-row"><span>Responsável técnico:</span><span class="pnite-author-val">Equipe PNITE</span></div>
       <div class="pif-note">
         <i class="ti ti-check" style="color:var(--accent);margin-right:3px"></i>
+        <strong>Busca de não alcançados (v.3.6.2):</strong> a busca de município passa a filtrar cartões, mapa, gráfico e lista, e avisa quando o município buscado já foi alcançado.<br>
         <strong>Não alcançados sem polo mais próximo (v.3.6.1):</strong> removidos o filtro, as colunas, a ordenação e os marcadores de "polo mais próximo", já que os polos mudam a cada capacitação; nova ordenação por convocação mais antiga.<br>
         <strong>Municípios não alcançados (v.3.6.0):</strong> nova página da capacitação com os municípios do Centro-Oeste nunca convidados e os convidados sem participação, mapa, situação por UF, polo mais próximo e planilha para priorizar convites.<br>
         <strong>Animações da capacitação (v.3.5.9):</strong> entrada suave de páginas e abas, contagem animada dos números ao filtrar, transição única dos gráficos, atualização do mapa e seleção tracejada, menus e microinterações; tudo desligado quando o sistema pede para reduzir movimento.<br>
@@ -20438,7 +20452,7 @@ async function recarregarDadosExternos() {
   </div>
   <button class="pif-btn" id="pifBtn" aria-label="Informações de Versão">
     <i class="ti ti-info-circle"></i>
-    <span class="pif-btn-label pnite-version-val">v.3.6.1</span>
+    <span class="pif-btn-label pnite-version-val">v.3.6.2</span>
   </button>
 </div>
 
