@@ -8849,7 +8849,7 @@ window.onerror = function(msg, url, line, col, err) {
     <div class="smb-sec">
       <div class="smb-sec-title" data-i18n="settings_info_title">Informações da Versão</div>
       <div style="font-size:12px;color:var(--text-2);display:flex;flex-direction:column;gap:4px;margin-top:6px">
-        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.6.2</b></div>
+        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.6.3</b></div>
         <div><span data-i18n="settings_updated">Última Atualização:</span> <b class="pnite-date-val">06/10/2026</b> às <b class="pnite-time-val">21:05</b></div>
         <div><span data-i18n="settings_author">Responsável Técnico:</span> <b class="pnite-author-val">Equipe PNITE</b></div>
       </div>
@@ -9838,9 +9838,9 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.6.2";
-const PNITE_LAST_UPDATE = "22/11/2026";
-const PNITE_LAST_TIME = "21:00";
+const PNITE_VERSION = "v.3.6.3";
+const PNITE_LAST_UPDATE = "23/11/2026";
+const PNITE_LAST_TIME = "09:00";
 
 // Escapa texto para inserção segura via innerHTML (entradas do usuário, nomes de arquivo)
 function escHtml(s) {
@@ -18125,14 +18125,68 @@ function capStatusMunicipios(rows, d) {
 // --------------------------------------------------------------------------
 // Mapa do Centro-Oeste (SVG). Geometria projetada uma única vez e reaproveitada.
 // --------------------------------------------------------------------------
+// Divisas estaduais extraídas da própria malha municipal do IBGE: arestas compartilhadas por dois
+// municípios da mesma UF são internas; as que aparecem uma única vez formam a divisa, que assim
+// coincide exatamente com os municípios (o contorno simplificado de BR_GEO não coincide).
+function capContornoUf(features, pr) {
+  const arestas = new Map();
+  const chave = pt => pt[0].toFixed(6) + ',' + pt[1].toFixed(6);
+  features.forEach(f => {
+    const polys = f.geometry.type === 'Polygon' ? [f.geometry.coordinates] : f.geometry.coordinates;
+    polys.forEach(poly => poly.forEach(anel => {
+      for (let i = 0; i < anel.length - 1; i++) {
+        const a = chave(anel[i]), b = chave(anel[i + 1]);
+        if (a === b) continue;
+        const k = a < b ? a + '|' + b : b + '|' + a;
+        const e = arestas.get(k);
+        if (e) e.n++; else arestas.set(k, { n: 1, p: anel[i], q: anel[i + 1] });
+      }
+    }));
+  });
+  let d = '';
+  arestas.forEach(e => {
+    if (e.n !== 1) return;
+    const a = pr(e.p[0], e.p[1]), b = pr(e.q[0], e.q[1]);
+    d += 'M' + a[0] + ' ' + a[1] + 'L' + b[0] + ' ' + b[1];
+  });
+  return d;
+}
+
+// Centróide do maior polígono de uma geometria, em coordenadas projetadas (posição de rótulos).
+function capCentroGeometria(geometry, pr) {
+  const polys = geometry.type === 'Polygon' ? [geometry.coordinates] : geometry.coordinates;
+  let melhor = null;
+  polys.forEach(poly => {
+    const anel = poly[0].map(pt => pr(pt[0], pt[1]));
+    let a = 0, cx = 0, cy = 0;
+    for (let i = 0; i < anel.length - 1; i++) {
+      const c = anel[i][0] * anel[i + 1][1] - anel[i + 1][0] * anel[i][1];
+      a += c; cx += (anel[i][0] + anel[i + 1][0]) * c; cy += (anel[i][1] + anel[i + 1][1]) * c;
+    }
+    if (a && (!melhor || Math.abs(a) > melhor.a)) melhor = { a: Math.abs(a), x: cx / (3 * a), y: cy / (3 * a) };
+  });
+  return melhor ? [Math.round(melhor.x), Math.round(melhor.y)] : [0, 0];
+}
+
+// Mapa regional: somente o Centro-Oeste, enquadrado pela própria malha (sem estados vizinhos nem países).
 function capGeometria() {
   if (CAP_STATE.geo) return CAP_STATE.geo;
-  const features = (CAP_STATE.malhas || []).flatMap(m => (m && m.features) || []);
+  const porUf = CAP_UFS_MAPA.map((uf, i) => ({ uf, features: ((CAP_STATE.malhas || [])[i] && CAP_STATE.malhas[i].features) || [] }));
+  const features = porUf.flatMap(x => x.features);
   if (!features.length) return null;
   const nomes = new Map(capLinhas(CAP_STATE.raw && CAP_STATE.raw.municipios_mapa).map(m => [m.cod_ibge, m]));
-  const b = { minX: -64.0, maxX: -44.0, minY: -25.5, maxY: -6.0 };
+  const b = { minX: Infinity, maxX: -Infinity, minY: Infinity, maxY: -Infinity };
+  features.forEach(f => {
+    const polys = f.geometry.type === 'Polygon' ? [f.geometry.coordinates] : f.geometry.coordinates;
+    polys.forEach(poly => poly[0].forEach(pt => {
+      if (pt[0] < b.minX) b.minX = pt[0]; if (pt[0] > b.maxX) b.maxX = pt[0];
+      if (pt[1] < b.minY) b.minY = pt[1]; if (pt[1] > b.maxY) b.maxY = pt[1];
+    }));
+  });
+  const folga = 0.25;
+  b.minX -= folga; b.maxX += folga; b.minY -= folga; b.maxY += folga;
   const W = 720;
-  const k = Math.cos(-15.5 * Math.PI / 180);
+  const k = Math.cos((b.minY + b.maxY) / 2 * Math.PI / 180);
   const sx = W / ((b.maxX - b.minX) * k);
   const H = Math.round((b.maxY - b.minY) * sx);
   const pr = (lon, lat) => [Math.round((lon - b.minX) * k * sx * 10) / 10, Math.round((b.maxY - lat) * sx * 10) / 10];
@@ -18145,9 +18199,9 @@ function capGeometria() {
     }));
     return dPath;
   };
-  const uf = sigla => (typeof BR_GEO !== 'undefined' && BR_GEO.features)
+  const nomesUf = { MT: 'MATO GROSSO', GO: 'GOIÁS', MS: 'MATO GROSSO DO SUL', DF: 'DF' };
+  const ufGeo = sigla => (typeof BR_GEO !== 'undefined' && BR_GEO.features)
     ? BR_GEO.features.find(f => f.properties && f.properties.SIGLA_UF === sigla) : null;
-  const caminhosUf = siglas => siglas.map(uf).filter(Boolean).map(f => caminho(f.geometry));
   CAP_STATE.geo = {
     W, H, pr,
     municipios: features.map(f => {
@@ -18155,8 +18209,13 @@ function capGeometria() {
       const m = nomes.get(cod) || {};
       return { cod, nome: m.nome || '', uf: m.uf || '', d: caminho(f.geometry) };
     }),
-    vizinhos: caminhosUf(['RO', 'TO', 'BA', 'PI', 'MG', 'SP', 'PR']),
-    contornos: caminhosUf(['MT', 'GO', 'MS', 'DF'])
+    contornos: porUf.filter(x => x.features.length).map(x => capContornoUf(x.features, pr)),
+    rotulos: porUf.map(x => {
+      const geo = ufGeo(x.uf);
+      const xy = geo ? capCentroGeometria(geo.geometry, pr) : null;
+      // O DF é pequeno e abriga o polo de Brasília: o rótulo fica ao lado, sem cobrir o marcador.
+      return xy ? { texto: nomesUf[x.uf], x: xy[0] + (x.uf === 'DF' ? 24 : 0), y: xy[1] + (x.uf === 'DF' ? 4 : 0), tam: x.uf === 'DF' ? 10 : 15 } : null;
+    }).filter(Boolean)
   };
   return CAP_STATE.geo;
 }
@@ -18232,7 +18291,11 @@ function capGeometriaBrasil(statusPorCod) {
   });
   const estados = BR_GEO.features.filter(f => f.properties && f.properties.SIGLA_UF).map(f => {
     const xy = centro(f.geometry);
-    return { sigla: f.properties.SIGLA_UF, d: caminho(f.geometry), x: xy[0], y: xy[1] };
+    const sigla = f.properties.SIGLA_UF;
+    const malha = lista.includes(sigla) ? cacheMalhas[UF_IBGE_CODES[sigla]] : null;
+    // Nas UFs com malha municipal, a divisa vem da própria malha (coincide com os municípios).
+    const contorno = malha && malha.features && malha.features.length ? capContornoUf(malha.features, pr) : caminho(f.geometry);
+    return { sigla, d: caminho(f.geometry), contorno, x: xy[0], y: xy[1] };
   });
   CAP_STATE.geoBr[chave] = { W, H, pr, brasil: true, municipios, estados };
   return CAP_STATE.geoBr[chave];
@@ -18287,20 +18350,6 @@ function renderCapacitacaoMap(containerId, statusPorCod, polosCod, modo = 'parti
   if (brasil) {
     // Estados como base; o detalhe municipal existe só nas UFs com registros do CECATE-CO.
     svg += '<g fill="' + mc.vizinho + '" stroke="none">' + g.estados.map(e => `<path d="${e.d}"/>`).join('') + '</g>';
-  } else {
-  svg += `<g>
-    <path d="M 0 160 L 95 190 L 115 310 L 80 430 L 30 520 L 0 540 Z" fill="${mc.terra}" stroke="${mc['vizinho-borda']}" stroke-width="1"/>
-    <text x="35" y="360" font-family="system-ui, sans-serif" font-size="15" font-weight="600" fill="${mc.rotulo}" letter-spacing="3" transform="rotate(-30, 35, 360)">BOLÍVIA</text>
-    <path d="M 50 640 L 160 580 L 220 620 L 245 720 L 50 720 Z" fill="${mc.terra}" stroke="${mc['vizinho-borda']}" stroke-width="1"/>
-    <text x="135" y="670" font-family="system-ui, sans-serif" font-size="13" font-weight="600" fill="${mc.rotulo}" letter-spacing="3">PARAGUAI</text>
-  </g>`;
-  svg += '<g fill="' + mc.vizinho + '" stroke="' + mc['vizinho-borda'] + '" stroke-width="1">' + g.vizinhos.map(dp => `<path d="${dp}"/>`).join('') + '</g>';
-  svg += `<g font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="${mc.rotulo}" letter-spacing="1.5">
-    <text x="45" y="150">RONDÔNIA</text><text x="560" y="140">TOCANTINS</text><text x="645" y="220">PIAUÍ</text>
-    <text x="655" y="300">BAHIA</text><text x="640" y="470">MINAS GERAIS</text><text x="540" y="620">SÃO PAULO</text>
-    <text x="430" y="695">PARANÁ</text>
-    <text x="460" y="90" font-size="19" font-weight="600" fill="${mc['rotulo-forte']}" letter-spacing="6">BRASIL</text>
-  </g>`;
   }
 
   svg += '<g stroke="' + mc['mun-borda'] + '" stroke-width="' + (brasil ? 0.25 : 0.45) + '" stroke-opacity="0.7">';
@@ -18324,15 +18373,13 @@ function renderCapacitacaoMap(containerId, statusPorCod, polosCod, modo = 'parti
   });
   svg += '</g>';
   if (brasil) {
-    svg += '<g fill="none" stroke="' + mc.limite + '" stroke-width="0.9" stroke-opacity="0.75" stroke-linejoin="round" pointer-events="none">' + g.estados.map(e => `<path d="${e.d}"/>`).join('') + '</g>';
+    svg += '<g fill="none" stroke="' + mc.limite + '" stroke-width="0.9" stroke-opacity="0.75" stroke-linejoin="round" stroke-linecap="round" pointer-events="none">' + g.estados.map(e => `<path d="${e.contorno}"/>`).join('') + '</g>';
     svg += `<g font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="${mc['rotulo-uf']}" stroke="${mc.fundo}" stroke-width="2.6" stroke-linejoin="round" paint-order="stroke" letter-spacing="1" text-anchor="middle" pointer-events="none">`
       + g.estados.filter(e => e.sigla !== 'DF').map(e => `<text x="${e.x}" y="${e.y}">${escHtml(e.sigla)}</text>`).join('') + '</g>';
   } else {
-  svg += '<g fill="none" stroke="' + mc.limite + '" stroke-width="1.8" stroke-linejoin="round" pointer-events="none">' + g.contornos.map(dp => `<path d="${dp}"/>`).join('') + '</g>';
-  svg += `<g font-family="system-ui, sans-serif" font-weight="700" fill="${mc['rotulo-uf']}" stroke="${mc.fundo}" stroke-width="3" stroke-linejoin="round" paint-order="stroke" letter-spacing="1.5" pointer-events="none">
-    <text x="270" y="270" font-size="16">MATO GROSSO</text><text x="500" y="375" font-size="16">GOIÁS</text>
-    <text x="315" y="545" font-size="15">MATO GROSSO DO SUL</text><text x="575" y="360" font-size="10">DF</text>
-  </g>`;
+  svg += '<g fill="none" stroke="' + mc.limite + '" stroke-width="1.6" stroke-linecap="round" pointer-events="none">' + g.contornos.map(dp => `<path d="${dp}"/>`).join('') + '</g>';
+  svg += `<g font-family="system-ui, sans-serif" font-weight="700" fill="${mc['rotulo-uf']}" stroke="${mc.fundo}" stroke-width="3" stroke-linejoin="round" paint-order="stroke" letter-spacing="1.5" text-anchor="middle" pointer-events="none">`
+    + g.rotulos.map(l => `<text x="${l.x}" y="${l.y}" font-size="${l.tam}">${escHtml(l.texto)}</text>`).join('') + '</g>';
   }
 
   // Marcadores dos polos (sede das capacitações)
@@ -20375,12 +20422,13 @@ async function recarregarDadosExternos() {
       </div>
     </div>
     <div class="pif-body">
-      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.6.2</strong></div>
+      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.6.3</strong></div>
       <div class="pif-row"><span>Data da alteração:</span><span class="pnite-date-val">09/11/2026</span></div>
       <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">14:00</span></div>
       <div class="pif-row"><span>Responsável técnico:</span><span class="pnite-author-val">Equipe PNITE</span></div>
       <div class="pif-note">
         <i class="ti ti-check" style="color:var(--accent);margin-right:3px"></i>
+        <strong>Mapas só do Centro-Oeste (v.3.6.3):</strong> os mapas regionais da capacitação mostram apenas o Centro-Oeste, sem países e estados vizinhos; as divisas estaduais passam a vir da própria malha municipal do IBGE, também no mapa do Brasil.<br>
         <strong>Busca de não alcançados (v.3.6.2):</strong> a busca de município passa a filtrar cartões, mapa, gráfico e lista, e avisa quando o município buscado já foi alcançado.<br>
         <strong>Não alcançados sem polo mais próximo (v.3.6.1):</strong> removidos o filtro, as colunas, a ordenação e os marcadores de "polo mais próximo", já que os polos mudam a cada capacitação; nova ordenação por convocação mais antiga.<br>
         <strong>Municípios não alcançados (v.3.6.0):</strong> nova página da capacitação com os municípios do Centro-Oeste nunca convidados e os convidados sem participação, mapa, situação por UF, polo mais próximo e planilha para priorizar convites.<br>
@@ -20452,7 +20500,7 @@ async function recarregarDadosExternos() {
   </div>
   <button class="pif-btn" id="pifBtn" aria-label="Informações de Versão">
     <i class="ti ti-info-circle"></i>
-    <span class="pif-btn-label pnite-version-val">v.3.6.2</span>
+    <span class="pif-btn-label pnite-version-val">v.3.6.3</span>
   </button>
 </div>
 
