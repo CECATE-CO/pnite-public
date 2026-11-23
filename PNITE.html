@@ -6769,6 +6769,7 @@ html[data-theme="dark"] .adm-msg.ok { color: #7ee2b0; }
 .sm-dica { position: absolute; pointer-events: none; z-index: 5; background: var(--bg-card); color: var(--text-1); border: 1px solid var(--border-mid); border-radius: 10px; padding: 6px 10px; font-size: 12px; box-shadow: 0 4px 14px rgba(0,0,0,.15); white-space: nowrap; }
 
 /* ================================================================
+    v.3.5.1 — CONTAGEM REGRESSIVA NO BOTÃO DE ENVIO DE E-MAIL (RECUPERAÇÃO/CADASTRO) E MENSAGEM DO LIMITE DE REENVIO EM PORTUGUÊS
     v.3.5.0 — MODELOS DE E-MAIL DO CECATE (RECUPERAÇÃO DE SENHA, CONFIRMAÇÃO DE CADASTRO E CONVITE) PUBLICADOS EM /email/; LINK DE CONVITE ABRE A TELA DE NOVA SENHA
     v.3.4.9 — .env.example COM AS VARIÁVEIS DE AUTENTICAÇÃO DO SERVIDOR (ENDEREÇOS DE RETORNO DOS E-MAILS DE LOGIN E RECUPERAÇÃO DE SENHA)
     v.3.4.8 — SELETOR DE ANO NO MAPA, SUBDIVISÃO POR MUNICÍPIOS E RANKING DE MUNICÍPIOS COM DADOS
@@ -9854,6 +9855,8 @@ const PNITE_AUTH = (function() {
     if (/Database error saving new user|não autorizado/i.test(txt)) return 'E-mail não autorizado na PNITE. Solicite acesso ao administrador.';
     if (/already registered|already exists/i.test(txt)) return 'Este e-mail já tem conta. Use "Entrar" ou "Esqueci a senha".';
     if (/Password should be at least/i.test(txt)) return 'A senha deve ter pelo menos 6 caracteres.';
+    const espera = txt.match(/after (\d+) seconds?/i);
+    if (espera) return 'Por segurança, aguarde ' + espera[1] + ' segundos para pedir um novo e-mail.';
     if (/rate limit|too many/i.test(txt)) return 'Muitas tentativas. Aguarde alguns minutos e tente novamente.';
     if (/administrador|e-mail válido|própri|Papel inválido/i.test(txt)) return txt;
     return 'Não foi possível concluir a operação (' + txt + ').';
@@ -9868,7 +9871,14 @@ const PNITE_AUTH = (function() {
     const texto = await resp.text();
     let corpo = null;
     try { corpo = texto ? JSON.parse(texto) : null; } catch (e) { corpo = { message: texto }; }
-    if (!resp.ok) { const err = new Error(mensagemErro(corpo, resp.status)); err.status = resp.status; throw err; }
+    if (!resp.ok) {
+      const err = new Error(mensagemErro(corpo, resp.status));
+      err.status = resp.status;
+      // Limite de reenvio do Supabase Auth ("...only request this after N seconds"): segundos restantes
+      const m = String((corpo && (corpo.msg || corpo.message || corpo.error_description)) || '').match(/after (\d+) seconds?/i);
+      if (m) err.espera = Number(m[1]);
+      throw err;
+    }
     return corpo;
   }
 
@@ -10065,10 +10075,33 @@ const PNITE_AUTH = (function() {
   }
   function fechar(id) { const o = document.getElementById(id); if (o) o.classList.remove('open'); }
 
+  const BOTOES_LOGIN = { entrar: 'Entrar', cadastro: 'Criar conta', recuperar: 'Enviar link de recuperação', 'nova-senha': 'Salvar nova senha' };
+  // Intervalo mínimo entre e-mails (igual a GOTRUE_SMTP_MAX_FREQUENCY no servidor); o servidor pode exigir mais
+  const ESPERA_REENVIO_S = 10;
+  let esperaFim = 0, esperaTimer = null;
+  // Contagem regressiva no botão enquanto não é possível pedir outro e-mail (recuperação e cadastro)
+  function atualizarEspera() {
+    const btn = document.getElementById('pniteLoginSubmit');
+    if (!btn) return;
+    const resta = Math.ceil((esperaFim - Date.now()) / 1000);
+    if (resta > 0 && (modo === 'recuperar' || modo === 'cadastro')) {
+      btn.disabled = true;
+      btn.textContent = 'Reenviar em ' + resta + ' s';
+      return;
+    }
+    if (resta <= 0) { esperaFim = 0; if (esperaTimer) { clearInterval(esperaTimer); esperaTimer = null; } }
+    btn.disabled = false;
+    btn.textContent = BOTOES_LOGIN[modo] || 'Enviar';
+  }
+  function iniciarEspera(segundos) {
+    esperaFim = Date.now() + segundos * 1000;
+    if (!esperaTimer) esperaTimer = setInterval(atualizarEspera, 250);
+    atualizarEspera();
+  }
+
   function definirModo(m) {
     modo = m;
     const titulos = { entrar: 'Entrar na PNITE', cadastro: 'Criar conta', recuperar: 'Recuperar senha', 'nova-senha': 'Definir nova senha' };
-    const botoes = { entrar: 'Entrar', cadastro: 'Criar conta', recuperar: 'Enviar link de recuperação', 'nova-senha': 'Salvar nova senha' };
     const subs = {
       entrar: 'Usuários autorizados podem baixar gráficos, tabelas, indicadores e o mapa. A consulta à plataforma continua aberta a todos.',
       cadastro: 'Somente e-mails autorizados pelo administrador podem criar conta. Você receberá um e-mail para confirmar o cadastro.',
@@ -10077,7 +10110,7 @@ const PNITE_AUTH = (function() {
     };
     const set = function(id, txt) { const el = document.getElementById(id); if (el) el.textContent = txt; };
     set('pniteLoginTitle', titulos[m]);
-    set('pniteLoginSubmit', botoes[m]);
+    set('pniteLoginSubmit', BOTOES_LOGIN[m]);
     set('pniteLoginSub', subs[m]);
     const emailF = document.getElementById('pniteLoginEmailField');
     const senhaF = document.getElementById('pniteLoginSenhaField');
@@ -10090,6 +10123,7 @@ const PNITE_AUTH = (function() {
     vis('pniteLinkCadastro', m === 'entrar');
     vis('pniteLinkRecuperar', m === 'entrar');
     msg('pniteLoginMsg', '');
+    atualizarEspera();
   }
 
   async function enviar(ev) {
@@ -10114,10 +10148,11 @@ const PNITE_AUTH = (function() {
       } else if (modo === 'cadastro') {
         const r = await chamar('/auth/v1/signup?redirect_to=' + retorno, { body: { email: email, password: senha } });
         if (r && r.access_token) { gravarSessao(sessaoDeResposta(r)); await carregarAcesso(); fechar('pniteLoginOverlay'); }
-        else msg('pniteLoginMsg', 'Conta criada. Abra o link de confirmação enviado para ' + email + ' e depois entre.', 'ok');
+        else { msg('pniteLoginMsg', 'Conta criada. Abra o link de confirmação enviado para ' + email + ' e depois entre.', 'ok'); iniciarEspera(ESPERA_REENVIO_S); }
       } else if (modo === 'recuperar') {
         await chamar('/auth/v1/recover?redirect_to=' + retorno, { body: { email: email } });
         msg('pniteLoginMsg', 'Se o e-mail tiver conta, você receberá o link de redefinição.', 'ok');
+        iniciarEspera(ESPERA_REENVIO_S);
       } else if (modo === 'nova-senha') {
         const t = await token();
         await chamar('/auth/v1/user', { method: 'PUT', body: { password: senha }, headers: { Authorization: 'Bearer ' + t } });
@@ -10128,8 +10163,10 @@ const PNITE_AUTH = (function() {
       }
     } catch (e) {
       msg('pniteLoginMsg', e.message || 'Falha de conexão com o Supabase.', 'err');
+      if (e.espera) iniciarEspera(e.espera);
     } finally {
       btn.disabled = false;
+      atualizarEspera();
     }
   }
 
@@ -10680,7 +10717,7 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.5.0";
+const PNITE_VERSION = "v.3.5.1";
 const PNITE_LAST_UPDATE = "19/11/2026";
 const PNITE_LAST_TIME = "19:30";
 

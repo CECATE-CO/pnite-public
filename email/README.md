@@ -23,6 +23,7 @@ Variáveis usadas: `{{ .ConfirmationURL }}` (link do botão) e `{{ .Email }}` (r
    GOTRUE_MAILER_SUBJECTS_CONFIRMATION: ${GOTRUE_MAILER_SUBJECTS_CONFIRMATION}
    GOTRUE_MAILER_TEMPLATES_INVITE: ${GOTRUE_MAILER_TEMPLATES_INVITE}
    GOTRUE_MAILER_SUBJECTS_INVITE: ${GOTRUE_MAILER_SUBJECTS_INVITE}
+   GOTRUE_SMTP_MAX_FREQUENCY: ${GOTRUE_SMTP_MAX_FREQUENCY}   # intervalo entre e-mails (10s; a PNITE mostra a contagem)
    ```
 3. Aplicar com `docker compose up -d auth` (não usar `restart`, que não relê o `.env`).
 
