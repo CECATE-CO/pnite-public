@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
-<title>Confirme seu cadastro</title>
+<title>Convite para integrar a PNITE</title>
 </head>
 <!-- PNITE / CECATE-CO — modelo de e-mail do Supabase Auth (GoTrue). Variáveis: {{ .ConfirmationURL }}, {{ .Email }}.
      Publicado em https://pnite.vercel.app/email/ e referenciado por GOTRUE_MAILER_TEMPLATES_* no servidor. -->
 <body style="margin:0;padding:0;background-color:#f3f4f6;">
-<div style="display:none;max-height:0;overflow:hidden;opacity:0;">Confirme seu e-mail para ativar o acesso à PNITE.</div>
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;">Você recebeu um convite para integrar a PNITE. Confirme seu cadastro.</div>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f3f4f6;">
 <tr><td align="center" style="padding:32px 16px;">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:560px;background-color:#ffffff;border-radius:8px;overflow:hidden;border:1px solid #e5e7eb;">
@@ -18,21 +18,21 @@
       <img src="https://pnite.vercel.app/email/logo_cecate.png" width="240" alt="CECATE — Centro Colaborador de Apoio ao Transporte Escolar, Centro-Oeste" style="display:block;width:240px;max-width:100%;height:auto;border:0;">
     </td></tr>
     <tr><td style="padding:24px 32px 0 32px;font-family:Arial,Helvetica,sans-serif;color:#3f3f46;">
-      <h1 style="margin:0 0 16px 0;font-size:22px;line-height:1.3;color:#3f3f46;font-weight:bold;">Confirme seu cadastro</h1>
+      <h1 style="margin:0 0 16px 0;font-size:22px;line-height:1.3;color:#3f3f46;font-weight:bold;">Convite para integrar a PNITE</h1>
       <p style="margin:0 0 16px 0;font-size:15px;line-height:1.6;">Olá,</p>
-      <p style="margin:0 0 24px 0;font-size:15px;line-height:1.6;">Recebemos o cadastro deste e-mail na <strong>PNITE</strong>. Para ativar a conta, confirme o endereço clicando no botão abaixo.</p>
+      <p style="margin:0 0 24px 0;font-size:15px;line-height:1.6;">Você recebeu um convite para integrar a <strong>PNITE — Plataforma Nacional de Inteligência em Transporte Escolar</strong>, mantida pelo CECATE Centro-Oeste. Para aceitar o convite, confirme seu cadastro clicando no botão abaixo.</p>
     </td></tr>
     <tr><td align="center" style="padding:0 32px 24px 32px;">
       <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
         <td align="center" bgcolor="#F5A800" style="border-radius:6px;">
-          <a href="{{ .ConfirmationURL }}" target="_blank" style="display:inline-block;padding:14px 32px;font-family:Arial,Helvetica,sans-serif;font-size:16px;font-weight:bold;color:#27272a;text-decoration:none;border-radius:6px;">Confirmar e-mail</a>
+          <a href="{{ .ConfirmationURL }}" target="_blank" style="display:inline-block;padding:14px 32px;font-family:Arial,Helvetica,sans-serif;font-size:16px;font-weight:bold;color:#27272a;text-decoration:none;border-radius:6px;">Confirmar cadastro</a>
         </td>
       </tr></table>
     </td></tr>
     <tr><td style="padding:0 32px 24px 32px;font-family:Arial,Helvetica,sans-serif;color:#52525b;">
       <p style="margin:0 0 8px 0;font-size:13px;line-height:1.6;">Se o botão não funcionar, copie e cole este endereço no navegador:</p>
       <p style="margin:0 0 20px 0;font-size:12px;line-height:1.5;word-break:break-all;"><a href="{{ .ConfirmationURL }}" style="color:#1d6fc4;">{{ .ConfirmationURL }}</a></p>
-      <p style="margin:0;font-size:13px;line-height:1.6;">O link pode ser usado uma única vez e leva você à PNITE para concluir o acesso. Se você não reconhece este cadastro, ignore este e-mail.</p>
+      <p style="margin:0;font-size:13px;line-height:1.6;">O link pode ser usado uma única vez. Se você ainda não tiver uma senha, a PNITE pedirá que você crie uma ao abrir o link. Se você não esperava este convite, ignore este e-mail.</p>
     </td></tr>
     <tr><td style="padding:20px 32px;background-color:#3f3f46;font-family:Arial,Helvetica,sans-serif;color:#e4e4e7;font-size:12px;line-height:1.6;">
       <strong style="color:#F5A800;">PNITE</strong> — Plataforma Nacional de Inteligência em Transporte Escolar<br>
