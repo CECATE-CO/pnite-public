@@ -6797,6 +6797,7 @@ html[data-theme="dark"] .adm-msg.ok { color: #7ee2b0; }
 .sm-dica { position: absolute; pointer-events: none; z-index: 5; background: var(--bg-card); color: var(--text-1); border: 1px solid var(--border-mid); border-radius: 10px; padding: 6px 10px; font-size: 12px; box-shadow: 0 4px 14px rgba(0,0,0,.15); white-space: nowrap; }
 
 /* ================================================================
+    v.3.6.0 — CORRIGE O BOTÃO "REMOVER FOTO" DO EDITAR PERFIL (A FUNÇÃO TINHA O MESMO NOME DO ID DO BOTÃO E NÃO ERA CHAMADA)
     v.3.5.9 — EDITAR PERFIL SEM TROCA DE SENHA: A SENHA É TROCADA SÓ PELO LINK DE RECUPERAÇÃO (BOTÃO "ENVIAR LINK PARA TROCAR A SENHA")
     v.3.5.8 — LISTA DE USUÁRIOS: CONTROLES E AÇÕES NA MESMA LINHA E BOTÃO "EXCLUIR" COM TEXTO
     v.3.5.7 — GESTÃO DE USUÁRIOS: CADASTRO SOMENTE POR CONVITE (SAEM "COM SENHA" E "SÓ AUTORIZAR"); AÇÕES DA LISTA SÓ COM RECUPERAÇÃO DE SENHA (OU REENVIO DO CONVITE, SEM CONTA) E EXCLUIR
@@ -9788,7 +9789,7 @@ window.onerror = function(msg, url, line, col, err) {
           <b id="pnitePerfilNomeTopo"></b>
           <small id="pnitePerfilEmail"></small>
           <small id="pnitePerfilPapel"></small>
-          <button type="button" class="pab-link" id="pnitePerfilRemoverFoto" onclick="pnitePerfilRemoverFoto()" hidden>Remover foto</button>
+          <button type="button" class="pab-link" id="pnitePerfilRemoverFoto" onclick="pniteRemoverFotoPerfil()" hidden>Remover foto</button>
         </div>
       </div>
       <div class="pab-field"><label for="pnitePerfilNome">Nome</label><input class="pab-input" type="text" id="pnitePerfilNome" maxlength="120" autocomplete="name"></div>
@@ -10278,7 +10279,7 @@ function pniteAvatarHtml(nome, email, foto) {
 }
 function pniteAbrirPerfil() { PNITE_AUTH.abrirPerfil(); }
 function pnitePerfilFotoEscolhida(input) { PNITE_AUTH.escolherFoto(input); }
-function pnitePerfilRemoverFoto() { PNITE_AUTH.removerFoto(); }
+function pniteRemoverFotoPerfil() { PNITE_AUTH.removerFoto(); }
 function pniteSalvarPerfil(ev) { PNITE_AUTH.salvarPerfil(ev); }
 function pniteEnviarLinkSenha() { PNITE_AUTH.enviarLinkSenha(); }
 function pniteAuthBotao() {
@@ -10739,7 +10740,7 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.5.9";
+const PNITE_VERSION = "v.3.6.0";
 const PNITE_LAST_UPDATE = "19/11/2026";
 const PNITE_LAST_TIME = "19:30";
 
