@@ -6769,6 +6769,7 @@ html[data-theme="dark"] .adm-msg.ok { color: #7ee2b0; }
 .sm-dica { position: absolute; pointer-events: none; z-index: 5; background: var(--bg-card); color: var(--text-1); border: 1px solid var(--border-mid); border-radius: 10px; padding: 6px 10px; font-size: 12px; box-shadow: 0 4px 14px rgba(0,0,0,.15); white-space: nowrap; }
 
 /* ================================================================
+    v.3.5.0 — MODELOS DE E-MAIL DO CECATE (RECUPERAÇÃO DE SENHA, CONFIRMAÇÃO DE CADASTRO E CONVITE) PUBLICADOS EM /email/; LINK DE CONVITE ABRE A TELA DE NOVA SENHA
     v.3.4.9 — .env.example COM AS VARIÁVEIS DE AUTENTICAÇÃO DO SERVIDOR (ENDEREÇOS DE RETORNO DOS E-MAILS DE LOGIN E RECUPERAÇÃO DE SENHA)
     v.3.4.8 — SELETOR DE ANO NO MAPA, SUBDIVISÃO POR MUNICÍPIOS E RANKING DE MUNICÍPIOS COM DADOS
     v.3.4.7 — SELETOR "CENSO ESCOLAR" NAS BARRAS DE TERRITÓRIO (QUALQUER ANO, POR PADRÃO O MAIS RECENTE; MIGRAÇÃO 0029) E COMPARATIVO ENTRE ANOS DO CENSO
@@ -10161,7 +10162,8 @@ const PNITE_AUTH = (function() {
       gravarSessao(Object.assign({}, sessao, { email: (u && u.email) || '' }));
     } catch (e) {}
     await carregarAcesso();
-    if (p.get('type') === 'recovery') { definirModo('nova-senha'); abrir('pniteLoginOverlay'); }
+    // Recuperação e convite chegam sem senha definida: abrir direto a tela de nova senha
+    if (p.get('type') === 'recovery' || p.get('type') === 'invite') { definirModo('nova-senha'); abrir('pniteLoginOverlay'); }
     return true;
   }
 
@@ -10678,7 +10680,7 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.4.9";
+const PNITE_VERSION = "v.3.5.0";
 const PNITE_LAST_UPDATE = "19/11/2026";
 const PNITE_LAST_TIME = "19:30";
 

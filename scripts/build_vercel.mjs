@@ -23,6 +23,7 @@ const PUBLICAVEIS = [
   ['PNITE.html', 'index.html'],
   ['assets/logos', 'assets/logos'],
   ['assets/img', 'assets/img'],
+  ['email', 'email'],   // modelos de e-mail do Supabase Auth (lidos pelo servidor por URL)
 ];
 
 const PERMITIDAS = { SUPABASE_URL: 'supabaseUrl', SUPABASE_PUBLISHABLE_KEY: 'publishableKey', ANO_CARGA_SETE: 'anoCarga' };
