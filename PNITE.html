@@ -8906,7 +8906,7 @@ window.onerror = function(msg, url, line, col, err) {
     <div class="smb-sec">
       <div class="smb-sec-title" data-i18n="settings_info_title">Informações da Versão</div>
       <div style="font-size:12px;color:var(--text-2);display:flex;flex-direction:column;gap:4px;margin-top:6px">
-        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.6.9</b></div>
+        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.7.0</b></div>
         <div><span data-i18n="settings_updated">Última Atualização:</span> <b class="pnite-date-val">06/10/2026</b> às <b class="pnite-time-val">21:05</b></div>
         <div><span data-i18n="settings_author">Responsável Técnico:</span> <b class="pnite-author-val">Equipe PNITE</b></div>
       </div>
@@ -9895,9 +9895,9 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.6.9";
+const PNITE_VERSION = "v.3.7.0";
 const PNITE_LAST_UPDATE = "28/11/2026";
-const PNITE_LAST_TIME = "18:00";
+const PNITE_LAST_TIME = "19:00";
 
 // Escapa texto para inserção segura via innerHTML (entradas do usuário, nomes de arquivo)
 function escHtml(s) {
@@ -17095,7 +17095,7 @@ const CAP_AJUDA = {
   'Conceito mediano': 'Conceito central da escala de 1 (Muito ruim) a 5 (Excelente), considerando todas as notas.',
   '% favorável': 'Notas Bom ou Excelente ÷ total de notas.',
   '% desfavorável': 'Notas Ruim ou Muito ruim ÷ total de notas.',
-  'Respostas abertas': 'Campos de texto preenchidos (aspectos positivos, a melhorar, temas e comentários). Com "Ocultar respostas sem conteúdo" ativo, não conta respostas como "nada a declarar" ou "nenhum".',
+  'Respostas abertas': 'Campos de texto preenchidos (aspectos positivos, a melhorar, temas e comentários). Com "Ocultar respostas sem conteúdo" ativo, não conta respostas em branco (sem nenhuma letra ou número).',
   'Respostas com temas': 'Respondentes que sugeriram temas para futuras capacitações.',
   'Respostas com comentários': 'Respondentes que deixaram comentários.'
 };
@@ -17228,14 +17228,13 @@ function capOrdenarClique(botao) {
   if (novo) novo.focus({ preventScroll: true });
 }
 
-// v.3.6.9 — Respostas abertas sem conteúdo ("nada a declarar", "nenhum", "não tenho", "sem sugestão",
-// texto vazio ou só pontuação). Respostas curtas com conteúdo ("webinar", "ótimo", "tudo") não entram.
-const CAP_RESPOSTA_VAZIA = /^(?:|nao|nada(?: a (?:declarar|acrescentar|sugerir|comentar|reclamar))?|nenhum|nenhuma(?: sugestao)?|nao (?:tenho|tem|ha|teve)(?: (?:sugestao|sugestoes|comentario|comentarios|nada))?|sem(?: (?:sugestao|sugestoes|comentario|comentarios|mais|observacao|observacoes))?|n ?a|ok|x)$/;
+// v.3.7.0 — Resposta sem conteúdo = resposta em branco: vazia, só espaços ou só pontuação/símbolos
+// (nenhuma letra ou número). Tudo o que alguém escreveu é mantido como no original.
 function capRespostaVazia(texto) {
-  return CAP_RESPOSTA_VAZIA.test(capNormTxt(texto).replace(/[^a-z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim());
+  return !/[\p{L}\p{N}]/u.test(String(texto == null ? '' : texto));
 }
 function capTextoOcultas(n) {
-  return n > 0 ? ` ${capInt(n)} sem conteúdo oculta(s).` : '';
+  return n > 0 ? ` ${capInt(n)} em branco oculta(s).` : '';
 }
 
 function capTagSimNao(sim, textoSim = 'SIM', textoNao = 'NÃO') {
@@ -19592,7 +19591,7 @@ function capRenderStat15() {
     : '<div class="cap-empty">' + escHtml(capMensagemSemRespostas15('Divulgação', cap)) + '</div>';
 
   const ocultar15 = document.getElementById('capS15Vazias').checked;
-  const todas15 = itens.filter(i => (i.bloco === 'Sugestões' || i.bloco === 'Comentários') && i.resposta && i.resposta.length > 2);
+  const todas15 = itens.filter(i => (i.bloco === 'Sugestões' || i.bloco === 'Comentários') && i.resposta);
   const abertas = todas15.filter(i => !ocultar15 || !capRespostaVazia(i.resposta)).sort((a, b) => a.cap - b.cap);
   const busca = capNormTxt(capVal('capS15Busca').trim());
   const tipo = capVal('capS15Tipo');
@@ -20805,12 +20804,13 @@ async function recarregarDadosExternos() {
       </div>
     </div>
     <div class="pif-body">
-      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.6.9</strong></div>
+      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.7.0</strong></div>
       <div class="pif-row"><span>Data da alteração:</span><span class="pnite-date-val">09/11/2026</span></div>
       <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">14:00</span></div>
       <div class="pif-row"><span>Responsável técnico:</span><span class="pnite-author-val">Equipe PNITE</span></div>
       <div class="pif-note">
         <i class="ti ti-check" style="color:var(--accent);margin-right:3px"></i>
+        <strong>Respostas abertas preservadas (v.3.7.0):</strong> "Ocultar respostas sem conteúdo" passa a ocultar só respostas em branco (sem nenhuma letra ou número); tudo o que foi escrito aparece como no original, inclusive respostas curtas como "ok" nas avaliações 1ª a 5ª.<br>
         <strong>Tabelas e celular na capacitação (v.3.6.9):</strong> ordenação clicando no título da coluna (o segundo clique inverte), menu em abas horizontais no tablet e no celular, link compartilhável com a página e os filtros (botão "Copiar link") e opção, ativa por padrão, de ocultar respostas abertas sem conteúdo ("nada a declarar", "nenhum").<br>
         <strong>Filtros unificados na capacitação (v.3.6.8):</strong> barra única no topo de todas as páginas, fixa sob o cabeçalho, com a origem do município, os filtros ativos ("Capacitação: 14ª ✕") e "Limpar tudo"; capacitação, estado e ano agora acompanham a navegação entre as páginas; exportação da página na mesma barra.<br>
         <strong>Capacitação mais clara (v.3.6.7):</strong> Home sem números repetidos (perfil sem o total e cobertura detalhada por UF), nomes padronizados para as taxas ("% dos convidados que participaram" e "% de convites atendidos"), menu "Avaliações 1ª a 5ª / 6ª a 16ª", ajuda "ⓘ" com a definição de cada cartão e mínimos por município em "Filtros avançados".<br>
@@ -20889,7 +20889,7 @@ async function recarregarDadosExternos() {
   </div>
   <button class="pif-btn" id="pifBtn" aria-label="Informações de Versão">
     <i class="ti ti-info-circle"></i>
-    <span class="pif-btn-label pnite-version-val">v.3.6.9</span>
+    <span class="pif-btn-label pnite-version-val">v.3.7.0</span>
   </button>
 </div>
 
