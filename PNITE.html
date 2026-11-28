@@ -1556,7 +1556,7 @@ body {
   width: 236px;
   min-width: 236px;
   position: sticky;
-  top: 76px;
+  top: 121px;                          /* logo abaixo do cabeçalho fixo da PNITE (113px) */
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--cap-raio);
@@ -1565,7 +1565,7 @@ body {
   flex-direction: column;
   gap: 12px;
   box-shadow: var(--cap-sombra);
-  max-height: calc(100vh - 96px);
+  max-height: calc(100vh - 133px);
   overflow-y: auto;
 }
 
@@ -1745,23 +1745,6 @@ body {
   padding: 16px 18px;
   box-shadow: var(--cap-sombra);
 }
-.cap-filter-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text-1);
-  margin-bottom: 12px;
-  position: relative;
-}
-.cap-filter-bar {
-  flex: 1;
-  height: 1px;
-  background-color: var(--border);
-  border-radius: 1px;
-  margin-left: 6px;
-}
 .cap-filter-grid {
   display: flex;
   flex-direction: column;
@@ -1799,8 +1782,6 @@ body {
 #capSubHome .cap-filter-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); }
 #capSubHome .cap-filter-field { min-width: 0; }
 #capSubHome .cap-filter-field select { min-height: 44px; }
-.cap-home-scope { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
-.cap-home-scope p { flex: 1 1 260px; min-width: 0; margin: 0; color: var(--text-2); font-size: 12px; line-height: 1.6; overflow-wrap: anywhere; }
 .cap-home-clear { min-height: 44px; padding: 8px 14px; border: 1px solid var(--border); border-radius: 8px; background-color: var(--bg-card); color: var(--text-1); font: inherit; font-size: 12px; cursor: pointer; }
 .cap-home-clear:hover { border-color: var(--accent); }
 .cap-home-clear:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
@@ -2352,7 +2333,6 @@ body {
 #capCapEvento { grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); }
 #capCapKpis { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 #capCapParticipacao { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 12px; }
-#capSubCapacitacoes .cap-event-scope { margin: 0 0 16px; padding: 12px 16px; border: 1px solid var(--border); border-radius: var(--cap-raio); background-color: var(--bg-card); box-shadow: var(--cap-sombra); }
 #capSubCapacitacoes .cap-event-public-chart { height: 240px; max-width: 360px; margin: 0 auto 14px; }
 .cap-event-public-summary { display: grid; gap: 6px; margin-bottom: 20px; color: var(--text-2); font-size: 12px; }
 .cap-event-public-summary p { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; }
@@ -2390,14 +2370,6 @@ body {
 }
 @media (max-width: 420px) { #capCapKpis { grid-template-columns: minmax(0, 1fr); } }
 
-/* Escopo territorial comum; a origem municipal é independente da sede do evento. */
-.cap-territory-panel { order: 2; flex: 0 0 210px; width: 210px; padding: 14px; border: 1px solid var(--border); border-radius: var(--cap-raio); background-color: var(--bg-card); box-shadow: var(--cap-sombra); min-width: 0; position: sticky; top: 76px; }
-.cap-territory-panel select { min-height: 44px; max-width: 100%; }
-@media (max-width: 1150px) {
-  .cap-territory-panel { order: 1; flex: 0 0 auto; width: min(280px, 100%); align-self: flex-end; position: static; }
-  .cap-main-area { order: 2; }
-}
-@media (max-width: 600px) { .cap-territory-panel { width: 100%; align-self: stretch; } }
 .cap-territory-note { color: var(--text-2); font-size: 12px; line-height: 1.6; margin-bottom: 14px; }
 
 /* v.3.4.9 — Exportação da capacitação; v.3.6.5 — somente para quem está logado e tem a permissão
@@ -2545,6 +2517,42 @@ html.pnite-pode-baixar #capSubPrioridade .cap-pri-baixar { display: flex; }
 .cap-cov-barra span { display: block; height: 100%; border-radius: 4px; background-color: var(--cap-gest); }
 .cap-cov-ufs strong { font-weight: 600; text-align: right; font-variant-numeric: tabular-nums; color: var(--text-1); }
 .cap-cov-ufs small { font-size: 11.5px; color: var(--text-2); font-variant-numeric: tabular-nums; }
+
+/* v.3.6.8 — Barra única da capacitação: origem, filtros ativos ("chips") e exportação da página. */
+.cap-barra {
+  position: sticky; top: 121px; z-index: 15; display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px 16px;
+  margin-bottom: 18px; padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--cap-raio);
+  background-color: var(--bg-card); box-shadow: var(--cap-sombra);
+}
+.cap-barra .cap-barra-origem { flex: 0 0 220px; }
+.cap-barra .cap-barra-origem select { min-height: 40px; }
+.cap-chips { flex: 1 1 280px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; min-width: 0; min-height: 40px; }
+.cap-chips:focus { outline: none; }
+.cap-chips-vazio { font-size: 12px; color: var(--text-3); }
+.cap-chip {
+  display: inline-flex; align-items: center; gap: 6px; max-width: 100%; min-height: 32px; padding: 4px 10px;
+  border: 1px solid var(--cap-acento); border-radius: 999px; background-color: var(--cap-acento-suave); color: var(--cap-tinta);
+  font: inherit; font-size: 12px; cursor: pointer; animation: capSurgir .18s ease-out;
+}
+.cap-chip span { flex: 0 0 auto; color: var(--text-2); white-space: nowrap; }
+.cap-chip strong { min-width: 0; font-weight: 600; max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cap-chip i { font-size: 13px; }
+.cap-chip:hover { border-color: var(--cap-acento-linha); }
+.cap-chip:focus-visible, .cap-chip-limpar:focus-visible { outline: 2px solid var(--cap-acento-linha); outline-offset: 2px; }
+.cap-chip-limpar { min-height: 32px; padding: 4px 6px; border: 0; background: none; color: var(--text-2); font: inherit; font-size: 12px; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.cap-chip-limpar:hover { color: var(--cap-tinta); }
+.cap-barra .cap-export-page { margin: 0; padding: 0; border: 0; align-items: center; gap: 6px; }
+html.pnite-pode-baixar .cap-barra .cap-export-page { display: flex; flex-wrap: wrap; }
+.cap-barra .cap-export-page-title { font-size: 11px; font-weight: 600; color: var(--text-2); }
+.cap-barra .cap-export-page-btn { width: auto; min-height: 40px; padding: 6px 10px; }
+.cap-barra .cap-export-msg { flex-basis: 100%; }
+/* Rolagens automáticas (foco por teclado, links, scrollIntoView) param abaixo do cabeçalho e da barra fixa. */
+@media (min-width: 761px) { #frontCapacitacao .cap-main-area * { scroll-margin-top: 250px; } }
+@media (max-width: 760px) {
+  .cap-barra { position: static; }
+  .cap-barra .cap-barra-origem { flex: 1 1 100%; }
+}
+@media (pointer: coarse) { .cap-chip, .cap-chip-limpar { min-height: 44px; } }
 
 /* Organização exclusiva da comparação por UF. */
 .cap-uf-group-title { margin: 18px 0 10px; }
@@ -7018,18 +7026,20 @@ window.onerror = function(msg, url, line, col, err) {
         </div>
       </aside>
 
-      <aside class="cap-territory-panel" aria-label="Recorte territorial e exportação da capacitação">
-        <div class="cap-field"><label for="capTerritorio">Origem do município representado</label><select id="capTerritorio" onchange="capTrocarTerritorio()"><option value="co">Centro-Oeste</option><option value="outros">Outros — outras UFs</option><option value="todos">Brasil</option></select></div>
-        <div class="cap-export-page" role="group" aria-labelledby="capExportPageTitulo">
-          <span class="cap-export-page-title" id="capExportPageTitulo">Exportar esta página</span>
-          <button type="button" class="cap-export-page-btn" onclick="capExportarPagina('png', this)"><i class="ti ti-photo" aria-hidden="true"></i> Relatório em imagem (PNG)</button>
-          <button type="button" class="cap-export-page-btn" onclick="capExportarPagina('xlsx', this)"><i class="ti ti-file-spreadsheet" aria-hidden="true"></i> Dados da página (XLSX)</button>
-          <p class="cap-export-msg" id="capExportMsg" role="status" aria-live="polite"></p>
-        </div>
-      </aside>
 
       <!-- CONTEÚDO PRINCIPAL DA CAPACITAÇÃO -->
       <main class="cap-main-area">
+        <!-- BARRA ÚNICA (todas as páginas): origem do município, filtros ativos e exportação da página -->
+        <div class="cap-barra" role="region" aria-label="Recorte e filtros ativos da capacitação">
+          <div class="cap-field cap-barra-origem"><label for="capTerritorio">Origem do município</label><select id="capTerritorio" onchange="capTrocarTerritorio()"><option value="co">Centro-Oeste</option><option value="outros">Outros — outras UFs</option><option value="todos">Brasil</option></select></div>
+          <div class="cap-chips" id="capChips" tabindex="-1" aria-label="Filtros ativos"></div>
+          <div class="cap-export-page" role="group" aria-labelledby="capExportPageTitulo">
+            <span class="cap-export-page-title" id="capExportPageTitulo">Exportar página</span>
+            <button type="button" class="cap-export-page-btn" onclick="capExportarPagina('png', this)"><i class="ti ti-photo" aria-hidden="true"></i> Imagem (PNG)</button>
+            <button type="button" class="cap-export-page-btn" onclick="capExportarPagina('xlsx', this)"><i class="ti ti-file-spreadsheet" aria-hidden="true"></i> Dados (XLSX)</button>
+          </div>
+          <p class="cap-export-msg" id="capExportMsg" role="status" aria-live="polite"></p>
+        </div>
         <div class="cap-empty cap-status" id="capStatus" role="status" aria-live="polite" hidden></div>
 
         <!-- SUB-VIEW 1: HOME (INICIAL) -->
@@ -7052,11 +7062,6 @@ window.onerror = function(msg, url, line, col, err) {
 
             <!-- FILTROS E RESUMO DO RECORTE DA HOME -->
             <div class="cap-filter-panel">
-              <div class="cap-filter-header">
-                <i class="ti ti-filter"></i>
-                <span>Filtros</span>
-                <div class="cap-filter-bar"></div>
-              </div>
               <div class="cap-filter-grid">
                 <div class="cap-filter-field full-width">
                   <label for="capPoloSelect">Polo de Capacitação</label>
@@ -7091,10 +7096,6 @@ window.onerror = function(msg, url, line, col, err) {
                     </select>
                   </div>
                 </div>
-              </div>
-              <div class="cap-home-scope">
-                <p id="capHomeRecorte" role="status" aria-live="polite">Recorte atual: carregando os filtros…</p>
-                <button type="button" class="cap-home-clear" onclick="capLimparFiltrosHome()">Limpar filtros</button>
               </div>
             </div>
           </div>
@@ -7293,10 +7294,6 @@ window.onerror = function(msg, url, line, col, err) {
               </div>
               <select id="capCapMun" data-cap-filter hidden aria-hidden="true" tabindex="-1"></select>
             </div>
-          </div>
-          <div class="cap-event-scope cap-home-scope">
-            <p id="capCapRecorte" role="status" aria-live="polite"></p>
-            <button type="button" class="cap-home-clear" onclick="capLimparFiltrosEvento()">Limpar filtros</button>
           </div>
           <div class="cap-kpi-grid" id="capCapEvento" role="group" aria-label="Identificação e período dos eventos"></div>
           <div class="cap-kpi-grid" id="capCapKpis" role="group" aria-label="Indicadores de municípios e participantes"></div>
@@ -8889,7 +8886,7 @@ window.onerror = function(msg, url, line, col, err) {
     <div class="smb-sec">
       <div class="smb-sec-title" data-i18n="settings_info_title">Informações da Versão</div>
       <div style="font-size:12px;color:var(--text-2);display:flex;flex-direction:column;gap:4px;margin-top:6px">
-        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.6.7</b></div>
+        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.6.8</b></div>
         <div><span data-i18n="settings_updated">Última Atualização:</span> <b class="pnite-date-val">06/10/2026</b> às <b class="pnite-time-val">21:05</b></div>
         <div><span data-i18n="settings_author">Responsável Técnico:</span> <b class="pnite-author-val">Equipe PNITE</b></div>
       </div>
@@ -9878,9 +9875,9 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.6.7";
+const PNITE_VERSION = "v.3.6.8";
 const PNITE_LAST_UPDATE = "28/11/2026";
-const PNITE_LAST_TIME = "14:00";
+const PNITE_LAST_TIME = "16:00";
 
 // Escapa texto para inserção segura via innerHTML (entradas do usuário, nomes de arquivo)
 function escHtml(s) {
@@ -16770,7 +16767,7 @@ document.addEventListener('keydown', function(ev) {
 // Base: API do Supabase (public.capacitacao_dados, gravada por scripts/extrair_capacitacao.py),
 // com tabelas {colunas, linhas} do schema `capacitacao` (supabase/migrations/0012_capacitacao.sql).
 // Malha municipal do mapa: API de malhas do IBGE (loadMunicipalGeoForUf, com cache).
-const CAP_STATE = { raw: null, malhas: null, carga: null, dados: null, charts: {}, view: 'home', abas: { cap1_5: 'aval1_5', cap6_16: 'aval6_16' }, mapaModo: 'participacao', eventos: false, geo: null, mapInfo: {}, cliques: {}, homeMun: '', priMun: '' };
+const CAP_STATE = { raw: null, malhas: null, carga: null, dados: null, charts: {}, view: 'home', abas: { cap1_5: 'aval1_5', cap6_16: 'aval6_16' }, mapaModo: 'participacao', eventos: false, geo: null, mapInfo: {}, cliques: {}, homeMun: '', priMun: '', sync: { cap: '', uf: '', ano: '' } };
 const CAP_UFS_MAPA = ['GO', 'MT', 'MS', 'DF'];
 const CAP_UF_POR_PREFIXO = { '11': 'RO', '12': 'AC', '13': 'AM', '14': 'RR', '15': 'PA', '16': 'AP', '17': 'TO', '21': 'MA', '22': 'PI', '23': 'CE', '24': 'RN', '25': 'PB', '26': 'PE', '27': 'AL', '28': 'SE', '29': 'BA', '31': 'MG', '32': 'ES', '33': 'RJ', '35': 'SP', '41': 'PR', '42': 'SC', '43': 'RS', '50': 'MS', '51': 'MT', '52': 'GO', '53': 'DF' };
 const CAP_UFS_CONHECIDAS = new Set(Object.values(CAP_UF_POR_PREFIXO));
@@ -16950,6 +16947,8 @@ function capMunicipiosComPresenca(rows) {
 
 function capTrocarTerritorio() {
   CAP_STATE.homeMun = '';
+  CAP_STATE.priMun = '';
+  CAP_STATE.sync.uf = '';
   ['capEstadoSelect', 'capUfSel', 'capCapMun', 'capA616Mun', 'capS616Mun'].forEach(id => { document.getElementById(id).value = ''; });
   renderCapSubview();
 }
@@ -17226,6 +17225,7 @@ function capFiltroAlternar(selectId, valor) {
   const v = String(valor);
   if (!el || !Array.from(el.options).some(o => o.value === v)) return false;
   el.value = el.value === v ? '' : v;
+  capSyncRegistrar(el);
   renderCapSubview();
   return true;
 }
@@ -17372,7 +17372,120 @@ function renderCapSubview() {
     home: updateCapacitacaoView, capacitacoes: capRenderCapacitacoes, uf: capRenderUf, prioridade: capRenderPrioridade,
     aval1_5: capRenderAval15, stat1_5: capRenderStat15, aval6_16: capRenderAval616, stat6_16: capRenderStat616
   };
-  (renderers[CAP_STATE.view] || updateCapacitacaoView)();
+  const render = renderers[CAP_STATE.view] || updateCapacitacaoView;
+  // Filtros comuns (capacitação, estado e ano) acompanham a navegação; na primeira visita os
+  // seletores só ganham opções na renderização, por isso a sincronização roda antes e depois.
+  capSyncAplicar();
+  render();
+  if (capSyncAplicar()) render();
+  capChipsRender();
+}
+
+// --------------------------------------------------------------------------
+// Filtros sincronizados entre as páginas (v.3.6.8), como segmentações sincronizadas do Power BI.
+// --------------------------------------------------------------------------
+const CAP_SYNC = {
+  cap: ['capPoloSelect', 'capCapSel', 'capPriCap', 'capA15Cap', 'capS15Cap', 'capA616Cap', 'capS616Cap'],
+  uf: ['capEstadoSelect', 'capUfSel', 'capPriUf'],
+  ano: ['capAnoSelect', 'capUfAno']
+};
+const CAP_SYNC_IDS = new Map(Object.entries(CAP_SYNC).flatMap(([k, ids]) => ids.map(id => [id, k])));
+
+// Registra no estado comum o valor escolhido num seletor sincronizado.
+function capSyncRegistrar(el) {
+  const k = el && CAP_SYNC_IDS.get(el.id);
+  if (k) CAP_STATE.sync[k] = el.value;
+}
+
+// Aplica o estado comum aos seletores da página ativa (valor ausente nas opções vira "Todos").
+function capSyncAplicar() {
+  const vista = document.getElementById(CAP_VIEWS[CAP_STATE.view]);
+  let mudou = false;
+  if (!vista) return false;
+  CAP_SYNC_IDS.forEach((k, id) => {
+    const el = document.getElementById(id);
+    if (!el || !vista.contains(el) || !el.options.length) return;
+    const alvo = String(CAP_STATE.sync[k] || '');
+    const valor = Array.from(el.options).some(o => o.value === alvo) ? alvo : '';
+    if (el.value !== valor) { el.value = valor; mudou = true; }
+  });
+  return mudou;
+}
+
+// --------------------------------------------------------------------------
+// Faixa de filtros ativos (v.3.6.8): um "chip" por filtro aplicado, com remoção e "Limpar tudo".
+// --------------------------------------------------------------------------
+const CAP_CHIPS_IGNORAR = new Set(['capTerritorio', 'capCapOrdem', 'capUfOrdem', 'capPriOrdem', 'capUfMedida', 'capA15Bloco', 'capCapMunBusca', 'capCapBusca']);
+
+function capChipsLista() {
+  const vista = document.getElementById(CAP_VIEWS[CAP_STATE.view]);
+  const lista = [];
+  if ((capVal('capTerritorio') || 'co') !== 'co') lista.push({ id: 'capTerritorio', rotulo: 'Origem', valor: capNomeTerritorio() });
+  if (vista) vista.querySelectorAll('select, input[type="search"], input[type="range"]').forEach(el => {
+    if (CAP_CHIPS_IGNORAR.has(el.id)) return;
+    // Abas ocultas ficam de fora; o seletor oculto do município (busca com lupa) e os mínimos
+    // dentro de "Filtros avançados" recolhido continuam valendo.
+    const oculto = el.closest('[hidden]');
+    if (oculto && !(el.id === 'capCapMun' && oculto === el)) return;
+    let valor = '';
+    if (el.tagName === 'SELECT') valor = el.value && el.selectedIndex >= 0 ? el.options[el.selectedIndex].text : '';
+    else if (el.type === 'range') valor = Number(el.value) > 0 ? el.value : '';
+    else valor = String(el.value || '').trim();
+    if (!valor) return;
+    const rotulo = el.id === 'capCapMun' ? 'Município' : (capExportTexto(document.querySelector('label[for="' + CSS.escape(el.id) + '"]')) || el.id);
+    lista.push({ id: el.id, rotulo, valor });
+  });
+  const d = capDados();
+  const nome = cod => { const m = (d && d.municipios.get(cod)) || {}; return (m.nome || cod) + (m.uf ? ' (' + m.uf + ')' : ''); };
+  if (CAP_STATE.view === 'home' && CAP_STATE.homeMun) lista.push({ id: '#homeMun', rotulo: 'Município (mapa)', valor: nome(CAP_STATE.homeMun) });
+  if (CAP_STATE.view === 'prioridade' && CAP_STATE.priMun) lista.push({ id: '#priMun', rotulo: 'Município (mapa)', valor: nome(CAP_STATE.priMun) });
+  return lista;
+}
+
+function capChipsRender() {
+  const el = document.getElementById('capChips');
+  if (!el) return;
+  const lista = capChipsLista();
+  const html = lista.length
+    ? lista.map(f => '<button type="button" class="cap-chip" data-chip="' + escHtml(f.id) + '" aria-label="Remover o filtro ' + escHtml(f.rotulo + ': ' + f.valor) + '">'
+        + '<span>' + escHtml(f.rotulo) + ':</span> <strong>' + escHtml(f.valor) + '</strong> <i class="ti ti-x" aria-hidden="true"></i></button>').join('')
+      + (lista.length > 1 ? '<button type="button" class="cap-chip-limpar" data-chip-limpar>Limpar tudo</button>' : '')
+    : '<span class="cap-chips-vazio">Sem filtros ativos</span>';
+  // Só troca o conteúdo quando muda: o "change" disparado ao sair de um campo de busca não pode
+  // substituir o chip que está recebendo o clique.
+  if (el.dataset.capHtml === html) return;
+  el.dataset.capHtml = html;
+  el.innerHTML = html;
+}
+
+function capChipRemover(id) {
+  if (id === 'capTerritorio') { document.getElementById('capTerritorio').value = 'co'; capTrocarTerritorio(); return; }
+  if (id === '#homeMun') { capHomeSelecionarMunicipio(''); return; }
+  if (id === '#priMun') { capPriSelecionarMunicipio(''); return; }
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (el.type === 'range') { el.value = 0; onCapSliderChange(); capChipsRender(); return; }
+  el.value = '';
+  capSyncRegistrar(el);
+  renderCapSubview();
+}
+
+// Limpa todos os filtros de todas as páginas (origem, seletores, buscas, mínimos e seleções no mapa).
+function capLimparTudo() {
+  CAP_STATE.homeMun = '';
+  CAP_STATE.priMun = '';
+  CAP_STATE.sync = { cap: '', uf: '', ano: '' };
+  document.getElementById('capTerritorio').value = 'co';
+  document.querySelectorAll('#frontCapacitacao .cap-main-area select, #frontCapacitacao .cap-main-area input[type="search"]').forEach(el => {
+    if (CAP_CHIPS_IGNORAR.has(el.id) && el.id !== 'capCapBusca' && el.id !== 'capCapMunBusca') return;
+    if (el.tagName === 'SELECT') { if (Array.from(el.options).some(o => o.value === '')) el.value = ''; } else el.value = '';
+  });
+  ['Cacs', 'Gestores', 'Participantes'].forEach(k => {
+    const s = document.getElementById('cap' + k + 'Slider');
+    if (s) s.value = 0;
+    capSetTxt('cap' + k + 'MinLbl', '0');
+  });
+  renderCapSubview();
 }
 
 function capRegistrarEventos() {
@@ -17409,6 +17522,16 @@ function capRegistrarEventos() {
   });
   capExportRegistrar();
   capComboRegistrar();
+  // Fase de captura: o valor comum é atualizado antes de qualquer redesenho disparado pelo mesmo evento.
+  document.addEventListener('change', e => { if (e.target && e.target.id) capSyncRegistrar(e.target); }, true);
+  document.addEventListener('click', e => {
+    const chip = e.target.closest && e.target.closest('#capChips [data-chip]');
+    const limpar = e.target.closest && e.target.closest('#capChips [data-chip-limpar]');
+    if (!chip && !limpar) return;
+    if (limpar) capLimparTudo(); else capChipRemover(chip.getAttribute('data-chip'));
+    const barra = document.getElementById('capChips');
+    if (barra) barra.focus();
+  });
 }
 
 // --------------------------------------------------------------------------
@@ -18046,43 +18169,6 @@ function initCapacitacaoView() {
   renderCapSubview();
 }
 
-function capLimparFiltrosHome() {
-  CAP_STATE.homeMun = '';
-  document.getElementById('capTerritorio').value = 'co';
-  ['capPoloSelect', 'capEstadoSelect', 'capParticipouSelect', 'capAnoSelect'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.value = '';
-  });
-  ['Cacs', 'Gestores', 'Participantes'].forEach(chave => {
-    const el = document.getElementById('cap' + chave + 'Slider');
-    if (el) el.value = 0;
-    capSetTxt('cap' + chave + 'MinLbl', '0');
-  });
-  updateCapacitacaoView();
-}
-
-function capResumoFiltrosHome() {
-  const filtros = [
-    ['capTerritorio', 'Origem', 'Centro-Oeste'],
-    ['capEstadoSelect', 'Estado', 'Todos os estados'],
-    ['capPoloSelect', 'Polo', 'Todos os polos'],
-    ['capAnoSelect', 'Ano', 'Todos os anos'],
-    ['capParticipouSelect', 'Participou', 'Todas as situações']
-  ].map(([id, label, todos]) => {
-    const el = document.getElementById(id);
-    return el && el.value ? label + ': ' + el.options[el.selectedIndex].text : todos;
-  });
-  [['Cacs', 'CACS'], ['Gestores', 'gestores'], ['Participantes', 'participantes']].forEach(([chave, label]) => {
-    const min = Number(capVal('cap' + chave + 'Slider')) || 0;
-    if (min > 0) filtros.push('Mínimo de ' + capInt(min) + ' ' + label + ' por município');
-  });
-  if (CAP_STATE.homeMun) {
-    const m = capDados().municipios.get(CAP_STATE.homeMun) || {};
-    filtros.push('Município: ' + (m.nome || CAP_STATE.homeMun) + (m.uf ? ' (' + m.uf + ')' : ''));
-  }
-  capSetTxt('capHomeRecorte', 'Recorte atual: ' + filtros.join(' · '));
-}
-
 function onCapFilterChange() {
   updateCapacitacaoView();
 }
@@ -18166,7 +18252,6 @@ function updateCapacitacaoView() {
   capSetNum('capValTaxaPart', capPct(s.participou, s.convidados, 2));
   capSetNum('capValAusente', capInt(rows.length ? s.ausente : null));
 
-  capResumoFiltrosHome();
   capRenderCoberturaHome(rows, selUf);
   const caps = new Set(rows.map(r => r.capacitacao));
   const cobertura = capCoberturaMunicipal(rows, capUfsCobertura(selUf));
@@ -18194,6 +18279,7 @@ function updateCapacitacaoView() {
   chip.hidden = !munSel;
   capSetTxt('capHomeMunChipTxt', munSel ? 'Município: ' + (munSel.nome || CAP_STATE.homeMun) + (munSel.uf ? ' (' + munSel.uf + ')' : '') : '');
   chip.setAttribute('aria-label', munSel ? 'Remover o filtro do município ' + (munSel.nome || CAP_STATE.homeMun) : 'Remover o filtro do município');
+  capChipsRender();
 }
 
 function capRenderCoberturaHome(rows, uf) {
@@ -18586,13 +18672,7 @@ function capLimparMunicipioEvento() {
   document.getElementById('capCapMun').value = '';
   document.getElementById('capCapBusca').value = '';
   capRenderCapacitacoes();
-}
-
-function capLimparFiltrosEvento() {
-  document.getElementById('capTerritorio').value = 'co';
-  document.getElementById('capCapSel').value = '';
-  document.getElementById('capCapOrdem').value = 'evento';
-  capLimparMunicipioEvento();
+  capChipsRender();
 }
 
 function capSelecionarMunicipioEvento(ev) {
@@ -18609,6 +18689,7 @@ function capSelecionarMunicipioEvento(ev) {
   munEl.value = munEl.value === cod ? '' : cod;
   document.getElementById('capCapBusca').value = '';
   capRenderCapacitacoes();
+  capChipsRender();
   if (munEl.value) document.getElementById('capCapDesfazer').focus();
 }
 
@@ -18689,7 +18770,6 @@ function capRenderCapacitacoes() {
   );
   capKpis('capCapEvento', kpis.splice(0, c ? 3 : 2));
   capKpis('capCapKpis', kpis);
-  capSetTxt('capCapRecorte', 'Recorte atual: ' + capNomeTerritorio() + ' · ' + (c ? capRotulo(c) + ' · ' + capPeriodo(c) : 'Todas as capacitações') + ' · ' + (mun ? document.getElementById('capCapMun').selectedOptions[0].text : 'Todos os municípios'));
   document.getElementById('capCapDesfazer').hidden = !mun;
 
   renderCapacitacaoMap('capCapSvg', capStatusMunicipios(rows, d),
@@ -19097,6 +19177,7 @@ function capRenderPrioridade() {
       const mesmo = ufEl.value === u && sitEl.value === s;
       ufEl.value = mesmo ? '' : u;
       sitEl.value = mesmo ? '' : s;
+      capSyncRegistrar(ufEl);
       renderCapSubview();
     } },
     data: { labels: CAP_UFS_MAPA, datasets: situacoes.map(([s, cor]) => capDataset(CAP_PRI_SITUACAO[s],
@@ -19108,6 +19189,7 @@ function capRenderPrioridade() {
       return o;
     })()
   });
+  capChipsRender();
 }
 
 // Planilha da lista atual (filtros e ordem da tela) com colunas para a equipe definir prioridades.
@@ -19471,6 +19553,7 @@ function capRenderAval616() {
       const mesmo = capEl.value === String(n) && cargoEl.value === cargoSerie;
       capEl.value = mesmo ? '' : String(n);
       cargoEl.value = mesmo ? '' : cargoSerie;
+      capSyncRegistrar(capEl);
       renderCapSubview();
     } },
     data: { labels: caps.map(c => capNum2(c.numero) + ' ' + c.polo), datasets: series },
@@ -20567,12 +20650,13 @@ async function recarregarDadosExternos() {
       </div>
     </div>
     <div class="pif-body">
-      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.6.7</strong></div>
+      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.6.8</strong></div>
       <div class="pif-row"><span>Data da alteração:</span><span class="pnite-date-val">09/11/2026</span></div>
       <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">14:00</span></div>
       <div class="pif-row"><span>Responsável técnico:</span><span class="pnite-author-val">Equipe PNITE</span></div>
       <div class="pif-note">
         <i class="ti ti-check" style="color:var(--accent);margin-right:3px"></i>
+        <strong>Filtros unificados na capacitação (v.3.6.8):</strong> barra única no topo de todas as páginas, fixa sob o cabeçalho, com a origem do município, os filtros ativos ("Capacitação: 14ª ✕") e "Limpar tudo"; capacitação, estado e ano agora acompanham a navegação entre as páginas; exportação da página na mesma barra.<br>
         <strong>Capacitação mais clara (v.3.6.7):</strong> Home sem números repetidos (perfil sem o total e cobertura detalhada por UF), nomes padronizados para as taxas ("% dos convidados que participaram" e "% de convites atendidos"), menu "Avaliações 1ª a 5ª / 6ª a 16ª", ajuda "ⓘ" com a definição de cada cartão e mínimos por município em "Filtros avançados".<br>
         <strong>Polo na página de não alcançados (v.3.6.6):</strong> novo filtro "Polo de Capacitação", que restringe cartões, mapa, gráfico e lista aos municípios convidados ou participantes daquele evento, mantendo a situação geral de cada município.<br>
         <strong>Downloads da capacitação com permissão (v.3.6.5):</strong> baixar imagens e planilhas de painéis, da página e da lista de não alcançados volta a exigir conta com a permissão de download, como nas demais frentes.<br>
@@ -20649,7 +20733,7 @@ async function recarregarDadosExternos() {
   </div>
   <button class="pif-btn" id="pifBtn" aria-label="Informações de Versão">
     <i class="ti ti-info-circle"></i>
-    <span class="pif-btn-label pnite-version-val">v.3.6.7</span>
+    <span class="pif-btn-label pnite-version-val">v.3.6.8</span>
   </button>
 </div>
 
