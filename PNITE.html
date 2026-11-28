@@ -2501,6 +2501,10 @@ html.pnite-pode-baixar .cap-export-page { display: grid; }
 #capSubPrioridade .cap-pri-baixar { display: none; }
 html.pnite-pode-baixar #capSubPrioridade .cap-pri-baixar { display: flex; }
 #capSubPrioridade select, #capSubPrioridade input[type="search"] { min-height: 44px; }
+/* Filtros com espaço para os nomes dos polos; a busca desce para a linha seguinte quando falta largura. */
+#capSubPrioridade .cap-toolbar .cap-field { flex-basis: 210px; }
+#capSubPrioridade .cap-toolbar .cap-field-wide { flex: 2 1 280px; }
+#capSubPrioridade .cap-toolbar .cap-pri-busca { flex: 1 1 260px; }
 #capPriSvg path[role="button"] { cursor: pointer; }
 #capPriSvg path[aria-pressed="true"], #capPriSvg path[role="button"]:focus-visible { stroke: var(--text-1); stroke-width: 3px; stroke-dasharray: 5 3; animation: capTracejado 1.2s linear infinite; }
 .cap-tag-nunca { background-color: #fde4d6; color: #9a3412; }
@@ -7363,8 +7367,9 @@ window.onerror = function(msg, url, line, col, err) {
           <p class="cap-territory-note" id="capPriAviso" hidden>A priorização considera somente os municípios do Centro-Oeste, área de atuação regional do CECATE-CO; o filtro de origem não altera esta página.</p>
           <div class="cap-toolbar" role="group" aria-label="Filtros dos municípios não alcançados">
             <div class="cap-field"><label for="capPriUf">Estado</label><select id="capPriUf" data-cap-filter></select></div>
+            <div class="cap-field cap-field-wide"><label for="capPriCap">Polo de Capacitação</label><select id="capPriCap" data-cap-filter></select></div>
             <div class="cap-field"><label for="capPriSit">Situação</label><select id="capPriSit" data-cap-filter><option value="">Todos os não alcançados</option><option value="nunca">Nunca convidados</option><option value="convidado">Convidados sem participação</option></select></div>
-            <div class="cap-field cap-field-wide"><label for="capPriBusca">Buscar município</label><input type="search" id="capPriBusca" data-cap-filter placeholder="Nome ou código IBGE"></div>
+            <div class="cap-field cap-pri-busca"><label for="capPriBusca">Buscar município</label><input type="search" id="capPriBusca" data-cap-filter placeholder="Nome ou código IBGE"></div>
           </div>
           <div class="cap-kpi-grid" id="capPriKpis" role="group" aria-label="Situação dos municípios do Centro-Oeste no recorte"></div>
           <div class="cap-grid-2">
@@ -8854,7 +8859,7 @@ window.onerror = function(msg, url, line, col, err) {
     <div class="smb-sec">
       <div class="smb-sec-title" data-i18n="settings_info_title">Informações da Versão</div>
       <div style="font-size:12px;color:var(--text-2);display:flex;flex-direction:column;gap:4px;margin-top:6px">
-        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.6.5</b></div>
+        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.6.6</b></div>
         <div><span data-i18n="settings_updated">Última Atualização:</span> <b class="pnite-date-val">06/10/2026</b> às <b class="pnite-time-val">21:05</b></div>
         <div><span data-i18n="settings_author">Responsável Técnico:</span> <b class="pnite-author-val">Equipe PNITE</b></div>
       </div>
@@ -9843,9 +9848,9 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.6.5";
+const PNITE_VERSION = "v.3.6.6";
 const PNITE_LAST_UPDATE = "28/11/2026";
-const PNITE_LAST_TIME = "10:00";
+const PNITE_LAST_TIME = "11:00";
 
 // Escapa texto para inserção segura via innerHTML (entradas do usuário, nomes de arquivo)
 function escHtml(s) {
@@ -18869,6 +18874,7 @@ function capPriDados() {
     const convidadas = Array.from(new Set(regs.filter(r => r.convidado === 1).map(r => r.capacitacao))).sort((a, b) => a - b);
     return {
       cod, nome: m.nome, uf: m.uf, presentes, convidadas,
+      capacitacoes: new Set(regs.map(r => r.capacitacao)),   // eventos em que foi convidado ou teve participantes
       situacao: presentes > 0 ? 'alcancado' : convidadas.length ? 'convidado' : 'nunca',
       ultima: convidadas.length ? d.capPorNum.get(convidadas[convidadas.length - 1]) : null
     };
@@ -18915,12 +18921,16 @@ function capRenderPrioridade() {
   document.getElementById('capPriAviso').hidden = (capVal('capTerritorio') || 'co') === 'co';
   if (!document.getElementById('capPriUf').options.length) {
     capPreencherSelect('capPriUf', [{ v: '', t: 'Todos (GO, MT, MS e DF)' }].concat(CAP_UFS_MAPA.map(u => ({ v: u, t: u }))));
+    capPreencherSelect('capPriCap', [{ v: '', t: 'Todos' }].concat(d.caps.map(c => ({ v: c.numero, t: capRotulo(c) }))));
   }
-  const uf = capVal('capPriUf'), sit = capVal('capPriSit');
+  const uf = capVal('capPriUf'), sit = capVal('capPriSit'), capSel = capVal('capPriCap');
+  // Polo de Capacitação: restringe aos municípios daquele evento (convidados ou participantes);
+  // a situação continua a geral, somando todas as capacitações.
+  const doPolo = m => !capSel || m.capacitacoes.has(Number(capSel));
   const busca = capNormTxt(capVal('capPriBusca').trim());
   // A busca filtra todos os visuais da página (cartões, mapa, gráfico e lista), como no Power BI.
   const casaBusca = m => !busca || capNormTxt(m.nome).includes(busca) || m.cod.includes(busca);
-  const recorte = todos.filter(m => (!uf || m.uf === uf) && casaBusca(m));
+  const recorte = todos.filter(m => (!uf || m.uf === uf) && doPolo(m) && casaBusca(m));
   const conta = s => recorte.filter(m => m.situacao === s).length;
   capKpis('capPriKpis', [
     { l: 'Municípios no recorte', v: capInt(recorte.length) },
@@ -18990,7 +19000,7 @@ function capRenderPrioridade() {
       renderCapSubview();
     } },
     data: { labels: CAP_UFS_MAPA, datasets: situacoes.map(([s, cor]) => capDataset(CAP_PRI_SITUACAO[s],
-      CAP_UFS_MAPA.map(u => todos.filter(m => m.uf === u && m.situacao === s && casaBusca(m)).length), CAP_UFS_MAPA.map(u => realce(cor, u)), t)) },
+      CAP_UFS_MAPA.map(u => todos.filter(m => m.uf === u && m.situacao === s && doPolo(m) && casaBusca(m)).length), CAP_UFS_MAPA.map(u => realce(cor, u)), t)) },
     options: (() => {
       const o = capOpcoesGrafico(t, { horizontal: true, empilhado: true });
       o.plugins.legend.labels.generateLabels = () => situacoes.map(([s, cor], i) => ({ text: CAP_PRI_SITUACAO[s], fillStyle: cor, strokeStyle: cor, fontColor: t.eixo, datasetIndex: i }));
@@ -20457,12 +20467,13 @@ async function recarregarDadosExternos() {
       </div>
     </div>
     <div class="pif-body">
-      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.6.5</strong></div>
+      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.6.6</strong></div>
       <div class="pif-row"><span>Data da alteração:</span><span class="pnite-date-val">09/11/2026</span></div>
       <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">14:00</span></div>
       <div class="pif-row"><span>Responsável técnico:</span><span class="pnite-author-val">Equipe PNITE</span></div>
       <div class="pif-note">
         <i class="ti ti-check" style="color:var(--accent);margin-right:3px"></i>
+        <strong>Polo na página de não alcançados (v.3.6.6):</strong> novo filtro "Polo de Capacitação", que restringe cartões, mapa, gráfico e lista aos municípios convidados ou participantes daquele evento, mantendo a situação geral de cada município.<br>
         <strong>Downloads da capacitação com permissão (v.3.6.5):</strong> baixar imagens e planilhas de painéis, da página e da lista de não alcançados volta a exigir conta com a permissão de download, como nas demais frentes.<br>
         <strong>Participação oficial (v.3.6.4):</strong> a planilha oficial de participantes do CECATE-CO passa a ser a fonte de participação e presentes por município e capacitação (264 municípios do Centro-Oeste capacitados); convites, inscrições e avaliações seguem da base de convocações.<br>
         <strong>Mapas só do Centro-Oeste (v.3.6.3):</strong> os mapas regionais da capacitação mostram apenas o Centro-Oeste, sem países e estados vizinhos; as divisas estaduais passam a vir da própria malha municipal do IBGE, também no mapa do Brasil.<br>
@@ -20537,7 +20548,7 @@ async function recarregarDadosExternos() {
   </div>
   <button class="pif-btn" id="pifBtn" aria-label="Informações de Versão">
     <i class="ti ti-info-circle"></i>
-    <span class="pif-btn-label pnite-version-val">v.3.6.5</span>
+    <span class="pif-btn-label pnite-version-val">v.3.6.6</span>
   </button>
 </div>
 
