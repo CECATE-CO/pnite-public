@@ -2514,6 +2514,38 @@ html.pnite-pode-baixar #capSubPrioridade .cap-pri-baixar { display: flex; }
 @media (max-width: 1000px) { #capPriKpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 600px) { #capPriKpis { grid-template-columns: minmax(0, 1fr); } }
 
+/* v.3.6.7 — Ajuda sob demanda ("ⓘ"), filtros avançados recolhidos e cobertura por UF na Home. */
+.cap-kpi-cab { display: flex; align-items: flex-start; gap: 4px; margin-bottom: 6px; }
+.cap-kpi-cab .cap-kpi-label { margin-bottom: 0; }
+.cap-ajuda { position: relative; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; width: 18px; height: 18px;
+  margin: -1px 0 0 2px; padding: 0; border: 0; border-radius: 50%; background: none; color: var(--text-3); cursor: help; vertical-align: middle; }
+.cap-ajuda i { font-size: 14px; }
+.cap-ajuda:hover, .cap-ajuda:focus-visible { color: var(--cap-tinta); }
+.cap-ajuda:focus-visible { outline: 2px solid var(--cap-acento-linha); outline-offset: 1px; }
+.cap-ajuda-texto {
+  display: none; position: absolute; top: calc(100% + 6px); left: -8px; z-index: 40; width: max-content; max-width: min(260px, 70vw);
+  padding: 8px 10px; border-radius: 8px; background-color: var(--text-1); color: var(--bg-card); box-shadow: 0 6px 18px rgba(0, 0, 0, .18);
+  font-size: 11.5px; font-weight: 400; line-height: 1.45; letter-spacing: 0; text-transform: none; text-align: left; white-space: normal;
+}
+.cap-ajuda:hover .cap-ajuda-texto, .cap-ajuda:focus .cap-ajuda-texto { display: block; animation: capMenu .12s ease-out; }
+.cap-sub-lbl .cap-ajuda-texto { left: auto; right: -8px; }
+@media (pointer: coarse) { .cap-ajuda { width: 32px; height: 32px; margin: -8px -6px -8px 0; } }
+.cap-avancados > summary { display: flex; align-items: center; gap: 8px; min-height: 40px; cursor: pointer; list-style: none; font-size: 12.5px; font-weight: 600; color: var(--text-1); }
+.cap-avancados > summary::-webkit-details-marker { display: none; }
+.cap-avancados > summary::after { content: '\203A'; margin-left: auto; font-size: 18px; color: var(--text-3); transition: transform .15s ease; }
+.cap-avancados[open] > summary::after { transform: rotate(90deg); }
+.cap-avancados > summary:focus-visible { outline: 2px solid var(--cap-acento-linha); outline-offset: 2px; border-radius: 6px; }
+.cap-avancados-resumo { font-weight: 400; color: var(--text-3); }
+.cap-avancados.cap-avancados-ativo .cap-avancados-resumo { color: var(--cap-tinta); font-weight: 600; }
+.cap-avancados[open] { display: flex; flex-direction: column; gap: 14px; }
+.cap-cov-ufs { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; font-size: 13px; }
+.cap-cov-ufs li { display: grid; grid-template-columns: 34px minmax(0, 1fr) 56px 82px; align-items: center; gap: 10px; }
+.cap-cov-uf { font-weight: 600; color: var(--text-1); }
+.cap-cov-barra { height: 8px; border-radius: 4px; background-color: var(--bg-badge); overflow: hidden; }
+.cap-cov-barra span { display: block; height: 100%; border-radius: 4px; background-color: var(--cap-gest); }
+.cap-cov-ufs strong { font-weight: 600; text-align: right; font-variant-numeric: tabular-nums; color: var(--text-1); }
+.cap-cov-ufs small { font-size: 11.5px; color: var(--text-2); font-variant-numeric: tabular-nums; }
+
 /* Organização exclusiva da comparação por UF. */
 .cap-uf-group-title { margin: 18px 0 10px; }
 .cap-uf-scope { padding: 12px 14px; background-color: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; }
@@ -6966,11 +6998,11 @@ window.onerror = function(msg, url, line, col, err) {
           </button>
           <button type="button" class="cap-nav-btn" id="capNavAval1_5" aria-controls="capSubGrupo1_5" onclick="switchCapView('cap1_5', this)">
             <i class="ti ti-clipboard-check"></i>
-            <span>CAPACITAÇÕES 1 A 5</span>
+            <span>AVALIAÇÕES 1ª A 5ª</span>
           </button>
           <button type="button" class="cap-nav-btn" id="capNavAval6_16" aria-controls="capSubGrupo6_16" onclick="switchCapView('cap6_16', this)">
             <i class="ti ti-clipboard-check"></i>
-            <span>CAPACITAÇÕES 6 A 16</span>
+            <span>AVALIAÇÕES 6ª A 16ª</span>
           </button>
         </nav>
 
@@ -7079,11 +7111,6 @@ window.onerror = function(msg, url, line, col, err) {
               <div class="cap-profile-card">
                 <h3 class="cap-card-title">PERFIL DOS PARTICIPANTES</h3>
                 
-                <div class="cap-main-kpi">
-                  <span class="cap-kpi-num" id="capValParticipantes">—</span>
-                  <span class="cap-kpi-lbl">Participantes</span>
-                </div>
-                <div class="cap-card-divider"></div>
 
                 <div class="cap-kpi-pair-row">
                   <div class="cap-kpi-col">
@@ -7116,11 +7143,11 @@ window.onerror = function(msg, url, line, col, err) {
                 <div class="cap-kpi-pair-row">
                   <div class="cap-kpi-col">
                     <span class="cap-sub-num" id="capValConvidados">—</span>
-                    <span class="cap-sub-lbl">Municípios Convidados</span>
+                    <span class="cap-sub-lbl">Convidados</span>
                   </div>
                   <div class="cap-kpi-col">
                     <span class="cap-sub-num" id="capValParticipou">—</span>
-                    <span class="cap-sub-lbl">Participou</span>
+                    <span class="cap-sub-lbl">Convidados que participaram</span>
                   </div>
                 </div>
                 <div class="cap-card-divider"></div>
@@ -7128,17 +7155,19 @@ window.onerror = function(msg, url, line, col, err) {
                 <div class="cap-kpi-pair-row">
                   <div class="cap-kpi-col">
                     <span class="cap-sub-num" id="capValTaxaPart">—</span>
-                    <span class="cap-sub-lbl">Taxa de Participação</span>
+                    <span class="cap-sub-lbl">% dos convidados que participaram<button type="button" class="cap-ajuda" aria-label="O que significa" aria-describedby="capAjudaTaxaHome" data-html2canvas-ignore="true"><i class="ti ti-info-circle" aria-hidden="true"></i><span class="cap-ajuda-texto" role="tooltip" id="capAjudaTaxaHome">Municípios convidados com ao menos um participante ÷ municípios convidados. Cada município conta uma vez, mesmo convidado para várias capacitações.</span></button></span>
                   </div>
                   <div class="cap-kpi-col">
                     <span class="cap-sub-num" id="capValAusente">—</span>
-                    <span class="cap-sub-lbl">Ausente</span>
+                    <span class="cap-sub-lbl">Convidados ausentes</span>
                   </div>
                 </div>
               </div>
 
               <!-- CONTROLES DESLIZANTES (SLIDERS) -->
               <div class="cap-sliders-card">
+                <details class="cap-avancados" id="capAvancados">
+                <summary><i class="ti ti-adjustments-horizontal" aria-hidden="true"></i> Filtros avançados <span class="cap-avancados-resumo" id="capAvancadosResumo">mínimos por município</span></summary>
                 <div class="cap-slider-item">
                   <div class="cap-slider-top">
                     <label class="cap-slider-title" for="capCacsSlider">Mínimo de CACS por município</label>
@@ -7169,6 +7198,7 @@ window.onerror = function(msg, url, line, col, err) {
                   </div>
                 </div>
                 <p class="cap-slider-help" id="capMinimosResultado" role="status" aria-live="polite"></p>
+                </details>
               </div>
 
             </div>
@@ -7237,7 +7267,7 @@ window.onerror = function(msg, url, line, col, err) {
                 <div class="cap-coverage-center" aria-hidden="true"><strong id="capCoberturaPct">—</strong><span>de cobertura</span></div>
               </div>
               <div>
-                <p class="cap-coverage-summary" id="capCoberturaResumo" role="status" aria-live="polite">Carregando a cobertura municipal…</p>
+                <div class="cap-coverage-summary" id="capCoberturaResumo" role="status" aria-live="polite">Carregando a cobertura municipal…</div>
               </div>
             </div>
           </section>
@@ -7352,7 +7382,7 @@ window.onerror = function(msg, url, line, col, err) {
           </div>
           <div class="cap-panel">
             <h3 class="cap-panel-title">Quadro comparativo por estado</h3>
-            <div class="cap-toolbar" role="group" aria-label="Ordenação do comparativo por estado"><div class="cap-field"><label for="capUfOrdem">Ordenar estados</label><select id="capUfOrdem" onchange="capRenderUf()"><option value="uf">UF (A–Z)</option><option value="cobertura">Maior cobertura territorial</option><option value="taxa">Maior participação entre convidados</option><option value="participantes">Mais participantes</option><option value="distancia">Maior distância média</option></select></div></div>
+            <div class="cap-toolbar" role="group" aria-label="Ordenação do comparativo por estado"><div class="cap-field"><label for="capUfOrdem">Ordenar estados</label><select id="capUfOrdem" onchange="capRenderUf()"><option value="uf">UF (A–Z)</option><option value="cobertura">Maior cobertura territorial</option><option value="taxa">Mais convites atendidos (%)</option><option value="participantes">Mais participantes</option><option value="distancia">Maior distância média</option></select></div></div>
             <div class="cap-table-wrap" id="capUfTabela" tabindex="0" role="region" aria-label="Comparativo dos estados; role horizontalmente para consultar todas as colunas"></div>
           </div>
           <section class="cap-panel" aria-labelledby="capUfOutrosTitulo"><h3 class="cap-panel-title" id="capUfOutrosTitulo">Outros — atendimentos fora do Centro-Oeste</h3><div class="cap-table-wrap" id="capUfOutros"></div></section>
@@ -7409,7 +7439,7 @@ window.onerror = function(msg, url, line, col, err) {
         <!-- SUB-VIEW 4: AVALIAÇÃO DAS CAPACITAÇÕES 1 A 5 -->
         <section class="cap-subview" id="capSubGrupo1_5" aria-labelledby="capGrupoTitulo1_5">
           <header class="cap-page-head">
-            <h2 id="capGrupoTitulo1_5">Capacitações 1 a 5</h2>
+            <h2 id="capGrupoTitulo1_5">Avaliações das capacitações 1ª a 5ª</h2>
             <div class="cap-home-title-bar"></div>
           </header>
           <div class="cap-evaluation-tabs" role="tablist" aria-label="Análises das capacitações 1 a 5" onkeydown="capNavegarAbas(event)">
@@ -7488,7 +7518,7 @@ window.onerror = function(msg, url, line, col, err) {
         <!-- SUB-VIEW 6: AVALIAÇÃO DAS CAPACITAÇÕES 6 A 16 -->
         <section class="cap-subview" id="capSubGrupo6_16" aria-labelledby="capGrupoTitulo6_16">
           <header class="cap-page-head">
-            <h2 id="capGrupoTitulo6_16">Capacitações 6 a 16</h2>
+            <h2 id="capGrupoTitulo6_16">Avaliações das capacitações 6ª a 16ª</h2>
             <div class="cap-home-title-bar"></div>
           </header>
           <div class="cap-evaluation-tabs" role="tablist" aria-label="Análises das capacitações 6 a 16" onkeydown="capNavegarAbas(event)">
@@ -8859,7 +8889,7 @@ window.onerror = function(msg, url, line, col, err) {
     <div class="smb-sec">
       <div class="smb-sec-title" data-i18n="settings_info_title">Informações da Versão</div>
       <div style="font-size:12px;color:var(--text-2);display:flex;flex-direction:column;gap:4px;margin-top:6px">
-        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.6.6</b></div>
+        <div><span data-i18n="settings_version">Versão:</span> <b class="pnite-version-val" style="color:var(--c-blue)">v.3.6.7</b></div>
         <div><span data-i18n="settings_updated">Última Atualização:</span> <b class="pnite-date-val">06/10/2026</b> às <b class="pnite-time-val">21:05</b></div>
         <div><span data-i18n="settings_author">Responsável Técnico:</span> <b class="pnite-author-val">Equipe PNITE</b></div>
       </div>
@@ -9848,9 +9878,9 @@ else PNITE_AUTH.iniciar();
 // ================================================================
 // PNITE — Plataforma Nacional de Inteligência em Transporte Escolar
 // ================================================================
-const PNITE_VERSION = "v.3.6.6";
+const PNITE_VERSION = "v.3.6.7";
 const PNITE_LAST_UPDATE = "28/11/2026";
-const PNITE_LAST_TIME = "11:00";
+const PNITE_LAST_TIME = "14:00";
 
 // Escapa texto para inserção segura via innerHTML (entradas do usuário, nomes de arquivo)
 function escHtml(s) {
@@ -17011,13 +17041,58 @@ function capOpcoesCapacitacao(d, min, max) {
     d.caps.filter(c => c.numero >= min && c.numero <= max).map(c => ({ v: c.numero, t: capRotulo(c) })));
 }
 
+// Definições exibidas no "ⓘ" de cada cartão (por rótulo; o item pode trazer a sua própria em k.h).
+const CAP_AJUDA = {
+  'Participantes': 'Pessoas presentes com município identificado, cada uma contada uma vez por capacitação. Fonte: planilha oficial de participantes do CECATE-CO.',
+  'Capacitações': 'Capacitações com registro de municípios no recorte selecionado.',
+  'Municípios alcançados': 'Municípios distintos com ao menos um participante presente.',
+  'Cobertura regional': 'Municípios do Centro-Oeste com ao menos um participante ÷ total de municípios da área selecionada. Outras UFs não entram no cálculo.',
+  'Municípios convidados': 'Convites registrados (município × capacitação). Com todas as capacitações, o mesmo município pode contar mais de uma vez.',
+  'Municípios participantes': 'Convites com ao menos um participante presente (município × capacitação).',
+  '% de convites atendidos': 'Convites com ao menos um participante ÷ total de convites (município × capacitação).',
+  'Inscritos': 'Pessoas inscritas pelos formulários de inscrição (existem da 5ª à 16ª capacitação).',
+  'Comparecimento': 'Presentes que estavam inscritos ÷ inscritos (da 5ª à 16ª capacitação).',
+  '% Gestores': 'Gestores municipais ÷ total de participantes.',
+  '% CACS': 'Conselheiros do CACS-FUNDEB ÷ total de participantes.',
+  'Média de gestores por município': 'Gestores presentes ÷ municípios participantes, em cada capacitação.',
+  'Média de CACS por município': 'Conselheiros do CACS presentes ÷ municípios participantes, em cada capacitação.',
+  'Nº de polos': 'Cada capacitação conta como um polo, mesmo quando a sede se repete.',
+  'Distância média ao polo': 'Média da distância em linha reta entre os municípios participantes e o polo da capacitação.',
+  'Municípios no recorte': 'Municípios do Centro-Oeste considerados com os filtros desta página.',
+  'Já alcançados': 'Municípios com ao menos um participante em alguma capacitação.',
+  'Convidados sem participação': 'Convidados ao menos uma vez, sem participante em nenhuma capacitação.',
+  'Nunca convidados': 'Municípios sem convite em nenhuma capacitação.',
+  'Convidados': 'Convites registrados no recorte (município × capacitação).',
+  'Participaram': 'Convites com ao menos um participante presente.',
+  'Ausentes': 'Convites sem nenhum participante presente.',
+  'Respondentes': 'Pessoas que responderam ao formulário de avaliação.',
+  'Gestores': 'Respondentes do público gestor municipal.',
+  'CACS': 'Respondentes do público conselheiro do CACS-FUNDEB.',
+  '% Ótimo — aspectos gerais': 'Respostas "Ótimo" ÷ respostas válidas das perguntas de aspectos gerais.',
+  '% Sim — módulos, SETE e EAD': 'Respostas "Sim" ÷ respostas válidas dos blocos Módulos, SETE e EAD.',
+  'Total de respostas': 'Formulários de avaliação respondidos no recorte.',
+  'Municípios identificados': 'Municípios distintos informados pelos respondentes e identificados pelo código IBGE.',
+  'Conceito mediano': 'Conceito central da escala de 1 (Muito ruim) a 5 (Excelente), considerando todas as notas.',
+  '% favorável': 'Notas Bom ou Excelente ÷ total de notas.',
+  '% desfavorável': 'Notas Ruim ou Muito ruim ÷ total de notas.',
+  'Respostas abertas': 'Campos de texto preenchidos (aspectos positivos, a melhorar, temas e comentários).',
+  'Respostas com temas': 'Respondentes que sugeriram temas para futuras capacitações.',
+  'Respostas com comentários': 'Respondentes que deixaram comentários.'
+};
+
+function capAjudaHtml(texto) {
+  const id = 'capAjuda' + (CAP_STATE.ajudaSeq = (CAP_STATE.ajudaSeq || 0) + 1);
+  return '<button type="button" class="cap-ajuda" aria-label="O que significa" aria-describedby="' + id + '" data-html2canvas-ignore="true">'
+    + '<i class="ti ti-info-circle" aria-hidden="true"></i><span class="cap-ajuda-texto" role="tooltip" id="' + id + '">' + escHtml(texto) + '</span></button>';
+}
+
 function capKpis(id, itens) {
   const el = document.getElementById(id);
   if (!el) return;
   // Valores anteriores por rótulo, para a contagem animada até o novo valor.
   const antes = new Map(Array.from(el.querySelectorAll('.cap-kpi')).map(k => [capExportTexto(k.querySelector('.cap-kpi-label')), capExportTexto(k.querySelector('.cap-kpi-value'))]));
   el.innerHTML = itens.map(k => `<div class="cap-kpi">
-      <span class="cap-kpi-label">${escHtml(k.l)}</span>
+      <span class="cap-kpi-cab"><span class="cap-kpi-label">${escHtml(k.l)}</span>${(k.h || CAP_AJUDA[k.l]) ? capAjudaHtml(k.h || CAP_AJUDA[k.l]) : ''}</span>
       <span class="cap-kpi-value${k.texto ? ' cap-kpi-text' : ''}">${escHtml(k.v)}</span>
       ${k.n ? `<span class="cap-kpi-note">${escHtml(k.n)}</span>` : ''}
     </div>`).join('');
@@ -17448,7 +17523,13 @@ const CAP_EXPORT_ALTURA_MAX = 6000; // px CSS: acima disso, tabelas roláveis fi
 const CAP_EXPORT_ALVOS = '.cap-panel, #capMapCard, .cap-profile-card';
 const CAP_EXPORT_FONTE = 'Fonte: CECATE-CO/UFG (planilha oficial de participantes, convocações, inscrições e avaliações das capacitações)';
 
-function capExportTexto(el) { return el ? el.textContent.replace(/\s+/g, ' ').trim() : ''; }
+// Texto visível do elemento, sem o conteúdo das ajudas "ⓘ" (tooltip).
+function capExportTexto(el) {
+  if (!el) return '';
+  const copia = el.cloneNode(true);
+  copia.querySelectorAll('.cap-ajuda').forEach(x => x.remove());
+  return copia.textContent.replace(/\s+/g, ' ').trim();
+}
 
 // Botão de exportação em cada painel de nível superior (os painéis são estáticos; o conteúdo
 // interno é que é renderizado, então o botão inserido uma única vez permanece).
@@ -18006,6 +18087,14 @@ function onCapFilterChange() {
   updateCapacitacaoView();
 }
 
+// Resumo do "Filtros avançados": indica quantos mínimos estão ativos mesmo com o painel recolhido.
+function capAvancadosResumo() {
+  const ativos = ['Cacs', 'Gestores', 'Participantes'].filter(k => (Number(capVal('cap' + k + 'Slider')) || 0) > 0).length;
+  capSetTxt('capAvancadosResumo', ativos ? ativos + (ativos > 1 ? ' ativos' : ' ativo') : 'mínimos por município');
+  const el = document.getElementById('capAvancados');
+  if (el) el.classList.toggle('cap-avancados-ativo', ativos > 0);
+}
+
 function onCapSliderChange() {
   ['Cacs', 'Gestores', 'Participantes'].forEach(chave => {
     capSetTxt('cap' + chave + 'MinLbl', capVal('cap' + chave + 'Slider'));
@@ -18065,9 +18154,9 @@ function updateCapacitacaoView() {
   s.convidados = Array.from(municipios.keys()).filter(cod => convidados.has(cod)).length;
   s.participou = Array.from(municipios.entries()).filter(([cod, m]) => convidados.has(cod) && m.status === 'sim').length;
   s.ausente = s.convidados - s.participou;
+  capAvancadosResumo();
   capSetTxt('capMinimosResultado', capInt(municipios.size) + (municipios.size === 1 ? ' município atende aos filtros.' : ' municípios atendem aos filtros.'));
 
-  capSetNum('capValParticipantes', capInt(rows.length ? s.P : null));
   capSetNum('capValGestores', capInt(rows.length ? s.G : null));
   capSetNum('capValPctGestores', capPct(s.G, s.P, 2));
   capSetNum('capValCacs', capInt(rows.length ? s.C : null));
@@ -18116,7 +18205,18 @@ function capRenderCoberturaHome(rows, uf) {
     : 'Sem base territorial para calcular a cobertura ' + territorio + '.';
   capSetTxt('capCoberturaTitulo', 'Cobertura regional ' + (uf && ufs.length ? 'em ' + uf : 'do Centro-Oeste'));
   capSetNum('capCoberturaPct', pct);
-  capSetTxt('capCoberturaResumo', c.total != null ? resumo + ' ' + capInt(c.alcancados) + ' de ' + capInt(c.total) + ' municípios.' : resumo);
+  // O total já está no cartão "Cobertura regional": aqui entra o detalhe por UF (ou a contagem da UF filtrada).
+  const resumoEl = document.getElementById('capCoberturaResumo');
+  if (resumoEl) {
+    if (c.total == null) resumoEl.textContent = resumo;
+    else if (ufs.length > 1) resumoEl.innerHTML = '<ul class="cap-cov-ufs">' + ufs.map(u => {
+      const x = capCoberturaMunicipal(rows, [u]);
+      const largura = x.total ? Math.round(x.alcancados / x.total * 1000) / 10 : 0;
+      return '<li><span class="cap-cov-uf">' + escHtml(u) + '</span><span class="cap-cov-barra" aria-hidden="true"><span style="width:' + largura + '%"></span></span>'
+        + '<strong>' + capPct(x.alcancados, x.total) + '</strong><small>' + capInt(x.alcancados) + ' de ' + capInt(x.total) + '</small></li>';
+    }).join('') + '</ul>';
+    else resumoEl.textContent = capInt(c.alcancados) + ' de ' + capInt(c.total) + ' municípios ' + territorio + ' com participação.';
+  }
   const canvas = document.getElementById('capChartHomeCobertura');
   canvas.setAttribute('aria-label', resumo);
   const t = capTema();
@@ -18582,7 +18682,7 @@ function capRenderCapacitacoes() {
   kpis.push(
     { l: 'Municípios convidados', v: capInt(rows.length ? s.convidados : null) },
     { l: 'Municípios participantes', v: capInt(rows.length ? s.participou : null), n: s.espontaneos ? `+ ${s.espontaneos} não convidado(s) com participantes` : '' },
-    { l: 'Taxa de participação', v: capPct(s.participou, s.convidados) },
+    { l: '% de convites atendidos', v: capPct(s.participou, s.convidados) },
     { l: 'Inscritos', v: capInt(s.inscritos), n: s.inscritos == null ? 'Sem formulário de inscrição' : (c ? '' : 'Da 5ª à 16ª') },
     { l: 'Participantes', v: capInt(rows.length ? s.P : null), n: semMun > 0 ? `${semMun} presença(s) sem município identificado não incluída(s)` : '' },
     { l: 'Comparecimento', v: capPct(s.presentesComInscricao, s.inscritos), n: c ? '' : 'Da 5ª à 16ª' }
@@ -18785,7 +18885,7 @@ function capRenderUf() {
   const k = indicadores(rowsUf);
   const polos = polosDe(uf);
   capKpis('capUfKpis', [
-    { l: 'Total capacitado', v: capInt(rowsUf.length ? k.s.P : null) },
+    { l: 'Participantes', v: capInt(rowsUf.length ? k.s.P : null) },
     { l: '% Gestores', v: capPct(k.s.G, k.s.P), n: rowsUf.length ? capInt(k.s.G) + ' gestores' : 'Sem registros no recorte' },
     { l: '% CACS', v: capPct(k.s.C, k.s.P), n: rowsUf.length ? capInt(k.s.C) + ' conselheiros' : 'Sem registros no recorte' }
   ]);
@@ -18799,7 +18899,7 @@ function capRenderUf() {
   const coberturaRecorte = capCoberturaMunicipal(rowsUf, capUfsCobertura(uf));
   capKpis('capUfTaxas', [
     { l: 'Cobertura regional', v: capPct(coberturaRecorte.alcancados, coberturaRecorte.total), n: coberturaRecorte.total != null ? capInt(coberturaRecorte.alcancados) + ' de ' + capInt(coberturaRecorte.total) + ' municípios' : '' },
-    { l: 'Participação entre convidados', v: capPct(k.s.participou, k.s.convidados) }
+    { l: '% de convites atendidos', v: capPct(k.s.participou, k.s.convidados) }
   ]);
   const porUf = ufs.map(u => ({ u, ...indicadores(rowsAno.filter(r => r.uf === u)), cobertura: capCoberturaMunicipal(rowsAno, CAP_UFS_MAPA.includes(u) ? [u] : []) }));
   const realce = (cor, u) => (!uf || u === uf) ? cor : cor + '55';
@@ -18847,7 +18947,7 @@ function capRenderUf() {
     + '<td class="num">' + capInt(p.registros ? p.s.convidados : null) + '</td><td class="num">' + capInt(p.registros ? p.s.participou : null) + '</td>'
     + '<td class="num">' + capPct(p.s.participou, p.s.convidados) + '</td><td class="num">' + capInt(p.registros ? p.s.P : null) + '</td><td class="num">' + capInt(p.registros ? p.s.G : null) + '</td><td class="num">' + capInt(p.registros ? p.s.C : null) + '</td>'
     + '<td class="num">' + capDec(p.mediaG, 1) + '</td><td class="num">' + capDec(p.mediaC, 1) + '</td><td class="num">' + capInt(polosDe(p.u).size) + '</td><td class="num">' + capDec(p.dist, 0) + '</td></tr>');
-  document.getElementById('capUfTabela').innerHTML = capTabelaHtml([{ t: 'UF' }, { t: 'Situação dos registros' }, { t: 'Cobertura regional', num: 1 }, { t: 'Convites', num: 1 }, { t: 'Participaram', num: 1 }, { t: 'Participação entre convidados', num: 1 },
+  document.getElementById('capUfTabela').innerHTML = capTabelaHtml([{ t: 'UF' }, { t: 'Situação dos registros' }, { t: 'Cobertura regional', num: 1 }, { t: 'Convites', num: 1 }, { t: 'Participaram', num: 1 }, { t: '% de convites atendidos', num: 1 },
     { t: 'Participantes', num: 1 }, { t: 'Gestores', num: 1 }, { t: 'CACS', num: 1 }, { t: 'Média gestores', num: 1 }, { t: 'Média CACS', num: 1 },
     { t: 'Polos (capacitações)', num: 1 }, { t: 'Distância média (km)', num: 1 }], linhas);
 }
@@ -20467,12 +20567,13 @@ async function recarregarDadosExternos() {
       </div>
     </div>
     <div class="pif-body">
-      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.6.6</strong></div>
+      <div class="pif-row"><span>Versão ativa:</span><strong class="pnite-version-val">v.3.6.7</strong></div>
       <div class="pif-row"><span>Data da alteração:</span><span class="pnite-date-val">09/11/2026</span></div>
       <div class="pif-row"><span>Horário:</span><span class="pnite-time-val">14:00</span></div>
       <div class="pif-row"><span>Responsável técnico:</span><span class="pnite-author-val">Equipe PNITE</span></div>
       <div class="pif-note">
         <i class="ti ti-check" style="color:var(--accent);margin-right:3px"></i>
+        <strong>Capacitação mais clara (v.3.6.7):</strong> Home sem números repetidos (perfil sem o total e cobertura detalhada por UF), nomes padronizados para as taxas ("% dos convidados que participaram" e "% de convites atendidos"), menu "Avaliações 1ª a 5ª / 6ª a 16ª", ajuda "ⓘ" com a definição de cada cartão e mínimos por município em "Filtros avançados".<br>
         <strong>Polo na página de não alcançados (v.3.6.6):</strong> novo filtro "Polo de Capacitação", que restringe cartões, mapa, gráfico e lista aos municípios convidados ou participantes daquele evento, mantendo a situação geral de cada município.<br>
         <strong>Downloads da capacitação com permissão (v.3.6.5):</strong> baixar imagens e planilhas de painéis, da página e da lista de não alcançados volta a exigir conta com a permissão de download, como nas demais frentes.<br>
         <strong>Participação oficial (v.3.6.4):</strong> a planilha oficial de participantes do CECATE-CO passa a ser a fonte de participação e presentes por município e capacitação (264 municípios do Centro-Oeste capacitados); convites, inscrições e avaliações seguem da base de convocações.<br>
@@ -20548,7 +20649,7 @@ async function recarregarDadosExternos() {
   </div>
   <button class="pif-btn" id="pifBtn" aria-label="Informações de Versão">
     <i class="ti ti-info-circle"></i>
-    <span class="pif-btn-label pnite-version-val">v.3.6.6</span>
+    <span class="pif-btn-label pnite-version-val">v.3.6.7</span>
   </button>
 </div>
 
